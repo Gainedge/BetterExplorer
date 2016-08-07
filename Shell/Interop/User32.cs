@@ -577,7 +577,7 @@ public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
 
 		[DllImport("User32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool SendMessage(IntPtr hWnd, int msg, int wParam, LVTILEVIEWINFO lParam);
+		public static extern bool SendMessage(IntPtr hWnd, int msg, int wParam, ref LVTILEVIEWINFO lParam);
 
 
 		[DllImport("User32.dll")]

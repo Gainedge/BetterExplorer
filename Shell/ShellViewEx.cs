@@ -359,18 +359,33 @@ namespace BExplorer.Shell {
 						break;
 
 					case ShellViewStyle.Tile:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_TILE, 0);
-						var tvi = new LVTILEVIEWINFO {
-							cLines = 3,
-							rcLabelMargin = new User32.RECT() { Left = 2, Right = 0, Bottom = 60, Top = 5 },
-							cbSize = (UInt32)Marshal.SizeOf(typeof(LVTILEVIEWINFO)),
-							dwMask = (UInt32)LVTVIM.LVTVIM_TILESIZE | (UInt32)LVTVIM.LVTVIM_COLUMNS | (UInt32)LVTVIM.LVTVIM_LABELMARGIN,
-							dwFlags = (UInt32)LVTVIF.LVTVIF_FIXEDSIZE,
-							sizeTile = new INTEROP_SIZE() { cx = 250, cy = 60 }
-						};
+            var isComputer = this._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName);
+            User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_TILE, 0);
+				    if (isComputer) {
+              var tvi = new LVTILEVIEWINFO {
+                cLines = 3,
+                rcLabelMargin = new User32.RECT() { Left = 2, Right = 0, Bottom = 60, Top = 5 },
+                cbSize = (UInt32)Marshal.SizeOf(typeof(LVTILEVIEWINFO)),
+                dwMask = (UInt32)LVTVIM.LVTVIM_TILESIZE | (UInt32)LVTVIM.LVTVIM_COLUMNS | (UInt32)LVTVIM.LVTVIM_LABELMARGIN,
+                dwFlags = (UInt32)LVTVIF.LVTVIF_FIXEDSIZE,
+                sizeTile = new INTEROP_SIZE() { cx = 250, cy = 60 },
+              };
 
-						var a = User32.SendMessage(this.LVHandle, (Int32)MSG.LVM_SETTILEVIEWINFO, 0, tvi);
-						ResizeIcons(48);
+              var a = User32.SendMessage(this.LVHandle, (Int32)MSG.LVM_SETTILEVIEWINFO, 0, ref tvi);
+            }
+				    else {
+				      var tvi = new LVTILEVIEWINFO {
+				        cLines = 3,
+				        rcLabelMargin = new User32.RECT() { Left = 0, Right = 0, Bottom = 0, Top = 0 },
+				        cbSize = (UInt32) Marshal.SizeOf(typeof(LVTILEVIEWINFO)),
+				        dwMask = (UInt32) LVTVIM.LVTVIM_TILESIZE | (UInt32) LVTVIM.LVTVIM_COLUMNS | (UInt32)LVTVIM.LVTVIM_LABELMARGIN,
+				        dwFlags = (UInt32) LVTVIF.LVTVIF_FIXEDSIZE,
+				        sizeTile = new INTEROP_SIZE() {cx = 250, cy = 60},
+				      };
+
+				      var a = User32.SendMessage(this.LVHandle, (Int32) MSG.LVM_SETTILEVIEWINFO, 0, ref tvi);
+				    }
+				    ResizeIcons(48);
 						break;
 
 					case ShellViewStyle.Thumbstrip:
@@ -472,9 +487,6 @@ namespace BExplorer.Shell {
 		private List<Int32> _CuttedIndexes = new List<Int32>();
 		private Int32 _LastDropHighLightedItemIndex = -1;
 		private String _NewName { get; set; }
-
-	  private IListItemEx _Badge = FileSystemListItem.ToFileSystemItem(IntPtr.Zero,
-	    @"D:\Personal Projects\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Alias\Private Badge Redux.ico");
 
 	  public Dictionary<String, Dictionary<IListItemEx, List<String>>> BadgesData;
 
@@ -1284,74 +1296,109 @@ namespace BExplorer.Shell {
 							var currentItem = this.IsSearchNavigating ? Items[nmlv.item.iItem].Clone() : Items[nmlv.item.iItem];
 
 							if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
-								if (nmlv.item.iSubItem == 0) {
-									try {
-										nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
-									} catch (Exception) {
+							  if (nmlv.item.iSubItem == 0) {
+							    try {
+							      nmlv.item.pszText = currentItem.DisplayName;
+							    }
+							    catch (Exception) {
 
-									}
+							    }
 
-									Marshal.StructureToPtr(nmlv, m.LParam, false);
-								} else if (View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details) {
-									//TODO: Try to remove the Try Catch
-									try {
-										var hash = currentItem.GetHashCode();
-										Collumns currentCollumn = this.Collumns[nmlv.item.iSubItem];
+							    Marshal.StructureToPtr(nmlv, m.LParam, false);
+							  }
+							  else {
+							    var isComputer = (this._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) &&
+							                      (currentItem.IsDrive || currentItem.IsNetworkPath));
 
-										var valueCached = SubItemValues.ToArray().FirstOrDefault(s => s.Item1 == hash && s.Item2.fmtid == currentCollumn.pkey.fmtid && s.Item2.pid == currentCollumn.pkey.pid);
-										//if (valueCached != null && valueCached.Item3 != null)
-										if (valueCached?.Item3 != null) {
-											String val = String.Empty;
-											if (currentCollumn.CollumnType == typeof(DateTime))
-												val = ((DateTime)valueCached.Item3).ToString(Thread.CurrentThread.CurrentCulture);
-											else if (currentCollumn.CollumnType == typeof(Int64))
-												val = $"{(Math.Ceiling(Convert.ToDouble(valueCached.Item3.ToString()) / 1024).ToString("# ### ### ##0"))} KB";
-											else if (currentCollumn.CollumnType == typeof(PerceivedType))
-												val = ((PerceivedType)valueCached.Item3).ToString();
-											else if (currentCollumn.CollumnType == typeof(FileAttributes)) {
-												var resultString = this.GetFilePropertiesString(valueCached.Item3);
-												val = resultString;
-											} else
-												val = valueCached.Item3.ToString();
+                  if ((View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details || this.View == ShellViewStyle.Tile)) {
+							      //TODO: Try to remove the Try Catch
+							      try {
+							        var hash = currentItem.GetHashCode();
+							        var currentCollumn = this.View == ShellViewStyle.Tile ? this.AllAvailableColumns[nmlv.item.iSubItem] : this.Collumns[nmlv.item.iSubItem];
 
-											nmlv.item.pszText = val;
-											Marshal.StructureToPtr(nmlv, m.LParam, false);
-										} else {
-											var temp = currentItem;
-											var isi2 = (IShellItem2)temp.ComInterface;
-											var guid = new Guid(InterfaceGuids.IPropertyStore);
-											IPropertyStore propStore = null;
-											isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
-											PROPERTYKEY pk = currentCollumn.pkey;
-											var pvar = new PropVariant();
-											if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-												String val = String.Empty;
-												if (pvar.Value == null) {
-													ItemsForSubitemsUpdate.Enqueue(new Tuple<Int32, Int32, PROPERTYKEY>(nmlv.item.iItem, nmlv.item.iSubItem, pk));
-												} else {
-													if (currentCollumn.CollumnType == typeof(DateTime))
-														val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
-													else if (currentCollumn.CollumnType == typeof(Int64))
-														val = $"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0")} KB";
-													else if (currentCollumn.CollumnType == typeof(PerceivedType))
-														val = ((PerceivedType)pvar.Value).ToString();
-													else if (currentCollumn.CollumnType == typeof(FileAttributes))
-														val = this.GetFilePropertiesString(pvar.Value);
-													else
-														val = pvar.Value.ToString();
+							        var valueCached =
+							          SubItemValues.ToArray()
+							            .FirstOrDefault(
+							              s =>
+							                s.Item1 == hash && s.Item2.fmtid == currentCollumn.pkey.fmtid &&
+							                s.Item2.pid == currentCollumn.pkey.pid);
+							        //if (valueCached != null && valueCached.Item3 != null)
+							        if (valueCached?.Item3 != null) {
+							          String val = String.Empty;
+							          if (currentCollumn.CollumnType == typeof(DateTime))
+							            val = ((DateTime) valueCached.Item3).ToString(Thread.CurrentThread.CurrentCulture);
+							          else if (currentCollumn.CollumnType == typeof(Int64))
+							            val =
+							              $"{(Math.Ceiling(Convert.ToDouble(valueCached.Item3.ToString())/1024).ToString("# ### ### ##0"))} KB";
+							          else if (currentCollumn.CollumnType == typeof(PerceivedType))
+							            val = ((PerceivedType) valueCached.Item3).ToString();
+							          else if (currentCollumn.CollumnType == typeof(FileAttributes)) {
+							            var resultString = this.GetFilePropertiesString(valueCached.Item3);
+							            val = resultString;
+							          }
+							          else
+							            val = valueCached.Item3.ToString();
 
-													nmlv.item.pszText = val;
-													Marshal.StructureToPtr(nmlv, m.LParam, false);
-													pvar.Dispose();
-												}
-											}
-										}
-									} catch {
-									}
-								}
+							          nmlv.item.pszText = isComputer ? " " : val.Trim();
+							          Marshal.StructureToPtr(nmlv, m.LParam, false);
+							        }
+							        else {
+							          var temp = currentItem;
+							          var isi2 = (IShellItem2) temp.ComInterface;
+							          var guid = new Guid(InterfaceGuids.IPropertyStore);
+							          IPropertyStore propStore = null;
+							          isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
+							          PROPERTYKEY pk = currentCollumn.pkey;
+							          var pvar = new PropVariant();
+							          if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
+							            String val = String.Empty;
+							            if (pvar.Value == null) {
+							              ItemsForSubitemsUpdate.Enqueue(new Tuple<Int32, Int32, PROPERTYKEY>(nmlv.item.iItem,
+							                nmlv.item.iSubItem, pk));
+							            }
+							            else {
+							              if (currentCollumn.CollumnType == typeof(DateTime))
+							                val = ((DateTime) pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
+							              else if (currentCollumn.CollumnType == typeof(Int64))
+							                val =
+							                  $"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString())/1024).ToString("# ### ### ##0")} KB";
+							              else if (currentCollumn.CollumnType == typeof(PerceivedType))
+							                val = ((PerceivedType) pvar.Value).ToString();
+							              else if (currentCollumn.CollumnType == typeof(FileAttributes))
+							                val = this.GetFilePropertiesString(pvar.Value);
+							              else
+							                val = pvar.Value.ToString();
+
+							              nmlv.item.pszText = isComputer ? " " : val.Trim();
+							              Marshal.StructureToPtr(nmlv, m.LParam, false);
+							              pvar.Dispose();
+							            }
+							          }
+							        }
+							      }
+							      catch {
+							      }
+							    }
+							    else {
+                    nmlv.item.pszText = currentItem.DisplayName;
+                    Marshal.StructureToPtr(nmlv, m.LParam, false);
+                  }
+							  }
 							}
+              
+              if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS) {
+                nmlv.item.cColumns = 2;
+                int[] columns = new int[nmlv.item.cColumns];
+                Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
+                columns[0] = 182;
+                columns[1] = 1;
+                //columns[2] = 2;
+                Marshal.Copy(columns, 0, nmlv.item.puColumns, nmlv.item.cColumns);
+                Marshal.StructureToPtr(nmlv, m.LParam, false);
+              }
 
-							break;
+
+              break;
 						#endregion
 
 						case WNM.LVN_COLUMNCLICK:
@@ -4049,9 +4096,6 @@ namespace BExplorer.Shell {
 									sho.IsIconLoaded = false;
 									waitingThumbnails.Enqueue(index);
 								} else {
-									//var lableBounds = new User32.RECT() { Left = 2 };
-									//User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
-									//var res = User32.SetWindowPos(editControl, IntPtr.Zero, 0, -55, 0, 0, User32.SetWindowPosFlags.IgnoreZOrder);
 									hThumbnail = sho.GetHBitmap(IconSize, false);
 									if (hThumbnail != IntPtr.Zero) {
 										Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
@@ -4120,31 +4164,23 @@ namespace BExplorer.Shell {
 					    Gdi32.DeleteObject(badgeIco);
 					  }
 
-					  if (View == ShellViewStyle.Tile) {
-							var lableBounds = new User32.RECT() { Left = 2 };
-							User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
-							using (var g = Graphics.FromHdc(hdc)) {
-								var fmt = new StringFormat();
-								fmt.Trimming = StringTrimming.EllipsisCharacter;
-								fmt.Alignment = StringAlignment.Center;
-								fmt.Alignment = StringAlignment.Near;
-								fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
-								fmt.LineAlignment = StringAlignment.Center;
+            if (View == ShellViewStyle.Tile) {
+              var lableBounds = new User32.RECT() { Left = 2 };
+              User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
+              using (var g = Graphics.FromHdc(hdc)) {
+                var fmt = new StringFormat();
+                fmt.Trimming = StringTrimming.EllipsisCharacter;
+                fmt.Alignment = StringAlignment.Center;
+                fmt.Alignment = StringAlignment.Near;
+                fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
+                fmt.LineAlignment = StringAlignment.Center;
 
-								var lblrectTiles = new RectangleF(lableBounds.Left, itemBounds.Top + 6, lableBounds.Right - lableBounds.Left, 15);
-								Font font = System.Drawing.SystemFonts.IconTitleFont;
-								var textBrush = new SolidBrush(textColor ?? System.Drawing.SystemColors.ControlText);
-								g.DrawString(sho.DisplayName, font, textBrush, lblrectTiles, fmt);
-								font.Dispose();
-								textBrush.Dispose();
-
-								if (this._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) && (sho.IsDrive || sho.IsNetworkPath))
-									this.DrawComputerTiledModeView(sho, g, lblrectTiles, fmt);
-								else
-									this.DrawNormalFolderSubitemsInTiledView(sho, lblrectTiles, g, fmt);
-							}
-						}
-					} else {
+                var lblrectTiles = new RectangleF(lableBounds.Left, itemBounds.Top + 6, lableBounds.Right - lableBounds.Left, 15);
+                if (this._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) && (sho.IsDrive || sho.IsNetworkPath))
+                  this.DrawComputerTiledModeView(sho, g, lblrectTiles, fmt);
+              }
+            }
+          } else {
 						sho.IsThumbnailLoaded = true;
 						Int32 width = 0;
 						Int32 height = 0;
@@ -4240,8 +4276,7 @@ namespace BExplorer.Shell {
 				var lblrectSubiTem3 = new RectangleF(lblrectTiles.Left, lblrectTiles.Bottom + 16, lblrectTiles.Width, 15);
 				Font subItemFont = System.Drawing.SystemFonts.IconTitleFont;
 				var subItemTextBrush = new SolidBrush(System.Drawing.SystemColors.ControlDarkDark);
-				g.DrawString(
-												$"{ShlWapi.StrFormatByteSize(driveInfo.AvailableFreeSpace)} free of {ShlWapi.StrFormatByteSize(driveInfo.TotalSize)}",
+				g.DrawString($"{ShlWapi.StrFormatByteSize(driveInfo.AvailableFreeSpace)} free of {ShlWapi.StrFormatByteSize(driveInfo.TotalSize)}",
 												subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
 
 				subItemFont.Dispose();
