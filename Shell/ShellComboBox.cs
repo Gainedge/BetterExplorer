@@ -40,7 +40,10 @@ namespace BExplorer.Shell
     /// </remarks>
     public class ShellComboBox : Control
     {
-        ComboBox m_Combo = new ComboBox();
+
+		#region Variables      
+
+		ComboBox m_Combo = new ComboBox();
         TextBox m_Edit = new TextBox();
         ShellView m_ShellView;
         bool m_Editable;
@@ -53,149 +56,171 @@ namespace BExplorer.Shell
         ShellNotificationListener m_ShellListener = new ShellNotificationListener();
         static ShellItem m_Computer;
 
+		#endregion
+		
+		#region Properties
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ShellComboBox"/> class.
-        /// </summary>
-        public ShellComboBox()
-        {
-            m_Combo.Dock = DockStyle.Fill;
-            m_Combo.DrawMode = DrawMode.OwnerDrawFixed;
-            m_Combo.DropDownStyle = ComboBoxStyle.DropDownList;
-            m_Combo.DropDownHeight = 300;
-            m_Combo.ItemHeight = SystemInformation.SmallIconSize.Height + 1;
-            m_Combo.Parent = this;
-            m_Combo.Click += new EventHandler(m_Combo_Click);
-            m_Combo.DrawItem += new DrawItemEventHandler(m_Combo_DrawItem);
-            m_Combo.SelectedIndexChanged += new EventHandler(m_Combo_SelectedIndexChanged);
+		/// <summary>
+		/// Gets/sets a value indicating whether the full file system path 
+		/// should be displayed in the main portion of the control.
+		/// </summary>
+		[DefaultValue(false)]
+		public bool ShowFileSystemPath
+		{
+			get { return m_ShowFileSystemPath; }
+			set
+			{
+				m_ShowFileSystemPath = value;
+				m_Combo.Invalidate();
+			}
+		}
 
-            m_Edit.Anchor = AnchorStyles.Left | AnchorStyles.Top |
-                            AnchorStyles.Right | AnchorStyles.Bottom;
-            m_Edit.BorderStyle = BorderStyle.None;
-            m_Edit.Left = 8 + SystemInformation.SmallIconSize.Width;
-            m_Edit.Top = 4;
-            m_Edit.Width = Width - m_Edit.Left - 3 - SystemInformation.VerticalScrollBarWidth;
-            m_Edit.Parent = this;
-            m_Edit.Visible = false;
-            m_Edit.GotFocus += new EventHandler(m_Edit_GotFocus);
-            m_Edit.LostFocus += new EventHandler(m_Edit_LostFocus);
-            m_Edit.KeyDown += new KeyEventHandler(m_Edit_KeyDown);
-            m_Edit.MouseDown += new MouseEventHandler(m_Edit_MouseDown);
-            m_Edit.BringToFront();
+		/// <summary>
+		/// Gets/sets the folder that the <see cref="ShellComboBox"/> should
+		/// display as the root folder.
+		/// </summary>
+		[Browsable(false)]
+		public ShellItem RootFolder
+		{
+			get { return m_RootFolder; }
+			set
+			{
+				m_RootFolder = value;
+				if (!m_RootFolder.IsParentOf(m_SelectedFolder)) m_SelectedFolder = m_RootFolder;
+				CreateItems();
+			}
+		}
 
-            m_ShellListener.DriveAdded += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
-            m_ShellListener.DriveRemoved += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
-            m_ShellListener.FolderCreated += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
-            m_ShellListener.FolderDeleted += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
-            m_ShellListener.FolderRenamed += new ShellItemChangeEventHandler(m_ShellListener_ItemRenamed);
-            m_ShellListener.FolderUpdated += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
-            m_ShellListener.ItemCreated += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
-            m_ShellListener.ItemDeleted += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
-            m_ShellListener.ItemRenamed += new ShellItemChangeEventHandler(m_ShellListener_ItemRenamed);
-            m_ShellListener.ItemUpdated += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
-            m_ShellListener.SharingChanged += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
+		/// <summary>
+		/// Gets/sets the folder currently selected in the 
+		/// <see cref="ShellComboBox"/>.
+		/// </summary>
+		[Browsable(false)]
+		public ShellItem SelectedFolder
+		{
+			get { return m_SelectedFolder; }
+			set
+			{
+				if (m_SelectedFolder != value)
+				{
+					m_SelectedFolder = value;
+					CreateItems();
+					m_Edit.Text = GetEditString();
+					NavigateShellView();
+					Changed?.Invoke(this, EventArgs.Empty);
+				}
+			}
+		}
 
-            m_SelectedFolder = ShellItem.Desktop;
-            m_Edit.Text = GetEditString();
+		/// <summary>
+		/// Gets/sets a value indicating whether the combo box is editable.
+		/// </summary>
+		[DefaultValue(false)]
+		public bool Editable
+		{
+			get { return m_Editable; }
+			set { m_Edit.Visible = m_Editable = value; }
+		}
 
-            if (m_Computer == null)
-            {
-                m_Computer = new ShellItem(Environment.SpecialFolder.MyComputer);
-            }
+		/// <summary>
+		/// Gets/sets a <see cref="ShellView"/> whose navigation should be
+		/// controlled by the combo box.
+		/// </summary>
+		[DefaultValue(null), Category("Behavior")]
+		public ShellView ShellView
+		{
+			get { return m_ShellView; }
+			set
+			{
+				if (m_ShellView != null)
+					m_ShellView.Navigated -= m_ShellView_Navigated;
 
-            CreateItems();
-        }
+				m_ShellView = value;
 
-        /// <summary>
-        /// Gets/sets a value indicating whether the combo box is editable.
-        /// </summary>
-        [DefaultValue(false)]
-        public bool Editable
-        {
-            get { return m_Editable; }
-            set { m_Edit.Visible = m_Editable = value; }
-        }
+				if (m_ShellView != null)
+				{
+					m_ShellView.Navigated += m_ShellView_Navigated;
+					m_ShellView_Navigated(m_ShellView, new NavigatedEventArgs(m_ShellView.CurrentFolder, m_ShellView.CurrentFolder));
+				}
+			}
+		}
 
-        /// <summary>
-        /// Gets/sets a value indicating whether the full file system path 
-        /// should be displayed in the main portion of the control.
-        /// </summary>
-        [DefaultValue(false)]
-        public bool ShowFileSystemPath
-        {
-            get { return m_ShowFileSystemPath; }
-            set
-            {
-                m_ShowFileSystemPath = value;
-                m_Combo.Invalidate();
-            }
-        }
 
-        /// <summary>
-        /// Gets/sets the folder that the <see cref="ShellComboBox"/> should
-        /// display as the root folder.
-        /// </summary>
-        [Browsable(false)]
-        public ShellItem RootFolder
-        {
-            get { return m_RootFolder; }
-            set
-            {
-                m_RootFolder = value;
-                if (!m_RootFolder.IsParentOf(m_SelectedFolder)) m_SelectedFolder = m_RootFolder;
-                CreateItems();
-            }
-        }
+		#endregion
+		
+		#region Constructor
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ShellComboBox"/> class.
+		/// </summary>
+		public ShellComboBox()
+		{
+			m_Combo.Dock = DockStyle.Fill;
+			m_Combo.DrawMode = DrawMode.OwnerDrawFixed;
+			m_Combo.DropDownStyle = ComboBoxStyle.DropDownList;
+			m_Combo.DropDownHeight = 300;
+			m_Combo.ItemHeight = SystemInformation.SmallIconSize.Height + 1;
+			m_Combo.Parent = this;
+			m_Combo.Click += new EventHandler(m_Combo_Click);
+			m_Combo.DrawItem += new DrawItemEventHandler(m_Combo_DrawItem);
+			m_Combo.SelectedIndexChanged += new EventHandler(m_Combo_SelectedIndexChanged);
 
-        /// <summary>
-        /// Gets/sets the folder currently selected in the 
-        /// <see cref="ShellComboBox"/>.
-        /// </summary>
-        [Browsable(false)]
-        public ShellItem SelectedFolder
-        {
-            get { return m_SelectedFolder; }
-            set
-            {
-                if (m_SelectedFolder != value)
-                {
-                    m_SelectedFolder = value;
-                    CreateItems();
-                    m_Edit.Text = GetEditString();
-                    NavigateShellView();
-                    Changed?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+			m_Edit.Anchor = AnchorStyles.Left | AnchorStyles.Top |
+							AnchorStyles.Right | AnchorStyles.Bottom;
+			m_Edit.BorderStyle = BorderStyle.None;
+			m_Edit.Left = 8 + SystemInformation.SmallIconSize.Width;
+			m_Edit.Top = 4;
+			m_Edit.Width = Width - m_Edit.Left - 3 - SystemInformation.VerticalScrollBarWidth;
+			m_Edit.Parent = this;
+			m_Edit.Visible = false;
+			m_Edit.GotFocus += new EventHandler(m_Edit_GotFocus);
+			m_Edit.LostFocus += new EventHandler(m_Edit_LostFocus);
+			m_Edit.KeyDown += new KeyEventHandler(m_Edit_KeyDown);
+			m_Edit.MouseDown += new MouseEventHandler(m_Edit_MouseDown);
+			m_Edit.BringToFront();
 
-        /// <summary>
-        /// Gets/sets a <see cref="ShellView"/> whose navigation should be
-        /// controlled by the combo box.
-        /// </summary>
-        [DefaultValue(null), Category("Behavior")]
-        public ShellView ShellView
-        {
-            get { return m_ShellView; }
-            set
-            {
-                if (m_ShellView != null)
-                    m_ShellView.Navigated -= m_ShellView_Navigated;
+			m_ShellListener.DriveAdded += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
+			m_ShellListener.DriveRemoved += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
+			m_ShellListener.FolderCreated += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
+			m_ShellListener.FolderDeleted += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
+			m_ShellListener.FolderRenamed += new ShellItemChangeEventHandler(m_ShellListener_ItemRenamed);
+			m_ShellListener.FolderUpdated += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
+			m_ShellListener.ItemCreated += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
+			m_ShellListener.ItemDeleted += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
+			m_ShellListener.ItemRenamed += new ShellItemChangeEventHandler(m_ShellListener_ItemRenamed);
+			m_ShellListener.ItemUpdated += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
+			m_ShellListener.SharingChanged += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
 
-                m_ShellView = value;
+			m_SelectedFolder = ShellItem.Desktop;
+			m_Edit.Text = GetEditString();
 
-                if (m_ShellView != null)
-                {
-                    m_ShellView.Navigated += m_ShellView_Navigated;
-                    m_ShellView_Navigated(m_ShellView, new NavigatedEventArgs(m_ShellView.CurrentFolder, m_ShellView.CurrentFolder));
-                }
-            }
-        }
+			if (m_Computer == null)
+			{
+				m_Computer = new ShellItem(Environment.SpecialFolder.MyComputer);
+			}
 
-        /// <summary>
-        /// Occurs when the <see cref="ShellComboBox"/>'s 
-        /// <see cref="SelectedFolder"/> property changes.
-        /// </summary>
-        public event EventHandler Changed;
+			CreateItems();
+		}
+		#endregion
+
+		#region Events
+
+		/// <summary>
+		/// Occurs when the <see cref="ShellComboBox"/>'s 
+		/// <see cref="SelectedFolder"/> property changes.
+		/// </summary>
+		public event EventHandler Changed;
+		#endregion
+		
+		#region Methods      
+
+		internal bool ShouldSerializeRootFolder() => m_RootFolder != ShellItem.Desktop;
+		internal bool ShouldSerializeSelectedFolder() => m_SelectedFolder != ShellItem.Desktop;
+		string GetEditString() => m_ShowFileSystemPath && m_SelectedFolder.IsFileSystem ? m_SelectedFolder.FileSystemPath : m_SelectedFolder.DisplayName;
+
+		void m_ShellListener_ItemRenamed(object sender, ShellItemChangeEventArgs e) => CreateItems();
+		void m_ShellListener_ItemUpdated(object sender, ShellItemEventArgs e) => CreateItems();
+		
+	
 
         /// <summary>
         /// Occurs when the <see cref="ShellComboBox"/> control wants to know
@@ -206,11 +231,6 @@ namespace BExplorer.Shell
         /// This event allows the folders displayed in the 
         /// <see cref="ShellComboBox"/> control to be filtered.
         /// </remarks>
-        //public event FilterItemEventHandler FilterItem;
-
-        internal bool ShouldSerializeRootFolder() => m_RootFolder != ShellItem.Desktop;
-        internal bool ShouldSerializeSelectedFolder() => m_SelectedFolder != ShellItem.Desktop;
-
         void CreateItems()
         {
             if (!m_CreatingItems)
@@ -264,8 +284,6 @@ namespace BExplorer.Shell
                    folder == ShellItem.Desktop ||
                    folder.IsParentOf(m_SelectedFolder);
         }
-
-        string GetEditString() => m_ShowFileSystemPath && m_SelectedFolder.IsFileSystem ? m_SelectedFolder.FileSystemPath : m_SelectedFolder.DisplayName;
 
 		void NavigateShellView()
 		{
@@ -356,10 +374,7 @@ namespace BExplorer.Shell
             m_SelectAll = true;
         }
 
-        void m_Edit_LostFocus(object sender, EventArgs e)
-        {
-            m_SelectAll = false;
-        }
+        void m_Edit_LostFocus(object sender, EventArgs e) => m_SelectAll = false;
 
         void m_Edit_KeyDown(object sender, KeyEventArgs e)
         {
@@ -412,10 +427,11 @@ namespace BExplorer.Shell
             }
         }
 
-        void m_ShellListener_ItemRenamed(object sender, ShellItemChangeEventArgs e) => CreateItems();
-        void m_ShellListener_ItemUpdated(object sender, ShellItemEventArgs e) => CreateItems();
+		#endregion
+		
+		#region Internal Class
 
-        class ComboItem
+		class ComboItem
         {
             public ShellItem Folder;
             public int Indent;
@@ -426,5 +442,7 @@ namespace BExplorer.Shell
                 Indent = indent;
             }
         }
-    }
+
+		#endregion
+	}
 }
