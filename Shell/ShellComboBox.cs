@@ -262,7 +262,8 @@ namespace BExplorer.Shell
                 CreateItems(folder, indent + 1);
             }
         }
-
+		
+		
         [Obsolete("Always returns true")]
         bool ShouldCreateItem(ShellItem folder)
         {
@@ -295,33 +296,20 @@ namespace BExplorer.Shell
 
         bool ShouldCreateChildren(ShellItem folder)
         {
-            return (folder == m_Computer) ||
-                   (folder == ShellItem.Desktop) ||
+            return folder == m_Computer ||
+                   folder == ShellItem.Desktop ||
                    folder.IsParentOf(m_SelectedFolder);
         }
 
         string GetEditString() => m_ShowFileSystemPath && m_SelectedFolder.IsFileSystem ? m_SelectedFolder.FileSystemPath : m_SelectedFolder.DisplayName;
 
-        void NavigateShellView()
-        {
-            if (m_ShellView != null && !m_ChangingLocation)
-            {
-                try
-                {
-                    m_ChangingLocation = true;
-                    //m_ShellView.Navigate(m_SelectedFolder);
-                    //m_ShellView.Navigate_Full(m_SelectedFolder, false);
-                }
-                catch (Exception)
-                {
-                    //SelectedFolder = m_ShellView.CurrentFolder;
-                }
-                finally
-                {
-                    m_ChangingLocation = false;
-                }
-            }
-        }
+		void NavigateShellView()
+		{
+			if (m_ShellView != null && !m_ChangingLocation)
+			{
+				m_ChangingLocation = true;
+			}
+		}
 
         void m_Combo_Click(object sender, EventArgs e) => OnClick(e);
 
