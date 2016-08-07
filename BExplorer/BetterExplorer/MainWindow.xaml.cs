@@ -371,6 +371,10 @@ namespace BetterExplorer
 		}
 
 		void LinksFolderWarcher_Renamed(object sender, RenamedEventArgs e) {
+			Dispatcher.BeginInvoke(DispatcherPriority.Normal,(Action)(
+				() => btnFavorites.Items.OfType<MenuItem>().First(x => (x.Tag as ShellItem).ParsingName == e.OldFullPath).Header = Path.GetFileNameWithoutExtension(e.Name)));
+			
+			/*
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 							(Action)(() => {
 								foreach (MenuItem item in btnFavorites.Items.OfType<MenuItem>()) {
@@ -378,13 +382,12 @@ namespace BetterExplorer
 										item.Header = Path.GetFileNameWithoutExtension(e.Name);
 								}
 							}));
+			*/
 		}
 
 		void LinksFolderWarcher_Deleted(object sender, FileSystemEventArgs e) {
-			Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-							(Action)(() => {
-								btnFavorites.Items.Remove(btnFavorites.Items.OfType<MenuItem>().Single(item => item.Header.ToString() == Path.GetFileNameWithoutExtension(e.Name)));
-							}));
+			Dispatcher.BeginInvoke(DispatcherPriority.Normal,(Action)(
+				() => btnFavorites.Items.Remove(btnFavorites.Items.OfType<MenuItem>().First(item => item.Header.ToString() == Path.GetFileNameWithoutExtension(e.Name)))));
 		}
 
 		void LinksFolderWarcher_Created(object sender, FileSystemEventArgs e) {
@@ -704,10 +707,7 @@ namespace BetterExplorer
 					try {
 						beSvc.CreateLink(new LinkData() { Items = linkItems });
 					} finally {
-						Dispatcher.Invoke(DispatcherPriority.Normal,
-										(Action)(() => {
-											this._ShellListView.UnvalidateDirectory();
-										}));
+						Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => this._ShellListView.UnvalidateDirectory()));
 					}
 
 					proc.WaitForExit();
@@ -715,10 +715,7 @@ namespace BetterExplorer
 						MessageBox.Show("Error in creating symlink", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 					else {
 						Thread.Sleep(1000);
-						Dispatcher.Invoke(DispatcherPriority.Normal,
-										(Action)(() => {
-											this._ShellListView.UnvalidateDirectory();
-										}));
+						Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => this._ShellListView.UnvalidateDirectory()));
 					}
 				}
 			});
@@ -775,9 +772,8 @@ namespace BetterExplorer
 		}
 
 		private void btnPasetShC_Click(object sender, RoutedEventArgs e) {
-			StringCollection DropList = Clipboards.GetFileDropList();
 			string PathForDrop = _ShellListView.CurrentFolder.ParsingName;
-			foreach (string item in DropList) {
+			foreach (string item in Clipboards.GetFileDropList()) {
 				using (var shortcut = new ShellLink()) {
 					var o = new ShellItem(item);
 					shortcut.Target = item;
@@ -859,15 +855,14 @@ namespace BetterExplorer
 
 		private void btnDefragDrive_Click(object sender, RoutedEventArgs e) {
 			string DriveLetter = "";
-			if (_ShellListView.SelectedItems.Any()) {
-				if (Directory.GetLogicalDrives().Contains(_ShellListView.SelectedItems[0].ParsingName))
-					DriveLetter = _ShellListView.SelectedItems[0].ParsingName;
-				else
-					DriveLetter = _ShellListView.CurrentFolder.ParsingName;
-			} else {
-				DriveLetter = _ShellListView.CurrentFolder.ParsingName;
-			}
 
+			if (!_ShellListView.SelectedItems.Any())
+				DriveLetter = _ShellListView.CurrentFolder.ParsingName;
+			else if (Directory.GetLogicalDrives().Contains(_ShellListView.SelectedItems[0].ParsingName))
+				DriveLetter = _ShellListView.SelectedItems[0].ParsingName;
+			else
+				DriveLetter = _ShellListView.CurrentFolder.ParsingName;			
+		
 			Process.Start(Path.Combine(Environment.SystemDirectory, "dfrgui.exe"), $"/u /v {DriveLetter.Replace("\\", "")}");
 		}
 
@@ -901,12 +896,12 @@ namespace BetterExplorer
 
 		private void OpenCDTray(char DriveLetter) {
 			mciSendString($"open {DriveLetter}: type CDAudio alias drive{DriveLetter}", null, 0, IntPtr.Zero);
-      mciSendString($"set drive{DriveLetter} door open", null, 0, IntPtr.Zero);
-    }
+			mciSendString($"set drive{DriveLetter} door open", null, 0, IntPtr.Zero);
+		}
 
 		private void CloseCDTray(char DriveLetter) {
-      mciSendString($"open {DriveLetter}: type CDAudio alias drive{DriveLetter}", null, 0, IntPtr.Zero);
-      mciSendString($"set drive{DriveLetter} door closed", null, 0, IntPtr.Zero);
+			mciSendString($"open {DriveLetter}: type CDAudio alias drive{DriveLetter}", null, 0, IntPtr.Zero);
+			mciSendString($"set drive{DriveLetter} door closed", null, 0, IntPtr.Zero);
 		}
 
 		private void btnOpenTray_Click(object sender, RoutedEventArgs e) {
@@ -931,12 +926,12 @@ namespace BetterExplorer
 								Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 												(Action)(() => {
 													this.beNotifyIcon.ShowBalloonTip("Information", $"It is safe to remove {item.LogicalDrive}", Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
-													var tabsForRemove = tcMain.Items.OfType<Wpf.Controls.TabItem>()
-																																																									.Where(w => {
-																																																										var root = Path.GetPathRoot(w.ShellObject.ParsingName.ToShellParsingName());
-																																																										return root != null && (w.ShellObject.IsFileSystem &&
-																																																																																								 root.ToLowerInvariant() == $"{DriveLetter}:\\".ToLowerInvariant());
-																																																									}).ToArray();
+													var tabsForRemove = tcMain.Items.OfType<Wpf.Controls.TabItem>().Where(w => {
+														var root = Path.GetPathRoot(w.ShellObject.ParsingName.ToShellParsingName());
+														return root != null && (w.ShellObject.IsFileSystem &&
+														root.ToLowerInvariant() == $"{DriveLetter}:\\".ToLowerInvariant());
+													}).ToArray();
+
 													foreach (Wpf.Controls.TabItem tab in tabsForRemove) {
 														tcMain.RemoveTabItem(tab);
 													}
@@ -976,14 +971,14 @@ namespace BetterExplorer
 									default:
 										break;
 								}
-								Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-																														 (Action)(() => this.beNotifyIcon.ShowBalloonTip("Error", message, Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Error)));
+								Dispatcher.BeginInvoke(DispatcherPriority.Normal,(Action)(() => this.beNotifyIcon.ShowBalloonTip("Error", message, Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Error)));
 							}
 						}
 						break;
 					}
 				}
 			});
+
 			t.Start();
 		}
 
@@ -1211,49 +1206,49 @@ namespace BetterExplorer
 			UpdateCheckType = rbReleases.IsChecked.Value ? 0 : 1;
 		}
 
-    #endregion
+		#endregion
 
-    #region On Startup
-    private Dictionary<String, Dictionary<IListItemEx, List<string>>> LoadBadgesData() {
-      var result = new Dictionary<String, Dictionary<IListItemEx, List<string>>>();
-      var badgesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Badges");
-      var badgesIshellItem = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, badgesDirectory);
-      foreach (var item in badgesIshellItem.Where(w => w.IsFolder)) {
-        var innerDict = new Dictionary<IListItemEx, List<string>>();
-        foreach (var badgeItem in item.Where(w => w.Extension.ToLowerInvariant() == ".ico")) {
-          innerDict.Add(badgeItem, new List<String>());
-        }
-        result.Add(item.DisplayName, innerDict);
-      }
-      try {
-        var m_dbConnection = new System.Data.SQLite.SQLiteConnection("Data Source=" + this._DBPath + ";Version=3;");
-        m_dbConnection.Open();
+		#region On Startup
+		private Dictionary<String, Dictionary<IListItemEx, List<string>>> LoadBadgesData() {
+			var result = new Dictionary<String, Dictionary<IListItemEx, List<string>>>();
+			var badgesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Badges");
+			var badgesIshellItem = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, badgesDirectory);
+			foreach (var item in badgesIshellItem.Where(w => w.IsFolder)) {
+				var innerDict = new Dictionary<IListItemEx, List<string>>();
+				foreach (var badgeItem in item.Where(w => w.Extension.ToLowerInvariant() == ".ico")) {
+					innerDict.Add(badgeItem, new List<String>());
+				}
 
-        var command1 = new System.Data.SQLite.SQLiteCommand("SELECT * FROM badges", m_dbConnection);
+				result.Add(item.DisplayName, innerDict);
+			}
+			try {
+				var m_dbConnection = new System.Data.SQLite.SQLiteConnection($"Data Source={this._DBPath};Version=3;");
+				m_dbConnection.Open();
 
-        var Reader = command1.ExecuteReader();
-        while (Reader.Read()) {
-          var values = Reader.GetValues();
-          var path = values.GetValues("Path").Single();
-          var collectionName = values.GetValues("Collection").Single();
-          var badgeName = values.GetValues("Badge").Single();
-          var badgeDBItem = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle,
-            Path.Combine(badgesDirectory, collectionName, badgeName));
-          var collectionDict = result[collectionName];
-          var collectionItemKey =
-            collectionDict.Keys.SingleOrDefault(w => w.ParsingName.Equals(badgeDBItem.ParsingName));
-          if (collectionItemKey != null) {
-            result[collectionName][collectionItemKey].Add(path);
-          }
-        }
+				var command1 = new System.Data.SQLite.SQLiteCommand("SELECT * FROM badges", m_dbConnection);
 
-        Reader.Close();
-      } catch (Exception) {
-      }
-      return result;
-    }
+				var Reader = command1.ExecuteReader();
+				while (Reader.Read()) {
+					var values = Reader.GetValues();
+					var path = values.GetValues("Path").Single();
+					var collectionName = values.GetValues("Collection").Single();
+					var badgeName = values.GetValues("Badge").Single();
+					var badgeDBItem = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, Path.Combine(badgesDirectory, collectionName, badgeName));
+					var collectionDict = result[collectionName];
+					var collectionItemKey = collectionDict.Keys.SingleOrDefault(w => w.ParsingName.Equals(badgeDBItem.ParsingName));
 
-    private void SetUpFavoritesMenu() {
+					if (collectionItemKey != null) {
+						result[collectionName][collectionItemKey].Add(path);
+					}
+				}
+				Reader.Close();
+			} catch (Exception) {
+			}
+
+			return result;
+		}
+
+		private void SetUpFavoritesMenu() {
 			Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
 				btnFavorites.Visibility = Visibility.Visible;
 
@@ -1289,13 +1284,13 @@ namespace BetterExplorer
 			this._ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 			this._ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
 			this._ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
-      this._ShellListView.OnListViewCollumnsChanged += _ShellListView_OnListViewCollumnsChanged;
+		this._ShellListView.OnListViewCollumnsChanged += _ShellListView_OnListViewCollumnsChanged;
 		  this._ShellListView.BadgesData = this.Badges;
 		}
 
-    private void _ShellListView_OnListViewCollumnsChanged(object sender, CollumnsChangedArgs e) {
-      this.SetSortingAndGroupingButtons();
-    }
+		private void _ShellListView_OnListViewCollumnsChanged(object sender, CollumnsChangedArgs e) {
+		  this.SetSortingAndGroupingButtons();
+		}
 
     void ShellListView_OnListViewColumnDropDownClicked(object sender, ListViewColumnDropDownArgs e) {
 			//TODO: Add Events for when an item's check has been changed
