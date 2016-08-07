@@ -1739,18 +1739,6 @@ namespace BetterExplorer
       this.autoUpdater.InstallNow();
     }
 
-    //Boolean _IsTabSelectionChangedNotAllowed = true;
-    void tcMain_OnTabClicked(object sender, Wpf.Controls.TabClickEventArgs e) {
-			//this.tcMain.IsInTabDragDrop = false;
-			//tcMain.IsSelectionHandled = true;
-			//tcMain.SelectedItem = e.ClickedItem;
-			//////this._IsTabSelectionChangedNotAllowed = false;
-			//this._CurrentlySelectedItem = e.ClickedItem;
-			//this.SelectTab(e.ClickedItem);
-			//tcMain.IsSelectionHandled = false;
-			//this.tcMain.IsInTabDragDrop = true;
-			//this._IsTabSelectionChangedAllowed = false;
-		}
 
 		#endregion
 
