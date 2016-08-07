@@ -208,15 +208,8 @@ namespace BExplorer.Shell
         /// </remarks>
         //public event FilterItemEventHandler FilterItem;
 
-        internal bool ShouldSerializeRootFolder()
-        {
-            return m_RootFolder != ShellItem.Desktop;
-        }
-
-        internal bool ShouldSerializeSelectedFolder()
-        {
-            return m_SelectedFolder != ShellItem.Desktop;
-        }
+        internal bool ShouldSerializeRootFolder() => m_RootFolder != ShellItem.Desktop;
+        internal bool ShouldSerializeSelectedFolder() => m_SelectedFolder != ShellItem.Desktop;
 
         void CreateItems()
         {
@@ -235,21 +228,20 @@ namespace BExplorer.Shell
             }
         }
 
+		/*
         void CreateItems(ShellItem folder, int indent)
         {
-            IEnumerator<ShellItem> e = folder.GetEnumerator( SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN);
-
-            while (e.MoveNext())
-            {
-                if (ShouldCreateItem(e.Current))
-                {
-                    CreateItem(e.Current, indent);
-                }
-            }
+			IEnumerator<ShellItem> e = folder.GetEnumerator( SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN);
+			while (e.MoveNext())
+			{
+				CreateItem(e.Current, indent);
+			}
         }
+		*/
 
         void CreateItem(ShellItem folder, int indent)
         {
+			//TODO: Double Check recursive code
             int index = m_Combo.Items.Add(new ComboItem(folder, indent));
 
             if (folder == m_SelectedFolder)
@@ -259,41 +251,13 @@ namespace BExplorer.Shell
 
             if (ShouldCreateChildren(folder))
             {
-                CreateItems(folder, indent + 1);
-            }
+				foreach (var item in folder)
+				{
+					CreateItem(item, indent + 1);
+				}
+			}
         }
 		
-		
-        [Obsolete("Always returns true")]
-        bool ShouldCreateItem(ShellItem folder)
-        {
-            //TODO: Remove this method if we can!!!
-
-            //FilterItemEventArgs e = new FilterItemEventArgs(folder);
-            //ShellItem myComputer = new ShellItem(Environment.SpecialFolder.MyComputer);
-
-            //e.Include = false;
-
-            //if (ShellItem.Desktop.IsImmediateParentOf(folder) ||
-            //    m_Computer.IsImmediateParentOf(folder))
-            //{
-            //    e.Include = folder.IsFileSystemAncestor;
-            //}
-            //else if ((folder == m_SelectedFolder) ||
-            //           folder.IsParentOf(m_SelectedFolder))
-            //{
-            //    e.Include = true;
-            //}
-
-            //if (FilterItem != null)
-            //{
-            //    FilterItem(this, e);
-            //}
-
-            //return e.Include;
-            return true;
-        }
-
         bool ShouldCreateChildren(ShellItem folder)
         {
             return folder == m_Computer ||
@@ -373,6 +337,7 @@ namespace BExplorer.Shell
                     ShellIconFlags.OverlayIndex),
                     (e.State & DrawItemState.Selected) != 0
                 );
+
                 TextRenderer.DrawText(e.Graphics, display, m_Combo.Font, new Point(textRect.Left, textRect.Top + textOffset), textColor);
             }
         }
@@ -401,26 +366,19 @@ namespace BExplorer.Shell
             if (e.KeyCode == Keys.Enter)
             {
                 string path = m_Edit.Text;
+				string path2 = Path.Combine(m_SelectedFolder.FileSystemPath, path);
 
-                if ((path == string.Empty) ||
-                    (string.Compare(path, "Desktop", true) == 0))
+				if (path == string.Empty || string.Compare(path, "Desktop", true) == 0)
                 {
                     SelectedFolder = ShellItem.Desktop;
-                    return;
                 }
-
-                if (Directory.Exists(path))
+				else if (Directory.Exists(path))
                 {
                     SelectedFolder = new ShellItem(path);
-                    return;
-                }
-
-                path = Path.Combine(m_SelectedFolder.FileSystemPath, path);
-
-                if (Directory.Exists(path))
+                }           
+                else if (Directory.Exists(path2))
                 {
-                    SelectedFolder = new ShellItem(path);
-                    return;
+                    SelectedFolder = new ShellItem(path2);
                 }
             }
         }
