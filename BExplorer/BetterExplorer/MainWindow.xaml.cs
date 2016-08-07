@@ -1271,7 +1271,6 @@ namespace BetterExplorer
 
 		private void InitializeExplorerControl() {
 			this.ShellTree.NodeClick += ShellTree_NodeClick;
-			this.ShellTree.AfterSelect += ShellTree_AfterSelect;
 			this._ShellListView.Navigated += ShellListView_Navigated;
 			this._ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
 			this._ShellListView.SelectionChanged += ShellListView_SelectionChanged;
@@ -1286,7 +1285,7 @@ namespace BetterExplorer
 			this._ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 			this._ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
 			this._ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
-		this._ShellListView.OnListViewCollumnsChanged += _ShellListView_OnListViewCollumnsChanged;
+			this._ShellListView.OnListViewCollumnsChanged += _ShellListView_OnListViewCollumnsChanged;
 		  this._ShellListView.BadgesData = this.Badges;
 		}
 
@@ -1341,12 +1340,6 @@ namespace BetterExplorer
 				});
 				menu.AddItem(mnuItem);
 			}
-		}
-
-		[Obsolete("No Code")]
-		void ShellTree_AfterSelect(object sender, NavigatedEventArgs e) {
-			//TODO: Remove
-			//this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 		}
 
 		protected override void OnSourceInitialized(EventArgs e) {
