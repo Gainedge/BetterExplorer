@@ -2106,37 +2106,6 @@ namespace BetterExplorer
 			}
 		}
 
-		private void Button_Click_3(object sender, RoutedEventArgs e) {
-			this._ShellListView.CurrentRefreshedItemIndex = this._ShellListView.GetFirstSelectedItemIndex();
-			//TaskDialog td = new TaskDialog();
-			//td.Caption = "Reset Library";
-			//td.Icon = TaskDialogStandardIcon.Warning;
-			//td.Text = "Would you like to reset this library to the default settings?";
-			//td.InstructionText = "Reset Library Properties?";
-			//td.FooterIcon = TaskDialogStandardIcon.Information;
-			////td.FooterText = "This will reset all the properties to default properties for library type";
-			//td.DetailsCollapsedLabel = "More Info";
-			//td.DetailsExpandedLabel = "More Info";
-			//td.DetailsExpandedText = "This will undo all changes you have made to this library, and reset it to its default state.";
-			//td.DetailsExpanded = false;
-			//td.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter;
-			//td.StandardButtons = TaskDialogStandardButtons.Yes | TaskDialogStandardButtons.No;
-			//td.OwnerWindowHandle = this.Handle;
-			//if (td.Show() == TaskDialogResult.Yes) {
-			this._ShellListView.IsLibraryInModify = true;
-			if (_ShellListView.GetFirstSelectedItem().DisplayName.ToLowerInvariant() != "documents" &&
-							_ShellListView.GetFirstSelectedItem().DisplayName.ToLowerInvariant() != "music" &&
-							_ShellListView.GetFirstSelectedItem().DisplayName.ToLowerInvariant() != "videos" &&
-							_ShellListView.GetFirstSelectedItem().DisplayName.ToLowerInvariant() != "pictures") {
-				var lib = ShellLibrary.Load(Path.GetFileNameWithoutExtension(_ShellListView.GetFirstSelectedItem().ParsingName), false);
-				lib.IsPinnedToNavigationPane = true;
-				lib.LibraryType = LibraryFolderType.Generic;
-				lib.IconResourceId = new IconReference(@"C:\Windows\System32\imageres.dll", 187);
-				lib.Close();
-			}
-			//}
-		}
-
 		#endregion
 
 		#region Navigation (Back/Forward Arrows) and Up Button
