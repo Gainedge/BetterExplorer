@@ -128,7 +128,7 @@ namespace BExplorer.Shell {
 				}
 				itemInfo.iSelectedImage = ShellItem.GetSystemImageListIndex(pidl, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 				this.UpdatedImages.Add(node);
-				User32.SendMessage(m_TreeViewHandle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW, 0, ref itemInfo);
+				User32.SendMessage(m_TreeViewHandle, MSG.TVM_SETITEMW, 0, ref itemInfo);
 			} catch (Exception) {
 			}
 		}
@@ -175,9 +175,7 @@ namespace BExplorer.Shell {
 		public void SelItem(IListItemEx item) {
 			var node = this.FromItem(item);
 			if (node != null) {
-				this.BeginInvoke((Action)(() => {
-					this.ShellTreeView.SelectedNode = node;
-				}));
+				this.BeginInvoke((Action)(() => { this.ShellTreeView.SelectedNode = node; }));
 				return;
 			}
 
@@ -262,9 +260,9 @@ namespace BExplorer.Shell {
 			this.ShellTreeView.MouseMove += ShellListView_MouseMove;
 			this.ShellTreeView.MouseEnter += ShellTreeView_MouseEnter;
 			this.ShellTreeView.MouseLeave += ShellTreeView_MouseLeave;
-			this.ShellTreeView.MouseWheel += ShellTreeView_MouseWheel;
-			this.ShellTreeView.VerticalScroll += ShellTreeView_VerticalScroll;
-			this.ShellTreeView.BeforeSelect += ShellTreeView_BeforeSelect;
+			//this.ShellTreeView.MouseWheel += ShellTreeView_MouseWheel;
+			//this.ShellTreeView.VerticalScroll += ShellTreeView_VerticalScroll;
+			//this.ShellTreeView.BeforeSelect += ShellTreeView_BeforeSelect;
 			if (this.ShellListView != null) {
 				this.ShellListView.Navigated += ShellListView_Navigated;
 			}
@@ -278,10 +276,6 @@ namespace BExplorer.Shell {
 			imagesThread.Start();
 			childsThread = new Thread(new ThreadStart(LoadChilds)) { IsBackground = true };
 			childsThread.Start();
-		}
-
-		void ShellTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e) {
-
 		}
 
 		void ShellTreeView_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
@@ -309,17 +303,6 @@ namespace BExplorer.Shell {
 			}
 
 			base.OnGiveFeedback(e);
-		}
-
-		
-		void ShellTreeView_VerticalScroll(object sender, EventArgs e) {
-			//childsQueue.Clear();
-			//imagesQueue.Clear();
-		}
-
-		void ShellTreeView_MouseWheel(object sender, MouseEventArgs e) {
-			//childsQueue.Clear();
-			//imagesQueue.Clear();
 		}
 
 		private void ShellTreeView_MouseLeave(object sender, EventArgs e) {
@@ -488,7 +471,6 @@ namespace BExplorer.Shell {
 						node = TreeNode.FromHandle(ShellTreeView, handle);
 						treeHandle = this.ShellTreeView.Handle;
 						if (node != null) visible = node.IsVisible;
-
 					}));
 				}
 
@@ -755,13 +737,12 @@ namespace BExplorer.Shell {
 
 		private void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
 			if (this.isFromTreeview) return;
-			var thread = new Thread(() => {
-				this.SelItem(e.Folder);
-			});
+			var thread = new Thread(() => { this.SelItem(e.Folder); });
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}
 
+		[Obsolete("Does nothing")]
 		private void ShellTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
 			IntPtr dataObjPtr = IntPtr.Zero;
 			var shellItem = ((e.Item as TreeNode).Tag as IListItemEx);
