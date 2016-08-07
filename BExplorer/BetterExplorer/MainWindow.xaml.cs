@@ -1590,7 +1590,6 @@ namespace BetterExplorer
 			_keyjumpTimer.Tick += _keyjumpTimer_Tick;
 			ShellTreeHost.Child = ShellTree;
 			ShellViewHost.Child = _ShellListView;
-			this.tcMain.OnTabClicked += tcMain_OnTabClicked;
 
 			ShellTree.ShellListView = _ShellListView;
 			this.ctrlConsole.ShellListView = this._ShellListView;
