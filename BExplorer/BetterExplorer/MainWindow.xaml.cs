@@ -108,13 +108,13 @@ namespace BetterExplorer
 		ContextMenu chcm;
 
 		WIN.Forms.Timer focusTimer = new WIN.Forms.Timer() { Interval = 500 };
-    private WIN.Forms.Timer _ProgressTimer  = new WIN.Forms.Timer() { Interval = 1000, Enabled = false };
-    private string _DBPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite");
+	private WIN.Forms.Timer _ProgressTimer  = new WIN.Forms.Timer() { Interval = 1000, Enabled = false };
+	private string _DBPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite");
 
 		private IntPtr Handle;
 		private ObservableCollectionEx<LVItemColor> LVItemsColorCol { get; set; }
 		private Dictionary<String, Dictionary<IListItemEx, List<string>>> Badges { get; set; }
-    #endregion
+	#endregion
 
 		public bool IsMultipleWindowsOpened { get; set; }
 
@@ -1293,7 +1293,7 @@ namespace BetterExplorer
 		  this.SetSortingAndGroupingButtons();
 		}
 
-    void ShellListView_OnListViewColumnDropDownClicked(object sender, ListViewColumnDropDownArgs e) {
+	void ShellListView_OnListViewColumnDropDownClicked(object sender, ListViewColumnDropDownArgs e) {
 			//TODO: Add Events for when an item's check has been changed
 			var packUri = "pack://application:,,,/BetterExplorer;component/Images/stack16.png";
 			var menu = new ListviewColumnDropDown() {
@@ -1303,6 +1303,7 @@ namespace BetterExplorer
 				IsOpen = true,
 				StaysOpen = true,
 			};
+
 			var Things = new List<string>();
 			var SelectedColumn = this._ShellListView.Collumns[e.ColumnIndex];
 			if (SelectedColumn.CollumnType == typeof(String)) {
@@ -1334,7 +1335,7 @@ namespace BetterExplorer
 				mnuItem.Click += new RoutedEventHandler(delegate (object s, RoutedEventArgs re) {
 					//MessageBox.Show(mnuItem.Header.ToString());
 					var over = Mouse.DirectlyOver;
-					if (!(over is WIN.Controls.Image)) {
+					if (!(over is Image)) {
 						menu.IsOpen = false;
 					}
 				});
@@ -1546,7 +1547,7 @@ namespace BetterExplorer
 			try {
 				AppJL.ShowRecentCategory = true;
 				AppJL.ShowFrequentCategory = true;
-				WIN.Shell.JumpList.SetJumpList(Application.Current, AppJL);
+				JumpList.SetJumpList(Application.Current, AppJL);
 				AppJL.JumpItems.Add(new JumpTask() {
 					ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
 					Arguments = "t",
@@ -1709,28 +1710,26 @@ namespace BetterExplorer
 			}
 		}
 
-    private bool taskDialog_Callback(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData) {
-      bool result = false;
+		private bool taskDialog_Callback(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData) {
+			bool result = false;
 
-      switch (args.Notification) {
-        case VistaTaskDialogNotification.ButtonClicked:
-          if (args.ButtonId == 500) {
+			switch (args.Notification) {
+				case VistaTaskDialogNotification.ButtonClicked:
+					if (args.ButtonId == 500) {
+						this.autoUpdater.ReadyToBeInstalled += AutoUpdater_ReadyToBeInstalled;
+						this.autoUpdater.InstallNow();
+					} else if (args.ButtonId == 501) {  											         
+					}
+					break;
+				}
+	  
+			return result;
+	}
 
-            this.autoUpdater.ReadyToBeInstalled += AutoUpdater_ReadyToBeInstalled;
-            this.autoUpdater.InstallNow();
-          } else if (args.ButtonId == 501) {            
-          }
-          break;
-      }
-      
-      return result;
-    }
-
-    private void AutoUpdater_ReadyToBeInstalled(object sender, EventArgs e) {
-      this.autoUpdater.ReadyToBeInstalled -= AutoUpdater_ReadyToBeInstalled;
-      this.autoUpdater.InstallNow();
-    }
-
+		private void AutoUpdater_ReadyToBeInstalled(object sender, EventArgs e) {
+			this.autoUpdater.ReadyToBeInstalled -= AutoUpdater_ReadyToBeInstalled;
+			this.autoUpdater.InstallNow();
+		}
 
 		#endregion
 
@@ -3167,6 +3166,7 @@ item.IsChecked = false;
 			//});
 		}
 
+		/*
 		void rb_DoWork(object sender, DoWorkEventArgs e) {
 			//int count = 0; long size = 0;
 			//var allDrives = Directory.GetLogicalDrives();
@@ -3207,6 +3207,7 @@ item.IsChecked = false;
 			rb.CancelAsync();
 			//});
 		}
+		*/
 
 		private void miEmptyRB_Click(object sender, RoutedEventArgs e) {
 			BExplorer.Shell.Interop.Shell32.SHEmptyRecycleBin(this.Handle, string.Empty, 0);
@@ -3364,20 +3365,20 @@ item.IsChecked = false;
 				
 			if (this._ShellListView.CurrentFolder == null) return;
 		  Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => {
-		    this.btnCancelNavigation.Visibility = Visibility.Visible;
-		    this.btnGoNavigation.Visibility = Visibility.Collapsed;
-		    this._ProgressTimer.Start();
-        
-      }));
+			this.btnCancelNavigation.Visibility = Visibility.Visible;
+			this.btnGoNavigation.Visibility = Visibility.Collapsed;
+			this._ProgressTimer.Start();
+		
+	  }));
 
-      if (this.bcbc.RootItem.Items.OfType<ShellItem>().Last().IsSearchFolder) {
-        this.bcbc.RootItem.Items.RemoveAt(this.bcbc.RootItem.Items.Count - 1);
-      }
+	  if (this.bcbc.RootItem.Items.OfType<ShellItem>().Last().IsSearchFolder) {
+		this.bcbc.RootItem.Items.RemoveAt(this.bcbc.RootItem.Items.Count - 1);
+	  }
 
-      var pidl = e.Folder.PIDL.ToString();
-		    this.bcbc.SetPathWithoutNavigate(pidl);
+	  var pidl = e.Folder.PIDL.ToString();
+			this.bcbc.SetPathWithoutNavigate(pidl);
 
-      Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
+	  Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
 				
 				var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 				if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
@@ -3473,7 +3474,7 @@ item.IsChecked = false;
 		}
 
 		void ShellListView_SelectionChanged(object sender, EventArgs e) {
-      if (!this._ShellListView.IsNavigationInProgress && !this._ShellListView.IsSearchNavigating)
+	  if (!this._ShellListView.IsNavigationInProgress && !this._ShellListView.IsSearchNavigating)
 			  SetupUIOnSelectOrNavigate();
 			if (this.IsInfoPaneEnabled) Task.Run(() => this.DetailsPanel.FillPreviewPane(this._ShellListView));
 			SetUpStatusBarOnSelectOrNavigate(_ShellListView.GetSelectedCount());
@@ -3484,10 +3485,10 @@ item.IsChecked = false;
 		#region On Navigated
 
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
-      this._ProgressTimer.Stop();
-      this.btnCancelNavigation.Visibility = Visibility.Collapsed;
-      this.btnGoNavigation.Visibility = Visibility.Visible;
-      SetupUIOnSelectOrNavigate();
+	  this._ProgressTimer.Stop();
+	  this.btnCancelNavigation.Visibility = Visibility.Collapsed;
+	  this.btnGoNavigation.Visibility = Visibility.Visible;
+	  SetupUIOnSelectOrNavigate();
 
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				SetupColumnsButton();
@@ -3543,7 +3544,7 @@ item.IsChecked = false;
 						}
 					} else {
 						if (selectedItem.log.CurrentLocPos >= 0 &&
-						    selectedItem.log.CurrentLocPos <= selectedItem.log.HistoryItemsList.Count - 1) {
+							selectedItem.log.CurrentLocPos <= selectedItem.log.HistoryItemsList.Count - 1) {
 							var beforeItem = selectedItem.log.HistoryItemsList[selectedItem.log.CurrentLocPos];
 							var realItem = this._ShellListView.Items.ToArray().FirstOrDefault(w => w.GetUniqueID() == beforeItem.GetUniqueID());
 							if (realItem != null) {
@@ -3558,17 +3559,17 @@ item.IsChecked = false;
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				SetUpStatusBarOnSelectOrNavigate(_ShellListView.SelectedItems == null ? 0 : _ShellListView.GetSelectedCount());
 			}));
-      //Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart) (() => {
-      //    Thread.Sleep(1500);
-      if (this.bcbc.ProgressValue > 2)
-        this.bcbc.SetProgressValue(this.bcbc.ProgressMaximum, TimeSpan.FromMilliseconds(750));
-      else 
-        this.bcbc.SetProgressValue(0, TimeSpan.FromSeconds(0));
-      this.bcbc.ProgressMaximum = 100;
-      //this.bcbc.SetProgressValue(0, TimeSpan.FromSeconds(0));
+	  //Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart) (() => {
+	  //    Thread.Sleep(1500);
+	  if (this.bcbc.ProgressValue > 2)
+		this.bcbc.SetProgressValue(this.bcbc.ProgressMaximum, TimeSpan.FromMilliseconds(750));
+	  else 
+		this.bcbc.SetProgressValue(0, TimeSpan.FromSeconds(0));
+	  this.bcbc.ProgressMaximum = 100;
+	  //this.bcbc.SetProgressValue(0, TimeSpan.FromSeconds(0));
 		  //}));
 
-      this._ShellListView.Focus();
+	  this._ShellListView.Focus();
 		}
 
 		private void SetupUIonNavComplete(NavigatedEventArgs e) {
@@ -3716,8 +3717,8 @@ item.IsChecked = false;
 		#region Misc
 
 		public MainWindow() {
-      this.Badges = this.LoadBadgesData();
-      this.DataContext = this;
+			this.Badges = this.LoadBadgesData();
+			this.DataContext = this;
 
 			this.LVItemsColorCol = new ObservableCollectionEx<LVItemColor>();
 			this.CommandBindings.AddRange(new[]
@@ -3791,12 +3792,16 @@ item.IsChecked = false;
 			InitializeComponent();
 
 			// sets up ComboBox to select the current UI language
+
+			this.TranslationComboBox.SelectedItem = this.TranslationComboBox.Items.OfType<TranslationComboBoxItem>().FirstOrDefault(x => x.LocaleCode == lohc);
+
+			/*
 			foreach (TranslationComboBoxItem item in this.TranslationComboBox.Items) {
 				if (item.LocaleCode == lohc) {
 					this.TranslationComboBox.SelectedItem = item;
 				}
 			}
-
+			*/
 			bool rtlset = rtlused != "notset";
 
 			if (!rtlset) {
@@ -3822,10 +3827,6 @@ item.IsChecked = false;
 				TabbaTop.IsChecked = true;
 
 			// allows user to change language
-		}
-
-		private void ResetFolderSettings() {
-			this._ShellListView.ResetFolderSettings();
 		}
 
 		private void beNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e) {
@@ -4108,50 +4109,50 @@ item.IsChecked = false;
 			focusTimer.Stop();
 		}
 
-    private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-      var badgeIconPath = ((sender as Image)?.Tag as IListItemEx)?.ParsingName;
-      var selectedItemPath = this._ShellListView.GetFirstSelectedItem().ParsingName;
-      this.SaveBadgeForItem(selectedItemPath, badgeIconPath);
-      this.Badges = this.LoadBadgesData();
-      this._ShellListView.BadgesData = this.Badges;
-      this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex(), true);
-      this.btnBadges.IsDropDownOpen = false;
-    }
+	private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+	  var badgeIconPath = ((sender as Image)?.Tag as IListItemEx)?.ParsingName;
+	  var selectedItemPath = this._ShellListView.GetFirstSelectedItem().ParsingName;
+	  this.SaveBadgeForItem(selectedItemPath, badgeIconPath);
+	  this.Badges = this.LoadBadgesData();
+	  this._ShellListView.BadgesData = this.Badges;
+	  this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex(), true);
+	  this.btnBadges.IsDropDownOpen = false;
+	}
 
 	  private void SaveBadgeForItem(String itemPath, String badgePath, Boolean isClear = false) {
-      var m_dbConnection = new System.Data.SQLite.SQLiteConnection("Data Source=" + this._DBPath + ";Version=3;");
-      m_dbConnection.Open();
-	    if (isClear) {
-        var command3 = new System.Data.SQLite.SQLiteCommand("DELETE FROM badges WHERE Path=@Path", m_dbConnection);
-        command3.Parameters.AddWithValue("Path", itemPath);
-	      command3.ExecuteNonQuery();
-	    } else {
-	      var command1 = new System.Data.SQLite.SQLiteCommand("SELECT * FROM badges WHERE Path=@Path", m_dbConnection);
-	      command1.Parameters.AddWithValue("Path", itemPath);
-	      var Reader = command1.ExecuteReader();
-	      var sql = Reader.Read()
-	        ? @"UPDATE badges  SET Collection = @Collection, Badge = @Badge	 WHERE Path = @Path"
-	        : @"INSERT INTO badges (Path, Collection, Badge) VALUES (@Path, @Collection, @Badge)";
+	  var m_dbConnection = new System.Data.SQLite.SQLiteConnection("Data Source=" + this._DBPath + ";Version=3;");
+	  m_dbConnection.Open();
+		if (isClear) {
+		var command3 = new System.Data.SQLite.SQLiteCommand("DELETE FROM badges WHERE Path=@Path", m_dbConnection);
+		command3.Parameters.AddWithValue("Path", itemPath);
+		  command3.ExecuteNonQuery();
+		} else {
+		  var command1 = new System.Data.SQLite.SQLiteCommand("SELECT * FROM badges WHERE Path=@Path", m_dbConnection);
+		  command1.Parameters.AddWithValue("Path", itemPath);
+		  var Reader = command1.ExecuteReader();
+		  var sql = Reader.Read()
+			? @"UPDATE badges  SET Collection = @Collection, Badge = @Badge	 WHERE Path = @Path"
+			: @"INSERT INTO badges (Path, Collection, Badge) VALUES (@Path, @Collection, @Badge)";
 
-	      var command2 = new System.Data.SQLite.SQLiteCommand(sql, m_dbConnection);
-	      command2.Parameters.AddWithValue("Path", itemPath);
-	      command2.Parameters.AddWithValue("Collection", Path.GetFileName(Path.GetDirectoryName(badgePath)));
-	      command2.Parameters.AddWithValue("Badge", Path.GetFileName(badgePath));
-	      command2.ExecuteNonQuery();
-        Reader.Close();
-      }
-	    
-      m_dbConnection.Close();
-    }
+		  var command2 = new System.Data.SQLite.SQLiteCommand(sql, m_dbConnection);
+		  command2.Parameters.AddWithValue("Path", itemPath);
+		  command2.Parameters.AddWithValue("Collection", Path.GetFileName(Path.GetDirectoryName(badgePath)));
+		  command2.Parameters.AddWithValue("Badge", Path.GetFileName(badgePath));
+		  command2.ExecuteNonQuery();
+		Reader.Close();
+	  }
+		
+	  m_dbConnection.Close();
+	}
 
-    private void MenuItem_Click_2(object sender, RoutedEventArgs e) {
-      this.SaveBadgeForItem(this._ShellListView.GetFirstSelectedItem().ParsingName, String.Empty, true);
-      this.Badges = this.LoadBadgesData();
-      this._ShellListView.BadgesData = this.Badges;
-      this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex(), true);
-    }
+	private void MenuItem_Click_2(object sender, RoutedEventArgs e) {
+	  this.SaveBadgeForItem(this._ShellListView.GetFirstSelectedItem().ParsingName, String.Empty, true);
+	  this.Badges = this.LoadBadgesData();
+	  this._ShellListView.BadgesData = this.Badges;
+	  this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex(), true);
+	}
 
-    public Dictionary<string, IRibbonControl> GetAllButtonsAsDictionary() {
+	public Dictionary<string, IRibbonControl> GetAllButtonsAsDictionary() {
 			var rb = new Dictionary<string, IRibbonControl>();
 
 			foreach (RibbonTabItem item in TheRibbon.Tabs) {
@@ -4245,8 +4246,10 @@ item.IsChecked = false;
 			this._ShellListView.IsTraditionalNameGrouping = e.RoutedEvent.Name == "Checked";
 		}
 
+		/*
 		private void GrdItemTextColor_OnRowEditEnding(object sender, DataGridRowEditEndingEventArgs e) {
 			//this.save
 		}
+		*/
 	}
 }
