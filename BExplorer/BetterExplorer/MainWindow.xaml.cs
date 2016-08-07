@@ -111,14 +111,17 @@ namespace BetterExplorer
 		WIN.Forms.Timer focusTimer = new WIN.Forms.Timer() { Interval = 500 };
     private WIN.Forms.Timer _ProgressTimer  = new WIN.Forms.Timer() { Interval = 1000, Enabled = false };
     private string _DBPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite");
-    #endregion
-    public IntPtr Handle;
-		public bool IsMultipleWindowsOpened { get; set; }
-		public ObservableCollectionEx<LVItemColor> LVItemsColorCol { get; set; }
-    public Dictionary<String, Dictionary<IListItemEx, List<string>>> Badges { get; set; }
-    #region Events
 
-    private void btnAbout_Click(object sender, RoutedEventArgs e) => new fmAbout(this).ShowDialog();
+		private IntPtr Handle;
+		private ObservableCollectionEx<LVItemColor> LVItemsColorCol { get; set; }
+		private Dictionary<String, Dictionary<IListItemEx, List<string>>> Badges { get; set; }
+    #endregion
+
+		public bool IsMultipleWindowsOpened { get; set; }
+
+		#region Events
+
+		private void btnAbout_Click(object sender, RoutedEventArgs e) => new fmAbout(this).ShowDialog();
 		private void btnBugtracker_Click(object sender, RoutedEventArgs e) => Process.Start("http://bugs.gainedge.org/public/betterexplorer");
 		private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e) => CustomizeQAT.Open(this, TheRibbon);
 
