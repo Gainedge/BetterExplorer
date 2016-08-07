@@ -224,8 +224,9 @@ namespace BetterExplorer
 					var docs = XDocument.Load(itemColorSettingsLocation);
 
 					docs.Root.Elements("ItemColorRow")
-																									.Select(element => new LVItemColor(element.Elements().ToArray()[0].Value,
-																																											 System.Windows.Media.Color.FromArgb(BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[0], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[1], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[2], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[3]))).ToList().ForEach(e => this.LVItemsColorCol.Add(e));
+					.Select(element => new LVItemColor(element.Elements().ToArray()[0].Value,
+					System.Windows.Media.Color.FromArgb(BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[0], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[1], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[2], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[3])))
+					.ToList().ForEach(e => this.LVItemsColorCol.Add(e));
 
 				}
 			});
@@ -971,6 +972,7 @@ namespace BetterExplorer
 									default:
 										break;
 								}
+
 								Dispatcher.BeginInvoke(DispatcherPriority.Normal,(Action)(() => this.beNotifyIcon.ShowBalloonTip("Error", message, Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Error)));
 							}
 						}
@@ -1319,6 +1321,7 @@ namespace BetterExplorer
 				var distictItems = this._ShellListView.Items.Select(s => s.GetPropertyValue(SelectedColumn.pkey, SelectedColumn.CollumnType).Value).Distinct().Cast<String>().ToArray().OrderBy(o => o);
 				Things.AddRange(distictItems);
 			}
+
 			foreach (var item in Things) {
 				var mnuItem = new MenuItem() {
 					Icon = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource,
@@ -1570,18 +1573,18 @@ namespace BetterExplorer
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e) {
-		  
-		  this._ProgressTimer.Tick += (obj, args) => {
-		    if (this.bcbc.ProgressValue + 2 == this.bcbc.ProgressMaximum) {
-		      this.bcbc.ProgressMaximum = this.bcbc.ProgressMaximum + 2;
-          this.bcbc.SetProgressValue(this.bcbc.ProgressValue + 2, TimeSpan.FromMilliseconds(0));
-        }
-		    else {
-		      this.bcbc.SetProgressValue(this.bcbc.ProgressValue + 2, TimeSpan.FromMilliseconds(450));
-		    }
-		  };
-      this._ProgressTimer.Stop();
-      TheRibbon.UpdateLayout();
+			this._ProgressTimer.Tick += (obj, args) => {
+				if (this.bcbc.ProgressValue + 2 == this.bcbc.ProgressMaximum) {
+					this.bcbc.ProgressMaximum = this.bcbc.ProgressMaximum + 2;
+					this.bcbc.SetProgressValue(this.bcbc.ProgressValue + 2, TimeSpan.FromMilliseconds(0));
+				}
+				else {
+					this.bcbc.SetProgressValue(this.bcbc.ProgressValue + 2, TimeSpan.FromMilliseconds(450));
+				}
+			};
+
+			this._ProgressTimer.Stop();
+			TheRibbon.UpdateLayout();
 			this.grdItemTextColor.ItemsSource = this.LVItemsColorCol;
 			_keyjumpTimer.Interval = 1000;
 			_keyjumpTimer.Tick += _keyjumpTimer_Tick;
@@ -1591,12 +1594,12 @@ namespace BetterExplorer
 
 			ShellTree.ShellListView = _ShellListView;
 			this.ctrlConsole.ShellListView = this._ShellListView;
-      this.autoUpdater.UpdateAvailable += AutoUpdater_UpdateAvailable;
-      this.updateCheckTimer.Interval = 10000;//3600000 * 3;
-      this.updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
-      this.updateCheckTimer.Enabled = false;
+			this.autoUpdater.UpdateAvailable += AutoUpdater_UpdateAvailable;
+			this.updateCheckTimer.Interval = 10000;//3600000 * 3;
+			this.updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
+			this.updateCheckTimer.Enabled = false;
 		  
-      UpdateRecycleBinInfos();
+			UpdateRecycleBinInfos();
 			bool exitApp = false;
 
 			try {
@@ -1633,11 +1636,11 @@ namespace BetterExplorer
 
 				ViewGallery.SelectedIndex = 2;
 
-        if (this.chkUpdateCheck.IsChecked.Value) {
-          this.updateCheckTimer.Start();
-        }
+				if (this.chkUpdateCheck.IsChecked.Value) {
+				  this.updateCheckTimer.Start();
+				}
 
-        AddToLog("Session Began");
+				AddToLog("Session Began");
 				isOnLoad = false;
 				SetsUpJumpList();
 
@@ -1680,39 +1683,39 @@ namespace BetterExplorer
 			}
 		}
 
-    private void AutoUpdater_UpdateAvailable(object sender, EventArgs e) {
-      if (this._IsCheckUpdateFromTimer && !this._IsUpdateNotificationMessageBoxShown) {
-        this._IsUpdateNotificationMessageBoxShown = true;
-        var newVersion = this.autoUpdater.Version;
-        var changes = this.autoUpdater.Changes;
-        TaskDialogOptions config = new TaskDialogOptions();
+		private void AutoUpdater_UpdateAvailable(object sender, EventArgs e) {
+			if (this._IsCheckUpdateFromTimer && !this._IsUpdateNotificationMessageBoxShown) {
+				this._IsUpdateNotificationMessageBoxShown = true;
+				var newVersion = this.autoUpdater.Version;
+				var changes = this.autoUpdater.Changes;
+				var config = new TaskDialogOptions();
 
-        config.Owner = this;
-        config.Title = "Update";
-        config.MainInstruction = "There is new updated version " + newVersion + " available!";
-        config.Content = "The new version have the following changes:\r\n" + changes;
-        config.ExpandedInfo = "You can download and install the new version immediately by clicking \"Download & Install\" button.\r\nYou can skip this version from autoupdate check by clicking \"Skip this version\" button.";
-        //config.VerificationText = "Don't show me this message again";
-        config.CustomButtons = new string[] {"&Download & Install", "Skip this version", "&Close"};
-        config.MainIcon = VistaTaskDialogIcon.SecurityWarning;
-        if (newVersion.Contains("RC") || newVersion.Contains("Nightly") || newVersion.Contains("Beta") ||
-            newVersion.Contains("Alpha")) {
-          config.FooterText = "This is an experimental version and may contains bugs. Use at your own risk!";
-          config.FooterIcon = VistaTaskDialogIcon.Warning;
-        }
-        else {
-          config.FooterText = "This is a final version and can be installed safely!";
-          config.FooterIcon = VistaTaskDialogIcon.SecuritySuccess;
-        }
-        config.AllowDialogCancellation = true;
-        config.Callback = taskDialog_Callback;
+				config.Owner = this;
+				config.Title = "Update";
+				config.MainInstruction = "There is new updated version " + newVersion + " available!";
+				config.Content = "The new version have the following changes:\r\n" + changes;
+				config.ExpandedInfo = "You can download and install the new version immediately by clicking \"Download & Install\" button.\r\nYou can skip this version from autoupdate check by clicking \"Skip this version\" button.";
+				//config.VerificationText = "Don't show me this message again";
+				config.CustomButtons = new string[] {"&Download & Install", "Skip this version", "&Close"};
+				config.MainIcon = VistaTaskDialogIcon.SecurityWarning;
 
-        TaskDialogResult res = TaskDialog.Show(config);
-        this._IsCheckUpdateFromTimer = false;
-        this._IsUpdateNotificationMessageBoxShown = false;
-      }
+				if (newVersion.Contains("RC") || newVersion.Contains("Nightly") || newVersion.Contains("Beta") || newVersion.Contains("Alpha")) {
+				  config.FooterText = "This is an experimental version and may contains bugs. Use at your own risk!";
+				  config.FooterIcon = VistaTaskDialogIcon.Warning;
+				}
+				else {
+				  config.FooterText = "This is a final version and can be installed safely!";
+				  config.FooterIcon = VistaTaskDialogIcon.SecuritySuccess;
+				}
 
-    }
+				config.AllowDialogCancellation = true;
+				config.Callback = taskDialog_Callback;
+
+				TaskDialogResult res = TaskDialog.Show(config);
+				this._IsCheckUpdateFromTimer = false;
+				this._IsUpdateNotificationMessageBoxShown = false;
+			}
+		}
 
     private bool taskDialog_Callback(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData) {
       bool result = false;
@@ -1723,8 +1726,7 @@ namespace BetterExplorer
 
             this.autoUpdater.ReadyToBeInstalled += AutoUpdater_ReadyToBeInstalled;
             this.autoUpdater.InstallNow();
-          } else if (args.ButtonId == 501) {
-            
+          } else if (args.ButtonId == 501) {            
           }
           break;
       }
