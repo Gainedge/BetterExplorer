@@ -1839,7 +1839,7 @@
                                   </Style.Triggers>
                                 </Style>
                               </Border.Style>
-                              <Image Margin="3.5,0,2,4" Source="{Binding Key.BitmapSource}" Tag="{Binding Key}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Stretch="None" MouseLeftButtonUp="Image_MouseLeftButtonUp"></Image>
+                              <Image Margin="3.5,0,2,4" Source="{Binding Key.BitmapSource}" Tag="{Binding Key}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Stretch="None" MouseLeftButtonUp="Image_MouseLeftButtonUp"></Image>
                             </Border>
                           </Grid>
                         </DataTemplate>
