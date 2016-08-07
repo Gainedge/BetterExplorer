@@ -3505,7 +3505,7 @@ namespace BExplorer.Shell {
         Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab));
 
       var columns = new Collumns();
-      var isFailed = true;
+      //var isFailed = true;
       Int32 CurrentI = 0, LastI = 0, K = 0;
       this.IsNavigationInProgress = true;
 
@@ -3525,15 +3525,15 @@ namespace BExplorer.Shell {
         destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
         this._RequestedCurrentLocation = destination;
         this.Invoke((Action)(() => {
-          if (!this._SearchTimer.Enabled) {
-            this._SearchTimer.Start();
-          }
+			if (!this._SearchTimer.Enabled) {
+				this._SearchTimer.Start();
+			}
         }));
         foreach (var shellItem in destination.TakeWhile(shellItem => !this.IsCancelRequested)) {
           CurrentI++;
-          if (CurrentI == 1) {
-            isFailed = false;
-          }
+          //if (CurrentI == 1) {
+          //  isFailed = false;
+          //}
           smre.WaitOne();
 
           if (this.ShowHidden || !shellItem.IsHidden) {

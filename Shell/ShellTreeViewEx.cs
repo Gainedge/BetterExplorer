@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -8,35 +7,19 @@ using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using BExplorer.Shell.Interop;
 using F = System.Windows.Forms;
 using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
-
-	/*
-	public class NodeSorter : IComparer
-	{
-			public int Compare(object x, object y)
-			{
-					TreeNode tx = (TreeNode)x;
-					TreeNode ty = (TreeNode)y;
-					if (tx.Tag == null || ty.Tag == null)
-							return 0;
-
-					return (tx.Tag as IListItemEx).DisplayName.CompareTo((ty.Tag as IListItemEx).DisplayName);
-			}
-	}
-	*/
-
 	public partial class ShellTreeViewEx : UserControl {
 
 		#region Event Handlers
 
 		public event EventHandler<TreeNodeMouseClickEventArgs> NodeClick;
 		public event EventHandler<NavigatedEventArgs> AfterSelect;
+
 		#endregion Event Handlers
 
 		#region Public Members
@@ -123,9 +106,7 @@ namespace BExplorer.Shell {
 			ShellTreeView.Nodes.Add(favoritesRoot);
 			favoritesRoot.Expand();
 
-			ShellTreeView.Nodes.AddRange(new[] {
-								new TreeNode(), librariesRoot, new TreeNode(), computerRoot, new TreeNode(), networkRoot
-						});
+			ShellTreeView.Nodes.AddRange(new[] {new TreeNode(), librariesRoot, new TreeNode(), computerRoot, new TreeNode(), networkRoot});
 
 			librariesRoot.Expand();
 			computerRoot.Expand();
@@ -154,7 +135,7 @@ namespace BExplorer.Shell {
 
 		public TreeNode FromItem(IListItemEx item, TreeNode rootNode) {
 			foreach (TreeNode node in rootNode.Nodes) {
-				if ((node.Tag as IListItemEx) != null && (node.Tag as IListItemEx).Equals(item)) return node;
+				if (node.Tag as IListItemEx != null && (node.Tag as IListItemEx).Equals(item)) return node;
 				TreeNode next = FromItem(item, node);
 				if (next != null) return next;
 			}
@@ -163,7 +144,7 @@ namespace BExplorer.Shell {
 
 		public TreeNode FromItem(IListItemEx item) {
 			foreach (TreeNode node in this.ShellTreeView.Nodes) {
-				if ((node.Tag as IListItemEx) != null && (node.Tag as IListItemEx).Equals(item)) return node;
+				if (node.Tag as IListItemEx != null && (node.Tag as IListItemEx).Equals(item)) return node;
 				TreeNode next = FromItem(item, node);
 				if (next != null) return next;
 			}
@@ -330,6 +311,7 @@ namespace BExplorer.Shell {
 			base.OnGiveFeedback(e);
 		}
 
+		
 		void ShellTreeView_VerticalScroll(object sender, EventArgs e) {
 			//childsQueue.Clear();
 			//imagesQueue.Clear();
