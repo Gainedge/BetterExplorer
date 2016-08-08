@@ -542,43 +542,6 @@ namespace BExplorer.Shell {
 			return this.Thumbnail.Bitmap;
 		}
 
-		/*
-		public List<AssociationItem> GetAssocList() {
-			var assocList = new List<AssociationItem>();
-			IntPtr enumAssocPtr;
-			Shell32.SHAssocEnumHandlers(Path.GetExtension(ParsingName), Shell32.ASSOC_FILTER.ASSOC_FILTER_RECOMMENDED, out enumAssocPtr);
-			IntPtr pUnk = Marshal.ReadIntPtr(enumAssocPtr);
-			IntPtr pFunc = Marshal.ReadIntPtr(pUnk + 3 * IntPtr.Size);
-			var Next = (Shell32.funcNext)Marshal.GetDelegateForFunctionPointer(pFunc, typeof(Shell32.funcNext));
-
-			var funcs = new IntPtr[15];
-			int num;
-			int res = Next(enumAssocPtr, 15, funcs, out num);
-			if (res == 0) {
-				for (int i = 0; i < num; i++) {
-					var funcpUnk = Marshal.ReadIntPtr(funcs[i]);
-					var getNamepFunc = Marshal.ReadIntPtr(funcpUnk + 3 * IntPtr.Size);
-					var getNameUIpFunc = Marshal.ReadIntPtr(funcpUnk + 4 * IntPtr.Size);
-					var GetName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNamepFunc, typeof(Shell32.funcGetName));
-					var GetUIName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNameUIpFunc, typeof(Shell32.funcGetName));
-					String path = String.Empty;
-					String displayName = String.Empty;
-					GetName(funcs[i], out path);
-					GetUIName(funcs[i], out displayName);
-					assocList.Add(new AssociationItem(this) { DisplayName = displayName, ApplicationPath = path });
-					Marshal.Release(funcs[i]);
-					Marshal.Release(funcpUnk);
-					Marshal.Release(getNamepFunc);
-					Marshal.Release(getNameUIpFunc);
-				}
-			}
-
-			Marshal.Release(enumAssocPtr);
-			Marshal.Release(pUnk);
-			return assocList;
-		}
-		*/
-
 		/// <summary>
 		/// Returns an <see cref="IShellFolder"/> representing the
 		/// item.
@@ -594,17 +557,6 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		/*
-		[Obsolete("Parameter type is never used")]
-		public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type)
-		{
-				//TODO: Remove Parameter Type
-				var pvar = new PropVariant();
-				var isi2 = (IShellItem2)ComInterface;
-				isi2.GetProperty(ref pkey, pvar);
-				return pvar;
-		}
-		*/
 
 		public PropVariant GetPropertyValue(PROPERTYKEY pkey) {
 			//TODO: Remove Parameter Type
@@ -644,23 +596,7 @@ namespace BExplorer.Shell {
 		/// </param>
 		///
 		/// <returns></returns>
-		public int GetSystemImageListIndex(ShellIconType type, ShellIconFlags flags) {
-			/*
-var info = new SHFILEINFO();
-IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info, Marshal.SizeOf(info),
-	SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
-
-if (result == IntPtr.Zero)
-{
-	throw new Exception("Error retrieving shell folder icon");
-}
-
-User32.DestroyIcon(info.hIcon);
-return info.iIcon;
-*/
-
-			return GetSystemImageListIndex(Pidl, type, flags);
-		}
+		public int GetSystemImageListIndex(ShellIconType type, ShellIconFlags flags) => GetSystemImageListIndex(Pidl, type, flags);
 
 		public static int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
 			var info = new SHFILEINFO();
