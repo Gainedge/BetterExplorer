@@ -106,7 +106,8 @@
 			CanCustomizeQuickAccessToolBar="True"
 			Focusable="False"
 			CustomizeQuickAccessToolbar="TheRibbon_CustomizeQuickAccessToolbar"
-			SizeChanged="TheRibbon_SizeChanged">
+			>
+			<!--SizeChanged="TheRibbon_SizeChanged"-->
 			<Ribbon:Ribbon.ToolBarItems>
 				<Ribbon:Button 
                     x:Name="btnAbout"
