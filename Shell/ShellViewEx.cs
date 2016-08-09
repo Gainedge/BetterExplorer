@@ -1387,11 +1387,19 @@ namespace BExplorer.Shell {
 							}
               
               if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS) {
-                nmlv.item.cColumns = 2;
-                int[] columns = new int[nmlv.item.cColumns];
-                Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
-                columns[0] = 182;
-                columns[1] = 1;
+                int[] columns = null;
+                if (this._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Libraries.ParsingName)) {
+                  nmlv.item.cColumns = 1;
+                  columns = new int[nmlv.item.cColumns];
+                  Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
+                  columns[0] = 182;
+                } else {
+                  nmlv.item.cColumns = 2;
+                  columns = new int[nmlv.item.cColumns];
+                  Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
+                  columns[0] = 182;
+                  columns[1] = 1;
+                }
                 //columns[2] = 2;
                 Marshal.Copy(columns, 0, nmlv.item.puColumns, nmlv.item.cColumns);
                 Marshal.StructureToPtr(nmlv, m.LParam, false);
