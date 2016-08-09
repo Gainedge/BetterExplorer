@@ -61,19 +61,10 @@ namespace BExplorer.Shell {
 	}
 
 	internal class ShellItemConverter : TypeConverter {
-		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) {
-			if (sourceType == typeof(string))
-				return true;
-			else
-				return base.CanConvertFrom(context, sourceType);
-		}
-
-		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) {
-			if (destinationType == typeof(InstanceDescriptor))
-				return true;
-			else
-				return base.CanConvertTo(context, destinationType);
-		}
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => sourceType == typeof(string) ? true : base.CanConvertFrom(context, sourceType);
+		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) => 
+			destinationType == typeof(InstanceDescriptor) ? true : base.CanConvertTo(context, destinationType);
+		
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
 			if (value is string) {
@@ -972,17 +963,25 @@ namespace BExplorer.Shell {
 			Constructor_Helper();
 		}
 
-
-
 		/// <summary>
 		/// Returns a string representation of the <see cref="ShellItem"/>.
 		/// </summary>
 		public override string ToString() => this.DisplayName;
 
+
+
+
+		/// <summary>
+		/// Returns a URI representation of the <see cref="ShellItem"/>.
+		/// </summary>
+		public Uri ToUri() => this.ParsingName.StartsWith("::") ? new Uri("shell:///" + this.ParsingName) : new Uri(this.FileSystemPath);
+
+		/*
 		/// <summary>
 		/// Returns a URI representation of the <see cref="ShellItem"/>.
 		/// </summary>
 		public Uri ToUri() {
+			return this.ParsingName.StartsWith("::") ? new Uri("shell:///" + this.ParsingName) : new Uri(this.FileSystemPath);
 			StringBuilder path = new StringBuilder("shell:///");
 
 			if (this.ParsingName.StartsWith("::")) {
@@ -991,6 +990,7 @@ namespace BExplorer.Shell {
 			}
 			return new Uri(this.FileSystemPath);
 		}
+		*/
 
 		private void Initialize(Uri uri) {
 			if (uri.Scheme == "file")
