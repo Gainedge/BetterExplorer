@@ -695,7 +695,7 @@ namespace BExplorer.Shell
 
 		private void selectionTimer_Tick(Object sender, EventArgs e)
 		{
-			if (MouseButtons != F.MouseButtons.Left)
+			if (MouseButtons != MouseButtons.Left)
 			{
 				(sender as F.Timer).Stop();
 				OnSelectionChanged();
@@ -1224,10 +1224,10 @@ namespace BExplorer.Shell
 			var wp = new DataObject.Win32Point() { X = e.X, Y = e.Y };
 			Drag_SetEffect(e);
 
-			Int32 row = -1, collumn = -1;
+			int row = -1, collumn = -1;
 			this.HitTest(PointToClient(new DPoint(e.X, e.Y)), out row, out collumn);
 			var descinvalid = new DataObject.DropDescription();
-			descinvalid.type = (Int32)DataObject.DropImageType.Invalid;
+			descinvalid.type = (int)DataObject.DropImageType.Invalid;
 			((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(descinvalid);
 			if (row != -1)
 			{
@@ -1237,24 +1237,24 @@ namespace BExplorer.Shell
 				var desc = new DataObject.DropDescription();
 				switch (e.Effect)
 				{
-					case System.Windows.Forms.DragDropEffects.Copy:
-						desc.type = (Int32)DataObject.DropImageType.Copy;
+					case F.DragDropEffects.Copy:
+						desc.type = (int)DataObject.DropImageType.Copy;
 						desc.szMessage = "Copy To %1";
 						break;
-					case System.Windows.Forms.DragDropEffects.Link:
-						desc.type = (Int32)DataObject.DropImageType.Link;
+					case F.DragDropEffects.Link:
+						desc.type = (int)DataObject.DropImageType.Link;
 						desc.szMessage = "Create Link in %1";
 						break;
-					case System.Windows.Forms.DragDropEffects.Move:
-						desc.type = (Int32)DataObject.DropImageType.Move;
+					case F.DragDropEffects.Move:
+						desc.type = (int)DataObject.DropImageType.Move;
 						desc.szMessage = "Move To %1";
 						break;
-					case System.Windows.Forms.DragDropEffects.None:
-						desc.type = (Int32)DataObject.DropImageType.None;
+					case F.DragDropEffects.None:
+						desc.type = (int)DataObject.DropImageType.None;
 						desc.szMessage = "";
 						break;
 					default:
-						desc.type = (Int32)DataObject.DropImageType.Invalid;
+						desc.type = (int)DataObject.DropImageType.Invalid;
 						desc.szMessage = "";
 						break;
 				}
@@ -1263,7 +1263,7 @@ namespace BExplorer.Shell
 				{
 					if (this.Items[row].Extension == ".exe")
 					{
-						desc.type = (Int32)DataObject.DropImageType.Copy;
+						desc.type = (int)DataObject.DropImageType.Copy;
 						desc.szMessage = "Open With %1";
 					}
 					else
@@ -1281,7 +1281,7 @@ namespace BExplorer.Shell
 				if (e.Effect == F.DragDropEffects.Link)
 				{
 					DataObject.DropDescription desc = new DataObject.DropDescription();
-					desc.type = (Int32)BExplorer.Shell.DataObject.DropImageType.Link;
+					desc.type = (int)DataObject.DropImageType.Link;
 					desc.szMessage = "Create Link in %1";
 					desc.szInsert = this.CurrentFolder.DisplayName;
 					((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
@@ -1289,7 +1289,7 @@ namespace BExplorer.Shell
 				else if (e.Effect == F.DragDropEffects.Copy)
 				{
 					DataObject.DropDescription desc = new DataObject.DropDescription();
-					desc.type = (Int32)BExplorer.Shell.DataObject.DropImageType.Link;
+					desc.type = (int)DataObject.DropImageType.Link;
 					desc.szMessage = "Create a copy in %1";
 					desc.szInsert = this.CurrentFolder.DisplayName;
 					((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
@@ -1408,13 +1408,13 @@ namespace BExplorer.Shell
 								if (nmlvedit.item.pszText.ToLowerInvariant() != item.DisplayName.ToLowerInvariant())
 								{
 
-									RenameShellItem(item.ComInterface, nmlvedit.item.pszText,
-											(item.DisplayName != Path.GetFileName(item.ParsingName)) && !item.IsFolder, item.Extension);
+									RenameShellItem(item.ComInterface, nmlvedit.item.pszText, (item.DisplayName != Path.GetFileName(item.ParsingName)) && !item.IsFolder, item.Extension);
 								}
+
 								this.EndLabelEdit();
 								this.RedrawWindow();
-
 							}
+
 							this._EditorSubclass?.DestroyHandle();
 							break;
 						#endregion
@@ -1430,13 +1430,13 @@ namespace BExplorer.Shell
 							{
 								if (nmlv.item.iSubItem == 0)
 								{
+									//TODO: See if we can reove this try catch
 									try
 									{
 										nmlv.item.pszText = currentItem.DisplayName;
 									}
 									catch (Exception)
 									{
-
 									}
 
 									Marshal.StructureToPtr(nmlv, m.LParam, false);
@@ -1453,28 +1453,22 @@ namespace BExplorer.Shell
 											var hash = currentItem.GetHashCode();
 											var currentCollumn = this.View == ShellViewStyle.Tile ? this.AllAvailableColumns[nmlv.item.iSubItem] : this.Collumns[nmlv.item.iSubItem];
 
-											var valueCached =
-											  SubItemValues.ToArray()
-												.FirstOrDefault(
-												  s =>
-													s.Item1 == hash && s.Item2.fmtid == currentCollumn.pkey.fmtid &&
-													s.Item2.pid == currentCollumn.pkey.pid);
-											//if (valueCached != null && valueCached.Item3 != null)
+											var valueCached = SubItemValues.ToArray().FirstOrDefault(s =>
+																   s.Item1 == hash && s.Item2.fmtid == currentCollumn.pkey.fmtid &&
+																   s.Item2.pid == currentCollumn.pkey.pid
+											);
+
 											if (valueCached?.Item3 != null)
 											{
 												String val = String.Empty;
 												if (currentCollumn.CollumnType == typeof(DateTime))
 													val = ((DateTime)valueCached.Item3).ToString(Thread.CurrentThread.CurrentCulture);
 												else if (currentCollumn.CollumnType == typeof(Int64))
-													val =
-													  $"{(Math.Ceiling(Convert.ToDouble(valueCached.Item3.ToString()) / 1024).ToString("# ### ### ##0"))} KB";
+													val = $"{(Math.Ceiling(Convert.ToDouble(valueCached.Item3.ToString()) / 1024).ToString("# ### ### ##0"))} KB";
 												else if (currentCollumn.CollumnType == typeof(PerceivedType))
 													val = ((PerceivedType)valueCached.Item3).ToString();
 												else if (currentCollumn.CollumnType == typeof(FileAttributes))
-												{
-													var resultString = this.GetFilePropertiesString(valueCached.Item3);
-													val = resultString;
-												}
+													val = this.GetFilePropertiesString(valueCached.Item3);
 												else
 													val = valueCached.Item3.ToString();
 
@@ -1492,14 +1486,13 @@ namespace BExplorer.Shell
 												var pvar = new PropVariant();
 												if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK)
 												{
-													String val = String.Empty;
 													if (pvar.Value == null)
 													{
-														ItemsForSubitemsUpdate.Enqueue(new Tuple<Int32, Int32, PROPERTYKEY>(nmlv.item.iItem,
-														  nmlv.item.iSubItem, pk));
+														ItemsForSubitemsUpdate.Enqueue(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
 													}
 													else
 													{
+														String val = String.Empty;
 														if (currentCollumn.CollumnType == typeof(DateTime))
 															val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
 														else if (currentCollumn.CollumnType == typeof(Int64))
@@ -1542,8 +1535,6 @@ namespace BExplorer.Shell
 								Marshal.Copy(columns, 0, nmlv.item.puColumns, nmlv.item.cColumns);
 								Marshal.StructureToPtr(nmlv, m.LParam, false);
 							}
-
-
 							break;
 						#endregion
 
@@ -1572,9 +1563,7 @@ namespace BExplorer.Shell
 							if (this.Items.Count == 0)
 								break;
 							if (ToolTip == null)
-							{
 								ToolTip = new ToolTip(this);
-							}
 
 							var itemInfotip = this.Items[nmGetInfoTip.iItem];
 							Char[] charBuf = ("\0").ToCharArray();
@@ -1601,10 +1590,7 @@ namespace BExplorer.Shell
 							var findItem = (NMLVFINDITEM)m.GetLParam(typeof(NMLVFINDITEM));
 							KeyJumpString = findItem.lvfi.psz;
 
-							if (KeyJumpKeyDown != null)
-							{
-								KeyJumpKeyDown(this, new KeyEventArgs(Keys.A));
-							}
+							KeyJumpKeyDown?.Invoke(this, new KeyEventArgs(Keys.A));
 							Int32 startindex = this.GetFirstSelectedItemIndex() + (KeyJumpString.Length > 1 ? 0 : 1);
 							Int32 selind = GetFirstIndexOf(KeyJumpString, startindex);
 							if (selind != -1)
@@ -1615,7 +1601,7 @@ namespace BExplorer.Shell
 							}
 							else
 							{
-								Int32 selindOver = GetFirstIndexOf(KeyJumpString, 0);
+								int selindOver = GetFirstIndexOf(KeyJumpString, 0);
 								if (selindOver != -1)
 								{
 									m.Result = (IntPtr)(selindOver);
@@ -1629,11 +1615,9 @@ namespace BExplorer.Shell
 						case -175:
 							#region Case
 							var nmlvLe = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
-							//RenameItem(nmlvLe.item.iItem);
 							if (this.ToolTip != null && this.ToolTip.IsVisible)
-							{
 								this.ToolTip.HideTooltip();
-							}
+
 							this.IsFocusAllowed = false;
 							this._IsCanceledOperation = false;
 							this._ItemForRename = nmlvLe.item.iItem;
@@ -1740,13 +1724,13 @@ namespace BExplorer.Shell
 						case WNM.LVN_KEYDOWN:
 							#region Case
 							var nkd = (NMLVKEYDOWN)m.GetLParam(typeof(NMLVKEYDOWN));
-							if (!ShellView_KeyDown((Keys)((Int32)nkd.wVKey)))
+							if (!ShellView_KeyDown((Keys)((int)nkd.wVKey)))
 							{
 								m.Result = (IntPtr)1;
 								break;
 							}
 
-							if (nkd.wVKey == (Int16)Keys.F2 && !(System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.TextBox))
+							if (nkd.wVKey == (short)Keys.F2 && !(System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.TextBox))
 							{
 								RenameSelectedItem();
 							}
@@ -1755,7 +1739,7 @@ namespace BExplorer.Shell
 							{
 								switch (nkd.wVKey)
 								{
-									case (Int16)Keys.Enter:
+									case (short)Keys.Enter:
 										if (this._IsCanceledOperation)
 										{
 											//this.IsRenameInProgress = false;
@@ -2067,11 +2051,9 @@ namespace BExplorer.Shell
 				else
 				{
 					this._NewName = String.Empty;
-					this.BeginInvoke((Action)(() =>
-					{
-						this.RefreshItem(_ItemForRename);
-					}));
+					this.BeginInvoke((Action)(() => this.RefreshItem(_ItemForRename)));
 				}
+
 				this.RedrawWindow();
 			}
 
@@ -2102,14 +2084,14 @@ namespace BExplorer.Shell
 			Int32[] orders = new Int32[this.Collumns.Count];
 			User32.SendMessage(this.LVHandle, (UInt32)Interop.MSG.LVM_GETCOLUMNORDERARRAY, orders.Length, orders);
 
-			var Columns_XML = new System.Xml.Linq.XElement("Columns");
+			var Columns_XML = new XElement("Columns");
 			foreach (var index in orders)
 			{
 				var collumn = this.Collumns[index];
 				var width = (Int32)User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETCOLUMNWIDTH, index, 0);
-				var XML = new System.Xml.Linq.XElement("Column");
-				XML.Add(new System.Xml.Linq.XAttribute("ID", collumn.ID == null ? "" : collumn.ID.ToString()));
-				XML.Add(new System.Xml.Linq.XAttribute("Width", collumn.ID == null ? "" : width.ToString()));
+				var XML = new XElement("Column");
+				XML.Add(new XAttribute("ID", collumn.ID == null ? "" : collumn.ID.ToString()));
+				XML.Add(new XAttribute("Width", collumn.ID == null ? "" : width.ToString()));
 				Columns_XML.Add(XML);
 			}
 
@@ -2241,7 +2223,8 @@ namespace BExplorer.Shell
 			if (dataObject.GetDataPresent("IsShowingLayered"))
 			{
 				Object data = dataObject.GetData("IsShowingLayered");
-				if (data != null) return GetBooleanFromData(data);
+				if (data != null)
+					return data is Stream ? new BinaryReader(data as Stream).ReadBoolean() : false;
 			}
 
 			return false;
@@ -2251,13 +2234,9 @@ namespace BExplorer.Shell
 		{
 			var selectedItem = this.GetFirstSelectedItem();
 			if (selectedItem.IsFolder)
-			{
 				this.Navigate_Full(selectedItem, true, true, false);
-			}
 			else
-			{
 				Process.Start(selectedItem.ParsingName);
-			}
 		}
 
 		public Int32 GetGroupIndex(Int32 itemIndex)
@@ -2271,29 +2250,19 @@ namespace BExplorer.Shell
 
 		public void ShowPropPage(IntPtr HWND, String filename, String proppage) => Shell32.SHObjectProperties(HWND, 0x2, filename, proppage);
 
-		public void UpdateItem(Int32 index)
-		{
-			this.BeginInvoke(new MethodInvoker(() =>
-			{
-				this._IIListView.UpdateItem(index);
-			}));
-		}
+		public void UpdateItem(Int32 index) => this.BeginInvoke(new MethodInvoker(() => this._IIListView.UpdateItem(index)));
+
 		/// <summary> Navigates to the parent of the currently displayed folder. </summary>
 		public void NavigateParent()
 		{
 			if (this.CurrentFolder != null)
-			{
-
 				Navigate_Full(this.CurrentFolder.Clone().Parent, true, true);
-			}
 		}
 
 		public void RefreshContents()
 		{
 			if (this.CurrentFolder != null)
-			{
 				Navigate_Full(this.CurrentFolder, true, refresh: true);
-			}
 		}
 
 		public void RefreshItem(Int32 index, Boolean isForceRedraw = false, Boolean convertName = true)
@@ -2317,10 +2286,8 @@ namespace BExplorer.Shell
 					//In case the event late and the file is not there anymore or changed catch the exception
 				}
 			}
-			this.BeginInvoke(new MethodInvoker(() =>
-			{
-				this._IIListView.RedrawItems(index, index);
-			}));
+
+			this.BeginInvoke(new MethodInvoker(() => this._IIListView.RedrawItems(index, index)));
 		}
 
 		public void RenameSelectedItem() => this.RenameItem(this.GetFirstSelectedItemIndex());
@@ -2377,9 +2344,8 @@ namespace BExplorer.Shell
 								fo.CopyItem(item, this.CurrentFolder);
 							else
 								fo.MoveItem(item, this.CurrentFolder.ComInterface, null);
-
-							//Marshal.ReleaseComObject(item);
 						}
+
 						fo.PerformOperations();
 						Marshal.ReleaseComObject(shellItemArray);
 						shellItemArray = null;
@@ -2403,8 +2369,6 @@ namespace BExplorer.Shell
 								fo.CopyItem(item, this.CurrentFolder);
 							else
 								fo.MoveItem(item, this.CurrentFolder.ComInterface, null);
-
-							//Marshal.ReleaseComObject(item);
 						}
 
 						items = null;
@@ -2460,7 +2424,6 @@ namespace BExplorer.Shell
 				this._NewName = String.Empty;
 				this._IsCanceledOperation = true;
 			}
-
 		}
 
 		public void ResizeIcons(Int32 value)
@@ -2536,10 +2499,7 @@ namespace BExplorer.Shell
 
 			if (ensureVisisble)
 			{
-				this.BeginInvoke((Action)(() =>
-				{
-					this._IIListView.EnsureItemVisible(this.ToLvItemIndex(index), true);
-				}));
+				this.BeginInvoke((Action)(() => this._IIListView.EnsureItemVisible(this.ToLvItemIndex(index), true)));
 			}
 		}
 
@@ -2694,10 +2654,8 @@ namespace BExplorer.Shell
 		public void Navigate_Full(IListItemEx destination, Boolean saveFolderSettings, Boolean isInSameTab = false, Boolean refresh = false)
 		{
 			this.IsSearchNavigating = false;
-			//if (saveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
 
 			if (destination == null || !destination.IsFolder) return;
-			//if (ToolTip == null) this.ToolTip = new ToolTip(this);
 			resetEvent.Set();
 			Navigate(destination, isInSameTab, refresh, this.IsNavigationInProgress);
 		}
@@ -2707,13 +2665,11 @@ namespace BExplorer.Shell
 			this.IsSearchNavigating = true;
 			if (saveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
 
-			//if (ToolTip == null) this.ToolTip = new ToolTip(this);
 			resetEvent.Set();
 			var searchCondition = SearchConditionFactory.ParseStructuredQuery(this.PrepareSearchQuery(query));
 			var shellItem = new ShellItem(this.CurrentFolder.PIDL);
 			var searchFolder = new ShellSearchFolder(searchCondition, shellItem);
-			IListItemEx searchItem = null;
-			searchItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, searchFolder);
+			IListItemEx searchItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, searchFolder);
 			this.NavigateSearch(searchItem, isInSameTab, refresh, this.IsNavigationInProgress);
 		}
 
@@ -2786,10 +2742,7 @@ namespace BExplorer.Shell
 		public void GenerateGroupsFromColumn(Collumns col, Boolean reversed = false)
 		{
 			if (col == null) return;
-			this.BeginInvoke(new MethodInvoker(() =>
-			{
-				this._IIListView.RemoveAllGroups();
-			}));
+			this.BeginInvoke(new MethodInvoker(() => this._IIListView.RemoveAllGroups()));
 
 			this.Groups.Clear();
 			if (col.CollumnType == typeof(String))
@@ -2845,10 +2798,7 @@ namespace BExplorer.Shell
 			else if (col.CollumnType == typeof(Int64))
 			{
 				var j = reversed ? 7 : 0;
-
-
 				//TODO: Upgrade next to use an Action<>
-
 
 				var uspec = new ListViewGroupEx();
 				uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
@@ -3068,7 +3018,7 @@ namespace BExplorer.Shell
 					{
 						if (!SubItemValues.Any(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid))
 						{
-							SubItemValues.Add(new Tuple<Int32, PROPERTYKEY, Object>(hash, pk, pvar.Value));
+							SubItemValues.Add(Tuple.Create(hash, pk, pvar.Value));
 							this.RedrawItem(index.Item1);
 						}
 						pvar.Dispose();
@@ -3078,8 +3028,6 @@ namespace BExplorer.Shell
 				}
 			}
 		}
-
-		//public static void StartCompartabilityWizzard() => Process.Start("msdt.exe", "-id PCWDiagnostic");
 
 		public String CreateNewFolder(String name = "New Folder")
 		{
@@ -3220,18 +3168,14 @@ namespace BExplorer.Shell
 		public void Focus(Boolean isActiveCheck = true)
 		{
 			if (System.Windows.Application.Current == null) return;
-
 			if (_ItemForRealName_IsAny) return;
 
 			if (User32.GetForegroundWindow() != this.LVHandle)
 			{
 				this.Invoke(new MethodInvoker(() =>
 				{
-					var mainWin = System.Windows.Application.Current.MainWindow;
-					if (mainWin.IsActive || !isActiveCheck)
-					{
-						if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)) User32.SetFocus(this.LVHandle);
-					}
+					if ((System.Windows.Application.Current.MainWindow.IsActive || !isActiveCheck) && (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)))
+						User32.SetFocus(this.LVHandle);
 				}));
 			}
 		}
@@ -3509,7 +3453,7 @@ namespace BExplorer.Shell
 						{
 							if (this._TemporaryFiles.Count(c => c.Contains(Path.GetFileName(existingItem.ParsingName))) == 0)
 							{
-								this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, existingItem));
+								this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, existingItem));
 								this.UnvalidateDirectory();
 							}
 						}
@@ -3567,17 +3511,11 @@ namespace BExplorer.Shell
 						var theColumn = this.AllAvailableColumns.FirstOrDefault(w => w.ID == collumn.Attribute("ID").Value);//.Single();
 						if (theColumn == null) continue;
 						if (this.Collumns.Any(c => c.ID == theColumn?.ID)) continue;
-						if (collumn.Attribute("Width").Value != "0")
-						{
-							theColumn.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
-						}
+						if (collumn.Attribute("Width").Value != "0") theColumn.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
 						this.Collumns.Add(theColumn);
 						var column = theColumn.ToNativeColumn(folderSettings.View == ShellViewStyle.Details);
 						User32.SendMessage(this.LVHandle, Interop.MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
-						if (folderSettings.View != ShellViewStyle.Details)
-						{
-							this.AutosizeColumn(this.Collumns.Count - 1, -2);
-						}
+						if (folderSettings.View != ShellViewStyle.Details) this.AutosizeColumn(this.Collumns.Count - 1, -2);
 					}
 				}
 			}
@@ -3587,8 +3525,6 @@ namespace BExplorer.Shell
 				this.AddDefaultColumns(false, true);
 			}
 
-
-
 			if (!String.IsNullOrEmpty(folderSettings.GroupCollumn))
 			{
 				var colData = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.GroupCollumn);
@@ -3596,7 +3532,6 @@ namespace BExplorer.Shell
 					this.EnableGroups();
 				else
 					this.DisableGroups();
-
 			}
 			else
 			{
@@ -3627,7 +3562,6 @@ namespace BExplorer.Shell
 
 
 			this.IsViewSelectionAllowed = true;
-
 			this.Invoke((Action)(() => this._NavWaitTimer.Start()));
 
 			var navigationThread = new Thread(() =>
@@ -4007,12 +3941,11 @@ namespace BExplorer.Shell
 
 					var delta = CurrentI - LastI;
 					if (delta >= (this.IsSearchNavigating ? 1 : 5000))
-					{
 						LastI = CurrentI;
-					}
 					if (this.IsSearchNavigating && delta >= 20)
 						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 				}
+
 				this.IsCancelRequested = false;
 				this.IsNavigationInProgress = false;
 
@@ -4046,8 +3979,6 @@ namespace BExplorer.Shell
 
 				this.SetSortCollumn(false, this.Collumns.First(), SortOrder.Ascending, false);
 
-
-
 				this.BeginInvoke((Action)(() =>
 				{
 					var navArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
@@ -4068,6 +3999,7 @@ namespace BExplorer.Shell
 				mre.WaitOne();
 				this.Focus();
 			});
+
 			navigationThread.SetApartmentState(ApartmentState.STA);
 			this.Threads.Add(navigationThread);
 			navigationThread.Start();
@@ -4221,10 +4153,7 @@ namespace BExplorer.Shell
 			}
 		}
 
-		private LVITEMINDEX ToLvItemIndex(Int32 index)
-		{
-			return new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-		}
+		private LVITEMINDEX ToLvItemIndex(Int32 index) => new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
 
 		private void RedrawItem(Int32 index)
 		{
@@ -4235,10 +4164,9 @@ namespace BExplorer.Shell
 			itemBounds.Top -= 2;
 			itemBounds.Bottom += 2;
 			itemBounds.Right += 2;
-			this.Invoke(new MethodInvoker(() =>
-			{
-				this._IIListView.RedrawItems(index, index);
-			}));
+			this.Invoke(new MethodInvoker(() => this._IIListView.RedrawItems(index, index)));
+
+			//TODO: Find out why we have this loop
 			for (Int32 i = 0; i < 1; i++)
 			{
 				if (IsGroupsEnabled) RedrawWindow(itemBounds);
@@ -4277,7 +4205,7 @@ namespace BExplorer.Shell
 									}
 									else
 									{
-										if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj.Clone(true))))
+										if (this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Created, obj.Clone(true))))
 										{
 											this.UnvalidateDirectory();
 										}
@@ -4289,7 +4217,7 @@ namespace BExplorer.Shell
 								var objDelete = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
 								if (this.CurrentFolder != null && (objDelete.Parent != null && (objDelete.Parent.Equals(this.CurrentFolder) || (objDelete.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName)))))
 								{
-									if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, objDelete.Clone())))
+									if (this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, objDelete.Clone())))
 									{
 										this.UnvalidateDirectory();
 										objDelete.Dispose();
@@ -4318,9 +4246,6 @@ namespace BExplorer.Shell
 									var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
 									if (exisitingUItem != null)
 										this.RefreshItem(exisitingUItem.ItemIndex, true);
-
-									//if (objUpdateItem != null && this._RequestedCurrentLocation != null && objUpdateItem.Equals(this._RequestedCurrentLocation))
-									//	this.UnvalidateDirectory();
 								}
 								break;
 							case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
@@ -4337,7 +4262,6 @@ namespace BExplorer.Shell
 								var objNetA = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
 								var exisitingItemNetA = this.Items.FirstOrDefault(w => w.Equals(objNetA));
 								this.RefreshItem(exisitingItemNetA.ItemIndex, true);
-								//this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Updated, null, objNetA, exisitingItemNetA.Value);
 								break;
 							case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
 							case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
@@ -4372,24 +4296,14 @@ namespace BExplorer.Shell
 					}
 					catch
 					{
-
 					}
+
 					Notifications.NotificationsReceived.Remove(info);
 				}
 			}
 		}
 
-		private static Boolean GetBooleanFromData(Object data)
-		{
-			if (data is Stream)
-			{
-				var reader = new BinaryReader(data as Stream);
-				return reader.ReadBoolean();
-			}
-
-			// Anything else isn't supported for now
-			return false;
-		}
+		//private static Boolean GetBooleanFromData(Object data) => data is Stream ? new BinaryReader(data as Stream).ReadBoolean() : false;
 
 		private void DrawDefaultIcons(IntPtr hdc, IListItemEx sho, User32.RECT iconBounds)
 		{
@@ -4463,14 +4377,16 @@ namespace BExplorer.Shell
 		private IListItemEx GetBadgeForPath(String path)
 		{
 			var allBadges = this.BadgesData.SelectMany(s => s.Value).ToArray();
-			var foundBadge =
-			  allBadges.Where(w => w.Value.Count(c => c.ToLowerInvariant().Equals(path.ToLowerInvariant())) > 0).FirstOrDefault();
+			var foundBadge = allBadges.Where(w => w.Value.Count(c => c.ToLowerInvariant().Equals(path.ToLowerInvariant())) > 0).FirstOrDefault();
 			return foundBadge.Equals(default(KeyValuePair<IListItemEx, List<String>>)) ? null : foundBadge.Key;
 		}
+
 		internal void OnSelectionChanged() => SelectionChanged?.Invoke(this, EventArgs.Empty);
 		//private new void ResumeLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 1, 0);
 		//private new void SuspendLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 0, 0);
+		[Obsolete("Contains No Code")]
 		private void RedrawWindow() { }//User32.InvalidateRect(this.LVHandle, IntPtr.Zero, false);
+		[Obsolete("Contains No Code")]
 		private void RedrawWindow(User32.RECT rect) { }// => User32.InvalidateRect(this.LVHandle, ref rect, false);
 
 		/// <summary>
@@ -4584,13 +4500,10 @@ namespace BExplorer.Shell
 			}
 		}
 
-		private void AutosizeColumn(Int32 index, Int32 autosizeStyle)
-		{
-			User32.SendMessage(this.LVHandle, LVM.SETCOLUMNWIDTH, index, autosizeStyle);
-		}
+		private void AutosizeColumn(Int32 index, Int32 autosizeStyle) => User32.SendMessage(this.LVHandle, LVM.SETCOLUMNWIDTH, index, autosizeStyle);
 
 		[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
-		private void ProcessCustomDrawPostPaint(ref Message m, User32.NMLVCUSTOMDRAW nmlvcd, Int32 index, IntPtr hdc, IListItemEx sho, System.Drawing.Color? textColor)
+		private void ProcessCustomDrawPostPaint(ref Message m, User32.NMLVCUSTOMDRAW nmlvcd, Int32 index, IntPtr hdc, IListItemEx sho, Color? textColor)
 		{
 			if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0)
 			{
@@ -4914,16 +4827,13 @@ namespace BExplorer.Shell
 
 				var sho = Items.Count > index ? Items[index] : null;
 
-
-
 				Color? textColor = null;
 				if (sho != null && this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0 && !String.IsNullOrEmpty(sho.Extension))
 				{
 					var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(sho.Extension)).Count() > 0;
 					if (extItemsAvailable)
 					{
-						var color =
-								this.LVItemsColorCodes.SingleOrDefault(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).TextColor;
+						var color = this.LVItemsColorCodes.SingleOrDefault(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).TextColor;
 						textColor = Color.FromArgb(color.A, color.R, color.G, color.B);
 					}
 				}
