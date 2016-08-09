@@ -2450,6 +2450,7 @@ namespace BExplorer.Shell
 			this.Focus();
 		}
 
+		/*
 		public Rect GetItemBounds(Int32 index, Int32 mode)
 		{
 			var lviLe = this.ToLvItemIndex(index);
@@ -2458,6 +2459,7 @@ namespace BExplorer.Shell
 			var res = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
+		*/
 
 		public void RaiseRecycleBinUpdated()
 		{
