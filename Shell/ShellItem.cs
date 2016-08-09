@@ -62,9 +62,9 @@ namespace BExplorer.Shell {
 
 	internal class ShellItemConverter : TypeConverter {
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => sourceType == typeof(string) ? true : base.CanConvertFrom(context, sourceType);
-		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) => 
+		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) =>
 			destinationType == typeof(InstanceDescriptor) ? true : base.CanConvertTo(context, destinationType);
-		
+
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
 			if (value is string) {
@@ -74,7 +74,8 @@ namespace BExplorer.Shell {
 					return ShellItem.Desktop;
 				else
 					return new ShellItem(s);
-			} else {
+			}
+			else {
 				return base.ConvertFrom(context, culture, value);
 			}
 		}
@@ -119,10 +120,8 @@ namespace BExplorer.Shell {
 		public String CachedDisplayName { get; private set; }
 
 		/// <summary>Gets the thumbnail of the ShellObject.</summary>
-		public ShellThumbnail Thumbnail
-		{
-			get
-			{
+		public ShellThumbnail Thumbnail {
+			get {
 				if (thumbnail == null) thumbnail = new ShellThumbnail(this);
 				return thumbnail;
 			}
@@ -144,10 +143,8 @@ namespace BExplorer.Shell {
 		public string FileSystemPath => GetDisplayName(SIGDN.FILESYSPATH);
 
 		/// <summary>Gets a PIDL representing the item.</summary>
-		public IntPtr Pidl
-		{
-			get
-			{
+		public IntPtr Pidl {
+			get {
 				if (RunningVista)
 					return ComInterface != null ? Shell32.SHGetIDListFromObject(ComInterface) : IntPtr.Zero;
 				else
@@ -161,10 +158,8 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets a value indicating whether the item is a folder.
 		/// </summary>
-		public bool IsFolder
-		{
-			get
-			{
+		public bool IsFolder {
+			get {
 				SFGAO sfgao;
 				ComInterface.GetAttributes(SFGAO.FOLDER, out sfgao);
 				SFGAO sfgao2;
@@ -173,14 +168,13 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public bool IsValidShellFolder
-		{
-			get
-			{
+		public bool IsValidShellFolder {
+			get {
 				try {
 					this.GetIShellFolder();
 					return true;
-				} catch {
+				}
+				catch {
 					return false;
 				}
 			}
@@ -218,13 +212,12 @@ namespace BExplorer.Shell {
 		/// </exception>
 		public String Extension => Path.GetExtension(this.CachedParsingName ?? this.ParsingName).ToLowerInvariant();
 
-		public bool IsDrive
-		{
-			get
-			{
+		public bool IsDrive {
+			get {
 				try {
 					return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(this.CachedParsingName ?? this.ParsingName) != DriveType.Network;
-				} catch {
+				}
+				catch {
 					return false;
 				}
 			}
@@ -232,35 +225,31 @@ namespace BExplorer.Shell {
 
 		internal bool IsNetworkPath => Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
 
-		public bool IsNetDrive
-		{
-			get
-			{
+		public bool IsNetDrive {
+			get {
 				try {
 					//return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) == DriveType.Network;
 					return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
-				} catch {
+				}
+				catch {
 					return false;
 				}
 			}
 		}
 
-		public bool IsSearchFolder
-		{
-			get
-			{
+		public bool IsSearchFolder {
+			get {
 				try {
 					return (!ParsingName.StartsWith("::") && !IsFileSystem && !ParsingName.StartsWith(@"\\") && !ParsingName.Contains(":\\")) || ParsingName.EndsWith(".search-ms");
-				} catch {
+				}
+				catch {
 					return false;
 				}
 			}
 		}
 
-		public bool IsImage
-		{
-			get
-			{
+		public bool IsImage {
+			get {
 				switch (this.Extension.ToLowerInvariant()) {
 					case ".jpg":
 					case ".png":
@@ -278,28 +267,26 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets the item's parent.
 		/// </summary>
-		public ShellItem Parent
-		{
-			get
-			{
+		public ShellItem Parent {
+			get {
 				IShellItem item;
 				HResult result = ComInterface.GetParent(out item);
 
 				if (result == HResult.S_OK) {
 					return new ShellItem(item);
-				} else if (result == HResult.MK_E_NOOBJECT) {
+				}
+				else if (result == HResult.MK_E_NOOBJECT) {
 					return null;
-				} else {
+				}
+				else {
 					Marshal.ThrowExceptionForHR((int)result);
 					return null;
 				}
 			}
 		}
 
-		public IntPtr AbsolutePidl
-		{
-			get
-			{
+		public IntPtr AbsolutePidl {
+			get {
 				uint attr;
 				IntPtr pidl;
 				Shell32.SHParseDisplayName(this.ParsingName, IntPtr.Zero, out pidl, 0, out attr);
@@ -310,10 +297,8 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets the item's tooltip text.
 		/// </summary>
-		public string ToolTipText
-		{
-			get
-			{
+		public string ToolTipText {
+			get {
 				IntPtr result;
 				IQueryInfo queryInfo;
 				IntPtr infoTipPtr;
@@ -322,7 +307,8 @@ namespace BExplorer.Shell {
 				try {
 					IntPtr relativePidl = Shell32.ILFindLastID(Pidl);
 					Parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, 1, new IntPtr[] { relativePidl }, typeof(IQueryInfo).GUID, 0, out result);
-				} catch (Exception) {
+				}
+				catch (Exception) {
 					return string.Empty;
 				}
 				if (result == IntPtr.Zero) return String.Empty;
@@ -397,29 +383,30 @@ namespace BExplorer.Shell {
 			yield break;
 		}
 
-        #endregion
+		#endregion
 
 
-        public DriveInfo GetDriveInfo() => IsDrive || IsNetDrive ? new DriveInfo(ParsingName) : null;
+		public DriveInfo GetDriveInfo() => IsDrive || IsNetDrive ? new DriveInfo(ParsingName) : null;
 
-        /// <summary>
-        /// Returns the name of the item in the specified style.
-        /// </summary>
-        ///
-        /// <param name="sigdn">
-        /// The style of display name to return.
-        /// </param>
-        ///
-        /// <returns>
-        /// A string containing the display name of the item.
-        /// </returns>
-        public string GetDisplayName(SIGDN sigdn) {
+		/// <summary>
+		/// Returns the name of the item in the specified style.
+		/// </summary>
+		///
+		/// <param name="sigdn">
+		/// The style of display name to return.
+		/// </param>
+		///
+		/// <returns>
+		/// A string containing the display name of the item.
+		/// </returns>
+		public string GetDisplayName(SIGDN sigdn) {
 			try {
 				IntPtr resultPtr = ComInterface.GetDisplayName(sigdn);
 				string result = Marshal.PtrToStringUni(resultPtr);
 				Marshal.FreeCoTaskMem(resultPtr);
 				return result;
-			} catch {
+			}
+			catch {
 				try {
 					var shellobj = new ShellItem(this.CachedParsingName.ToShellParsingName());
 					IntPtr resultPtr = shellobj.ComInterface.GetDisplayName(sigdn);
@@ -429,7 +416,7 @@ namespace BExplorer.Shell {
 				}
 				catch {
 					return "Search.search-ms";
-				}				
+				}
 			}
 		}
 
@@ -444,7 +431,7 @@ namespace BExplorer.Shell {
 				IShellFolder ishellfolder = null;
 				StringBuilder str = null;
 				IntPtr result;
-                
+
 				try {
 					var guid = new Guid("000214fa-0000-0000-c000-000000000046");
 					uint res = 0;
@@ -477,14 +464,16 @@ namespace BExplorer.Shell {
 					iextract = null;
 					str = null;
 					return flags;
-				} catch (Exception) {
+				}
+				catch (Exception) {
 					//if (ishellfolder != null)
-						//Marshal.ReleaseComObject(ishellfolder);
+					//Marshal.ReleaseComObject(ishellfolder);
 					//if (iextract != null)
 					//	Marshal.ReleaseComObject(iextract);
 					return 0;
 				}
-			} else {
+			}
+			else {
 				return IExtractIconPWFlags.GIL_PERCLASS;
 			}
 		}
@@ -508,7 +497,8 @@ namespace BExplorer.Shell {
 				iextract.GetIconLocation(IExtractIconUFlags.GIL_CHECKSHIELD, str, 512, out index, out flags);
 				pidls = null;
 				return flags;
-			} catch {
+			}
+			catch {
 				return 0;
 			} finally {
 				//if (ishellfolder != null)
@@ -543,7 +533,8 @@ namespace BExplorer.Shell {
 				ComInterface.BindToHandler(IntPtr.Zero, BHID.SFObject, typeof(IShellFolder).GUID, out res); //HResult result = 
 				var iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res, typeof(IShellFolder));
 				return iShellFolder;
-			} catch {
+			}
+			catch {
 				return null;
 			}
 		}
@@ -681,7 +672,8 @@ namespace BExplorer.Shell {
 				} finally {
 					Shell32.ILFree(pidl);
 				}
-			} else {
+			}
+			else {
 				// SHGetSpecialFolderLocation does not support many common
 				// CSIDL values on Windows 98, but SHGetFolderPath in
 				// ShFolder.dll does, so fall back to it if necessary. We
@@ -718,7 +710,8 @@ namespace BExplorer.Shell {
 		public ShellItem(ShellItem parent, IntPtr pidl) {
 			if (RunningVista) {
 				ComInterface = Shell32.SHCreateItemWithParent(IntPtr.Zero, parent.GetIShellFolder(), pidl, typeof(IShellItem).GUID);
-			} else {
+			}
+			else {
 				Interop.VistaBridge.ShellItemImpl impl = (Interop.VistaBridge.ShellItemImpl)parent.ComInterface;
 				ComInterface = new Interop.VistaBridge.ShellItemImpl(Shell32.ILCombine(impl.Pidl, pidl), true);
 			}
@@ -758,7 +751,8 @@ namespace BExplorer.Shell {
 
 				if (size == 0) {
 					hashValue = 0;
-				} else {
+				}
+				else {
 					byte[] pidlData = new byte[size];
 					Marshal.Copy(Pidl, pidlData, 0, (int)size);
 					byte[] hashData = ShellItem.hashProvider.ComputeHash(pidlData);
@@ -822,10 +816,8 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets the Desktop folder.
 		/// </summary>
-		public static ShellItem Desktop
-		{
-			get
-			{
+		public static ShellItem Desktop {
+			get {
 				if (m_Desktop == null) {
 					IShellItem item;
 					IntPtr pidl;
@@ -854,7 +846,8 @@ namespace BExplorer.Shell {
 		private static IShellItem CreateItemFromParsingName(string path) {
 			if (RunningVista) {
 				return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
-			} else {
+			}
+			else {
 				uint attributes = 0, eaten; IntPtr pidl;
 				Desktop.GetIShellFolder().ParseDisplayName(IntPtr.Zero, IntPtr.Zero, path, out eaten, out pidl, ref attributes);
 				return new Interop.VistaBridge.ShellItemImpl(pidl, true);
@@ -887,11 +880,11 @@ namespace BExplorer.Shell {
 		/// <param name="disposing">Whether the object is being disposed</param>
 		public virtual void Dispose(bool disposing) {
 			if (disposing) {
-			  if (ComInterface != null) {
-          if (this.Pidl != IntPtr.Zero)
-            Shell32.ILFree(this.Pidl);
-          Marshal.FinalReleaseComObject(ComInterface);
-        }
+				if (ComInterface != null) {
+					if (this.Pidl != IntPtr.Zero)
+						Shell32.ILFree(this.Pidl);
+					Marshal.FinalReleaseComObject(ComInterface);
+				}
 				ComInterface = null;
 			}
 		}
@@ -946,7 +939,8 @@ namespace BExplorer.Shell {
 				// create the new item. Folders other than Desktop don't
 				// seem to implement ParseDisplayName properly.
 				ComInterface = CreateItemFromParsingName(Path.Combine(parent.FileSystemPath, name));
-			} else {
+			}
+			else {
 				IShellFolder folder = parent.GetIShellFolder();
 				uint eaten;
 				IntPtr pidl;
@@ -1007,7 +1001,8 @@ namespace BExplorer.Shell {
 				if (separatorIndex != -1) {
 					knownFolder = path.Substring(0, separatorIndex);
 					restOfPath = path.Substring(separatorIndex + 1);
-				} else {
+				}
+				else {
 					knownFolder = path;
 					restOfPath = string.Empty;
 				}
@@ -1022,12 +1017,14 @@ namespace BExplorer.Shell {
 						if (lib != null)
 							ComInterface = lib.ComInterface;
 					}
-				} catch {
-                }
+				}
+				catch {
+				}
 
 				if (restOfPath != string.Empty)
 					ComInterface = this[restOfPath.Replace('/', '\\')].ComInterface;
-			} else
+			}
+			else
 				throw new InvalidOperationException("Invalid URI scheme");
 		}
 
@@ -1057,15 +1054,18 @@ namespace BExplorer.Shell {
 			else if (!path.StartsWith(@"\\")) {
 				if (path.Contains(":")) {
 					return new ShellItem(String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString()));
-				} else {
+				}
+				else {
 					try {
 						return new ShellItem($"{path}{Path.DirectorySeparatorChar}");
-					} catch (Exception) {
+					}
+					catch (Exception) {
 						return new ShellItem($"{path}{Path.DirectorySeparatorChar}");
 						throw;
 					}
 				}
-			} else
+			}
+			else
 				return new ShellItem(path);
 		} //TODO: Consider making this a constructor!
 
