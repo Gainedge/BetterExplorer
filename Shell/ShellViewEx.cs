@@ -2461,10 +2461,7 @@ namespace BExplorer.Shell
 		}
 		*/
 
-		public void RaiseRecycleBinUpdated()
-		{
-			this.ItemUpdated?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.RecycleBin, null, null, -1));
-		}
+		public void RaiseRecycleBinUpdated() => this.ItemUpdated?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.RecycleBin, null, null, -1));
 
 		public void RaiseItemUpdated(ItemUpdateType type, IListItemEx old, IListItemEx newItem, Int32 index)
 		{
@@ -4108,7 +4105,8 @@ namespace BExplorer.Shell
 			navigationThread.Start();
 		}
 
-		[Obsolete("Not Used")] //TODO: Not used, so use or delete
+		/*
+		[Obsolete("Not Used")]
 		private void NavigateNet(IListItemEx destination, Boolean isInSameTab = false, Boolean refresh = false, Boolean isCancel = false)
 		{
 			SaveSettingsToDatabase(this.CurrentFolder);
@@ -4248,6 +4246,7 @@ namespace BExplorer.Shell
 			this.Threads.Add(navigationThread);
 			navigationThread.Start();
 		}
+		*/
 
 		private Boolean LoadSettingsFromDatabase(IListItemEx directory, out FolderSettings folderSettings)
 		{
