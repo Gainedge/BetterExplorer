@@ -4446,12 +4446,9 @@ namespace BExplorer.Shell
 											this.RenameSelectedItem(existingItem.ItemIndex);
 										}
 									}
-									else
+									else if (this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Created, obj.Clone(true))))
 									{
-										if (this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Created, obj.Clone(true))))
-										{
-											this.UnvalidateDirectory();
-										}
+										this.UnvalidateDirectory();
 									}
 								}
 								break;
@@ -4459,17 +4456,17 @@ namespace BExplorer.Shell
 							case ShellNotifications.SHCNE.SHCNE_RMDIR:
 							case ShellNotifications.SHCNE.SHCNE_DELETE:
 								var objDelete = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-								if (this.CurrentFolder != null && (objDelete.Parent != null && (objDelete.Parent.Equals(this.CurrentFolder) || (objDelete.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName)))))
+								if (
+									(this.CurrentFolder != null && (objDelete.Parent != null && (objDelete.Parent.Equals(this.CurrentFolder) || (objDelete.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName)))))
+									&&
+									this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, objDelete.Clone()))
+								)
 								{
-									if (this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, objDelete.Clone())))
-									{
-										this.UnvalidateDirectory();
-										objDelete.Dispose();
-										this.RaiseRecycleBinUpdated();
-										break;
-									}
+									this.UnvalidateDirectory();
+									objDelete.Dispose();
+									this.RaiseRecycleBinUpdated();
+									break;
 								}
-								//this.RaiseRecycleBinUpdated();
 								break;
 
 							case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
@@ -4539,9 +4536,7 @@ namespace BExplorer.Shell
 
 							case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
 								if (this.CurrentFolder != null && this.CurrentFolder.ParsingName.Equals(KnownFolders.Computer.ParsingName))
-								{
 									this.InsertNewItem(FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1));
-								}
 								break;
 						}
 					}
@@ -4680,9 +4675,7 @@ namespace BExplorer.Shell
 				var column = -1;
 				this.HitTest(this.PointToClient(Cursor.Position), out row, out column);
 				if (row != -1 && this.Items[row].IsFolder)
-				{
 					ItemMiddleClick.Invoke(this, new NavigatedEventArgs(this.Items[row], this.Items[row]));
-				}
 			}
 		}
 
