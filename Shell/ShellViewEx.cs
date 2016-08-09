@@ -3708,19 +3708,17 @@ namespace BExplorer.Shell {
 						//args.FullPath
 						this._TemporaryFiles.Remove(args.FullPath);
 						var existingItem = this.Items.ToArray().FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
-						if (existingItem != null)
+
+						//if (this._TemporaryFiles.Count(c => c.Contains(Path.GetFileName(existingItem.ParsingName))) == 0)
+						if (existingItem != null && !this._TemporaryFiles.Any(c => c.Contains(Path.GetFileName(existingItem.ParsingName))))
 						{
-							if (this._TemporaryFiles.Count(c => c.Contains(Path.GetFileName(existingItem.ParsingName))) == 0)
-							{
-								this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, existingItem));
-								this.UnvalidateDirectory();
-							}
+							this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, existingItem));
+							this.UnvalidateDirectory();
 						}
 					};
-					this._FsWatcher.Renamed += (sender, args) =>
-					{
-					};
 
+					//TODO: Find out why we have this empty Event
+					this._FsWatcher.Renamed += (sender, args) => { };
 					this._FsWatcher.IncludeSubdirectories = false;
 					this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.Attributes |
 												   NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
@@ -5081,14 +5079,11 @@ namespace BExplorer.Shell {
 				var sho = Items.Count > index ? Items[index] : null;
 
 				Color? textColor = null;
-				if (sho != null && this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0 && !String.IsNullOrEmpty(sho.Extension))
+				if (sho != null && this.LVItemsColorCodes != null && this.LVItemsColorCodes.Any() && !String.IsNullOrEmpty(sho.Extension) &&
+					this.LVItemsColorCodes.Any(c => c.ExtensionList.Contains(sho.Extension)))
 				{
-					var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(sho.Extension)).Count() > 0;
-					if (extItemsAvailable)
-					{
-						var color = this.LVItemsColorCodes.SingleOrDefault(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).TextColor;
-						textColor = Color.FromArgb(color.A, color.R, color.G, color.B);
-					}
+					var color = this.LVItemsColorCodes.SingleOrDefault(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).TextColor;
+					textColor = Color.FromArgb(color.A, color.R, color.G, color.B);
 				}
 
 				#endregion Starting
@@ -5096,16 +5091,13 @@ namespace BExplorer.Shell {
 				switch (nmlvcd.nmcd.dwDrawStage)
 				{
 					case CustomDraw.CDDS_PREPAINT:
-
 						#region Case
 
 						m.Result = (IntPtr)(CustomDraw.CDRF_NOTIFYITEMDRAW | CustomDraw.CDRF_NOTIFYPOSTPAINT | 0x40);
 						break;
-
 					#endregion Case
 
 					case CustomDraw.CDDS_POSTPAINT:
-
 						#region Case
 
 						m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
@@ -5114,7 +5106,6 @@ namespace BExplorer.Shell {
 					#endregion Case
 
 					case CustomDraw.CDDS_ITEMPREPAINT:
-
 						#region Case
 
 						if ((nmlvcd.nmcd.uItemState & CDIS.DROPHILITED) == CDIS.DROPHILITED && index != _LastDropHighLightedItemIndex)
@@ -5145,7 +5136,6 @@ namespace BExplorer.Shell {
 					#endregion Case
 
 					case CustomDraw.CDDS_ITEMPREPAINT | CustomDraw.CDDS_SUBITEM:
-
 						#region Case
 
 						if (textColor == null)
