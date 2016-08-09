@@ -112,7 +112,7 @@ namespace BetterExplorer {
 
 		private IntPtr Handle;
 		private ObservableCollectionEx<LVItemColor> LVItemsColorCol { get; set; }
-		private Dictionary<String, Dictionary<IListItemEx, List<string>>> Badges { get; set; }
+		public Dictionary<String, Dictionary<IListItemEx, List<string>>> Badges { get; set; }
 		#endregion
 
 		public bool IsMultipleWindowsOpened { get; set; }
