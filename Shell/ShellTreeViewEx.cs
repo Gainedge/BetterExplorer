@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -8,35 +7,19 @@ using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using BExplorer.Shell.Interop;
 using F = System.Windows.Forms;
 using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
-
-	/*
-	public class NodeSorter : IComparer
-	{
-			public int Compare(object x, object y)
-			{
-					TreeNode tx = (TreeNode)x;
-					TreeNode ty = (TreeNode)y;
-					if (tx.Tag == null || ty.Tag == null)
-							return 0;
-
-					return (tx.Tag as IListItemEx).DisplayName.CompareTo((ty.Tag as IListItemEx).DisplayName);
-			}
-	}
-	*/
-
 	public partial class ShellTreeViewEx : UserControl {
 
 		#region Event Handlers
 
 		public event EventHandler<TreeNodeMouseClickEventArgs> NodeClick;
 		public event EventHandler<NavigatedEventArgs> AfterSelect;
+
 		#endregion Event Handlers
 
 		#region Public Members
@@ -123,9 +106,7 @@ namespace BExplorer.Shell {
 			ShellTreeView.Nodes.Add(favoritesRoot);
 			favoritesRoot.Expand();
 
-			ShellTreeView.Nodes.AddRange(new[] {
-								new TreeNode(), librariesRoot, new TreeNode(), computerRoot, new TreeNode(), networkRoot
-						});
+			ShellTreeView.Nodes.AddRange(new[] {new TreeNode(), librariesRoot, new TreeNode(), computerRoot, new TreeNode(), networkRoot});
 
 			librariesRoot.Expand();
 			computerRoot.Expand();
@@ -147,14 +128,14 @@ namespace BExplorer.Shell {
 				}
 				itemInfo.iSelectedImage = ShellItem.GetSystemImageListIndex(pidl, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 				this.UpdatedImages.Add(node);
-				User32.SendMessage(m_TreeViewHandle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW, 0, ref itemInfo);
+				User32.SendMessage(m_TreeViewHandle, MSG.TVM_SETITEMW, 0, ref itemInfo);
 			} catch (Exception) {
 			}
 		}
 
 		public TreeNode FromItem(IListItemEx item, TreeNode rootNode) {
 			foreach (TreeNode node in rootNode.Nodes) {
-				if ((node.Tag as IListItemEx) != null && (node.Tag as IListItemEx).Equals(item)) return node;
+				if (node.Tag as IListItemEx != null && (node.Tag as IListItemEx).Equals(item)) return node;
 				TreeNode next = FromItem(item, node);
 				if (next != null) return next;
 			}
@@ -163,7 +144,7 @@ namespace BExplorer.Shell {
 
 		public TreeNode FromItem(IListItemEx item) {
 			foreach (TreeNode node in this.ShellTreeView.Nodes) {
-				if ((node.Tag as IListItemEx) != null && (node.Tag as IListItemEx).Equals(item)) return node;
+				if (node.Tag as IListItemEx != null && (node.Tag as IListItemEx).Equals(item)) return node;
 				TreeNode next = FromItem(item, node);
 				if (next != null) return next;
 			}
@@ -194,9 +175,7 @@ namespace BExplorer.Shell {
 		public void SelItem(IListItemEx item) {
 			var node = this.FromItem(item);
 			if (node != null) {
-				this.BeginInvoke((Action)(() => {
-					this.ShellTreeView.SelectedNode = node;
-				}));
+				this.BeginInvoke((Action)(() => { this.ShellTreeView.SelectedNode = node; }));
 				return;
 			}
 
@@ -281,9 +260,9 @@ namespace BExplorer.Shell {
 			this.ShellTreeView.MouseMove += ShellListView_MouseMove;
 			this.ShellTreeView.MouseEnter += ShellTreeView_MouseEnter;
 			this.ShellTreeView.MouseLeave += ShellTreeView_MouseLeave;
-			this.ShellTreeView.MouseWheel += ShellTreeView_MouseWheel;
-			this.ShellTreeView.VerticalScroll += ShellTreeView_VerticalScroll;
-			this.ShellTreeView.BeforeSelect += ShellTreeView_BeforeSelect;
+			//this.ShellTreeView.MouseWheel += ShellTreeView_MouseWheel;
+			//this.ShellTreeView.VerticalScroll += ShellTreeView_VerticalScroll;
+			//this.ShellTreeView.BeforeSelect += ShellTreeView_BeforeSelect;
 			if (this.ShellListView != null) {
 				this.ShellListView.Navigated += ShellListView_Navigated;
 			}
@@ -297,10 +276,6 @@ namespace BExplorer.Shell {
 			imagesThread.Start();
 			childsThread = new Thread(new ThreadStart(LoadChilds)) { IsBackground = true };
 			childsThread.Start();
-		}
-
-		void ShellTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e) {
-
 		}
 
 		void ShellTreeView_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
@@ -328,16 +303,6 @@ namespace BExplorer.Shell {
 			}
 
 			base.OnGiveFeedback(e);
-		}
-
-		void ShellTreeView_VerticalScroll(object sender, EventArgs e) {
-			//childsQueue.Clear();
-			//imagesQueue.Clear();
-		}
-
-		void ShellTreeView_MouseWheel(object sender, MouseEventArgs e) {
-			//childsQueue.Clear();
-			//imagesQueue.Clear();
 		}
 
 		private void ShellTreeView_MouseLeave(object sender, EventArgs e) {
@@ -506,7 +471,6 @@ namespace BExplorer.Shell {
 						node = TreeNode.FromHandle(ShellTreeView, handle);
 						treeHandle = this.ShellTreeView.Handle;
 						if (node != null) visible = node.IsVisible;
-
 					}));
 				}
 
@@ -773,13 +737,12 @@ namespace BExplorer.Shell {
 
 		private void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
 			if (this.isFromTreeview) return;
-			var thread = new Thread(() => {
-				this.SelItem(e.Folder);
-			});
+			var thread = new Thread(() => { this.SelItem(e.Folder); });
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}
 
+		[Obsolete("Does nothing")]
 		private void ShellTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
 			IntPtr dataObjPtr = IntPtr.Zero;
 			var shellItem = ((e.Item as TreeNode).Tag as IListItemEx);

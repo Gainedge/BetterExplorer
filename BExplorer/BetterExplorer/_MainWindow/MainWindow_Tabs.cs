@@ -184,8 +184,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void btnResetFolderSettings_OnClick(object sender, RoutedEventArgs e) {
-			this.ResetFolderSettings();
-		}
+		private void btnResetFolderSettings_OnClick(object sender, RoutedEventArgs e) => this._ShellListView.ResetFolderSettings();
 	}
 }
