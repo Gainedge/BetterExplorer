@@ -1211,6 +1211,11 @@ namespace BetterExplorer
 		#endregion
 
 		#region On Startup
+		
+		/// <summary>
+		/// Gets the badges from the folder Badges located in the .EXE's directory and the badges from SQLite database
+		/// </summary>
+		/// <returns></returns>
 		private Dictionary<String, Dictionary<IListItemEx, List<string>>> LoadBadgesData() {
 			var result = new Dictionary<String, Dictionary<IListItemEx, List<string>>>();
 			var badgesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Badges");
@@ -1223,6 +1228,7 @@ namespace BetterExplorer
 
 				result.Add(item.DisplayName, innerDict);
 			}
+
 			try {
 				var m_dbConnection = new System.Data.SQLite.SQLiteConnection($"Data Source={this._DBPath};Version=3;");
 				m_dbConnection.Open();
@@ -1250,6 +1256,7 @@ namespace BetterExplorer
 			return result;
 		}
 
+		/// <summary>Adds</summary>
 		private void SetUpFavoritesMenu() {
 			Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
 				btnFavorites.Visibility = Visibility.Visible;
