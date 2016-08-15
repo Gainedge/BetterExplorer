@@ -303,7 +303,7 @@ namespace BetterExplorer {
 		}
 
 		private void SetupColumnsButton() {
-			var allAvailColls = this._ShellListView.AllAvailableColumns;
+			var allAvailColls = this._ShellListView.AllAvailableColumns.Values.ToList();
 			btnMoreColls.Items.Clear();
 			chcm.Items.Clear();
 

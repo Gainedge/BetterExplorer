@@ -116,6 +116,13 @@ namespace BExplorer.Shell.Interop {
     [DllImport("gdi32.dll", EntryPoint = "GetObject")]
     public static extern int GetObjectBitmap(IntPtr hObject, int nCount, [Out] IntPtr lpObject);
 
+		public static void GetBitmapDimentions(IntPtr ipd, out int width, out int height) {
+			// get the info about the HBITMAP inside the IPictureDisp
+			DIBSECTION dibsection = new DIBSECTION();
+			var res = GetObjectDIBSection(ipd, Marshal.SizeOf(dibsection), ref dibsection);
+			width = dibsection.dsBm.bmWidth;
+			height = dibsection.dsBm.bmHeight;
+		}
 
 		public static void ConvertPixelByPixel(IntPtr ipd, out int width, out int height) {
 			// get the info about the HBITMAP inside the IPictureDisp
@@ -143,6 +150,11 @@ namespace BExplorer.Shell.Interop {
 				}
 			}
 		}
+
+		[DllImport("user32.dll", EntryPoint = "GetDC", CharSet = CharSet.Auto)]
+		public static extern IntPtr GetDeviceContext(IntPtr hWnd);
+		[DllImport("gdi32", EntryPoint = "CreateCompatibleBitmap")]
+		public static extern IntPtr CreateCompatibleBitmap(IntPtr hDC, int nWidth, int nHeight);
 
 		public static void NativeDraw(IntPtr destDC, IntPtr hBitmap, int x, int y, int iconSize, Boolean isHidden = false) {
 			IntPtr destCDC = CreateCompatibleDC(destDC);

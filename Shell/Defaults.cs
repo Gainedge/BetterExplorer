@@ -341,6 +341,10 @@ namespace BExplorer.Shell {
 						{"A284", new Tuple<String, PROPERTYKEY, Type, int>("Frame rate", new PROPERTYKEY(){fmtid = Guid.Parse("64440491-4c8b-11d1-8b70-080036b11a03"), pid = 6}, typeof(String),75)},
 						{"A285", new Tuple<String, PROPERTYKEY, Type, int>("Frame width", new PROPERTYKEY(){fmtid = Guid.Parse("64440491-4c8b-11d1-8b70-080036b11a03"), pid = 3}, typeof(String),75)},
 						{"A286", new Tuple<String, PROPERTYKEY, Type, int>("Total bitrate", new PROPERTYKEY(){fmtid = Guid.Parse("64440491-4c8b-11d1-8b70-080036b11a03"), pid = 43}, typeof(String),75)},
+						{"A287", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("9b174b35-40ff-11d2-a27e-00c04fc30871"), pid = 7}, typeof(String),75)},
+						{"A288", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("4ac903f8-e780-4e4b-b7b8-4d00a99804fc"), pid = 100}, typeof(String),75)},
+						
+						
 			//disabled these because I have no idea what they are
 			//{"A287", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("1ce0d6bc-536c-4600-b0dd-7e0c66b350d5"), pid = 3}, typeof(String))},
 			//{"A288", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("1ce0d6bc-536c-4600-b0dd-7e0c66b350d5"), pid = 4}, typeof(String))},
@@ -368,8 +372,9 @@ namespace BExplorer.Shell {
 				column.cxMin = col.MinWidth;
 			return column;
 		}
-		public static List<Collumns> AvailableColumns(this ShellView view) {
-			return AllColumnsPKeys.Select(s => new Collumns() { ID = s.Key, CollumnType = s.Value.Item3, pkey = s.Value.Item2, Name = s.Value.Item1, Width = s.Value.Item4, IsColumnHandler = false, MinWidth = s.Value.Item4 }).ToList();
+		public static Dictionary<PROPERTYKEY,Collumns> AvailableColumns(this ShellView view) {
+			var i = 0;
+			return AllColumnsPKeys.Select(s => new Collumns() { ID = s.Key, CollumnType = s.Value.Item3, pkey = s.Value.Item2, Name = s.Value.Item1, Width = s.Value.Item4, IsColumnHandler = false, MinWidth = s.Value.Item4, Index = i++ }).ToDictionary(k => k.pkey, e => e);
 		}
 	}
 
@@ -389,11 +394,16 @@ namespace BExplorer.Shell {
 		public static PROPERTYKEY FileSize = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 12 };
 		public static PROPERTYKEY LinkTarget = new PROPERTYKEY() { fmtid = Guid.Parse("b9b4b3fc-2b51-4a42-b5d8-324146afcf25"), pid = 2 };
 		public static PROPERTYKEY FileType = new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 };
+		public static PROPERTYKEY DriveFreeSpace = new PROPERTYKEY() { fmtid = Guid.Parse("9b174b35-40ff-11d2-a27e-00c04fc30871"), pid = 7 };
 
 		public static PROPERTYKEY PerceivedType = new PROPERTYKEY() {
 			fmtid = Guid.Parse("28636aa6-953d-11d2-b5d6-00c04fd918d0"),
 			pid = 9
 		};
 
+	}
+
+	public static class SpecialProperties {
+		public static PROPERTYKEY PropListTileInfo = new PROPERTYKEY() { fmtid = Guid.Parse("C9944A21-A406-48FE-8225-AEC7E24C211B"), pid = 3 };
 	}
 }

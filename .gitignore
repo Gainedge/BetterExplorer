@@ -250,3 +250,5 @@ BExplorer/BetterExplorer/BEH32.lib
 _ReSharper.Caches/
 packages/
 .idea.BExplorer/
+*.opendb
+*.db

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using ThumbnailGenerator;
+using Size = System.Drawing.Size;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
 
@@ -189,6 +190,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		public FileSystemListItem() {
 			this.GroupIndex = -1;
 			this.ItemIndex = -1;
+			this.IconIndex = -1;
+			this.ColumnValues = new Dictionary<PROPERTYKEY, Object>();
 		}
 
 		IListItemEx[] IListItemEx.GetSubItems(bool isEnumHidden) {
@@ -245,6 +248,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		}
 
 		public HResult NavigationStatus { get; set; }
+
+		public Size IconSize { get; set; }
 
 		public IEnumerator<IListItemEx> GetEnumerator() {
 			IShellFolder folder = this.GetIShellFolder();
@@ -335,15 +340,12 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		}
 
 		public IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false) {
-			//var bmp = this._Item.Thumbnail.GetHBitmap(iconSize, isThumbnail, isForce);
-			//return bmp;
 			ThumbnailOptions options = ThumbnailOptions.None;
 			if (isThumbnail) {
 				options = ThumbnailOptions.ThumbnailOnly;
 				if (!isForce)
 					options |= ThumbnailOptions.InCacheOnly;
-			}
-			else {
+			} else {
 				options |= ThumbnailOptions.IconOnly;
 			}
 			return WindowsThumbnailProvider.GetThumbnail(this.PIDL, iconSize, iconSize, options);
@@ -386,7 +388,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags) => this._Item.Thumbnail.RefreshThumbnail((uint)iconSize, out flags);
 
-		public IntPtr Icon { get; set; }
+		public Int32 IconIndex { get; set; }
 
 		public int GetUniqueID() => this.ParsingName.GetHashCode();
 

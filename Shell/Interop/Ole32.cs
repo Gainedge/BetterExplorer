@@ -31,8 +31,10 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("ole32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern HResult CoCreateInstance(Guid rclsid, IntPtr pUnkOuter, CLSCTX dwClsContext, Guid riid, out IntPtr ppv);
 
-    /// <returns>If function succeeds, it returns 0(S_OK). Otherwise, it returns an error code.</returns>
-    [DllImport("ole32.dll", CharSet = CharSet.Auto, SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+		
+
+		/// <returns>If function succeeds, it returns 0(S_OK). Otherwise, it returns an error code.</returns>
+		[DllImport("ole32.dll", CharSet = CharSet.Auto, SetLastError = true, CallingConvention = CallingConvention.StdCall)]
     public static extern HResult CoInitializeEx(
         [In, Optional]  IntPtr pvReserved,
         [In]  COINIT dwCoInit //DWORD

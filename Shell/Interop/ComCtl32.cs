@@ -47,5 +47,10 @@ namespace BExplorer.Shell.Interop {
 
 		[DllImport("comctl32.dll", EntryPoint = "InitCommonControlsEx", CallingConvention = CallingConvention.StdCall)]
 		public static extern bool InitCommonControlsEx(ref INITCOMMONCONTROLSEX iccex);
+
+		[DllImport("comctl32.dll", SetLastError = true)]
+		public static extern IntPtr ImageList_Create(int cx, int cy, uint flags, int cInitial, int cGrow);
+		[DllImport("comctl32.dll", EntryPoint = "ImageList_Destroy")]
+		public static extern bool IntImageList_Destroy(IntPtr himl);
 	}
 }

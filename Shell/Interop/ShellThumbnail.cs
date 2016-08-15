@@ -199,7 +199,7 @@ namespace BExplorer.Shell.Interop
             return flags;
         }
 
-        private IntPtr GetHBitmap(System.Windows.Size size, Boolean isCopyItem = false)
+        public IntPtr GetHBitmap(System.Windows.Size size, Boolean isCopyItem = false)
         {
             if (shellItemNative == null) return IntPtr.Zero;
             // Create a size structure to pass to the native method

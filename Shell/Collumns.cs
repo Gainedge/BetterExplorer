@@ -18,6 +18,7 @@ namespace BExplorer.Shell
 		public string Name { get; set; }
 		public int Width { get; set; }
 		public Boolean IsColumnHandler { get; set; }
+		public int Index { get; set; }
 
 		public Type CollumnType { get; set; }
 		public int MinWidth { get; set; }

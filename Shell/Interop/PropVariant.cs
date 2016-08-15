@@ -785,10 +785,10 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Finalizer
 		/// </summary>
-		~PropVariant()
-		{
-			Dispose();
-		}
+		//~PropVariant()
+		//{
+		//	Dispose();
+		//}
 
 		#endregion
 

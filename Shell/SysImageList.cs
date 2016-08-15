@@ -7,6 +7,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Windows.Media.Effects;
+using Size = System.Drawing.Size;
 
 namespace BExplorer.Shell {
 
@@ -21,6 +23,13 @@ namespace BExplorer.Shell {
 
 		[DllImport("shell32.dll", EntryPoint = "#727")]
 		public extern static int SHGetImageList(ImageListSize iImageList, ref Guid riid, out IImageList2 ppv);
+
+		[DllImport("shell32.dll", EntryPoint = "#727")]
+		public extern static int SHGetImageListHandle(
+								 ImageListSize iImageList,
+								 ref Guid riid,
+								 ref IntPtr handle
+								 );
 
 		//[DllImport("user32.dll", EntryPoint = "SetWindowLong")]
 		//public extern static IntPtr SetWindowLongPtr(IntPtr hwnd, int nIndex, IntPtr newValue);
@@ -154,48 +163,48 @@ namespace BExplorer.Shell {
 		//[DllImport("gdi32.dll", EntryPoint = "BitBlt", CharSet = CharSet.Auto)]
 		//public static extern bool BitBlt(IntPtr hdcDst, int xDst, int yDsk, int width, int height, IntPtr hdcSrc, int xSrc, int ySrc, int rasterOp);
 		/*
-		public static System.Drawing.Rectangle GetTotalBound(){
-				int x, y, w, h;
-				int minX = 0, maxX = 0, minY = 0, maxY = 0;
-				foreach(Screen s in Screen.AllScreens){
-						x = s.Bounds.X;
-						y = s.Bounds.Y;
-						w = s.Bounds.X + s.Bounds.Width;
-						h = s.Bounds.Y + s.Bounds.Height;
-						if(x < minX)
-								minX = x;
-						if(y < minY)
-								minY = y;
-						if(maxX < w)
-								maxX = w;
-						if(maxY < h)
-								maxY = h;
-				}
-				System.Drawing.Rectangle r = new System.Drawing.Rectangle(minX, minY, maxX - minX, maxY - minY);
-				return r;
+public static System.Drawing.Rectangle GetTotalBound(){
+		int x, y, w, h;
+		int minX = 0, maxX = 0, minY = 0, maxY = 0;
+		foreach(Screen s in Screen.AllScreens){
+				x = s.Bounds.X;
+				y = s.Bounds.Y;
+				w = s.Bounds.X + s.Bounds.Width;
+				h = s.Bounds.Y + s.Bounds.Height;
+				if(x < minX)
+						minX = x;
+				if(y < minY)
+						minY = y;
+				if(maxX < w)
+						maxX = w;
+				if(maxY < h)
+						maxY = h;
 		}
-			   
-		public static Bitmap GetDesktopBitmap(){
-				System.Drawing.Rectangle rect = GetTotalBound();
-				Bitmap bitmap = new Bitmap(rect.Width, rect.Height);
-				Graphics g = Graphics.FromImage(bitmap);
-				IntPtr desktopHandle = IntPtr.Zero;
-				IntPtr desktopDeviceContext = IntPtr.Zero;
-				IntPtr imageDeviceContext = IntPtr.Zero;
-				try{
-						desktopHandle = GetDesktopWindow();
-						desktopDeviceContext = GetDeviceContext(desktopHandle);
-						imageDeviceContext = g.GetHdc();
-						BitBlt(imageDeviceContext, 0, 0, rect.Width, rect.Height, desktopDeviceContext, rect.X, rect.Y, 0xCC0020);
-				}finally{
-						ReleaseDeviceContext(desktopHandle, desktopDeviceContext);
-						if(imageDeviceContext != IntPtr.Zero){
-								g.ReleaseHdc(imageDeviceContext);
-						}
+		System.Drawing.Rectangle r = new System.Drawing.Rectangle(minX, minY, maxX - minX, maxY - minY);
+		return r;
+}
+
+public static Bitmap GetDesktopBitmap(){
+		System.Drawing.Rectangle rect = GetTotalBound();
+		Bitmap bitmap = new Bitmap(rect.Width, rect.Height);
+		Graphics g = Graphics.FromImage(bitmap);
+		IntPtr desktopHandle = IntPtr.Zero;
+		IntPtr desktopDeviceContext = IntPtr.Zero;
+		IntPtr imageDeviceContext = IntPtr.Zero;
+		try{
+				desktopHandle = GetDesktopWindow();
+				desktopDeviceContext = GetDeviceContext(desktopHandle);
+				imageDeviceContext = g.GetHdc();
+				BitBlt(imageDeviceContext, 0, 0, rect.Width, rect.Height, desktopDeviceContext, rect.X, rect.Y, 0xCC0020);
+		}finally{
+				ReleaseDeviceContext(desktopHandle, desktopDeviceContext);
+				if(imageDeviceContext != IntPtr.Zero){
+						g.ReleaseHdc(imageDeviceContext);
 				}
-				return bitmap;
 		}
-		*/
+		return bitmap;
+}
+*/
 
 		[DllImport("USER32.DLL", EntryPoint = "DestroyIcon", CharSet = CharSet.Auto)]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -219,34 +228,34 @@ namespace BExplorer.Shell {
 	}
 
 	/*
-	public enum IconSize {
-		Large = 0x0,
-		Small = 0x1,
-	}
-	*/
+public enum IconSize {
+	Large = 0x0,
+	Small = 0x1,
+}
+*/
 
 	[Flags]
 	public enum SHGetFileInfoOptions : uint {
-		Icon = 0x000000100,					// get icon
-		DisplayName = 0x000000200,			// get display name
-		TypeName = 0x000000400,				// get type name
-		Attributes = 0x000000800,			// get attributes
-		IconLocation = 0x000001000,			// get icon location
-		ExeType = 0x000002000,				// return exe type
-		SysIconIndex = 0x000004000,			// get system icon index
-		LinkOverlay = 0x000008000,			// put a link overlay on icon
-		Selected = 0x000010000,				// show icon in selected state
-		// (NTDDI_VERSION >= NTDDI_WIN2K)
-		SpecifiedAttributes = 0x000020000,	// get only specified attributes
-		LargeIcon = 0x000000000,			// get large icon
-		SmallIcon = 0x000000001,			// get small icon
-		OpenIcon = 0x000000002,				// get open icon
-		ShellIconSize = 0x000000004,		// get shell size icon
-		Pidl = 0x000000008,					// pszPath is a pidl
+		Icon = 0x000000100,                 // get icon
+		DisplayName = 0x000000200,          // get display name
+		TypeName = 0x000000400,             // get type name
+		Attributes = 0x000000800,           // get attributes
+		IconLocation = 0x000001000,         // get icon location
+		ExeType = 0x000002000,              // return exe type
+		SysIconIndex = 0x000004000,         // get system icon index
+		LinkOverlay = 0x000008000,          // put a link overlay on icon
+		Selected = 0x000010000,             // show icon in selected state
+																				// (NTDDI_VERSION >= NTDDI_WIN2K)
+		SpecifiedAttributes = 0x000020000,  // get only specified attributes
+		LargeIcon = 0x000000000,            // get large icon
+		SmallIcon = 0x000000001,            // get small icon
+		OpenIcon = 0x000000002,             // get open icon
+		ShellIconSize = 0x000000004,        // get shell size icon
+		Pidl = 0x000000008,                 // pszPath is a pidl
 		UseFileAttributes = 0x000000010,    // use passed dwFileAttribute
-		// (_WIN32_IE >= 0x0500)
-		AddOverlays = 0x000000020,			// apply the appropriate overlays
-		OverlayIndex = 0x000000040,			// Get the index of the overlay
+																				// (_WIN32_IE >= 0x0500)
+		AddOverlays = 0x000000020,          // apply the appropriate overlays
+		OverlayIndex = 0x000000040,         // Get the index of the overlay
 	}
 
 
@@ -267,24 +276,23 @@ namespace BExplorer.Shell {
 	/// A wrapper of IImageList.
 	/// </summary>
 	/// <remarks>
-	/// This works on XP or higher.
 	/// </remarks>
-	internal class ImageList : IDisposable {
+	public class ImageList : IDisposable {
 
 		/*
-		#region SHFileInfo
-		//[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-		//public struct SHFileInfo {
-		//	public IntPtr hIcon;
-		//	public int iIcon;
-		//	public uint dwAttributes;
-		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-		//	public string szDisplayName;
-		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-		//	public string szTypeName;
-		//}
-		#endregion
-		*/
+#region SHFileInfo
+//[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+//public struct SHFileInfo {
+//	public IntPtr hIcon;
+//	public int iIcon;
+//	public uint dwAttributes;
+//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+//	public string szDisplayName;
+//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+//	public string szTypeName;
+//}
+#endregion
+*/
 
 		#region Locals
 
@@ -298,56 +306,56 @@ namespace BExplorer.Shell {
 		#region Property
 
 		/*
-		public void SetSize(int size) {
-			ImageList_Destroy(this.Handle);
-			this._ImageList = Marshal.GetObjectForIUnknown(ImageList_Create(size, size, 0x00020000 | 0x00000020, 30, 30)) as IImageList2;
-			this._ImageList.SetImageCount(3000);
-		}
-		
-		private Lazy<Int32Size> _SizePixels;
+public void SetSize(int size) {
+	ImageList_Destroy(this.Handle);
+	this._ImageList = Marshal.GetObjectForIUnknown(ImageList_Create(size, size, 0x00020000 | 0x00000020, 30, 30)) as IImageList2;
+	this._ImageList.SetImageCount(3000);
+}
 
-		public ImageListSize Size {
-			get {
-				return this._Size;
-			}
-		}
+private Lazy<Int32Size> _SizePixels;
 
-		public int Width {
-			get {
-				return this._SizePixels.Value.Width;
-			}
-		}
+public ImageListSize Size {
+	get {
+		return this._Size;
+	}
+}
 
-		public int Height {
-			get {
-				return this._SizePixels.Value.Height;
-			}
-		}
-		*/
+public int Width {
+	get {
+		return this._SizePixels.Value.Width;
+	}
+}
 
-		/*
-		private IntPtr Handle {
-			get {
-				return Marshal.GetIUnknownForObject(this._ImageList);
-			}
-		}
-		*/
+public int Height {
+	get {
+		return this._SizePixels.Value.Height;
+	}
+}
+*/
 
 		/*
-		public static ImageListSize MaxSize {
-			get {
-				if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
-					if (Environment.OSVersion.Version.Major >= 6) {
-						return ImageListSize.Jumbo;
-					}
-					else {
-						return ImageListSize.ExtraLarge;
-					}
-				}
+private IntPtr Handle {
+	get {
+		return Marshal.GetIUnknownForObject(this._ImageList);
+	}
+}
+*/
+
+		/*
+public static ImageListSize MaxSize {
+	get {
+		if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
+			if (Environment.OSVersion.Version.Major >= 6) {
 				return ImageListSize.Jumbo;
 			}
+			else {
+				return ImageListSize.ExtraLarge;
+			}
 		}
-		*/
+		return ImageListSize.Jumbo;
+	}
+}
+*/
 
 		#endregion
 
@@ -355,24 +363,24 @@ namespace BExplorer.Shell {
 
 
 		/*
-		[Obsolete("Consider Inlining")]
-		private int GetIconIndex(IntPtr path) {
-			var options = SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.Pidl;
-			var shfi = new SHFILEINFO();
-			var shfiSize = Marshal.SizeOf(shfi.GetType());
-			IntPtr retVal = Win32Api.SHGetFileInfo(path, FileAttributes.None, ref shfi, shfiSize, options);
-			if (shfi.hIcon != IntPtr.Zero) {
-				Win32Api.DestroyIcon(shfi.hIcon);
-			}
+[Obsolete("Consider Inlining")]
+private int GetIconIndex(IntPtr path) {
+	var options = SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.Pidl;
+	var shfi = new SHFILEINFO();
+	var shfiSize = Marshal.SizeOf(shfi.GetType());
+	IntPtr retVal = Win32Api.SHGetFileInfo(path, FileAttributes.None, ref shfi, shfiSize, options);
+	if (shfi.hIcon != IntPtr.Zero) {
+		Win32Api.DestroyIcon(shfi.hIcon);
+	}
 
-			if (retVal.Equals(IntPtr.Zero)) {
-				throw new Win32Exception(Marshal.GetLastWin32Error());
-			}
-			else {
-				return shfi.iIcon;
-			}
-		}
-		*/
+	if (retVal.Equals(IntPtr.Zero)) {
+		throw new Win32Exception(Marshal.GetLastWin32Error());
+	}
+	else {
+		return shfi.iIcon;
+	}
+}
+*/
 
 
 		/// <summary>
@@ -394,38 +402,37 @@ namespace BExplorer.Shell {
 				//throw new Win32Exception(Marshal.GetLastWin32Error());
 				overlayIndex = 0;
 				return 0;
-			}
-			else {
+			} else {
 				/* brakes stack on optimized build
-				int idx = shfi.iIcon & 0xFFFFFF;
-				int iOverlay = shfi.iIcon >> 24;
-				overlayIndex = iOverlay;
-				return idx;
-				*/
+int idx = shfi.iIcon & 0xFFFFFF;
+int iOverlay = shfi.iIcon >> 24;
+overlayIndex = iOverlay;
+return idx;
+*/
 				overlayIndex = shfi.iIcon >> 24;
 				return shfi.iIcon & 0xFFFFFF;
 			}
 		}
 
 		/*
-		public IntPtr GetHIcon(int index) {
-			IntPtr hIcon;
-			var hresult = this._ImageList.GetIcon(index, ImageListDrawOptions.PreserveAlpha, out hIcon);
-			Marshal.ThrowExceptionForHR(hresult);
-			if (hIcon != IntPtr.Zero) {
-				return hIcon;
-			}
-			else {
-				throw new Win32Exception();
-			}
-		}
-		*/
+public IntPtr GetHIcon(int index) {
+	IntPtr hIcon;
+	var hresult = this._ImageList.GetIcon(index, ImageListDrawOptions.PreserveAlpha, out hIcon);
+	Marshal.ThrowExceptionForHR(hresult);
+	if (hIcon != IntPtr.Zero) {
+		return hIcon;
+	}
+	else {
+		throw new Win32Exception();
+	}
+}
+*/
 
 		/*
-		public Icon GetIcon(int index) {
-			return this.GetIcon(index, ImageListDrawOptions.Async);
-		}
-		*/
+public Icon GetIcon(int index) {
+	return this.GetIcon(index, ImageListDrawOptions.Async);
+}
+*/
 
 		public Icon GetIcon(int index, ImageListDrawOptions options = ImageListDrawOptions.Async) {
 			IntPtr hIcon;
@@ -439,72 +446,71 @@ namespace BExplorer.Shell {
 		}
 
 		/*
-		public Icon GetIcon(IntPtr path) {
-			return this.GetIcon(path, ImageListDrawOptions.Normal);
-		}
-		*/
+public Icon GetIcon(IntPtr path) {
+	return this.GetIcon(path, ImageListDrawOptions.Normal);
+}
+*/
 
 		/*
-		[Obsolete("Not Used", true)]
-		public Icon GetIcon(IntPtr path, ImageListDrawOptions options = ImageListDrawOptions.Normal) {
-			return this.GetIcon(this.GetIconIndex(path), options);
-		}
-		*/
+[Obsolete("Not Used", true)]
+public Icon GetIcon(IntPtr path, ImageListDrawOptions options = ImageListDrawOptions.Normal) {
+	return this.GetIcon(this.GetIconIndex(path), options);
+}
+*/
 
 		/*
-		[Obsolete("Not Used", true)]
-		public struct Int32Size {
-			public static Int32Size Empty {
-				get { return new Int32Size(); }
-			}
+[Obsolete("Not Used", true)]
+public struct Int32Size {
+	public static Int32Size Empty {
+		get { return new Int32Size(); }
+	}
 
-			public int Width { get; set; }
-			public int Height { get; set; }
+	public int Width { get; set; }
+	public int Height { get; set; }
 
-			public Int32Size(int width, int height)
-				: this() {
-				Width = width;
-				Height = height;
-			}
-		}
-		*/
+	public Int32Size(int width, int height)
+		: this() {
+		Width = width;
+		Height = height;
+	}
+}
+*/
 
 		/*
-		[Obsolete("Not Used, Try to Delete!!!", true)]
-		private Int32Size GetSizePixels() {
-			int x;
-			int y;
-			var hresult = this._ImageList.GetIconSize(out x, out y);
-			Marshal.ThrowExceptionForHR(hresult);
-			return new Int32Size(x, y);
-		}
-		*/
+[Obsolete("Not Used, Try to Delete!!!", true)]
+private Int32Size GetSizePixels() {
+	int x;
+	int y;
+	var hresult = this._ImageList.GetIconSize(out x, out y);
+	Marshal.ThrowExceptionForHR(hresult);
+	return new Int32Size(x, y);
+}
+*/
 
 		public void DrawOverlay(IntPtr hdc, int overlayIndex, Point location, int newSize = -1) {
 			DrawInternal(hdc, GetIndexOfOverlay(overlayIndex), 0, ImageListDrawOptions.Normal | ImageListDrawOptions.Transparent, ImageListDrawStates.Normal, 0, location, newSize);
 		}
 
-		public void DrawIcon(IntPtr hdc, int index, Point location, int newSize = -1) {
-			DrawInternal(hdc, index, 0, ImageListDrawOptions.Normal | ImageListDrawOptions.Transparent, ImageListDrawStates.Normal, 0, location, newSize);
+		public void DrawIcon(IntPtr hdc, int index, Point location, int newSize = -1, Boolean hidden = false) {
+			DrawInternal(hdc, index, 0, hidden ? ImageListDrawOptions.Selected | ImageListDrawOptions.Transparent : ImageListDrawOptions.Image | ImageListDrawOptions.Transparent, ImageListDrawStates.Alpha, hidden ? 192 : 255, location, newSize);
 		}
 
 		/*
-		[Obsolete("Not Used, Try to Delete!!!", true)]
-		public void Draw(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions options, Point location, int newSize = -1) {
-			this.DrawInternal(hdc, index, overlayIndex, options, ImageListDrawStates.Normal, 0, location, newSize);
-		}
-		*/
+[Obsolete("Not Used, Try to Delete!!!", true)]
+public void Draw(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions options, Point location, int newSize = -1) {
+	this.DrawInternal(hdc, index, overlayIndex, options, ImageListDrawStates.Normal, 0, location, newSize);
+}
+*/
 
 		private void DrawInternal(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions options, ImageListDrawStates state, int alpha, Point location, int newSize) {
 			var param = new IMAGELISTDRAWPARAMS() {
 				//himl = this.Handle;
-				himl = Marshal.GetIUnknownForObject(this._ImageList),
+				himl = this.Handle,
 				hdcDst = hdc,
 				rgbBk = -1,
 				i = index,
 				x = location.X,
 				y = location.Y,
-
 				fStyle = ((int)options | (overlayIndex << 8) | (newSize == -1 ? 0 : (int)ImageListDrawOptions.Scale)),
 				fState = state,
 				Frame = alpha
@@ -525,15 +531,15 @@ namespace BExplorer.Shell {
 		}
 
 		/*
-		[Obsolete("Not Used, Try to Delete!!!", true)]
-		[DllImport("comctl32.dll", SetLastError = true)]
-		static extern IntPtr ImageList_Create(int cx, int cy, uint flags, int cInitial, int cGrow);
+[Obsolete("Not Used, Try to Delete!!!", true)]
+[DllImport("comctl32.dll", SetLastError = true)]
+static extern IntPtr ImageList_Create(int cx, int cy, uint flags, int cInitial, int cGrow);
 
-		[Obsolete("Not Used, Try to Delete!!!", true)]
-		[DllImport("Comctl32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		public static extern bool ImageList_Destroy(IntPtr himl);
-		*/
-
+[Obsolete("Not Used, Try to Delete!!!", true)]
+[DllImport("Comctl32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+public static extern bool ImageList_Destroy(IntPtr himl);
+*/
+		public IntPtr Handle { get; set; }
 		#endregion
 
 		#region IDisposable
@@ -541,6 +547,7 @@ namespace BExplorer.Shell {
 		private bool _Disposed = false;
 
 		public void Dispose() {
+			ComCtl32.IntImageList_Destroy(this.Handle);
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
@@ -563,8 +570,64 @@ namespace BExplorer.Shell {
 		public ImageList(ImageListSize size) {
 			//this._Size = size;
 			//this._SizePixels = new Lazy<Int32Size>(this.GetSizePixels);
+			var handle = IntPtr.Zero;
 			var hresult = Win32Api.SHGetImageList(size, ref IID_ImageList2, out this._ImageList);
+			Win32Api.SHGetImageListHandle(size, ref IID_ImageList2, ref handle);
+			this.Handle = handle;
 			Marshal.ThrowExceptionForHR(hresult);
+		}
+
+		public ImageList(Int32 size) {
+			var CLSID_ImageList = Guid.Parse("7C476BA2-02B1-48f4-8048-B24619DDC058");
+			var refIImageList2 = typeof(IImageList).GUID;
+			var IID_IUnknown = new Guid("00000000-0000-0000-C000-000000000046");
+			var ptr = IntPtr.Zero;
+			//var result = Ole32.CoCreateInstance(ref CLSID_ImageList, IntPtr.Zero, Ole32.CLSCTX.INPROC_SERVER, ref IID_IUnknown, out ptr);
+			ptr = ComCtl32.ImageList_Create(size, size, 0x00000020 | 0x00010000 | 0x00020000, 0, 1);
+			this._ImageList = (IImageList2)Marshal.GetObjectForIUnknown(ptr);
+			this.Handle = ptr;
+		}
+
+		public void ExpandImageList(Int32 count) {
+			this._ImageList.SetImageCount(count);
+		}
+
+		public Int32 AddImage(IntPtr hBitmap) {
+			var index = this.GetCount();
+		  
+      this._ImageList.SetImageCount(index + 1);
+      this._ImageList.Replace2(index, hBitmap, IntPtr.Zero, IntPtr.Zero, 0x0001 | 0x0010);
+      return index;
+		}
+
+		public void SetSize(Int32 size) {
+			this._ImageList.SetIconSize(size, size);
+		}
+
+		public void ReplaceImage(Int32 index, IntPtr hBitmap) {
+		  if (index > this.GetCount()) return;
+			this._ImageList.Replace2(index, hBitmap, IntPtr.Zero, IntPtr.Zero, 0x0001 | 0x0010);
+		}
+
+    public void SetOverlayImage(Int32 index, Int32 overlay) {
+      this._ImageList.SetOverlayImage(index, overlay);
+    }
+
+    public Int32 GetCount() {
+			var count = -1;
+			this._ImageList.GetImageCount(ref count);
+			return count;
+		}
+
+		public Size GetOriginalImageSize(Int32 index) {
+			Int32 width = 0;
+			Int32 height = 0;
+			this._ImageList.GetOriginalSize(index, 0x00000000, out width, out height);
+			return new Size(width, height);
+		}
+
+		public void SetOriginalImageSize(Int32 index, Int32 width, Int32 height) {
+			this._ImageList.SetOriginalSize(index, width, height);
 		}
 
 	}
@@ -677,177 +740,385 @@ namespace BExplorer.Shell {
 	public interface IImageList {
 		[PreserveSig]
 		int Add(
-			IntPtr hbmImage,
-			IntPtr hbmMask,
-			ref int pi);
+				IntPtr hbmImage,
+				IntPtr hbmMask,
+				ref int pi);
 
 		[PreserveSig]
 		int ReplaceIcon(
-			int i,
-			IntPtr hicon,
-			ref int pi);
+				int i,
+				IntPtr hicon,
+				ref int pi);
 
 		[PreserveSig]
 		int SetOverlayImage(
-			int iImage,
-			int iOverlay);
+				int iImage,
+				int iOverlay);
 
 		[PreserveSig]
 		int Replace(
-			int i,
-			IntPtr hbmImage,
-			IntPtr hbmMask);
+				int i,
+				IntPtr hbmImage,
+				IntPtr hbmMask);
 
 		[PreserveSig]
 		int AddMasked(
-			IntPtr hbmImage,
-			int crMask,
-			ref int pi);
+				IntPtr hbmImage,
+				int crMask,
+				ref int pi);
 
 		[PreserveSig]
 		int Draw(
-			ref IMAGELISTDRAWPARAMS pimldp);
+				ref IMAGELISTDRAWPARAMS pimldp);
 
 		[PreserveSig]
 		int Remove(
-			int i);
+				int i);
 
 		[PreserveSig]
 		int GetIcon(
-			int i,
-			ImageListDrawOptions flags,
-			out IntPtr picon);
+				int i,
+				ImageListDrawOptions flags,
+				out IntPtr picon);
 
 		[PreserveSig]
 		int GetImageInfo(
-			int i,
-			ref IMAGEINFO pImageInfo);
+				int i,
+				ref IMAGEINFO pImageInfo);
 
 		[PreserveSig]
 		int Copy(
-			int iDst,
-			IImageList punkSrc,
-			int iSrc,
-			int uFlags);
+				int iDst,
+				IImageList punkSrc,
+				int iSrc,
+				int uFlags);
 
 		[PreserveSig]
 		int Merge(
-			int i1,
-			IImageList punk2,
-			int i2,
-			int dx,
-			int dy,
-			ref Guid riid,
-			ref IntPtr ppv);
+				int i1,
+				IImageList punk2,
+				int i2,
+				int dx,
+				int dy,
+				ref Guid riid,
+				ref IntPtr ppv);
 
 		[PreserveSig]
 		int Clone(
-			ref Guid riid,
-			ref IntPtr ppv);
+				ref Guid riid,
+				ref IntPtr ppv);
 
 		[PreserveSig]
 		int GetImageRect(
-			int i,
-			ref Rectangle prc);
+				int i,
+				ref Rectangle prc);
 
 		[PreserveSig]
 		int GetIconSize(
-			out int cx,
-			out int cy);
+				out int cx,
+				out int cy);
 
 		[PreserveSig]
 		int SetIconSize(
-			int cx,
-			int cy);
+				int cx,
+				int cy);
 
 		[PreserveSig]
 		int GetImageCount(
-			ref int pi);
+				ref int pi);
 
 		[PreserveSig]
 		int SetImageCount(
-			int uNewCount);
+				int uNewCount);
 
 		[PreserveSig]
 		int SetBkColor(
-			int clrBk,
-			ref int pclr);
+				int clrBk,
+				ref int pclr);
 
 		[PreserveSig]
 		int GetBkColor(
-			ref int pclr);
+				ref int pclr);
 
 		[PreserveSig]
 		int BeginDrag(
-			int iTrack,
-			int dxHotspot,
-			int dyHotspot);
+				int iTrack,
+				int dxHotspot,
+				int dyHotspot);
 
 		[PreserveSig]
 		int EndDrag();
 
 		[PreserveSig]
 		int DragEnter(
-			IntPtr hwndLock,
-			int x,
-			int y);
+				IntPtr hwndLock,
+				int x,
+				int y);
 
 		[PreserveSig]
 		int DragLeave(
-			IntPtr hwndLock);
+				IntPtr hwndLock);
 
 		[PreserveSig]
 		int DragMove(
-			int x,
-			int y);
+				int x,
+				int y);
 
 		[PreserveSig]
 		int SetDragCursorImage(
-			ref IImageList punk,
-			int iDrag,
-			int dxHotspot,
-			int dyHotspot);
+				ref IImageList punk,
+				int iDrag,
+				int dxHotspot,
+				int dyHotspot);
 
 		[PreserveSig]
 		int DragShowNolock(
-			int fShow);
+				int fShow);
 
 		[PreserveSig]
 		int GetDragImage(
-			ref Point ppt,
-			ref Point pptHotspot,
-			ref Guid riid,
-			ref IntPtr ppv);
+				ref Point ppt,
+				ref Point pptHotspot,
+				ref Guid riid,
+				ref IntPtr ppv);
 
 		[PreserveSig]
 		int GetItemFlags(
-			int i,
-			ref int dwFlags);
+				int i,
+				ref int dwFlags);
 
 		[PreserveSig]
 		int GetOverlayImage(
-			int iOverlay,
-			out int piIndex);
+				int iOverlay,
+				out int piIndex);
 	}
 
 	[ComImportAttribute()]
 	[GuidAttribute("192B9D83-50FC-457B-90A0-2B82A8B5DAE1")]
 	[InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IImageList2 : IImageList {
-		[PreserveSig]
-		int Initialize(
-		  int cx,
-		  int cy,
-		  uint flags,
-		  int cInitial,
-		  int cGrow);
-		[PreserveSig]
-		int Replace2(
-		  int i,
-		  IntPtr hbmImage,
-		  IntPtr hbmMask,
-		  IntPtr punk,
-		  uint dwFlags);
+	public interface IImageList2  {
+    [PreserveSig]
+    int Add(
+        IntPtr hbmImage,
+        IntPtr hbmMask,
+        ref int pi);
+
+    [PreserveSig]
+    int ReplaceIcon(
+        int i,
+        IntPtr hicon,
+        ref int pi);
+
+    [PreserveSig]
+    int SetOverlayImage(
+        int iImage,
+        int iOverlay);
+
+    [PreserveSig]
+    int Replace(
+        int i,
+        IntPtr hbmImage,
+        IntPtr hbmMask);
+
+    [PreserveSig]
+    int AddMasked(
+        IntPtr hbmImage,
+        int crMask,
+        ref int pi);
+
+    [PreserveSig]
+    int Draw(
+        ref IMAGELISTDRAWPARAMS pimldp);
+
+    [PreserveSig]
+    int Remove(
+        int i);
+
+    [PreserveSig]
+    int GetIcon(
+        int i,
+        ImageListDrawOptions flags,
+        out IntPtr picon);
+
+    [PreserveSig]
+    int GetImageInfo(
+        int i,
+        ref IMAGEINFO pImageInfo);
+
+    [PreserveSig]
+    int Copy(
+        int iDst,
+        IImageList punkSrc,
+        int iSrc,
+        int uFlags);
+
+    [PreserveSig]
+    int Merge(
+        int i1,
+        IImageList punk2,
+        int i2,
+        int dx,
+        int dy,
+        ref Guid riid,
+        ref IntPtr ppv);
+
+    [PreserveSig]
+    int Clone(
+        ref Guid riid,
+        ref IntPtr ppv);
+
+    [PreserveSig]
+    int GetImageRect(
+        int i,
+        ref Rectangle prc);
+
+    [PreserveSig]
+    int GetIconSize(
+        out int cx,
+        out int cy);
+
+    [PreserveSig]
+    int SetIconSize(
+        int cx,
+        int cy);
+
+    [PreserveSig]
+    int GetImageCount(
+        ref int pi);
+
+    [PreserveSig]
+    int SetImageCount(
+        int uNewCount);
+
+    [PreserveSig]
+    int SetBkColor(
+        int clrBk,
+        ref int pclr);
+
+    [PreserveSig]
+    int GetBkColor(
+        ref int pclr);
+
+    [PreserveSig]
+    int BeginDrag(
+        int iTrack,
+        int dxHotspot,
+        int dyHotspot);
+
+    [PreserveSig]
+    int EndDrag();
+
+    [PreserveSig]
+    int DragEnter(
+        IntPtr hwndLock,
+        int x,
+        int y);
+
+    [PreserveSig]
+    int DragLeave(
+        IntPtr hwndLock);
+
+    [PreserveSig]
+    int DragMove(
+        int x,
+        int y);
+
+    [PreserveSig]
+    int SetDragCursorImage(
+        ref IImageList punk,
+        int iDrag,
+        int dxHotspot,
+        int dyHotspot);
+
+    [PreserveSig]
+    int DragShowNolock(
+        int fShow);
+
+    [PreserveSig]
+    int GetDragImage(
+        ref Point ppt,
+        ref Point pptHotspot,
+        ref Guid riid,
+        ref IntPtr ppv);
+
+    [PreserveSig]
+    int GetItemFlags(
+        int i,
+        ref int dwFlags);
+
+    [PreserveSig]
+    int GetOverlayImage(
+        int iOverlay,
+        out int piIndex);
+
+    HResult  Resize(
+            int cxNewIconSize,
+            int cyNewIconSize);
+
+    HResult GetOriginalSize(
+            /* [in] */ int iImage,
+            /* [in] */ uint dwFlags,
+            /* [annotation][out] */
+            out  int pcx,
+            /* [annotation][out] */
+            out  int pcy);
+        
+        HResult SetOriginalSize(
+            /* [in] */ int iImage,
+            /* [in] */ int cx,
+            /* [in] */ int cy);
+        
+        HResult SetCallback(
+            /* [annotation][unique][in] */
+            IntPtr punk);
+        
+        HResult GetCallback(
+            /* [in] */ ref Guid riid,
+            /* [annotation][iid_is][out] */
+            out  IntPtr ppv);
+        
+        HResult ForceImagePresent(
+            /* [in] */ int iImage,
+            uint dwFlags);
+        
+        HResult DiscardImages(
+            /* [in] */ int iFirstImage,
+            /* [in] */ int iLastImage,
+            /* [in] */ uint dwFlags);
+        
+        HResult PreloadImages(
+            /* [annotation][in] */
+            ref IMAGELISTDRAWPARAMS pimldp);
+        
+        HResult GetStatistics(
+            /* [annotation][out][in] */
+            out IntPtr pils);
+        
+        HResult Initialize(
+            /* [in] */ int cx,
+            /* [in] */ int cy,
+            /* [in] */ uint flags,
+            /* [in] */ int cInitial,
+            /* [in] */ int cGrow);
+        [PreserveSig]
+        HResult Replace2(
+            /* [in] */ int i,
+            /* [annotation][in] */
+            IntPtr hbmImage,
+            /* [annotation][unique][in] */
+            IntPtr hbmMask,
+            /* [annotation][unique][in] */
+            IntPtr punk,
+            /* [in] */ uint dwFlags);
+        
+        HResult ReplaceFromImageList(
+            /* [in] */ int i,
+            /* [annotation][in] */
+            IImageList pil,
+            /* [in] */ int iSrc,
+            /* [annotation][unique][in] */
+            IntPtr punk,
+            /* [in] */ uint dwFlags);
 	}
 
 	#endregion

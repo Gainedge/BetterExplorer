@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
+using Size = System.Drawing.Size;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
 
@@ -40,7 +41,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		Int32 GroupIndex { get; set; }
 
-		IntPtr Icon { get; set; }
+		Int32 IconIndex { get; set; }
+		Size IconSize { get; set; }
 
 		IExtractIconPWFlags IconType { get; set; }
 

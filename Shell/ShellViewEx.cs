@@ -241,7 +241,7 @@ namespace BExplorer.Shell {
 		#region Public Members
 
 		public ToolTip ToolTip;
-		public List<Collumns> AllAvailableColumns;
+		public Dictionary<PROPERTYKEY,Collumns> AllAvailableColumns;
 		public List<Collumns> Collumns = new List<Collumns>();
 		public List<ListViewGroupEx> Groups = new List<ListViewGroupEx>();
 		public Boolean IsRenameNeeded { get; set; }
@@ -370,10 +370,10 @@ namespace BExplorer.Shell {
 						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_TILE, 0);
 						if (isComputer) {
 							var tvi = new LVTILEVIEWINFO {
-								cLines = 3,
+								cLines = 2,
 								rcLabelMargin = new User32.RECT() { Left = 2, Right = 0, Bottom = 60, Top = 5 },
 								cbSize = (UInt32)Marshal.SizeOf(typeof(LVTILEVIEWINFO)),
-								dwMask = (UInt32)LVTVIM.LVTVIM_TILESIZE | (UInt32)LVTVIM.LVTVIM_COLUMNS | (UInt32)LVTVIM.LVTVIM_LABELMARGIN,
+								dwMask = (UInt32)LVTVIM.LVTVIM_COLUMNS | (UInt32)LVTVIM.LVTVIM_LABELMARGIN | (UInt32)LVTVIM.LVTVIM_TILESIZE,
 								dwFlags = (UInt32)LVTVIF.LVTVIF_FIXEDSIZE,
 								sizeTile = new INTEROP_SIZE() { cx = 250, cy = 60 },
 							};
@@ -381,10 +381,10 @@ namespace BExplorer.Shell {
 							User32.SendMessage(this.LVHandle, (Int32)MSG.LVM_SETTILEVIEWINFO, 0, ref tvi);
 						} else {
 							var tvi = new LVTILEVIEWINFO {
-								cLines = 3,
+								cLines = 2,
 								rcLabelMargin = new User32.RECT() { Left = 0, Right = 0, Bottom = 0, Top = 0 },
 								cbSize = (UInt32)Marshal.SizeOf(typeof(LVTILEVIEWINFO)),
-								dwMask = (UInt32)LVTVIM.LVTVIM_TILESIZE | (UInt32)LVTVIM.LVTVIM_COLUMNS | (UInt32)LVTVIM.LVTVIM_LABELMARGIN,
+								dwMask = (UInt32)LVTVIM.LVTVIM_COLUMNS | (UInt32)LVTVIM.LVTVIM_LABELMARGIN | (UInt32)LVTVIM.LVTVIM_TILESIZE,
 								dwFlags = (UInt32)LVTVIF.LVTVIF_FIXEDSIZE,
 								sizeTile = new INTEROP_SIZE() { cx = 250, cy = 60 },
 							};
@@ -488,6 +488,8 @@ namespace BExplorer.Shell {
 		private ImageList small = new ImageList(ImageListSize.SystemSmall);
 		private Thread _IconLoadingThread;
 		private Thread _UpdateSubitemValuesThread;
+		private Thread _RedrawingThread;
+		private SyncQueue<Int32> redrawQueue = new SyncQueue<Int32>();
 
 		private SyncQueue<Tuple<Int32, Int32, PROPERTYKEY>> ItemsForSubitemsUpdate = new SyncQueue<Tuple<Int32, Int32, PROPERTYKEY>>(); //5000
 		private ConcurrentBag<Tuple<Int32, PROPERTYKEY, Object>> SubItemValues = new ConcurrentBag<Tuple<Int32, PROPERTYKEY, Object>>();
@@ -537,7 +539,10 @@ namespace BExplorer.Shell {
 			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
 			_UpdateSubitemValuesThread.SetApartmentState(ApartmentState.STA);
 			_UpdateSubitemValuesThread.Start();
-			_ResetTimer.Interval = 250;
+			_RedrawingThread = new Thread(_RedrawingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
+			//_RedrawingThread.SetApartmentState(ApartmentState.STA);
+			_RedrawingThread.Start();
+			_ResetTimer.Interval = 10;
 			_ResetTimer.Tick += resetTimer_Tick;
 
 			var defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (UInt32)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
@@ -1498,96 +1503,113 @@ namespace BExplorer.Shell {
 
 							if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
 								if (nmlv.item.iSubItem == 0) {
-									//TODO: See if we can reove this try catch
-									try {
-										nmlv.item.pszText = currentItem.DisplayName;
-									} catch (Exception) {
+									nmlv.item.pszText = currentItem.DisplayName;
+									Marshal.StructureToPtr(nmlv, m.LParam, false);
+								} else {
+									//nmlv.item.pszText = "  ";
+									var isComputer = false;// (this._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) && (currentItem.IsDrive || currentItem.IsNetworkPath));
+									if ((View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details || this.View == ShellViewStyle.Tile)) {
+									//	//TODO: Try to remove the Try Catch
+									//	try {
+									//		var hash = currentItem.GetHashCode();
+										var currentCollumn =  this.View == ShellViewStyle.Tile ? this.AllAvailableColumns.Values.ToArray()[nmlv.item.iSubItem] : this.Collumns[nmlv.item.iSubItem];
+
+
+										Object valueCached;
+										if (currentItem.ColumnValues.TryGetValue(currentCollumn.pkey, out valueCached)) {
+
+
+
+											//		if (valueCached?.Item3 != null) {
+											String val = String.Empty;
+											if (currentCollumn.CollumnType == typeof(DateTime))
+												val = ((DateTime)valueCached).ToString(Thread.CurrentThread.CurrentCulture);
+											else if (currentCollumn.CollumnType == typeof(Int64))
+												val = $"{(Math.Ceiling(Convert.ToDouble(valueCached.ToString()) / 1024).ToString("# ### ### ##0"))} KB";
+											else if (currentCollumn.CollumnType == typeof(PerceivedType))
+												val = ((PerceivedType)valueCached).ToString();
+											else if (currentCollumn.CollumnType == typeof(FileAttributes))
+												val = this.GetFilePropertiesString(valueCached);
+											else
+												val = valueCached.ToString();
+
+											nmlv.item.pszText = isComputer ? " " : val.Trim();
+											//			Marshal.StructureToPtr(nmlv, m.LParam, false);
+										} else {
+										var temp = currentItem;
+										var isi2 = (IShellItem2)temp.ComInterface;
+										var guid = new Guid(InterfaceGuids.IPropertyStore);
+										IPropertyStore propStore = null;
+										isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
+										PROPERTYKEY pk = currentCollumn.pkey;
+										var pvar = new PropVariant();
+										if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
+											if (pvar.Value == null) {
+												ItemsForSubitemsUpdate.Enqueue(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
+											} else {
+												String val = String.Empty;
+												if (currentCollumn.CollumnType == typeof(DateTime))
+													val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
+												else if (currentCollumn.CollumnType == typeof(Int64))
+													val =
+														$"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0")} KB";
+												else if (currentCollumn.CollumnType == typeof(PerceivedType))
+													val = ((PerceivedType)pvar.Value).ToString();
+												else if (currentCollumn.CollumnType == typeof(FileAttributes))
+													val = this.GetFilePropertiesString(pvar.Value);
+												else
+													val = pvar.Value.ToString();
+
+												nmlv.item.pszText = isComputer ? " " : val.Trim();
+												//Marshal.StructureToPtr(nmlv, m.LParam, false);
+												pvar.Dispose();
+											}
+										}
+												}
+										//	} catch {
+										//	}
 									}
 
 									Marshal.StructureToPtr(nmlv, m.LParam, false);
-								} else {
-									var isComputer = (this._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) && (currentItem.IsDrive || currentItem.IsNetworkPath));
-
-									if ((View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details || this.View == ShellViewStyle.Tile)) {
-										//TODO: Try to remove the Try Catch
-										try {
-											var hash = currentItem.GetHashCode();
-											var currentCollumn = this.View == ShellViewStyle.Tile ? this.AllAvailableColumns[nmlv.item.iSubItem] : this.Collumns[nmlv.item.iSubItem];
-
-											var valueCached = SubItemValues.ToArray().FirstOrDefault(s =>
-																	 s.Item1 == hash && s.Item2.fmtid == currentCollumn.pkey.fmtid &&
-																	 s.Item2.pid == currentCollumn.pkey.pid
-											);
-
-											if (valueCached?.Item3 != null) {
-												String val = String.Empty;
-												if (currentCollumn.CollumnType == typeof(DateTime))
-													val = ((DateTime)valueCached.Item3).ToString(Thread.CurrentThread.CurrentCulture);
-												else if (currentCollumn.CollumnType == typeof(Int64))
-													val = $"{(Math.Ceiling(Convert.ToDouble(valueCached.Item3.ToString()) / 1024).ToString("# ### ### ##0"))} KB";
-												else if (currentCollumn.CollumnType == typeof(PerceivedType))
-													val = ((PerceivedType)valueCached.Item3).ToString();
-												else if (currentCollumn.CollumnType == typeof(FileAttributes))
-													val = this.GetFilePropertiesString(valueCached.Item3);
-												else
-													val = valueCached.Item3.ToString();
-
-												nmlv.item.pszText = isComputer ? " " : val.Trim();
-												Marshal.StructureToPtr(nmlv, m.LParam, false);
-											} else {
-												var temp = currentItem;
-												var isi2 = (IShellItem2)temp.ComInterface;
-												var guid = new Guid(InterfaceGuids.IPropertyStore);
-												IPropertyStore propStore = null;
-												isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
-												PROPERTYKEY pk = currentCollumn.pkey;
-												var pvar = new PropVariant();
-												if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-													if (pvar.Value == null) {
-														ItemsForSubitemsUpdate.Enqueue(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
-													} else {
-														String val = String.Empty;
-														if (currentCollumn.CollumnType == typeof(DateTime))
-															val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
-														else if (currentCollumn.CollumnType == typeof(Int64))
-															val =
-																$"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0")} KB";
-														else if (currentCollumn.CollumnType == typeof(PerceivedType))
-															val = ((PerceivedType)pvar.Value).ToString();
-														else if (currentCollumn.CollumnType == typeof(FileAttributes))
-															val = this.GetFilePropertiesString(pvar.Value);
-														else
-															val = pvar.Value.ToString();
-
-														nmlv.item.pszText = isComputer ? " " : val.Trim();
-														Marshal.StructureToPtr(nmlv, m.LParam, false);
-														pvar.Dispose();
-													}
-												}
-											}
-										} catch {
-										}
-									} else {
-										nmlv.item.pszText = currentItem.DisplayName;
-										Marshal.StructureToPtr(nmlv, m.LParam, false);
-									}
 								}
 							}
 
 							if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS) {
 								int[] columns = null;
-								if (this._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Libraries.ParsingName)) {
-									nmlv.item.cColumns = 1;
-									columns = new int[nmlv.item.cColumns];
-									Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
-									columns[0] = 182;
-								} else {
-									nmlv.item.cColumns = 2;
-									columns = new int[nmlv.item.cColumns];
-									Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
-									columns[0] = 182;
-									columns[1] = 1;
+								var refGuidPDL = typeof(IPropertyDescriptionList).GUID;
+								var refGuidPD = typeof(IPropertyDescription).GUID;
+								var iShellItem2 = (IShellItem2)currentItem.ComInterface;
+								
+								var ptrPDL = IntPtr.Zero;
+								iShellItem2.GetPropertyDescriptionList(SpecialProperties.PropListTileInfo, ref refGuidPDL,
+									out ptrPDL);
+								IPropertyDescriptionList propertyDescriptionList = (IPropertyDescriptionList)Marshal.GetObjectForIUnknown(ptrPDL);
+								var descriptionsCount = 0u;
+								propertyDescriptionList.GetCount(out descriptionsCount);
+								nmlv.item.cColumns = (int)descriptionsCount;
+								columns = new int[nmlv.item.cColumns];
+								Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
+								for (uint i = 0; i < descriptionsCount; i++) {
+									IPropertyDescription propertyDescription = null;
+									propertyDescriptionList.GetAt(i, ref refGuidPD, out propertyDescription);
+									PROPERTYKEY pkey;
+									propertyDescription.GetPropertyKey(out pkey);
+									var column = this.AllAvailableColumns[pkey];
+									columns[i] = column.Index;
 								}
+
+								//if (this._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Libraries.ParsingName)) {
+								//	nmlv.item.cColumns = 1;
+								//	columns = new int[nmlv.item.cColumns];
+								//	Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
+								//	columns[0] = 182;
+								//} else {
+								//	nmlv.item.cColumns = 2;
+								//	columns = new int[nmlv.item.cColumns];
+								//	Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
+								//	columns[0] = 182;
+								//	columns[1] = 1;
+								//}
 								//columns[2] = 2;
 								Marshal.Copy(columns, 0, nmlv.item.puColumns, nmlv.item.cColumns);
 								Marshal.StructureToPtr(nmlv, m.LParam, false);
@@ -2207,7 +2229,7 @@ namespace BExplorer.Shell {
 			if (!this._AddedItems.Contains(obj.PIDL) && !String.IsNullOrEmpty(obj.ParsingName) && obj.Parent.Equals(this.CurrentFolder)) {
 				Items.Add(obj);
 				this._AddedItems.Add(obj.PIDL);
-				var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
+				var col = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == this.LastSortedColumnId).Value;
 				this.SetSortCollumn(true, col, this.LastSortOrder, false);
 				if (this.IsGroupsEnabled) SetGroupOrder(false);
 				var itemIndex = obj.ItemIndex;
@@ -2227,7 +2249,7 @@ namespace BExplorer.Shell {
 					this.Items.Remove(oldItem);
 					oldItem.Dispose();
 				}
-				var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
+				var col = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == this.LastSortedColumnId).Value;
 				this.SetSortCollumn(true, col, this.LastSortOrder, false);
 				if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 				var obj2Real = this.Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName || (obj2.Extension.Equals(".library-ms") && s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
@@ -2843,8 +2865,10 @@ namespace BExplorer.Shell {
 					Int32 overlayIndex = 0;
 					small.GetIconIndexWithOverlay(sho.PIDL, out overlayIndex);
 					shoTemp.OverlayIconIndex = overlayIndex;
-					if (overlayIndex > 0)
-						RedrawItem(index.Value);
+					if (overlayIndex > 0) {
+						if (!this.redrawQueue.Contains(index.Value))
+							this.redrawQueue.Enqueue(index.Value);
+					}
 				} catch { }
 			}
 		}
@@ -2873,7 +2897,8 @@ namespace BExplorer.Shell {
 						if (icon != IntPtr.Zero || shieldOverlay > 0) {
 							sho.IsIconLoaded = true;
 							Gdi32.DeleteObject(icon);
-							this.RedrawItem(index.Value);
+							if (!this.redrawQueue.Contains(index.Value))
+								this.redrawQueue.Enqueue(index.Value);
 						}
 						//Catch File not found exception since it happens if the file is laready deleted
 					} catch (FileNotFoundException) { }
@@ -2900,10 +2925,22 @@ namespace BExplorer.Shell {
 						sho.IsOnlyLowQuality = (width > height && width != IconSize) || (width < height && height != IconSize) ||
 																												 (width == height && width != IconSize);
 						;
-						this.RefreshItem(index.Value);
+						if (!this.redrawQueue.Contains(index.Value))
+							this.redrawQueue.Enqueue(index.Value);
 						Gdi32.DeleteObject(result);
 					}
 				}
+			}
+		}
+
+		public void _RedrawingThreadRun() {
+			while (true) {
+				if (resetEvent != null)
+					resetEvent.WaitOne();
+				F.Application.DoEvents();
+				var index = redrawQueue.Dequeue();
+				if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero)  continue;
+				this.RedrawItem(index);
 			}
 		}
 
@@ -2923,10 +2960,13 @@ namespace BExplorer.Shell {
 					IPropertyStore propStore = null;
 					isi2.GetPropertyStore(GetPropertyStoreOptions.Default, ref guid, out propStore);
 					if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-						if (!SubItemValues.Any(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid)) {
-							SubItemValues.Add(Tuple.Create(hash, pk, pvar.Value));
-							this.RedrawItem(index.Item1);
+						if (!currentItem.ColumnValues.Keys.Contains(pk)) {
+							currentItem.ColumnValues.Add(pk, pvar.Value);
+							//this.RedrawItem(index.Item1);
+							if (!this.redrawQueue.Contains(index.Item1))
+								this.redrawQueue.Enqueue(index.Item1);
 						}
+						
 						pvar.Dispose();
 						Marshal.ReleaseComObject(propStore);
 					}
@@ -3109,17 +3149,19 @@ namespace BExplorer.Shell {
 				if (index == null) {
 					return false;
 				} else {
-					var itemBounds = new User32.RECT();
-					var lvi = this.ToLvItemIndex(index.Value);
+					var result = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index.Value, 0) != IntPtr.Zero;
+				//var itemBounds = new User32.RECT();
+				//var lvi = this.ToLvItemIndex(index.Value);
 
-					User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+					//User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 
-					var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+					//var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 
-					if (useComplexCheck)
-						return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
-					else
-						return r.IntersectsWith(this.ClientRectangle);
+					//if (useComplexCheck)
+					//	return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
+					//else
+					//	return r.IntersectsWith(this.ClientRectangle);
+					return result;
 				}
 			} catch {
 				return false;
@@ -3328,7 +3370,7 @@ namespace BExplorer.Shell {
 				if (folderSettings.Columns != null) {
 					this.RemoveAllCollumns();
 					foreach (var collumn in folderSettings.Columns.Elements()) {
-						var theColumn = this.AllAvailableColumns.FirstOrDefault(w => w.ID == collumn.Attribute("ID").Value);//.Single();
+						var theColumn = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == collumn.Attribute("ID").Value).Value;//.Single();
 						if (theColumn == null) continue;
 						if (this.Collumns.Any(c => c.ID == theColumn?.ID)) continue;
 						if (collumn.Attribute("Width").Value != "0") theColumn.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
@@ -3344,7 +3386,7 @@ namespace BExplorer.Shell {
 			}
 
 			if (!String.IsNullOrEmpty(folderSettings.GroupCollumn)) {
-				var colData = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.GroupCollumn);
+				var colData = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == folderSettings.GroupCollumn).Value;
 				if (colData != null)
 					this.EnableGroups();
 				else
@@ -3353,7 +3395,7 @@ namespace BExplorer.Shell {
 				this.DisableGroups();
 			}
 
-			columns = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.SortColumn);
+			columns = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == folderSettings.SortColumn).Value;
 			this.IsViewSelectionAllowed = false;
 			if (!isThereSettings) {
 				this.View = this.IsSearchNavigating ? ShellViewStyle.Details : ShellViewStyle.Details;
@@ -3378,7 +3420,7 @@ namespace BExplorer.Shell {
 				destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
 				this._RequestedCurrentLocation = destination;
 
-				var column = columns ?? this.AllAvailableColumns.Single(s => s.ID == "A0");
+				var column = columns ?? this.AllAvailableColumns.Single(s => s.Value.ID == "A0").Value;
 				var order = folderSettings.SortOrder;
 				var content = destination;
 
@@ -3428,14 +3470,14 @@ namespace BExplorer.Shell {
 
 				if (this.View != ShellViewStyle.Details) AutosizeAllColumns(-2);
 
-				User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
+				//User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
 
 				var sortColIndex = this.Collumns.IndexOf(columns);
 				if (sortColIndex > -1) this.SetSortIcon(sortColIndex, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
 
 				if (isThereSettings) {
 					if (columns?.ID == "A0" && String.Equals(this._RequestedCurrentLocation.ParsingName, KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase))
-						this.SetSortCollumn(true, this.AvailableColumns().Single(s => s.ID == "A180"), SortOrder.Ascending, false);
+						this.SetSortCollumn(true, this.AvailableColumns().Single(s => s.Value.ID == "A180").Value, SortOrder.Ascending, false);
 					else
 						this.SetSortCollumn(true, columns, folderSettings.SortOrder, false);
 				} else if (String.Equals(this._RequestedCurrentLocation.ParsingName, KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase)) {
@@ -3450,7 +3492,7 @@ namespace BExplorer.Shell {
 					User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
 				}
 				if (this.IsGroupsEnabled) {
-					var colData = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.GroupCollumn);
+					var colData = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == folderSettings.GroupCollumn).Value;
 					this.GenerateGroupsFromColumn(colData, folderSettings.GroupOrder == SortOrder.Descending);
 				}
 
@@ -4188,7 +4230,8 @@ namespace BExplorer.Shell {
 
 		[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
 		private void ProcessCustomDrawPostPaint(ref Message m, User32.NMLVCUSTOMDRAW nmlvcd, Int32 index, IntPtr hdc, IListItemEx sho, Color? textColor) {
-			if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0) {
+			if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0 && ((nmlvcd.nmcd.uItemState & CDIS.SELECTED) == CDIS.SELECTED)) {
+				//var perceivedType = (PerceivedType)sho.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType)).Value;
 				var itemBounds = nmlvcd.nmcd.rc;
 				var lvi = new LVITEMINDEX();
 				lvi.iItem = index;

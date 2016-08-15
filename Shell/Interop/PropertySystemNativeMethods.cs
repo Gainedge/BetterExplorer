@@ -832,7 +832,7 @@ namespace BExplorer.Shell.Interop {
 	[ComImport,
 	Guid(InterfaceGuids.IPropertyDescriptionList),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IPropertyDescriptionList {
+	public interface IPropertyDescriptionList {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetCount(out uint pcElem);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -842,7 +842,7 @@ namespace BExplorer.Shell.Interop {
 	[ComImport,
 	Guid(InterfaceGuids.IPropertyDescription),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IPropertyDescription {
+	public interface IPropertyDescription {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetPropertyKey(out PROPERTYKEY pkey);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -974,7 +974,7 @@ namespace BExplorer.Shell.Interop {
 	[ComImport,
 	Guid(InterfaceGuids.IPropertyEnumType),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IPropertyEnumType {
+	public interface IPropertyEnumType {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetEnumType([Out] out PropEnumType penumtype);
 
@@ -1018,7 +1018,7 @@ namespace BExplorer.Shell.Interop {
 	[ComImport,
 	Guid(InterfaceGuids.IPropertyEnumTypeList),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IPropertyEnumTypeList {
+	public interface IPropertyEnumTypeList {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetCount([Out] out uint pctypes);
 
@@ -1040,10 +1040,10 @@ namespace BExplorer.Shell.Interop {
 		[Out] out uint pnIndex);
 	}
 
-	internal static class PropertySystemNativeMethods {
+	public static class PropertySystemNativeMethods {
 		#region Property Definitions
 
-		internal enum RelativeDescriptionType {
+		public enum RelativeDescriptionType {
 			General,
 			Date,
 			Size,

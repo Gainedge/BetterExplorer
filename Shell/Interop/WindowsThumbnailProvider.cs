@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using BExplorer.Shell.Interop;
 
 namespace ThumbnailGenerator {
   [Flags]
@@ -38,20 +39,20 @@ namespace ThumbnailGenerator {
     internal static extern bool DeleteObject(IntPtr hObject);
 	*/
 
-    [ComImport]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")]
-    internal interface IShellItem {
-      void BindToHandler(IntPtr pbc,
-          [MarshalAs(UnmanagedType.LPStruct)]Guid bhid,
-          [MarshalAs(UnmanagedType.LPStruct)]Guid riid,
-          out IntPtr ppv);
+    //[ComImport]
+    //[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    //[Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")]
+    //internal interface IShellItem {
+    //  void BindToHandler(IntPtr pbc,
+    //      [MarshalAs(UnmanagedType.LPStruct)]Guid bhid,
+    //      [MarshalAs(UnmanagedType.LPStruct)]Guid riid,
+    //      out IntPtr ppv);
 
-      void GetParent(out IShellItem ppsi);
-      void GetDisplayName(SIGDN sigdnName, out IntPtr ppszName);
-      void GetAttributes(uint sfgaoMask, out uint psfgaoAttribs);
-      void Compare(IShellItem psi, uint hint, out int piOrder);
-    };
+    //  void GetParent(out IShellItem ppsi);
+    //  void GetDisplayName(SIGDN sigdnName, out IntPtr ppszName);
+    //  void GetAttributes(uint sfgaoMask, out uint psfgaoAttribs);
+    //  void Compare(IShellItem psi, uint hint, out int piOrder);
+    //};
 
     internal enum SIGDN : uint {
       NORMALDISPLAY = 0,
@@ -128,53 +129,59 @@ namespace ThumbnailGenerator {
       return hBitmap;
     }
 
-	/*
-    public static Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap) {
-      Bitmap bmp = Bitmap.FromHbitmap(nativeHBitmap);
+		public static IntPtr GetThumbnail(IShellItem nativeShellItem, int width, int height, ThumbnailOptions options) {
+			IntPtr hBitmap = GetHBitmap(nativeShellItem, width, height, options);
 
-      if (Bitmap.GetPixelFormatSize(bmp.PixelFormat) < 32)
-        return bmp;
+			return hBitmap;
+		}
 
-      return CreateAlphaBitmap(bmp, PixelFormat.Format32bppArgb);
-    }
-	*/
+		/*
+			public static Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap) {
+				Bitmap bmp = Bitmap.FromHbitmap(nativeHBitmap);
 
-	/*
-    public static Bitmap CreateAlphaBitmap(Bitmap srcBitmap, PixelFormat targetPixelFormat) {
-      Bitmap result = new Bitmap(srcBitmap.Width, srcBitmap.Height, targetPixelFormat);
+				if (Bitmap.GetPixelFormatSize(bmp.PixelFormat) < 32)
+					return bmp;
 
-      Rectangle bmpBounds = new Rectangle(0, 0, srcBitmap.Width, srcBitmap.Height);
+				return CreateAlphaBitmap(bmp, PixelFormat.Format32bppArgb);
+			}
+		*/
 
-      BitmapData srcData = srcBitmap.LockBits(bmpBounds, ImageLockMode.ReadOnly, srcBitmap.PixelFormat);
+		/*
+			public static Bitmap CreateAlphaBitmap(Bitmap srcBitmap, PixelFormat targetPixelFormat) {
+				Bitmap result = new Bitmap(srcBitmap.Width, srcBitmap.Height, targetPixelFormat);
 
-      bool isAlplaBitmap = false;
+				Rectangle bmpBounds = new Rectangle(0, 0, srcBitmap.Width, srcBitmap.Height);
 
-      try {
-        for (int y = 0; y <= srcData.Height - 1; y++) {
-          for (int x = 0; x <= srcData.Width - 1; x++) {
-            Color pixelColor = Color.FromArgb(
-                Marshal.ReadInt32(srcData.Scan0, (srcData.Stride * y) + (4 * x)));
+				BitmapData srcData = srcBitmap.LockBits(bmpBounds, ImageLockMode.ReadOnly, srcBitmap.PixelFormat);
 
-            if (pixelColor.A > 0 & pixelColor.A < 255) {
-              isAlplaBitmap = true;
-            }
+				bool isAlplaBitmap = false;
 
-            result.SetPixel(x, y, pixelColor);
-          }
-        }
-      } finally {
-        srcBitmap.UnlockBits(srcData);
-      }
+				try {
+					for (int y = 0; y <= srcData.Height - 1; y++) {
+						for (int x = 0; x <= srcData.Width - 1; x++) {
+							Color pixelColor = Color.FromArgb(
+									Marshal.ReadInt32(srcData.Scan0, (srcData.Stride * y) + (4 * x)));
 
-      if (isAlplaBitmap) {
-        return result;
-      } else {
-        return srcBitmap;
-      }
-    }
-	*/
+							if (pixelColor.A > 0 & pixelColor.A < 255) {
+								isAlplaBitmap = true;
+							}
 
-    private static IntPtr GetHBitmap(IntPtr pidl, int width, int height, ThumbnailOptions options) {
+							result.SetPixel(x, y, pixelColor);
+						}
+					}
+				} finally {
+					srcBitmap.UnlockBits(srcData);
+				}
+
+				if (isAlplaBitmap) {
+					return result;
+				} else {
+					return srcBitmap;
+				}
+			}
+		*/
+
+		private static IntPtr GetHBitmap(IntPtr pidl, int width, int height, ThumbnailOptions options) {
       IShellItem nativeShellItem;
       Guid shellItem2Guid = new Guid(IShellItem2Guid);
       //int retCode = SHCreateItemFromParsingName(fileName, IntPtr.Zero, ref shellItem2Guid, out nativeShellItem);
@@ -197,28 +204,44 @@ namespace ThumbnailGenerator {
       return IntPtr.Zero;
     }
 
-	/*
-    private static IntPtr GetHBitmap(string fileName, int width, int height, ThumbnailOptions options) {
-      IShellItem nativeShellItem;
-      Guid shellItem2Guid = new Guid(IShellItem2Guid);
-      int retCode = SHCreateItemFromParsingName(fileName, IntPtr.Zero, ref shellItem2Guid, out nativeShellItem);
+		private static IntPtr GetHBitmap(IShellItem nativeShellItem, int width, int height, ThumbnailOptions options) {
+			
+			NativeSize nativeSize = new NativeSize();
+			nativeSize.Width = width;
+			nativeSize.Height = height;
 
-      if (retCode != 0)
-        throw Marshal.GetExceptionForHR(retCode);
+			IntPtr hBitmap;
+			HResult hr = ((IShellItemImageFactory)nativeShellItem).GetImage(nativeSize, options, out hBitmap);
 
-      NativeSize nativeSize = new NativeSize();
-      nativeSize.Width = width;
-      nativeSize.Height = height;
+			Marshal.ReleaseComObject(nativeShellItem);
 
-      IntPtr hBitmap;
-      HResult hr = ((IShellItemImageFactory)nativeShellItem).GetImage(nativeSize, options, out hBitmap);
+			if (hr == HResult.Ok) return hBitmap;
 
-      Marshal.ReleaseComObject(nativeShellItem);
+			return IntPtr.Zero;
+		}
 
-      if (hr == HResult.Ok) return hBitmap;
+		/*
+			private static IntPtr GetHBitmap(string fileName, int width, int height, ThumbnailOptions options) {
+				IShellItem nativeShellItem;
+				Guid shellItem2Guid = new Guid(IShellItem2Guid);
+				int retCode = SHCreateItemFromParsingName(fileName, IntPtr.Zero, ref shellItem2Guid, out nativeShellItem);
 
-      throw Marshal.GetExceptionForHR((int)hr);
-    }
-	*/
-  }
+				if (retCode != 0)
+					throw Marshal.GetExceptionForHR(retCode);
+
+				NativeSize nativeSize = new NativeSize();
+				nativeSize.Width = width;
+				nativeSize.Height = height;
+
+				IntPtr hBitmap;
+				HResult hr = ((IShellItemImageFactory)nativeShellItem).GetImage(nativeSize, options, out hBitmap);
+
+				Marshal.ReleaseComObject(nativeShellItem);
+
+				if (hr == HResult.Ok) return hBitmap;
+
+				throw Marshal.GetExceptionForHR((int)hr);
+			}
+		*/
+	}
 }
