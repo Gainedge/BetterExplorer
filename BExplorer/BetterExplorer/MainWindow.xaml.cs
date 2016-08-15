@@ -103,7 +103,7 @@ namespace BetterExplorer {
 		Boolean IsGlassOnRibonMinimized { get; set; }
 		Boolean _IsTraditionalNameGrouping { get; set; }
 
-		List<BExplorer.Shell.LVItemColor> LVItemsColor { get; set; }
+		List<LVItemColor> LVItemsColor { get; set; }
 		ContextMenu chcm;
 
 		WIN.Forms.Timer focusTimer = new WIN.Forms.Timer() { Interval = 500 };
@@ -228,7 +228,7 @@ namespace BetterExplorer {
 
 					docs.Root.Elements("ItemColorRow")
 					.Select(element => new LVItemColor(element.Elements().ToArray()[0].Value,
-					System.Windows.Media.Color.FromArgb(BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[0], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[1], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[2], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[3])))
+					WIN.Media.Color.FromArgb(BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[0], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[1], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[2], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[3])))
 					.ToList().ForEach(e => this.LVItemsColorCol.Add(e));
 
 				}
@@ -257,7 +257,7 @@ namespace BetterExplorer {
 
 			try {
 				foreach (Collumns item in _ShellListView.Collumns.Where(x => x != null)) {
-					var lastSortedColumn = _ShellListView.Collumns.Where(w => w.ID == this._ShellListView.LastSortedColumnId).SingleOrDefault();
+					var lastSortedColumn = _ShellListView.Collumns.FirstOrDefault(w => w.ID == this._ShellListView.LastSortedColumnId);
 					if (lastSortedColumn != null) {
 						var IsChecked1 = (item.pkey.fmtid == lastSortedColumn.pkey.fmtid) && (item.pkey.pid == lastSortedColumn.pkey.pid);
 						btnSort.Items.Add(Utilities.Build_MenuItem(item.Name, item, checkable: true, isChecked: IsChecked1, GroupName: "GR2", onClick: mi_Click));
