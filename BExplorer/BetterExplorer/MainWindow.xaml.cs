@@ -1727,7 +1727,7 @@ namespace BetterExplorer {
 				//config.VerificationText = "Don't show me this message again";
 				config.CustomButtons = new string[] { "&Download & Install", "Skip this version", "&Close" };
 				config.MainIcon = VistaTaskDialogIcon.SecurityWarning;
-
+			
 				if (newVersion.Contains("RC") || newVersion.Contains("Nightly") || newVersion.Contains("Beta") || newVersion.Contains("Alpha")) {
 					config.FooterText = "This is an experimental version and may contains bugs. Use at your own risk!";
 					config.FooterIcon = VistaTaskDialogIcon.Warning;
@@ -1854,7 +1854,7 @@ namespace BetterExplorer {
 				}
 			}
 
-			if (this.WindowState != WIN.WindowState.Minimized) {
+			if (this.WindowState != WindowState.Minimized) {
 				string OpenedTabs = "";
 				foreach (Wpf.Controls.TabItem item in tcMain.Items) {
 					OpenedTabs += ";" + item.ShellObject.ParsingName;
@@ -1869,11 +1869,11 @@ namespace BetterExplorer {
 				e.Cancel = true;
 				App.IsStartMinimized = true;
 
-				this.WindowState = WIN.WindowState.Minimized;
-				this.Visibility = WIN.Visibility.Hidden;
+				this.WindowState = WindowState.Minimized;
+				this.Visibility = Visibility.Hidden;
 			}
 			else {
-				beNotifyIcon.Visibility = WIN.Visibility.Collapsed;
+				beNotifyIcon.Visibility = Visibility.Collapsed;
 			}
 
 			if (!File.Exists("Settings.xml")) new XElement("Settings").Save("Settings.xml");
@@ -2815,7 +2815,7 @@ namespace BetterExplorer {
 		}
 
 		private void ToggleButton_Click_1(object sender, RoutedEventArgs e) {
-			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("ext", edtSearchBox.ExtensionCondition, FindResource("btnExtCP") as string);
+			var dat = new StringSearchCriteriaDialog("ext", edtSearchBox.ExtensionCondition, FindResource("btnExtCP") as string);
 			dat.ShowDialog();
 			if (dat.Confirm) {
 				edtSearchBox.ExtensionCondition = "ext:" + dat.textBox1.Text;
@@ -2827,7 +2827,7 @@ namespace BetterExplorer {
 		}
 
 		private void AuthorToggle_Click(object sender, RoutedEventArgs e) {
-			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("author", edtSearchBox.AuthorCondition, FindResource("btnAuthorCP") as string);
+			var dat = new StringSearchCriteriaDialog("author", edtSearchBox.AuthorCondition, FindResource("btnAuthorCP") as string);
 			dat.ShowDialog();
 			if (dat.Confirm) {
 				edtSearchBox.AuthorCondition = "author:" + dat.textBox1.Text;
@@ -2839,7 +2839,7 @@ namespace BetterExplorer {
 		}
 
 		private void SubjectToggle_Click(object sender, RoutedEventArgs e) {
-			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("subject", edtSearchBox.SubjectCondition, FindResource("btnSubjectCP") as string);
+			var dat = new StringSearchCriteriaDialog("subject", edtSearchBox.SubjectCondition, FindResource("btnSubjectCP") as string);
 			dat.ShowDialog();
 			if (dat.Confirm) {
 				edtSearchBox.SubjectCondition = "subject:" + dat.textBox1.Text;
@@ -2851,7 +2851,7 @@ namespace BetterExplorer {
 		}
 
 		private void miCustomSize_Click(object sender, RoutedEventArgs e) {
-			SizeSearchCriteriaDialog dat = new SizeSearchCriteriaDialog();
+			var dat = new SizeSearchCriteriaDialog();
 			string sd = Utilities.GetValueOnly("size", edtSearchBox.SizeCondition);
 			dat.curval.Text = sd;
 			dat.ShowDialog();
@@ -4026,10 +4026,7 @@ namespace BetterExplorer {
 
 			foreach (var Node in xDoc.Elements("Shortcut")) {
 				var item = new MenuItem() { Header = Node.Attribute("Name").Value };
-				item.Click += (x, y) => {
-					Process.Start(Node.Attribute("Path").Value);
-				};
-
+				item.Click += (x, y) => Process.Start(Node.Attribute("Path").Value);
 				dropDown.Items.Add(item);
 			}
 		}
