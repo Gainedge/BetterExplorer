@@ -2039,24 +2039,24 @@ namespace BExplorer.Shell {
 
 			this.AddDefaultColumns(true);
 
-			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
+			IntPtr headerhandle = User32.SendMessage(this.LVHandle, MSG.LVM_GETHEADER, 0, 0);
 			for (Int32 i = 0; i < this.Collumns.Count; i++) {
 				this.Collumns[i].SetSplitButton(headerhandle, i);
 			}
 
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETIMAGELIST, 0, il.Handle);
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETIMAGELIST, 1, ils.Handle);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SETIMAGELIST, 0, il.Handle);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SETIMAGELIST, 1, ils.Handle);
 			this.IsViewSelectionAllowed = false;
 			this.View = ShellViewStyle.Medium;
 
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.HeaderInAllViews, (Int32)ListViewExtendedStyles.HeaderInAllViews);
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER, (Int32)ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER);
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.FullRowSelect, (Int32)ListViewExtendedStyles.FullRowSelect);
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.HeaderDragDrop, (Int32)ListViewExtendedStyles.HeaderDragDrop);
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.LabelTip, (Int32)ListViewExtendedStyles.LabelTip);
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.InfoTip, (Int32)ListViewExtendedStyles.InfoTip);
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.UnderlineHot, (Int32)ListViewExtendedStyles.UnderlineHot);
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.AutosizeColumns, (Int32)ListViewExtendedStyles.AutosizeColumns);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.HeaderInAllViews, (Int32)ListViewExtendedStyles.HeaderInAllViews);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER, (Int32)ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.FullRowSelect, (Int32)ListViewExtendedStyles.FullRowSelect);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.HeaderDragDrop, (Int32)ListViewExtendedStyles.HeaderDragDrop);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.LabelTip, (Int32)ListViewExtendedStyles.LabelTip);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.InfoTip, (Int32)ListViewExtendedStyles.InfoTip);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.UnderlineHot, (Int32)ListViewExtendedStyles.UnderlineHot);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.AutosizeColumns, (Int32)ListViewExtendedStyles.AutosizeColumns);
 
 			IntPtr iiListViewPrt = IntPtr.Zero;
 			var iid = typeof(IListView).GUID;
@@ -2155,12 +2155,12 @@ namespace BExplorer.Shell {
 							VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn, @Columns, @IconSize)";
 
 			Int32[] orders = new Int32[this.Collumns.Count];
-			User32.SendMessage(this.LVHandle, (UInt32)Interop.MSG.LVM_GETCOLUMNORDERARRAY, orders.Length, orders);
+			User32.SendMessage(this.LVHandle, (UInt32)MSG.LVM_GETCOLUMNORDERARRAY, orders.Length, orders);
 
 			var Columns_XML = new XElement("Columns");
 			foreach (var index in orders) {
 				var collumn = this.Collumns[index];
-				var width = (Int32)User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETCOLUMNWIDTH, index, 0);
+				var width = (Int32)User32.SendMessage(this.LVHandle, MSG.LVM_GETCOLUMNWIDTH, index, 0);
 				var XML = new XElement("Column");
 				XML.Add(new XAttribute("ID", collumn.ID == null ? "" : collumn.ID.ToString()));
 				XML.Add(new XAttribute("Width", collumn.ID == null ? "" : width.ToString()));
@@ -2344,7 +2344,7 @@ namespace BExplorer.Shell {
 		public void CutSelectedFiles() {
 			foreach (var index in this._SelectedIndexes) {
 				var item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_CUT, state = LVIS.LVIS_CUT };
-				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, index, ref item);
+				User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMSTATE, index, ref item);
 			}
 
 			this._CuttedIndexes.AddRange(this._SelectedIndexes.ToArray());
@@ -2533,7 +2533,7 @@ namespace BExplorer.Shell {
 				this.Collumns.Add(col);
 				var column = col.ToNativeColumn(this.View == ShellViewStyle.Details);
 				var colIndex = this.Collumns.Count - 1;
-				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_INSERTCOLUMN, colIndex, ref column);
+				User32.SendMessage(this.LVHandle, MSG.LVM_INSERTCOLUMN, colIndex, ref column);
 				if (col.ID == this.LastSortedColumnId) {
 					this.SetSortIcon(colIndex, this.LastSortOrder);
 					User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, colIndex, 0);
@@ -2543,7 +2543,7 @@ namespace BExplorer.Shell {
 				}
 			}
 
-			var headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
+			var headerhandle = User32.SendMessage(this.LVHandle, MSG.LVM_GETHEADER, 0, 0);
 			for (var i = 0; i < this.Collumns.Count; i++) {
 				this.Collumns[i].SetSplitButton(headerhandle, i);
 			}
@@ -2555,7 +2555,7 @@ namespace BExplorer.Shell {
 		public void RemoveAllCollumns() {
 			for (var i = this.Collumns.ToArray().Count() - 1; i > 1; i--) {
 				this.Collumns.RemoveAt(i);
-				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_DELETECOLUMN, i, 0);
+				User32.SendMessage(this.LVHandle, MSG.LVM_DELETECOLUMN, i, 0);
 			}
 		}
 
@@ -2949,7 +2949,7 @@ namespace BExplorer.Shell {
 				if (resetEvent != null)
 					resetEvent.WaitOne();
 				var index = ItemsForSubitemsUpdate.Dequeue();
-				if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero) {
+				if (User32.SendMessage(this.LVHandle, MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero) {
 					var currentItem = Items[index.Item1];
 					var temp = currentItem.Clone();
 					var hash = currentItem.GetHashCode();
@@ -3339,7 +3339,7 @@ namespace BExplorer.Shell {
 
 			this._UnvalidateTimer.Stop();
 			this.IsDisplayEmptyText = false;
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, 0, 0);
 			this.DisableGroups();
 
 			this._ItemForRename = -1;
@@ -3376,7 +3376,7 @@ namespace BExplorer.Shell {
 						if (collumn.Attribute("Width").Value != "0") theColumn.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
 						this.Collumns.Add(theColumn);
 						var column = theColumn.ToNativeColumn(folderSettings.View == ShellViewStyle.Details);
-						User32.SendMessage(this.LVHandle, Interop.MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
+						User32.SendMessage(this.LVHandle, MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
 						if (folderSettings.View != ShellViewStyle.Details) this.AutosizeColumn(this.Collumns.Count - 1, -2);
 					}
 				}
@@ -3463,7 +3463,7 @@ namespace BExplorer.Shell {
 					return;
 				}
 
-				var headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
+				var headerhandle = User32.SendMessage(this.LVHandle, MSG.LVM_GETHEADER, 0, 0);
 				for (var i = 0; i < this.Collumns.Count; i++) {
 					this.Collumns[i].SetSplitButton(headerhandle, i);
 				}
@@ -3553,7 +3553,7 @@ namespace BExplorer.Shell {
 
 			this._UnvalidateTimer.Stop();
 			this.IsDisplayEmptyText = false;
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, 0, 0);
 			this.DisableGroups();
 
 			this._ItemForRename = -1;
@@ -3640,7 +3640,7 @@ namespace BExplorer.Shell {
 					return;
 				}
 
-				var headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
+				var headerhandle = User32.SendMessage(this.LVHandle, MSG.LVM_GETHEADER, 0, 0);
 				for (var i = 0; i < this.Collumns.Count; i++) {
 					this.Collumns[i].SetSplitButton(headerhandle, i);
 				}
@@ -3697,7 +3697,7 @@ namespace BExplorer.Shell {
 
 			this._UnvalidateTimer.Stop();
 			this.IsDisplayEmptyText = false;
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, 0, 0);
 			this.DisableGroups();
 
 			this._ItemForRename = -1;
@@ -3777,7 +3777,7 @@ namespace BExplorer.Shell {
 					return;
 				}
 
-				var headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
+				var headerhandle = User32.SendMessage(this.LVHandle, MSG.LVM_GETHEADER, 0, 0);
 				for (var i = 0; i < this.Collumns.Count; i++)
 				{
 					this.Collumns[i].SetSplitButton(headerhandle, i);
@@ -3945,7 +3945,7 @@ namespace BExplorer.Shell {
 		private void RedrawItem(Int32 index) {
 			var itemBounds = new User32.RECT() { Left = 1 };
 			var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+			User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 			itemBounds.Left -= 2;
 			itemBounds.Top -= 2;
 			itemBounds.Bottom += 2;
