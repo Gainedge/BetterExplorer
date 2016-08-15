@@ -138,6 +138,7 @@ namespace BExplorer.Shell {
 		}
 
 		public void HideTooltip() {
+			this.ItemIndex = -1;
 			_DelayTimer.Stop();
 			if (this.IsVisible) {
 				Contents = String.Empty;

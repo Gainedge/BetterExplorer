@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -173,6 +175,28 @@ namespace BExplorer.Shell.Interop {
 			DeleteObject(destCDC);
 			DeleteObject(oldSource);
 			DeleteObject(hBitmap);
+		}
+
+		public static Bitmap RoundCorners(Bitmap StartImage, int cornerRadius, Brush backgroundColor) {
+			var d = cornerRadius*2;
+			Bitmap roundedImage = new Bitmap(StartImage.Width, StartImage.Height);
+			var r = new Rectangle(0,0, StartImage.Width - d, StartImage.Height - d);
+			using (Graphics g = Graphics.FromImage(roundedImage)) {
+				g.SmoothingMode = SmoothingMode.AntiAlias;
+				//g.CompositingQuality = CompositingQuality.HighQuality;
+				g.InterpolationMode = InterpolationMode.NearestNeighbor;
+				System.Drawing.Drawing2D.GraphicsPath gp =
+				new System.Drawing.Drawing2D.GraphicsPath();
+				gp.AddArc(r.X, r.Y, d, d, 180, 90);
+				gp.AddArc(r.X + r.Width - d, r.Y, d, d, 270, 90);
+				gp.AddArc(r.X + r.Width - d, r.Y + r.Height - d, d, d, 0, 90);
+				gp.AddArc(r.X, r.Y + r.Height - d, d, d, 90, 90);
+				gp.AddLine(r.X, r.Y + r.Height - d, r.X, r.Y + d / 2);
+
+				g.FillPath(backgroundColor, gp);
+				g.DrawPath(Pens.Gray, gp);
+				return roundedImage;
+			}
 		}
 	}
 }
