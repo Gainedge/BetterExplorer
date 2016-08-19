@@ -24,20 +24,19 @@ namespace BExplorer.Shell {
 		/// Adds an object to the end of the System.Collections.Generic.Queue[T] then runs System.Threading.Monitor.PulseAll(queue) when queue.Count == 1;
 		/// </summary>
 		/// <param name="item">The object to add to the System.Collections.Generic.Queue[T]. The value can be null for reference types.</param>
-		public Boolean Enqueue(T item) {
-			lock (queue) {
-				if (!queue.Contains(item)) {
-					queue.Enqueue(item);
+		public void Enqueue(T item) {
+			Task.Run(() => {
+				lock (queue) {
+					if (!queue.Contains(item)) {
+						queue.Enqueue(item);
 
-					if (queue.Count == 1) {
-						// wake up any blocked dequeue
-						System.Threading.Monitor.PulseAll(queue);
-					}
-					return true;
-				} else {
-					return false;
+						if (queue.Count == 1) {
+							// wake up any blocked dequeue
+							System.Threading.Monitor.PulseAll(queue);
+						}
+					} 
 				}
-			}
+			});
 		}
 
 		/// <summary>

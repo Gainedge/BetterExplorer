@@ -200,7 +200,7 @@ namespace BExplorer.Shell {
 								sho.IsThumbnailLoaded = true;
 								sho.IsNeedRefreshing = false;
 								sho.IsIconLoaded = false;
-								if (!this._IconsForRetreval.Contains(index))
+								//if (!this._IconsForRetreval.Contains(index))
 									this._IconsForRetreval.Enqueue(index);
 							}
 							if (!sho.IsThumbnailLoaded || sho.IsNeedRefreshing)
@@ -210,7 +210,7 @@ namespace BExplorer.Shell {
 							if (editControl == IntPtr.Zero) {
 								this.DrawDefaultIcons(hdc, sho, iconBounds);
 								sho.IsIconLoaded = false;
-								if (!this._IconsForRetreval.Contains(index))
+								//if (!this._IconsForRetreval.Contains(index))
 									this._IconsForRetreval.Enqueue(index);
 							} else {
 								hThumbnail = sho.GetHBitmap(this._CurrentSize, false);
@@ -221,7 +221,7 @@ namespace BExplorer.Shell {
 								} else {
 									this.DrawDefaultIcons(hdc, sho, iconBounds);
 									sho.IsIconLoaded = false;
-									if (!this._IconsForRetreval.Contains(index))
+									//if (!this._IconsForRetreval.Contains(index))
 										this._IconsForRetreval.Enqueue(index);
 								}
 								if ((sho.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) {
@@ -406,7 +406,7 @@ namespace BExplorer.Shell {
 					iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height2) / 2 + 3, width, height,
 					isGhosted);
 			} else if (addornerType == 3) {
-				var isWide = Math.Abs(width / (Double)height - 16d / 9) < 0.2;
+				var isWide = (height / (Double)width) < 0.6;
 				var hAddorner = isWide ? this._VideAddornerWide.GetHBitmap(this._CurrentSize, true, true) : this._VideAddorner.GetHBitmap(this._CurrentSize, true, true);
 				Gdi32.ConvertPixelByPixel(hAddorner, out width2, out height2);
 				if (isWide) {
