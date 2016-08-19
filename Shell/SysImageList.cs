@@ -414,6 +414,31 @@ return idx;
 			}
 		}
 
+		public int GetIconIndex(IntPtr path) {
+			var options = SHGetFileInfoOptions.SysIconIndex  | SHGetFileInfoOptions.Icon  | SHGetFileInfoOptions.Pidl;
+			var shfi = new SHFILEINFO();
+			var shfiSize = Marshal.SizeOf(shfi.GetType());
+			IntPtr retVal = Win32Api.SHGetFileInfo(path, FileAttributes.None, ref shfi, shfiSize, options);
+			if (shfi.hIcon != IntPtr.Zero) {
+				Win32Api.DestroyIcon(shfi.hIcon);
+			}
+
+			if (retVal.Equals(IntPtr.Zero)) {
+				//throw new Win32Exception(Marshal.GetLastWin32Error());
+			
+				return 0;
+			} else {
+				/* brakes stack on optimized build
+int idx = shfi.iIcon & 0xFFFFFF;
+int iOverlay = shfi.iIcon >> 24;
+overlayIndex = iOverlay;
+return idx;
+*/
+				
+				return shfi.iIcon & 0xFFFFFF;
+			}
+		}
+
 		/*
 public IntPtr GetHIcon(int index) {
 	IntPtr hIcon;

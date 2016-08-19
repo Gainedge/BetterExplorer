@@ -23,6 +23,7 @@ namespace BExplorer.Shell.Interop {
 		HResult GetItem(out IntPtr item);
 		HResult SetItem(IntPtr item);
 		HResult GetItemState(int iItem, LVIF mask, LVIS stateMask, out LVIS state);
+		[PreserveSig]
 		HResult SetItemState(int iItem, LVIF mask, LVIS stateMask, LVIS state);
 		HResult GetItemText(int a, int b, out IntPtr c, int d);
 		HResult SetItemText(int a, int b, IntPtr c);

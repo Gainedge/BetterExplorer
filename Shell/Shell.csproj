@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
+    <Compile Include="ImageListEx.cs" />
     <Compile Include="Interop\IListView.cs" />
     <Compile Include="TooltipDataTemplateSelector.cs" />
     <Compile Include="ThreadSafeListWithLock.cs" />
@@ -312,6 +313,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\IconExtractor\IconExtractor.csproj">
+      <Project>{fdfd4eeb-c202-4d93-a6e9-d8984a12d014}</Project>
+      <Name>IconExtractor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Progress\RateBar.csproj">
       <Project>{bfbd2f46-ed5f-49a3-abad-9ba571ef073e}</Project>
       <Name>RateBar</Name>
@@ -324,6 +329,14 @@
       <Project>{ec0d64f9-9f48-4c35-a3b6-e1d8256b76d9}</Project>
       <Name>UnbufferedIO</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="video_addorner.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="video_addorner_wide.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

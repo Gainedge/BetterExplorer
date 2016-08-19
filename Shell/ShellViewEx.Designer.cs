@@ -20,36 +20,7 @@ namespace BExplorer.Shell {
 					bw.Dispose();
 					bw = null;
 				}
-				if (ExeFallBack16 != null) {
-					ExeFallBack16.Dispose();
-					ExeFallBack16 = null;
-				}
-				if (ExeFallBack256 != null) {
-					ExeFallBack256.Dispose();
-					ExeFallBack256 = null;
-				}
-				/*
-				if (ExeFallBack32 != null) {
-					ExeFallBack32.Dispose();
-					ExeFallBack32 = null;
-				}
-				*/
-				if (ExeFallBack48 != null) {
-					ExeFallBack48.Dispose();
-					ExeFallBack48 = null;
-				}
-				if (extra != null) {
-					extra.Dispose();
-					extra = null;
-				}
-				if (jumbo != null) {
-					jumbo.Dispose();
-					jumbo = null;
-				}
-				if (large != null) {
-					large.Dispose();
-					large = null;
-				}
+				
 				if (CurrentFolder != null) {
 					CurrentFolder.Dispose();
 					CurrentFolder = null;

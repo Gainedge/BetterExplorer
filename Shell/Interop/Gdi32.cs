@@ -177,25 +177,59 @@ namespace BExplorer.Shell.Interop {
 			DeleteObject(hBitmap);
 		}
 
-		public static Bitmap RoundCorners(Bitmap StartImage, int cornerRadius, Brush backgroundColor) {
-			var d = cornerRadius*2;
-			Bitmap roundedImage = new Bitmap(StartImage.Width, StartImage.Height);
-			var r = new Rectangle(0,0, StartImage.Width - d, StartImage.Height - d);
-			using (Graphics g = Graphics.FromImage(roundedImage)) {
-				g.SmoothingMode = SmoothingMode.AntiAlias;
-				//g.CompositingQuality = CompositingQuality.HighQuality;
-				g.InterpolationMode = InterpolationMode.NearestNeighbor;
-				System.Drawing.Drawing2D.GraphicsPath gp =
-				new System.Drawing.Drawing2D.GraphicsPath();
-				gp.AddArc(r.X, r.Y, d, d, 180, 90);
-				gp.AddArc(r.X + r.Width - d, r.Y, d, d, 270, 90);
-				gp.AddArc(r.X + r.Width - d, r.Y + r.Height - d, d, d, 0, 90);
-				gp.AddArc(r.X, r.Y + r.Height - d, d, d, 90, 90);
-				gp.AddLine(r.X, r.Y + r.Height - d, r.X, r.Y + d / 2);
+		public static void NativeDrawCrop(IntPtr destDC, IntPtr hBitmap, int x, int y, int xOrig, int yOrigin, int iconSizeWidth, int iconSizeHeight, Boolean isHidden = false) {
+			IntPtr destCDC = CreateCompatibleDC(destDC);
+			IntPtr oldSource = SelectObject(destCDC, hBitmap);
+			AlphaBlend(destDC, x, y, iconSizeWidth, iconSizeHeight, destCDC, xOrig, yOrigin, iconSizeWidth, iconSizeHeight, new BLENDFUNCTION(AC_SRC_OVER, 0, (byte)(isHidden ? 0x7f : 0xff), AC_SRC_ALPHA));
+			SelectObject(destCDC, oldSource);
+			DeleteObject(destCDC);
+			DeleteObject(oldSource);
+			DeleteObject(hBitmap);
+		}
 
-				g.FillPath(backgroundColor, gp);
-				g.DrawPath(Pens.Gray, gp);
-				return roundedImage;
+
+		public static void NativeDraw(IntPtr destDC, IntPtr hBitmap, int x, int y, int iconSizeWidth, int iconSizeHeight, int iconSizeWidthDest, int iconSizeHeightDest, Boolean isHidden = false) {
+			IntPtr destCDC = CreateCompatibleDC(destDC);
+			IntPtr oldSource = SelectObject(destCDC, hBitmap);
+			AlphaBlend(destDC, x, y, iconSizeWidthDest, iconSizeHeightDest, destCDC, 0, 0, iconSizeWidth, iconSizeHeight, new BLENDFUNCTION(AC_SRC_OVER, 0, (byte)(isHidden ? 0x7f : 0xff), AC_SRC_ALPHA));
+			SelectObject(destCDC, oldSource);
+			DeleteObject(destCDC);
+			DeleteObject(oldSource);
+			DeleteObject(hBitmap);
+		}
+
+		public static Bitmap RoundCorners(Bitmap StartImage, int cornerRadius, Brush backgroundColor) {
+			if (cornerRadius == 0) {
+				Bitmap roundedImage = new Bitmap(StartImage.Width, StartImage.Height);
+				var r = new Rectangle(0, 0, StartImage.Width - 2, StartImage.Height - 2);
+				using (Graphics g = Graphics.FromImage(roundedImage)) {
+					g.SmoothingMode = SmoothingMode.AntiAlias;
+					//g.CompositingQuality = CompositingQuality.HighQuality;
+					g.InterpolationMode = InterpolationMode.NearestNeighbor;
+					g.FillRectangle(backgroundColor, r);
+					g.DrawRectangle(Pens.Gray, r);
+					return roundedImage;
+				}
+			} else {
+				var d = cornerRadius*2;
+				Bitmap roundedImage = new Bitmap(StartImage.Width, StartImage.Height);
+				var r = new Rectangle(0, 0, StartImage.Width - d, StartImage.Height - d);
+				using (Graphics g = Graphics.FromImage(roundedImage)) {
+					g.SmoothingMode = SmoothingMode.AntiAlias;
+					//g.CompositingQuality = CompositingQuality.HighQuality;
+					g.InterpolationMode = InterpolationMode.NearestNeighbor;
+					System.Drawing.Drawing2D.GraphicsPath gp =
+						new System.Drawing.Drawing2D.GraphicsPath();
+					gp.AddArc(r.X, r.Y, d, d, 180, 90);
+					gp.AddArc(r.X + r.Width - d, r.Y, d, d, 270, 90);
+					gp.AddArc(r.X + r.Width - d, r.Y + r.Height - d, d, d, 0, 90);
+					gp.AddArc(r.X, r.Y + r.Height - d, d, d, 90, 90);
+					gp.AddLine(r.X, r.Y + r.Height - d, r.X, r.Y + d/2);
+
+					g.FillPath(backgroundColor, gp);
+					g.DrawPath(Pens.Gray, gp);
+					return roundedImage;
+				}
 			}
 		}
 	}

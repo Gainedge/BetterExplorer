@@ -54,7 +54,7 @@ namespace BExplorer.Shell {
     }
 
 		public override void PreCopyItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName) {
-			this._View.IsSupressedTumbGeneration = true;
+			this._View.LargeImageList.SupressThumbnailGeneration(true);
 		}
 
 		[HandleProcessCorruptedStateExceptions]
@@ -66,7 +66,7 @@ namespace BExplorer.Shell {
 			    Shell32.SHChangeNotify(
 			      theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
 			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
-			    this._View.IsSupressedTumbGeneration = false;
+			    this._View.LargeImageList.SupressThumbnailGeneration(false);
 			    Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
 			    theNewItem.Dispose();
@@ -93,8 +93,8 @@ namespace BExplorer.Shell {
 			    Shell32.SHChangeNotify(
 			      theOldItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
 			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theOldItem.PIDL, IntPtr.Zero);
-			    this._View.IsSupressedTumbGeneration = false;
-			    Shell32.SHChangeNotify(
+					this._View.LargeImageList.SupressThumbnailGeneration(false);
+					Shell32.SHChangeNotify(
 			      theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
 			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
 			    theOldItem.Dispose();
@@ -105,7 +105,7 @@ namespace BExplorer.Shell {
     }
 
 		public override void PreMoveItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName) {
-			this._View.IsSupressedTumbGeneration = true;
+			this._View.LargeImageList.SupressThumbnailGeneration(true);
 		}
 
 	  public override void PreRenameItem(uint dwFlags, IShellItem psiItem, string pszNewName) {
