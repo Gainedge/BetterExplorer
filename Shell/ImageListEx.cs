@@ -14,7 +14,6 @@ using System.Windows.Forms;
 using BExplorer.Shell.Interop;
 using BExplorer.Shell._Plugin_Interfaces;
 using Microsoft.Win32;
-using TsudaKageyu;
 
 namespace BExplorer.Shell {
 	public class ImageListEx {
@@ -412,22 +411,22 @@ namespace BExplorer.Shell {
 				if (isWide) {
 					Gdi32.NativeDrawCrop(hdc, hThumbnail,
 						iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2 + (Int32)(this._CurrentSize * 0.12),
-						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height2) / 2 + (Int32)(this._CurrentSize * 0.06 / 2),
-						(Int32)(this._CurrentSize * 0.12), (Int32)(this._CurrentSize * 0.04 / 2), width - (Int32)(this._CurrentSize * 0.13 * 2),
-						 height2 - (Int32)(this._CurrentSize * 0.06),
+						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.07/2),
+						(Int32)(this._CurrentSize * 0.12), (Int32)(this._CurrentSize * 0.03 / 2), width - (Int32)(this._CurrentSize * 0.13 * 2),
+						 height - (Int32)(this._CurrentSize * 0.03),
 						isGhosted);
 					var left = iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2;
 					var top = iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2;
-					Gdi32.NativeDraw(hdc, hAddorner, left, top, width2, height2, isGhosted);
+					Gdi32.NativeDraw(hdc, hAddorner, left, top, width2, height2, width2, height + (Int32)(this._CurrentSize * 0.07) - (Int32)(this._CurrentSize * 0.04), isGhosted);
 				} else {
 					Gdi32.NativeDrawCrop(hdc, hThumbnail,
 						iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2 + (Int32)(this._CurrentSize * 0.12),
-						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.06/2),
-						(Int32)(this._CurrentSize * 0.12), (Int32)(this._CurrentSize * 0.04 / 2), width - (Int32)(this._CurrentSize * 0.13 * 1.9),
-						height - (Int32)(this._CurrentSize * 0.06),
+						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.07/2),
+						(Int32)(this._CurrentSize * 0.12), (Int32)(this._CurrentSize * 0.03 / 2), width - (Int32)(this._CurrentSize * 0.13 * 1.9),
+						height - (Int32)(this._CurrentSize * 0.07),
 						isGhosted);
 					Gdi32.NativeDraw(hdc, hAddorner, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2,
-						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width2, height2, width2, height, isGhosted);
+						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width2, height2, width2, height + (Int32)(this._CurrentSize * 0.06) - (Int32)(this._CurrentSize * 0.07), isGhosted);
 				}
 				Gdi32.DeleteObject(hAddorner);
 
