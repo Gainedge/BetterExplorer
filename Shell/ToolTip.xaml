@@ -42,7 +42,7 @@
 					<RowDefinition Height="25"></RowDefinition>
 					<RowDefinition Height="25"></RowDefinition>
 				</Grid.RowDefinitions>
-				<Image Grid.Row="0" Grid.ColumnSpan="2" Stretch="None" x:Name="imgIconImage" SizeChanged="ImgIconImage_OnSizeChanged" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Image, IsAsync=True}"></Image>
+				<Image Grid.Row="0" Margin="2,2,2,0" Grid.ColumnSpan="2" Stretch="None" x:Name="imgIconImage" SizeChanged="ImgIconImage_OnSizeChanged" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Image, IsAsync=True}"></Image>
 				<Stars:Rating Grid.Row="1" Grid.Column="0" Height="18" Width="100" RatingItemLimit="5"  HorizontalAlignment="Left" Margin="5,5,0,0"
                   RatingItemMouseDownColor="Transparent"  
                   RatingValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Rating, IsAsync=True}">

@@ -144,243 +144,239 @@ namespace BExplorer.Shell {
 				if (!this._OverlayQueue.Contains(index))
 					this._OverlayQueue.Enqueue(index);
 			}
-			//this.IsCancelRequested = false;
-			if (!this._RedrawQueue.Contains(index)) {
-				if (this._CurrentSize != 16) {
-					var addornerType = this.GetAddornerType(sho);
-					IntPtr hThumbnail = IntPtr.Zero;
-					hThumbnail = sho.GetHBitmap(addornerType == 2 ? this._CurrentSize - 7 : this._CurrentSize, true);
-					Int32 width = 0;
-					Int32 height = 0;
-					if (hThumbnail != IntPtr.Zero) {
-						Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
-						Int32 width2 = 0;
-						Int32 height2 = 0;
-						if (addornerType > 0) {
-							this.DrawWithAddorner(hdc, iconBounds, isGhosted, width, height, hThumbnail, addornerType);
+			//TODO: Check why the same code is called 2 times here. It can be fixed by if (!this._RedrawQueue) {
+			if (this._CurrentSize != 16) {
+				var addornerType = this.GetAddornerType(sho);
+				IntPtr hThumbnail = IntPtr.Zero;
+				hThumbnail = sho.GetHBitmap(addornerType == 2 ? this._CurrentSize - 7 : this._CurrentSize, true);
+				Int32 width = 0;
+				Int32 height = 0;
+				if (hThumbnail != IntPtr.Zero) {
+					Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
+					Int32 width2 = 0;
+					Int32 height2 = 0;
+					if (addornerType > 0) {
+						this.DrawWithAddorner(hdc, iconBounds, isGhosted, width, height, hThumbnail, addornerType);
+					} else {
+						Gdi32.NativeDraw(hdc, hThumbnail,
+							iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2,
+							iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, isGhosted);
+					}
+					if (addornerType == 2) {
+						width = width + 7;
+						height = height + 7;
+					}
+					sho.IsNeedRefreshing = ((width > height && width != this._CurrentSize) ||
+																	(width < height && height != this._CurrentSize) ||
+																	(width == height && width != this._CurrentSize)) &&
+																 !sho.IsOnlyLowQuality;
+					if (sho.IsNeedRefreshing) {
+						sho.IsThumbnailLoaded = false;
+						this._ThumbnailsForCacheLoad.Enqueue(index);
+					} else {
+						sho.IsThumbnailLoaded = true;
+						sho.IsNeedRefreshing = false;
+					}
+
+				} else {
+					if (sho.IsIconLoaded ||
+							(((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS ||
+								(!this._ShellViewEx.IsSearchNavigating &&
+								 this._ShellViewEx._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Libraries.ParsingName,
+									 StringComparison.InvariantCultureIgnoreCase)) ||
+								(!this._ShellViewEx.IsSearchNavigating &&
+								 this._ShellViewEx._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName,
+									 StringComparison.InvariantCultureIgnoreCase))))) {
+						hThumbnail = sho.GetHBitmap(this._CurrentSize, false);
+						if (hThumbnail != IntPtr.Zero) {
+							Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
+							Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2,
+								iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, isGhosted);
+							sho.IsIconLoaded = true;
 						} else {
-							Gdi32.NativeDraw(hdc, hThumbnail,
-								iconBounds.Left + (iconBounds.Right - iconBounds.Left - width)/2,
-								iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height)/2, width, height, isGhosted);
-						}
-						if (addornerType == 2) {
-							width = width + 7;
-							height = height + 7;
-						}
-						sho.IsNeedRefreshing = ((width > height && width != this._CurrentSize) ||
-						                        (width < height && height != this._CurrentSize) ||
-						                        (width == height && width != this._CurrentSize)) &&
-						                       !sho.IsOnlyLowQuality;
-						if (sho.IsNeedRefreshing) {
-							sho.IsThumbnailLoaded = false;
-							this._ThumbnailsForCacheLoad.Enqueue(index);
-						} else {
+							this.DrawDefaultIcons(hdc, sho, iconBounds);
 							sho.IsThumbnailLoaded = true;
 							sho.IsNeedRefreshing = false;
+							sho.IsIconLoaded = false;
+							//if (!this._IconsForRetreval.Contains(index))
+							this._IconsForRetreval.Enqueue(index);
 						}
-
+						if (!sho.IsThumbnailLoaded || sho.IsNeedRefreshing)
+							this._ThumbnailsForCacheLoad.Enqueue(index);
 					} else {
-						if (sho.IsIconLoaded ||
-						    (((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS ||
-						      (!this._ShellViewEx.IsSearchNavigating &&
-						       this._ShellViewEx._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Libraries.ParsingName,
-							       StringComparison.InvariantCultureIgnoreCase)) ||
-						      (!this._ShellViewEx.IsSearchNavigating &&
-						       this._ShellViewEx._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName,
-							       StringComparison.InvariantCultureIgnoreCase))))) {
+						var editControl = User32.SendMessage(this._ShellViewEx.LVHandle, 0x1018, 0, 0);
+						if (editControl == IntPtr.Zero) {
+							this.DrawDefaultIcons(hdc, sho, iconBounds);
+							sho.IsIconLoaded = false;
+							//if (!this._IconsForRetreval.Contains(index))
+							this._IconsForRetreval.Enqueue(index);
+						} else {
 							hThumbnail = sho.GetHBitmap(this._CurrentSize, false);
 							if (hThumbnail != IntPtr.Zero) {
 								Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
-								Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width)/2,
-									iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height)/2, width, height, isGhosted);
-								sho.IsIconLoaded = true;
+								Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2,
+									iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, isGhosted);
 							} else {
-								this.DrawDefaultIcons(hdc, sho, iconBounds);
-								sho.IsThumbnailLoaded = true;
-								sho.IsNeedRefreshing = false;
-								sho.IsIconLoaded = false;
-								//if (!this._IconsForRetreval.Contains(index))
-									this._IconsForRetreval.Enqueue(index);
-							}
-							if (!sho.IsThumbnailLoaded || sho.IsNeedRefreshing)
-								this._ThumbnailsForCacheLoad.Enqueue(index);
-						} else {
-							var editControl = User32.SendMessage(this._ShellViewEx.LVHandle, 0x1018, 0, 0);
-							if (editControl == IntPtr.Zero) {
 								this.DrawDefaultIcons(hdc, sho, iconBounds);
 								sho.IsIconLoaded = false;
 								//if (!this._IconsForRetreval.Contains(index))
-									this._IconsForRetreval.Enqueue(index);
-							} else {
-								hThumbnail = sho.GetHBitmap(this._CurrentSize, false);
-								if (hThumbnail != IntPtr.Zero) {
-									Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
-									Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width)/2,
-										iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height)/2, width, height, isGhosted);
-								} else {
-									this.DrawDefaultIcons(hdc, sho, iconBounds);
-									sho.IsIconLoaded = false;
-									//if (!this._IconsForRetreval.Contains(index))
-										this._IconsForRetreval.Enqueue(index);
-								}
-								if ((sho.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) {
-									sho.ShieldedIconIndex = this._ShieldIconIndex;
-								}
+								this._IconsForRetreval.Enqueue(index);
+							}
+							if ((sho.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) {
+								sho.ShieldedIconIndex = this._ShieldIconIndex;
 							}
 						}
 					}
-					using (var g = Graphics.FromHdc(hdc)) {
-						if (this._ShellViewEx.ShowCheckboxes && this._ShellViewEx.View != ShellViewStyle.Details &&
-						    this._ShellViewEx.View != ShellViewStyle.List) {
-							var lvi = new LVITEMINDEX();
-							lvi.iItem = index;
-							lvi.iGroup = this._ShellViewEx.GetGroupIndex(index);
-							var lvItem = new LVITEM() {
-								iItem = index,
-								iGroupId = lvi.iGroup,
-								iGroup = lvi.iGroup,
-								mask = LVIF.LVIF_STATE,
-								stateMask = LVIS.LVIS_SELECTED
-							};
-							var lvItemImageMask = new LVITEM() {
-								iItem = index,
-								iGroupId = lvi.iGroup,
-								iGroup = lvi.iGroup,
-								mask = LVIF.LVIF_STATE,
-								stateMask = LVIS.LVIS_STATEIMAGEMASK
-							};
-							var res = User32.SendMessage(this._ShellViewEx.LVHandle, MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
-
-							if (isHot || (UInt32) lvItemImageMask.state == (2 << 12)) {
-								res = User32.SendMessage(this._ShellViewEx.LVHandle, MSG.LVM_GETITEMW, 0, ref lvItem);
-								var checkboxOffsetH = 14;
-								var checkboxOffsetV = 2;
-								if (this._ShellViewEx.View == ShellViewStyle.Tile || this._ShellViewEx.View == ShellViewStyle.SmallIcon)
-									checkboxOffsetH = 2;
-								if (this._ShellViewEx.View == ShellViewStyle.Tile)
-									checkboxOffsetV = 5;
-
-								CheckBoxRenderer.DrawCheckBox(g,
-									new Point(iconBounds.Left + checkboxOffsetH, iconBounds.Top + checkboxOffsetV),
-									lvItem.state != 0
-										? System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal
-										: System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal
-								);
-							}
-						}
-					}
-					if (sho.OverlayIconIndex > 0) {
-						if (this._CurrentSize > 180)
-							this._Jumbo.DrawOverlay(hdc, sho.OverlayIconIndex,
-								new Point(iconBounds.Left,
-									iconBounds.Bottom - (this._ShellViewEx.View == ShellViewStyle.Tile ? 5 : 0) - this._CurrentSize/3),
-								this._CurrentSize/3);
-						else if (this._CurrentSize > 64)
-							this._Extra.DrawOverlay(hdc, sho.OverlayIconIndex,
-								new Point(iconBounds.Left + 10 - (this._ShellViewEx.View == ShellViewStyle.Tile ? 5 : 0), iconBounds.Bottom - 50));
-						else
-							this._Large.DrawOverlay(hdc, sho.OverlayIconIndex,
-								new Point(iconBounds.Left + 10 - (this._ShellViewEx.View == ShellViewStyle.Tile ? 5 : 0), iconBounds.Bottom - 32));
-					}
-					if (sho.ShieldedIconIndex > 0) {
-						if (this._CurrentSize > 180)
-							this._Jumbo.DrawIcon(hdc, sho.ShieldedIconIndex,
-								new Point(iconBounds.Right - this._CurrentSize/3 - 3, iconBounds.Bottom - this._CurrentSize/3), this._CurrentSize/3);
-						else if (this._CurrentSize > 64)
-							this._Extra.DrawIcon(hdc, sho.ShieldedIconIndex, new Point(iconBounds.Right - 43, iconBounds.Bottom - 50));
-						else
-							this._Large.DrawIcon(hdc, sho.ShieldedIconIndex, new Point(iconBounds.Right - 33, iconBounds.Bottom - 32));
-					}
-					if (sho.IsShared) {
-						if (this._CurrentSize > 180)
-							this._Jumbo.DrawIcon(hdc, this._SharedIconIndex,
-								new Point(iconBounds.Right - this._CurrentSize/3, iconBounds.Bottom - this._CurrentSize/3), this._CurrentSize/3);
-						else if (this._CurrentSize > 64)
-							this._Extra.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - 40, iconBounds.Bottom - 50));
-						else
-							this._Large.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - 30, iconBounds.Bottom - 32));
-					}
-					var badge = this.GetBadgeForPath(sho.ParsingName);
-					if (badge != null) {
-						var badgeIco = badge.GetHBitmap(this._CurrentSize, false);
-						Gdi32.ConvertPixelByPixel(badgeIco, out width, out height);
-						Gdi32.NativeDraw(hdc, badgeIco, iconBounds.Left + (iconBounds.Right - iconBounds.Left - _CurrentSize)/2,
-							iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - _CurrentSize)/2, _CurrentSize, isGhosted);
-						Gdi32.DeleteObject(badgeIco);
-					}
-
-					if (this._ShellViewEx.View == ShellViewStyle.Tile) {
+				}
+				using (var g = Graphics.FromHdc(hdc)) {
+					if (this._ShellViewEx.ShowCheckboxes && this._ShellViewEx.View != ShellViewStyle.Details &&
+							this._ShellViewEx.View != ShellViewStyle.List) {
 						var lvi = new LVITEMINDEX();
 						lvi.iItem = index;
 						lvi.iGroup = this._ShellViewEx.GetGroupIndex(index);
-						var lableBounds = new User32.RECT() {Left = 2};
-						User32.SendMessage(this._ShellViewEx.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
-						using (var g = Graphics.FromHdc(hdc)) {
-							var fmt = new StringFormat();
-							fmt.Trimming = StringTrimming.EllipsisCharacter;
-							fmt.Alignment = StringAlignment.Center;
-							fmt.Alignment = StringAlignment.Near;
-							fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
-							fmt.LineAlignment = StringAlignment.Center;
+						var lvItem = new LVITEM() {
+							iItem = index,
+							iGroupId = lvi.iGroup,
+							iGroup = lvi.iGroup,
+							mask = LVIF.LVIF_STATE,
+							stateMask = LVIS.LVIS_SELECTED
+						};
+						var lvItemImageMask = new LVITEM() {
+							iItem = index,
+							iGroupId = lvi.iGroup,
+							iGroup = lvi.iGroup,
+							mask = LVIF.LVIF_STATE,
+							stateMask = LVIS.LVIS_STATEIMAGEMASK
+						};
+						var res = User32.SendMessage(this._ShellViewEx.LVHandle, MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
 
-							var lblrectTiles = new RectangleF(lableBounds.Left, iconBounds.Top + 6, lableBounds.Right - lableBounds.Left, 15);
-							if (this._ShellViewEx._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) &&
-							    (sho.IsDrive || sho.IsNetworkPath))
-								this.DrawComputerTiledModeView(sho, g, lblrectTiles, fmt);
+						if (isHot || (UInt32)lvItemImageMask.state == (2 << 12)) {
+							res = User32.SendMessage(this._ShellViewEx.LVHandle, MSG.LVM_GETITEMW, 0, ref lvItem);
+							var checkboxOffsetH = 14;
+							var checkboxOffsetV = 2;
+							if (this._ShellViewEx.View == ShellViewStyle.Tile || this._ShellViewEx.View == ShellViewStyle.SmallIcon)
+								checkboxOffsetH = 2;
+							if (this._ShellViewEx.View == ShellViewStyle.Tile)
+								checkboxOffsetV = 5;
+
+							CheckBoxRenderer.DrawCheckBox(g,
+								new Point(iconBounds.Left + checkboxOffsetH, iconBounds.Top + checkboxOffsetV),
+								lvItem.state != 0
+									? System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal
+									: System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal
+							);
 						}
 					}
-				} else {
-					sho.IsThumbnailLoaded = true;
-					Int32 width = 0;
-					Int32 height = 0;
-					if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
+				}
+				if (sho.OverlayIconIndex > 0) {
+					if (this._CurrentSize > 180)
+						this._Jumbo.DrawOverlay(hdc, sho.OverlayIconIndex,
+							new Point(iconBounds.Left,
+								iconBounds.Bottom - (this._ShellViewEx.View == ShellViewStyle.Tile ? 5 : 0) - this._CurrentSize / 3),
+							this._CurrentSize / 3);
+					else if (this._CurrentSize > 64)
+						this._Extra.DrawOverlay(hdc, sho.OverlayIconIndex,
+							new Point(iconBounds.Left + 10 - (this._ShellViewEx.View == ShellViewStyle.Tile ? 5 : 0), iconBounds.Bottom - 50));
+					else
+						this._Large.DrawOverlay(hdc, sho.OverlayIconIndex,
+							new Point(iconBounds.Left + 10 - (this._ShellViewEx.View == ShellViewStyle.Tile ? 5 : 0), iconBounds.Bottom - 32));
+				}
+				if (sho.ShieldedIconIndex > 0) {
+					if (this._CurrentSize > 180)
+						this._Jumbo.DrawIcon(hdc, sho.ShieldedIconIndex,
+							new Point(iconBounds.Right - this._CurrentSize / 3 - 3, iconBounds.Bottom - this._CurrentSize / 3), this._CurrentSize / 3);
+					else if (this._CurrentSize > 64)
+						this._Extra.DrawIcon(hdc, sho.ShieldedIconIndex, new Point(iconBounds.Right - 43, iconBounds.Bottom - 50));
+					else
+						this._Large.DrawIcon(hdc, sho.ShieldedIconIndex, new Point(iconBounds.Right - 33, iconBounds.Bottom - 32));
+				}
+				if (sho.IsShared) {
+					if (this._CurrentSize > 180)
+						this._Jumbo.DrawIcon(hdc, this._SharedIconIndex,
+							new Point(iconBounds.Right - this._CurrentSize / 3, iconBounds.Bottom - this._CurrentSize / 3), this._CurrentSize / 3);
+					else if (this._CurrentSize > 64)
+						this._Extra.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - 40, iconBounds.Bottom - 50));
+					else
+						this._Large.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - 30, iconBounds.Bottom - 32));
+				}
+				var badge = this.GetBadgeForPath(sho.ParsingName);
+				if (badge != null) {
+					var badgeIco = badge.GetHBitmap(this._CurrentSize, false);
+					Gdi32.ConvertPixelByPixel(badgeIco, out width, out height);
+					Gdi32.NativeDraw(hdc, badgeIco, iconBounds.Left + (iconBounds.Right - iconBounds.Left - _CurrentSize) / 2,
+						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - _CurrentSize) / 2, _CurrentSize, isGhosted);
+					Gdi32.DeleteObject(badgeIco);
+				}
+
+				if (this._ShellViewEx.View == ShellViewStyle.Tile) {
+					var lvi = new LVITEMINDEX();
+					lvi.iItem = index;
+					lvi.iGroup = this._ShellViewEx.GetGroupIndex(index);
+					var lableBounds = new User32.RECT() { Left = 2 };
+					User32.SendMessage(this._ShellViewEx.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
+					using (var g = Graphics.FromHdc(hdc)) {
+						var fmt = new StringFormat();
+						fmt.Trimming = StringTrimming.EllipsisCharacter;
+						fmt.Alignment = StringAlignment.Center;
+						fmt.Alignment = StringAlignment.Near;
+						fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
+						fmt.LineAlignment = StringAlignment.Center;
+
+						var lblrectTiles = new RectangleF(lableBounds.Left, iconBounds.Top + 6, lableBounds.Right - lableBounds.Left, 15);
+						if (this._ShellViewEx._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) &&
+								(sho.IsDrive || sho.IsNetworkPath))
+							this.DrawComputerTiledModeView(sho, g, lblrectTiles, fmt);
+					}
+				}
+			} else {
+				sho.IsThumbnailLoaded = true;
+				Int32 width = 0;
+				Int32 height = 0;
+				if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
+					var hIconExe = sho.GetHBitmap(this._CurrentSize, false);
+					if (hIconExe != IntPtr.Zero) {
+						sho.IsIconLoaded = true;
+						Gdi32.ConvertPixelByPixel(hIconExe, out width, out height);
+						Gdi32.NativeDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - this._CurrentSize) / 2,
+							iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - this._CurrentSize) / 2, this._CurrentSize, isGhosted);
+					}
+				} else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
+					if (!sho.IsIconLoaded) {
+						if (sho.IsNetworkPath || this._ShellViewEx.IsSearchNavigating) {
+							this._IconsForRetreval.Enqueue(index);
+						} else {
+							this._IconsForRetreval.Enqueue(index);
+						}
+						this._Small.DrawIcon(hdc, this._ExeFallBackIndex,
+							new Point(iconBounds.Left + (iconBounds.Right - iconBounds.Left - this._CurrentSize) / 2,
+								iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - this._CurrentSize) / 2));
+					} else {
 						var hIconExe = sho.GetHBitmap(this._CurrentSize, false);
 						if (hIconExe != IntPtr.Zero) {
 							sho.IsIconLoaded = true;
 							Gdi32.ConvertPixelByPixel(hIconExe, out width, out height);
-							Gdi32.NativeDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - this._CurrentSize)/2,
-								iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - this._CurrentSize)/2, this._CurrentSize, isGhosted);
+							Gdi32.NativeDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - this._CurrentSize) / 2,
+								iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - this._CurrentSize) / 2, this._CurrentSize, isGhosted);
 						}
-					} else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
-						if (!sho.IsIconLoaded) {
-							if (sho.IsNetworkPath || this._ShellViewEx.IsSearchNavigating) {
-								this._IconsForRetreval.Enqueue(index);
-							} else {
-								this._IconsForRetreval.Enqueue(index);
-							}
-							this._Small.DrawIcon(hdc, this._ExeFallBackIndex,
-								new Point(iconBounds.Left + (iconBounds.Right - iconBounds.Left - this._CurrentSize)/2,
-									iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - this._CurrentSize)/2));
-						} else {
-							var hIconExe = sho.GetHBitmap(this._CurrentSize, false);
-							if (hIconExe != IntPtr.Zero) {
-								sho.IsIconLoaded = true;
-								Gdi32.ConvertPixelByPixel(hIconExe, out width, out height);
-								Gdi32.NativeDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - this._CurrentSize)/2,
-									iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - this._CurrentSize)/2, this._CurrentSize, isGhosted);
-							}
-						}
-					}
-					if (sho.OverlayIconIndex > 0) {
-						this._Small.DrawOverlay(hdc, sho.OverlayIconIndex, new Point(iconBounds.Left, iconBounds.Bottom - 16));
-					}
-					if (sho.ShieldedIconIndex > 0) {
-						this._Small.DrawIcon(hdc, sho.ShieldedIconIndex, new Point(iconBounds.Right - 9, iconBounds.Bottom - 10), 10);
-					}
-					if (sho.IsShared) {
-						this._Small.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - 9, iconBounds.Bottom - 16));
-					}
-
-					var badge = this.GetBadgeForPath(sho.ParsingName);
-					if (badge != null) {
-						var badgeIco = badge.GetHBitmap(16, false);
-						Gdi32.ConvertPixelByPixel(badgeIco, out width, out height);
-						Gdi32.NativeDraw(hdc, badgeIco, iconBounds.Left, iconBounds.Top, 16, isGhosted);
-						Gdi32.DeleteObject(badgeIco);
 					}
 				}
-			} else {
-				return;
+				if (sho.OverlayIconIndex > 0) {
+					this._Small.DrawOverlay(hdc, sho.OverlayIconIndex, new Point(iconBounds.Left, iconBounds.Bottom - 16));
+				}
+				if (sho.ShieldedIconIndex > 0) {
+					this._Small.DrawIcon(hdc, sho.ShieldedIconIndex, new Point(iconBounds.Right - 9, iconBounds.Bottom - 10), 10);
+				}
+				if (sho.IsShared) {
+					this._Small.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - 9, iconBounds.Bottom - 16));
+				}
+
+				var badge = this.GetBadgeForPath(sho.ParsingName);
+				if (badge != null) {
+					var badgeIco = badge.GetHBitmap(16, false);
+					Gdi32.ConvertPixelByPixel(badgeIco, out width, out height);
+					Gdi32.NativeDraw(hdc, badgeIco, iconBounds.Left, iconBounds.Top, 16, isGhosted);
+					Gdi32.DeleteObject(badgeIco);
+				}
 			}
 		}
 
@@ -411,7 +407,7 @@ namespace BExplorer.Shell {
 				if (isWide) {
 					Gdi32.NativeDrawCrop(hdc, hThumbnail,
 						iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2 + (Int32)(this._CurrentSize * 0.12),
-						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.07/2),
+						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.07 / 2),
 						(Int32)(this._CurrentSize * 0.12), (Int32)(this._CurrentSize * 0.03 / 2), width - (Int32)(this._CurrentSize * 0.13 * 2),
 						 height - (Int32)(this._CurrentSize * 0.03),
 						isGhosted);
@@ -421,7 +417,7 @@ namespace BExplorer.Shell {
 				} else {
 					Gdi32.NativeDrawCrop(hdc, hThumbnail,
 						iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2 + (Int32)(this._CurrentSize * 0.12),
-						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.07/2),
+						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.07 / 2),
 						(Int32)(this._CurrentSize * 0.12), (Int32)(this._CurrentSize * 0.03 / 2), width - (Int32)(this._CurrentSize * 0.13 * 1.9),
 						height - (Int32)(this._CurrentSize * 0.07),
 						isGhosted);
@@ -492,12 +488,12 @@ namespace BExplorer.Shell {
 				if (!ThreadRun_Helper(this._ThumbnailsForCacheLoad, true, ref index)) continue;
 				if (this._ThumbnailsForCacheLoad.Count() > 1 || !this._IsSupressedTumbGeneration) {
 					var sho = this._ShellViewEx.Items[index];
-					if (sho.IsNeedRefreshing | !sho.IsThumbnailLoaded) { 
-					var addornerType = this.GetAddornerType(sho);
+					if (sho.IsNeedRefreshing | !sho.IsThumbnailLoaded) {
+						var addornerType = this.GetAddornerType(sho);
 
-					var result = sho.GetHBitmap(addornerType == 2 ? this._CurrentSize - 7 : this._CurrentSize, true, true);
-					sho.IsThumbnailLoaded = true;
-					sho.IsNeedRefreshing = false;
+						var result = sho.GetHBitmap(addornerType == 2 ? this._CurrentSize - 7 : this._CurrentSize, true, true);
+						sho.IsThumbnailLoaded = true;
+						sho.IsNeedRefreshing = false;
 						if (result != IntPtr.Zero) {
 							var width = 0;
 							var height = 0;
@@ -507,8 +503,8 @@ namespace BExplorer.Shell {
 								height = height + 7;
 							}
 							sho.IsOnlyLowQuality = (width > height && width != this._CurrentSize) ||
-							                       (width < height && height != this._CurrentSize) ||
-							                       (width == height && width != this._CurrentSize);
+																		 (width < height && height != this._CurrentSize) ||
+																		 (width == height && width != this._CurrentSize);
 
 							if (!this._RedrawQueue.Contains(index))
 								this._RedrawQueue.Enqueue(index);
