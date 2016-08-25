@@ -141,7 +141,6 @@ namespace BExplorer.Shell {
 
 		public void DrawIcon(IntPtr hdc, Int32 index, IListItemEx sho, User32.RECT iconBounds, Boolean isGhosted, Boolean isHot) {
 			if (sho.OverlayIconIndex == -1) {
-				if (!this._OverlayQueue.Contains(index))
 					this._OverlayQueue.Enqueue(index);
 			}
 			//TODO: Check why the same code is called 2 times here. It can be fixed by if (!this._RedrawQueue) {

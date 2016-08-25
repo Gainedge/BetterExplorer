@@ -2386,7 +2386,7 @@ namespace BExplorer.Shell {
 				this.LargeImageList.AttachToListView(this, 0);
 				this.SmallImageList.AttachToListView(this, 1);
 			
-				User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, (IntPtr)User32.MAKELONG(value + 28, value + 40));
+				User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, (IntPtr)User32.MAKELONG(value + 30, value + 38));
 			} catch (Exception) {
 			}
 		}
