@@ -466,13 +466,13 @@ namespace BExplorer.Shell {
 		private IListItemEx _kpreselitem = null;
 		private LVIS _IsDragSelect = 0;
 		private BackgroundWorker bw = new BackgroundWorker();
-	
+
 		private ShellViewStyle m_View;
 
-	
+
 		private F.Timer selectionTimer = new F.Timer();
 		private ImageList small = new ImageList(ImageListSize.SystemSmall);
-		
+
 		private ManualResetEvent resetEvent = new ManualResetEvent(true);
 
 		private List<Int32> _CuttedIndexes = new List<Int32>();
@@ -1426,12 +1426,8 @@ namespace BExplorer.Shell {
 							var nmlvedit = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
 							if (!String.IsNullOrEmpty(nmlvedit.item.pszText)) {
 								var item = this.Items[nmlvedit.item.iItem];
-								if (nmlvedit.item.pszText.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
-									RenameShellItem(item.ComInterface, nmlvedit.item.pszText, (item.DisplayName != Path.GetFileName(item.ParsingName)) && !item.IsFolder, item.Extension);
-								}
-
+								RenameShellItem(item.ComInterface, nmlvedit.item.pszText, (item.DisplayName != Path.GetFileName(item.ParsingName)) && !item.IsFolder, item.Extension);
 								this.EndLabelEdit();
-								this.RedrawWindow();
 							}
 
 							this._EditorSubclass?.DestroyHandle();
@@ -1462,11 +1458,11 @@ namespace BExplorer.Shell {
 											String val = String.Empty;
 											if (valueCached != null) {
 												if (currentCollumn.CollumnType == typeof(DateTime))
-													val = ((DateTime) valueCached).ToString(Thread.CurrentThread.CurrentUICulture);
+													val = ((DateTime)valueCached).ToString(Thread.CurrentThread.CurrentUICulture);
 												else if (currentCollumn.CollumnType == typeof(Int64))
-													val = $"{(Math.Ceiling(Convert.ToDouble(valueCached.ToString())/1024).ToString("# ### ### ##0"))} KB";
+													val = $"{(Math.Ceiling(Convert.ToDouble(valueCached.ToString()) / 1024).ToString("# ### ### ##0"))} KB";
 												else if (currentCollumn.CollumnType == typeof(PerceivedType))
-													val = ((PerceivedType) valueCached).ToString();
+													val = ((PerceivedType)valueCached).ToString();
 												else if (currentCollumn.CollumnType == typeof(FileAttributes))
 													val = this.GetFilePropertiesString(valueCached);
 												else
@@ -1670,7 +1666,7 @@ namespace BExplorer.Shell {
 
 							#region Case
 
-							
+
 							this.EndLabelEdit();
 							this.LargeImageList.ResetEvent.Reset();
 							resetEvent.Reset();
@@ -1683,7 +1679,7 @@ namespace BExplorer.Shell {
 						case WNM.LVN_ENDSCROLL:
 
 							#region Case
-							
+
 							_ResetTimer.Start();
 							//this.resetEvent.Set();
 
@@ -1930,7 +1926,7 @@ namespace BExplorer.Shell {
 			this._MaintenanceTimer.Interval = 1000 * 15;
 			this._MaintenanceTimer.Tick += _MaintenanceTimer_Tick;
 			this._MaintenanceTimer.Start();
-			
+
 			this._SearchTimer.Interval = 750;
 			this._SearchTimer.Enabled = false;
 			this._SearchTimer.Tick += (sender, args) => {
@@ -1970,7 +1966,7 @@ namespace BExplorer.Shell {
 				this.Collumns[i].SetSplitButton(headerhandle, i);
 			}
 
-			
+
 			this.IsViewSelectionAllowed = false;
 			this.View = ShellViewStyle.Medium;
 
@@ -2357,7 +2353,7 @@ namespace BExplorer.Shell {
 				foreach (var item in this.SelectedItems.Select(s => s.ComInterface).ToArray()) {
 					fo.DeleteItem(item);
 				}
-				
+
 				fo.PerformOperations();
 			});
 			thread.SetApartmentState(ApartmentState.STA);
@@ -2385,8 +2381,10 @@ namespace BExplorer.Shell {
 				this.LargeImageList.ResizeImages(value);
 				this.LargeImageList.AttachToListView(this, 0);
 				this.SmallImageList.AttachToListView(this, 1);
-			
-				User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, (IntPtr)User32.MAKELONG(value + 30, value + 38));
+				var newW = 0;
+				var newH = 0;
+				this._IIListView.SetIconSpacing(value + 45, value + 38, out newW, out newH);
+				//User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, (IntPtr)User32.MAKELONG((Int32)(value * 1.3), (Int32)(value * 1.4)));
 			} catch (Exception) {
 			}
 		}
@@ -3957,7 +3955,7 @@ namespace BExplorer.Shell {
 				var lvi = new LVITEMINDEX();
 				lvi.iItem = index;
 				lvi.iGroup = this.GetGroupIndex(index);
-				var iconBounds = new User32.RECT() {Left = 1};
+				var iconBounds = new User32.RECT() { Left = 1 };
 				User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref iconBounds);
 				var lvItem = new LVITEM() {
 					iItem = index,
@@ -3976,7 +3974,7 @@ namespace BExplorer.Shell {
 
 				if (sho != null) {
 					var cutFlag = (User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT) & LVIS.LVIS_CUT) ==
-					              LVIS.LVIS_CUT;
+												LVIS.LVIS_CUT;
 					if (this.IconSize == 16) {
 						this.SmallImageList.DrawIcon(hdc, index, sho, iconBounds,
 							sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index), (nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT);
@@ -3987,11 +3985,11 @@ namespace BExplorer.Shell {
 
 					if (!sho.IsInitialised) sho.IsInitialised = true;
 				}
-				m.Result = (IntPtr) CustomDraw.CDRF_SKIPDEFAULT;
+				m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
 			} else {
 				m.Result = IntPtr.Zero;
 			}
-			
+
 			this._CurrentDrawIndex = -1;
 			this.resetEvent.Set();
 		}
@@ -4101,17 +4099,17 @@ namespace BExplorer.Shell {
 							}
 
 							if (textColor == null) {
-								m.Result = (IntPtr) (CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
+								m.Result = (IntPtr)(CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
 							} else {
-								nmlvcd.clrText = (UInt32) ColorTranslator.ToWin32(textColor.Value);
+								nmlvcd.clrText = (UInt32)ColorTranslator.ToWin32(textColor.Value);
 								Marshal.StructureToPtr(nmlvcd, m.LParam, false);
 
 								m.Result =
-									(IntPtr) (CustomDraw.CDRF_NEWFONT | CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW);
+									(IntPtr)(CustomDraw.CDRF_NEWFONT | CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW);
 							}
 						} else {
 							m.Result =
-								(IntPtr) (CustomDraw.CDRF_SKIPDEFAULT);
+								(IntPtr)(CustomDraw.CDRF_SKIPDEFAULT);
 						}
 
 
