@@ -1465,8 +1465,12 @@ namespace BetterExplorer {
 			}
 
 			btnNavigationPane.IsChecked = (int)rks.GetValue("NavigationPaneEnabled", 1) == 1;
-			chkShowCheckBoxes.IsChecked = _ShellListView.ShowCheckboxes;
+
+		  this._ShellListView.ShowCheckboxes = (int)rks.GetValue("ShowCheckboxes", 0) == 1;
+      chkShowCheckBoxes.IsChecked = _ShellListView.ShowCheckboxes;
+
 			chkIsTerraCopyEnabled.IsChecked = (int)rks.GetValue("FileOpExEnabled", 0) == 1;
+
 			chkIsCFO.IsChecked = (int)rks.GetValue("IsCustomFO", 0) == 1;
 			_IsrestoreTabs = (int)rks.GetValue("IsRestoreTabs", 1) == 1;
 
@@ -1814,10 +1818,11 @@ namespace BetterExplorer {
 			rks.SetValue("AutoSwitchLibraryTools", Convert.ToInt32(asLibrary));
 			rks.SetValue("AutoSwitchDriveTools", Convert.ToInt32(asDrive));
 			rks.SetValue("AutoSwitchVirtualDriveTools", Convert.ToInt32(asVirtualDrive));
-			//rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(this.IsCloseLastTabCloseApp));
-			//rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(chkIsLastTabCloseApp.IsChecked.Value));
+      rks.SetValue("ShowCheckboxes", Convert.ToInt32(this._ShellListView.ShowCheckboxes));
+      //rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(this.IsCloseLastTabCloseApp));
+      //rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(chkIsLastTabCloseApp.IsChecked.Value));
 
-			rks.SetValue("IsConsoleShown", this.IsConsoleShown ? 1 : 0);
+      rks.SetValue("IsConsoleShown", this.IsConsoleShown ? 1 : 0);
 			rks.SetValue("TabBarAlignment", this.TabbaBottom.IsChecked == true ? "bottom" : "top");
 
 			if (this.IsPreviewPaneEnabled)
