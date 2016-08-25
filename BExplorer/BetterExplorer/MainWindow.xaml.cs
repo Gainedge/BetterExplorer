@@ -1465,9 +1465,12 @@ namespace BetterExplorer {
 			}
 
 			btnNavigationPane.IsChecked = (int)rks.GetValue("NavigationPaneEnabled", 1) == 1;
+
 		  this._ShellListView.ShowCheckboxes = (int)rks.GetValue("ShowCheckboxes", 0) == 1;
       chkShowCheckBoxes.IsChecked = _ShellListView.ShowCheckboxes;
+
 			chkIsTerraCopyEnabled.IsChecked = (int)rks.GetValue("FileOpExEnabled", 0) == 1;
+
 			chkIsCFO.IsChecked = (int)rks.GetValue("IsCustomFO", 0) == 1;
 			_IsrestoreTabs = (int)rks.GetValue("IsRestoreTabs", 1) == 1;
 
