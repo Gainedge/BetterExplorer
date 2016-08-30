@@ -1619,20 +1619,19 @@ namespace BExplorer.Shell {
 							#region Case
 
 							var nmlvLe = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
+
 							if (this.ToolTip != null && this.ToolTip.IsVisible)
 								this.ToolTip.HideTooltip();
 
 							this.IsFocusAllowed = false;
 							this._IsCanceledOperation = false;
 							this._ItemForRename = nmlvLe.item.iItem;
-							this.BeginItemLabelEdit?.Invoke(this, new RenameEventArgs(nmlvLe.item.iItem));
+							this.BeginItemLabelEdit?.Invoke(this, new RenameEventArgs(this._ItemForRename));
 							m.Result = (IntPtr)0;
-							var editControl = User32.SendMessage(this.LVHandle, 0x1018, 0, 0);
-							if (this.View == ShellViewStyle.Tile) {
-								User32.SetWindowText(editControl, this.Items[nmlvLe.item.iItem].DisplayName);
-								this._EditorSubclass = new ListViewEditor(editControl);
-							}
 
+							var editControl = User32.SendMessage(this.LVHandle, 0x1018, 0, 0);
+							var indexLastDot = this.Items[this._ItemForRename].DisplayName.LastIndexOf(".", StringComparison.Ordinal);
+							User32.SendMessage(editControl, 0x00B1, 0, indexLastDot);
 							break;
 
 						#endregion Case
