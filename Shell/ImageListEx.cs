@@ -516,6 +516,8 @@ namespace BExplorer.Shell {
 
 		private void _RedrawingThreadRun() {
 			while (true) {
+				ResetEvent?.WaitOne();
+				Application.DoEvents();
 				var index = this._RedrawQueue.Dequeue();
 				if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero) continue;
 				this._ShellViewEx.RedrawItem(index);
@@ -528,7 +530,6 @@ namespace BExplorer.Shell {
 				if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero) {
 					var currentItem = this._ShellViewEx.Items[index.Item1];
 					var temp = currentItem.Clone();
-					var hash = currentItem.GetHashCode();
 					var isi2 = (IShellItem2)temp.ComInterface;
 					var pvar = new PropVariant();
 					var pk = index.Item3;
