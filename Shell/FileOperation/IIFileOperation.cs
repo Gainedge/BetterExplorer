@@ -109,15 +109,15 @@ namespace BExplorer.Shell
 		/// <param name="source">The item being moved</param>
 		/// <param name="destination">The location to be moved to</param>
 		/// <param name="newName">The new name of the file</param>
-		public void MoveItem(IShellItem source, IShellItem destination, string newName)
+		public void MoveItem(IShellItem source, IListItemEx destination, string newName)
 		{
 			ThrowIfDisposed();
-			_fileOperation.MoveItem(source, destination, newName, null);
+			_fileOperation.MoveItem(source, destination.ComInterface, newName, null);
 		}
 
-		public void MoveItems(IShellItemArray source, IShellItem destination) {
+		public void MoveItems(IShellItemArray source, IListItemEx destination) {
 			ThrowIfDisposed();
-			this._fileOperation.MoveItems(source, destination);
+			this._fileOperation.MoveItems(source, destination.ComInterface);
 		}
 
 		/// <summary>

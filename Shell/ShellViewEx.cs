@@ -2294,13 +2294,10 @@ namespace BExplorer.Shell {
 		public void PasteAvailableFiles() {
 			var handle = this.Handle;
 			var view = this;
-			//var foDialog = new FileOperationDialog();
-			//var fod = new FileOperation();
-			//foDialog.Contents.Add(fod);
 			var thread = new Thread(() => {
 				var dataObject = F.Clipboard.GetDataObject();
 				var dropEffect = dataObject.ToDropEffect();
-				if (dataObject.GetDataPresent("Shell IDList Array")) {
+				if (dataObject != null && dataObject.GetDataPresent("Shell IDList Array")) {
 					var shellItemArray = dataObject.ToShellItemArray();
 					var items = shellItemArray.ToArray();
 
@@ -2311,17 +2308,15 @@ namespace BExplorer.Shell {
 						if (dropEffect == System.Windows.DragDropEffects.Copy) {
 							fo.CopyItems(shellItemArray, this.CurrentFolder);
 						} else {
-							fo.MoveItems(shellItemArray, this.CurrentFolder.ComInterface);
+							fo.MoveItems(shellItemArray, this.CurrentFolder);
 						}
 
 						fo.PerformOperations();
 						Marshal.ReleaseComObject(shellItemArray);
-						shellItemArray = null;
-						items = null;
 					} catch (SecurityException) {
 						throw;
 					}
-				} else if (dataObject.GetDataPresent("FileDrop")) {
+				} else if (dataObject != null && dataObject.GetDataPresent("FileDrop")) {
 					var items = ((String[])dataObject.GetData("FileDrop")).Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
 					try {
 						var sink = new FOperationProgressSink(view);
@@ -2331,10 +2326,9 @@ namespace BExplorer.Shell {
 							if (dropEffect == System.Windows.DragDropEffects.Copy)
 								fo.CopyItem(item, this.CurrentFolder);
 							else
-								fo.MoveItem(item, this.CurrentFolder.ComInterface, null);
+								fo.MoveItem(item, this.CurrentFolder, null);
 						}
 
-						items = null;
 						fo.PerformOperations();
 					} catch (SecurityException) {
 						throw;
@@ -3659,7 +3653,7 @@ namespace BExplorer.Shell {
 					if (copy)
 						fo.CopyItem(item, destination);
 					else
-						fo.MoveItem(item, destination.ComInterface, null);
+						fo.MoveItem(item, destination, null);
 				}
 				fo.PerformOperations();
 			});
@@ -3669,7 +3663,9 @@ namespace BExplorer.Shell {
 		}
 
 		private void Do_Copy_OR_Move_Helper_2(Boolean copy, IListItemEx destination, F.IDataObject dataObject) {
-			IntPtr handle = this.Handle; IShellItemArray shellItemArray = null; IShellItem[] items = null;
+			IntPtr handle = this.Handle;
+			IShellItemArray shellItemArray = null;
+			IShellItem[] items = null;
 
 			if (((F.DataObject)dataObject).ContainsFileDropList()) {
 				items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
@@ -3684,7 +3680,7 @@ namespace BExplorer.Shell {
 						if (copy)
 							fo.CopyItem(item, destination);
 						else
-							fo.MoveItem(item, destination.ComInterface, null);
+							fo.MoveItem(item, destination, null);
 					}
 
 					fo.PerformOperations();
