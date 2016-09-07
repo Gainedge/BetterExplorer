@@ -112,14 +112,17 @@ namespace BExplorer.Shell {
 	    this._View.IsRenameInProgress = true;
 	  }
 
-    public override void PostRenameItem(uint dwFlags, IShellItem psiItem, string pszNewName, uint hrRename, IShellItem psiNewlyCreated) {
-	    if (hrRename == 2555912 && psiItem != null && psiNewlyCreated != null) {
-	      var oldItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
-	      var newItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
-	      this._View.UpdateItem(oldItem, newItem);
-	    }
-      this._View.IsRenameInProgress = false;
-    }
+		[HandleProcessCorruptedStateExceptions]
+		public override void PostRenameItem(uint dwFlags, IShellItem psiItem, string pszNewName, uint hrRename, IShellItem psiNewlyCreated) {
+			this._View.Invoke((Action) (() => {
+				if (hrRename == 2555912 && psiItem != null && psiNewlyCreated != null) {
+					var oldItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
+					var newItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
+					this._View.UpdateItem(oldItem, newItem);
+				}
+				this._View.IsRenameInProgress = false;
+			}));
+		}
 
   }
 }

@@ -529,7 +529,7 @@ namespace BExplorer.Shell {
 					items.Add(iShellItem);
 				}
 			} finally {
-				Marshal.ReleaseComObject(shellItemArray);
+				//Marshal.ReleaseComObject(shellItemArray);
 			}
 			return items.ToArray();
 		}

@@ -17,6 +17,7 @@ namespace BExplorer.Shell
 		private IFileOperation _fileOperation;
 		private FileOperationProgressSink _callbackSink;
 		private uint _sinkCookie;
+		private Boolean _IsCopyInSameFolder { get; set; }
 
 		/// <summary>
 		/// 
@@ -61,8 +62,20 @@ namespace BExplorer.Shell
 			_callbackSink = callbackSink;
 			_fileOperation = (IFileOperation)Activator.CreateInstance(_fileOperationType);
 
-			var Flags = isRecycle ? FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_ALLOWUNDO : FileOperationFlags.FOF_NOCONFIRMMKDIR;
-			_fileOperation.SetOperationFlags(Flags);
+			var flags = isRecycle ? FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_ALLOWUNDO : FileOperationFlags.FOF_NOCONFIRMMKDIR;
+			_fileOperation.SetOperationFlags(flags);
+
+			if (_callbackSink != null) _sinkCookie = _fileOperation.Advise(_callbackSink);
+			if (owner != IntPtr.Zero) _fileOperation.SetOwnerWindow((uint)owner);
+		}
+
+		public IIFileOperation(FileOperationProgressSink callbackSink, IntPtr owner, Boolean isRecycle, Boolean isCopyInSameFolder) {
+			_callbackSink = callbackSink;
+			this._IsCopyInSameFolder = isCopyInSameFolder;
+			_fileOperation = (IFileOperation)Activator.CreateInstance(_fileOperationType);
+
+			if (!isRecycle)
+				this._fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR);
 
 			if (_callbackSink != null) _sinkCookie = _fileOperation.Advise(_callbackSink);
 			if (owner != IntPtr.Zero) _fileOperation.SetOwnerWindow((uint)owner);
@@ -76,7 +89,18 @@ namespace BExplorer.Shell
 		public void CopyItem(IShellItem source, IListItemEx destination)
 		{
 			ThrowIfDisposed();
-			_fileOperation.CopyItem(source, destination.ComInterface, null, _callbackSink);
+			if (this._IsCopyInSameFolder) {
+				this._fileOperation.SetOperationFlags(FileOperationFlags.FOF_RENAMEONCOLLISION | FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMMKDIR);
+			}
+			_fileOperation.CopyItem(source, destination.ComInterface, null, null);
+		}
+
+		public void CopyItems(IShellItemArray source, IListItemEx destination) {
+			ThrowIfDisposed();
+			if (this._IsCopyInSameFolder) {
+				this._fileOperation.SetOperationFlags(FileOperationFlags.FOF_RENAMEONCOLLISION | FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMMKDIR);
+			}
+			_fileOperation.CopyItems(source, destination.ComInterface);
 		}
 
 		/// <summary>
@@ -88,7 +112,12 @@ namespace BExplorer.Shell
 		public void MoveItem(IShellItem source, IShellItem destination, string newName)
 		{
 			ThrowIfDisposed();
-			_fileOperation.MoveItem(source, destination, newName, _callbackSink);
+			_fileOperation.MoveItem(source, destination, newName, null);
+		}
+
+		public void MoveItems(IShellItemArray source, IShellItem destination) {
+			ThrowIfDisposed();
+			this._fileOperation.MoveItems(source, destination);
 		}
 
 		/// <summary>
@@ -98,8 +127,8 @@ namespace BExplorer.Shell
 		/// <param name="newName">The new name</param>
 		public void RenameItem(IShellItem source, string newName)
 		{
-			ThrowIfDisposed();
-			_fileOperation.RenameItem(source, newName, _callbackSink);
+			this._fileOperation.SetOperationFlags(FileOperationFlags.FOF_SILENT);
+			this._fileOperation.RenameItem(source, newName, null);
 		}
 
 		/// <summary>
@@ -109,7 +138,7 @@ namespace BExplorer.Shell
 		public void DeleteItem(IShellItem source)
 		{
 			ThrowIfDisposed();
-			_fileOperation.DeleteItem(source, _callbackSink);
+			_fileOperation.DeleteItem(source, null);
 		}
 
 		/// <summary>

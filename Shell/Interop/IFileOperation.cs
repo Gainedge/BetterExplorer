@@ -36,7 +36,7 @@ namespace BExplorer.Shell.Interop {
 				IFileOperationProgressSink pfopsItem);
 
 		void MoveItems(
-				[MarshalAs(UnmanagedType.Interface)] object punkItems,
+				[MarshalAs(UnmanagedType.IUnknown)] object punkItems,
 				IShellItem psiDestinationFolder);
 
 		void CopyItem(
@@ -46,7 +46,7 @@ namespace BExplorer.Shell.Interop {
 				IFileOperationProgressSink pfopsItem);
 
 		void CopyItems(
-				[MarshalAs(UnmanagedType.Interface)] object punkItems,
+				[MarshalAs(UnmanagedType.IUnknown)] object punkItems,
 				IShellItem psiDestinationFolder);
 
 		void DeleteItem(

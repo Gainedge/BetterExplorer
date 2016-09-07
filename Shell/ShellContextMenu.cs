@@ -373,8 +373,8 @@ namespace BExplorer.Shell {
 			Marshal.ReleaseComObject(m_ComInterface);
 			Marshal.ReleaseComObject(m_ComInterface2);
 			Marshal.ReleaseComObject(m_ComInterface3);
-			Marshal.Release(result);
-			result = IntPtr.Zero;
+			Marshal.Release(_Result);
+			_Result = IntPtr.Zero;
 		}
 
 		private List<string> GetNewContextMenuItems() {
@@ -584,37 +584,37 @@ namespace BExplorer.Shell {
 				var desktop = KnownFolders.Desktop as ShellItem;
 				var ishellViewPtr = desktop.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID);
 				var view = Marshal.GetObjectForIUnknown(ishellViewPtr) as IShellView;
-				view.GetItemObject(SVGIO.SVGIO_BACKGROUND, typeof(IContextMenu).GUID, out result);
+				view.GetItemObject(SVGIO.SVGIO_BACKGROUND, typeof(IContextMenu).GUID, out _Result);
 				Marshal.ReleaseComObject(view);
 			} else {
-				parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, typeof(IContextMenu).GUID, 0, out result);
+				parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, typeof(IContextMenu).GUID, 0, out _Result);
 			}
 
-			m_ComInterface = (IContextMenu)Marshal.GetTypedObjectForIUnknown(result, typeof(IContextMenu));
+			m_ComInterface = (IContextMenu)Marshal.GetTypedObjectForIUnknown(_Result, typeof(IContextMenu));
 			m_ComInterface2 = m_ComInterface as IContextMenu2;
 			m_ComInterface3 = m_ComInterface as IContextMenu3;
 			m_MessageWindow = new MessageWindow(this);
 		}
 
-		IntPtr result = IntPtr.Zero;
+		IntPtr _Result = IntPtr.Zero;
 
 		void Initialize(IListItemEx item) {
 			Guid iise = typeof(IShellExtInit).GUID;
 			var ishellViewPtr = (item.IsDrive || !item.IsFileSystem || item.IsNetworkPath) ? item.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID) : item.Parent.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID);
 			var view = Marshal.GetObjectForIUnknown(ishellViewPtr) as IShellView;
-			view.GetItemObject(SVGIO.SVGIO_BACKGROUND, typeof(IContextMenu).GUID, out result);
-			Marshal.ReleaseComObject(view);
-			m_ComInterface = (IContextMenu)Marshal.GetTypedObjectForIUnknown(result, typeof(IContextMenu));
+			view?.GetItemObject(SVGIO.SVGIO_BACKGROUND, typeof(IContextMenu).GUID, out _Result);
+			if (view != null) Marshal.ReleaseComObject(view);
+			m_ComInterface = (IContextMenu)Marshal.GetTypedObjectForIUnknown(_Result, typeof(IContextMenu));
 			m_ComInterface2 = m_ComInterface as IContextMenu2;
 			m_ComInterface3 = m_ComInterface as IContextMenu3;
 			IntPtr iShellExtInitPtr;
-			if (Marshal.QueryInterface(result, ref iise, out iShellExtInitPtr) == (int)HResult.S_OK) {
+			if (Marshal.QueryInterface(_Result, ref iise, out iShellExtInitPtr) == (int)HResult.S_OK) {
 				var iShellExtInit = Marshal.GetTypedObjectForIUnknown(iShellExtInitPtr, typeof(IShellExtInit)) as IShellExtInit;
 
 				try {
 					var hhh = IntPtr.Zero;
-					iShellExtInit.Initialize(_ShellView.CurrentFolder.PIDL, null, 0);
-					Marshal.ReleaseComObject(iShellExtInit);
+					iShellExtInit?.Initialize(_ShellView.CurrentFolder.PIDL, null, 0);
+					if (iShellExtInit != null) Marshal.ReleaseComObject(iShellExtInit);
 					Marshal.Release(iShellExtInitPtr);
 				} catch {
 

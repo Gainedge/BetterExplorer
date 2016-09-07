@@ -392,6 +392,11 @@ namespace BExplorer.Shell.Interop {
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern Boolean SHChangeNotification_Unlock(IntPtr hLock);
 
+		[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
+		public static extern void SHCreateShellItemArrayFromIDLists(
+			[In] uint cidl,
+			[In] IntPtr[] rgpidl,
+			[MarshalAs(UnmanagedType.Interface)] out IShellItemArray ppv);
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
 		public static extern void SHCreateShellItemArrayFromDataObject(

@@ -641,8 +641,6 @@ namespace BExplorer.Shell {
 					//TODO: implement a conditional selection inside rename textbox!
 				} else if (e == Keys.Enter)
 					this.EndLabelEdit();
-				else
-					return false;
 			}
 			if ((Control.ModifierKeys & Keys.Control) == Keys.Control && !(System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.TextBox)) {
 				switch (e) {
@@ -2152,11 +2150,24 @@ namespace BExplorer.Shell {
 
 		public void UpdateItem(IListItemEx obj1, IListItemEx obj2) {
 			if (!obj2.Parent.Equals(this.CurrentFolder)) return;
-
-			var oldItem = this.Items.SingleOrDefault(s => s.Equals(obj1) || (obj1.Extension.Equals(".library-ms") && s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj1.ParsingName)))));
-			var theItem = this.Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName || (obj2.Extension.Equals(".library-ms") && s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
+			var items = this.Items.ToArray();
+			var oldItem =
+				items.SingleOrDefault(
+					s =>
+						s.Equals(obj1) ||
+						(obj1.Extension.Equals(".library-ms") &&
+						 s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj1.ParsingName)))));
+			var theItem =
+				items.FirstOrDefault(
+					s =>
+						s.ParsingName == obj2.ParsingName ||
+						(obj2.Extension.Equals(".library-ms") &&
+						 s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
 			if (theItem == null) {
-				this.Items.Add(obj2.Extension.Equals(".library-ms") ? FileSystemListItem.InitializeWithIShellItem(this.LVHandle, ShellLibrary.Load(obj2.DisplayName, true).ComInterface) : obj2);
+				this.Items.Add(obj2.Extension.Equals(".library-ms")
+					? FileSystemListItem.InitializeWithIShellItem(this.LVHandle,
+						ShellLibrary.Load(obj2.DisplayName, true).ComInterface)
+					: obj2);
 				if (oldItem != null) {
 					this.Items.Remove(oldItem);
 					oldItem.Dispose();
@@ -2164,7 +2175,12 @@ namespace BExplorer.Shell {
 				var col = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == this.LastSortedColumnId).Value;
 				this.SetSortCollumn(true, col, this.LastSortOrder, false);
 				if (this.IsGroupsEnabled) this.SetGroupOrder(false);
-				var obj2Real = this.Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName || (obj2.Extension.Equals(".library-ms") && s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
+				var obj2Real =
+					this.Items.FirstOrDefault(
+						s =>
+							s.ParsingName == obj2.ParsingName ||
+							(obj2.Extension.Equals(".library-ms") &&
+							 s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
 				this.SelectItemByIndex(obj2Real.ItemIndex, true, true);
 			}
 			this.IsFocusAllowed = true;
@@ -2290,12 +2306,12 @@ namespace BExplorer.Shell {
 
 					try {
 						var sink = new FOperationProgressSink(view);
-						var fo = new IIFileOperation(sink, handle, true);
-						foreach (var item in items) {
-							if (dropEffect == System.Windows.DragDropEffects.Copy)
-								fo.CopyItem(item, this.CurrentFolder);
-							else
-								fo.MoveItem(item, this.CurrentFolder.ComInterface, null);
+						var controlItem = FileSystemListItem.InitializeWithIShellItem(this.LVHandle, items.First()).Parent;
+						var fo = new IIFileOperation(sink, handle, true, controlItem.Equals(this.CurrentFolder));
+						if (dropEffect == System.Windows.DragDropEffects.Copy) {
+							fo.CopyItems(shellItemArray, this.CurrentFolder);
+						} else {
+							fo.MoveItems(shellItemArray, this.CurrentFolder.ComInterface);
 						}
 
 						fo.PerformOperations();
@@ -2309,7 +2325,8 @@ namespace BExplorer.Shell {
 					var items = ((String[])dataObject.GetData("FileDrop")).Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
 					try {
 						var sink = new FOperationProgressSink(view);
-						var fo = new IIFileOperation(sink, handle, true);
+						var controlItem = FileSystemListItem.InitializeWithIShellItem(this.LVHandle, items.First()).Parent;
+						var fo = new IIFileOperation(sink, handle, true, controlItem.Equals(this.CurrentFolder));
 						foreach (var item in items) {
 							if (dropEffect == System.Windows.DragDropEffects.Copy)
 								fo.CopyItem(item, this.CurrentFolder);
@@ -2360,14 +2377,19 @@ namespace BExplorer.Shell {
 		}
 
 		public void RenameShellItem(IShellItem item, String newName, Boolean isAddFileExtension, String extension = "") {
+			var handle = this.Handle;
 			var sink = new FOperationProgressSink(this);
-			var fo = new IIFileOperation(sink, this.LVHandle, false);
-			fo.RenameItem(item, isAddFileExtension ? newName + extension : newName);
-			fo.PerformOperations();
-			if (fo.GetAnyOperationAborted()) {
-				this._NewName = String.Empty;
-				this._IsCanceledOperation = true;
-			}
+			var thread = new Thread(() => {
+				var fo = new IIFileOperation(sink, handle, false);
+				fo.RenameItem(item, isAddFileExtension ? newName + extension : newName);
+				fo.PerformOperations();
+				if (fo.GetAnyOperationAborted()) {
+					this._NewName = String.Empty;
+					this._IsCanceledOperation = true;
+				}
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
 		}
 
 		public void ResizeIcons(Int32 value) {
