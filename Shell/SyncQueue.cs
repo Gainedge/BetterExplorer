@@ -25,8 +25,9 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="item">The object to add to the System.Collections.Generic.Queue[T]. The value can be null for reference types.</param>
 		public void Enqueue(T item) {
-			Task.Run(() => {
-				lock (queue) {
+            lock (queue) {
+                //Task.Run(() => {
+				
 					if (!queue.Contains(item)) {
 						queue.Enqueue(item);
 
@@ -34,9 +35,10 @@ namespace BExplorer.Shell {
 							// wake up any blocked dequeue
 							System.Threading.Monitor.PulseAll(queue);
 						}
-					} 
-				}
-			});
+                    } 
+               // });
+            }
+			
 		}
 
 		/// <summary>

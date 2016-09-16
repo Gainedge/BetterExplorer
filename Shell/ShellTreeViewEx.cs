@@ -512,7 +512,7 @@ namespace BExplorer.Shell {
 				try {
 					var fo = new IIFileOperation(handle);
 					foreach (var item in items) {
-						fo.MoveItem(item, destination.ComInterface, null);
+						fo.MoveItem(item, destination, null);
 					}
 
 					fo.PerformOperations();

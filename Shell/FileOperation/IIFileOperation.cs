@@ -135,10 +135,10 @@ namespace BExplorer.Shell
 		/// Deletes the source item
 		/// </summary>
 		/// <param name="source">The item to delete</param>
-		public void DeleteItem(IShellItem source)
+		public void DeleteItem(IListItemEx source)
 		{
 			ThrowIfDisposed();
-			_fileOperation.DeleteItem(source, null);
+			_fileOperation.DeleteItem(source.ComInterface, null);
 		}
 
 		/// <summary>

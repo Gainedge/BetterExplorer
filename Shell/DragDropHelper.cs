@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BExplorer.Shell.Interop;
 
 namespace BExplorer.Shell
 {
@@ -19,7 +20,7 @@ namespace BExplorer.Shell
         private static extern uint RegisterClipboardFormat(string lpszFormatName);
 
         private const string DropDescriptionFormat = "DropDescription";
-        public static void SetDropDescription(this System.Runtime.InteropServices.ComTypes.IDataObject dataObject, DataObject.DropDescription dropDescription)
+        public static HResult SetDropDescription(this System.Runtime.InteropServices.ComTypes.IDataObject dataObject, DataObject.DropDescription dropDescription)
         {
             FORMATETC formatETC;
             FillFormatETC(DropDescriptionFormat, TYMED.TYMED_HGLOBAL, out formatETC);
@@ -41,16 +42,18 @@ namespace BExplorer.Shell
                 // Set the data
                 var dataObjectCOM = dataObject;
                 dataObjectCOM.SetData(ref formatETC, ref medium, true);
+                return HResult.S_OK;
             }
             catch (NotImplementedException)
             {
                 Marshal.FreeHGlobal(pDD);
+                return HResult.S_FALSE;
             }
             catch
             {
                 // If we failed, we need to free the HGLOBAL memory
                 Marshal.FreeHGlobal(pDD);
-                throw;
+                return HResult.S_FALSE;
             }
         }
 

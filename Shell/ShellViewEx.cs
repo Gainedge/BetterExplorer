@@ -1269,65 +1269,69 @@ namespace BExplorer.Shell {
 			this.HitTest(PointToClient(new DPoint(e.X, e.Y)), out row, out collumn);
 			var descinvalid = new DataObject.DropDescription();
 			descinvalid.type = (int)DataObject.DropImageType.Invalid;
-			((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(descinvalid);
+			var ddResult = ((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(descinvalid);
 			if (row != -1) {
 				this.RefreshItem(_LastDropHighLightedItemIndex);
 				this._LastDropHighLightedItemIndex = row;
 				this.RefreshItem(row);
-				var desc = new DataObject.DropDescription();
-				switch (e.Effect) {
-					case F.DragDropEffects.Copy:
-						desc.type = (int)DataObject.DropImageType.Copy;
-						desc.szMessage = "Copy To %1";
-						break;
+			    if (ddResult == HResult.S_OK) {
+			        var desc = new DataObject.DropDescription();
+			        switch (e.Effect) {
+			            case F.DragDropEffects.Copy:
+			                desc.type = (int) DataObject.DropImageType.Copy;
+			                desc.szMessage = "Copy To %1";
+			                break;
 
-					case F.DragDropEffects.Link:
-						desc.type = (int)DataObject.DropImageType.Link;
-						desc.szMessage = "Create Link in %1";
-						break;
+			            case F.DragDropEffects.Link:
+			                desc.type = (int) DataObject.DropImageType.Link;
+			                desc.szMessage = "Create Link in %1";
+			                break;
 
-					case F.DragDropEffects.Move:
-						desc.type = (int)DataObject.DropImageType.Move;
-						desc.szMessage = "Move To %1";
-						break;
+			            case F.DragDropEffects.Move:
+			                desc.type = (int) DataObject.DropImageType.Move;
+			                desc.szMessage = "Move To %1";
+			                break;
 
-					case F.DragDropEffects.None:
-						desc.type = (int)DataObject.DropImageType.None;
-						desc.szMessage = "";
-						break;
+			            case F.DragDropEffects.None:
+			                desc.type = (int) DataObject.DropImageType.None;
+			                desc.szMessage = "";
+			                break;
 
-					default:
-						desc.type = (int)DataObject.DropImageType.Invalid;
-						desc.szMessage = "";
-						break;
-				}
-				desc.szInsert = this.Items[row].DisplayName;
-				if (this._DraggedItemIndexes.Contains(row) || !this.Items[row].IsFolder) {
-					if (this.Items[row].Extension == ".exe") {
-						desc.type = (int)DataObject.DropImageType.Copy;
-						desc.szMessage = "Open With %1";
-					} else {
-						desc.type = (Int32)DataObject.DropImageType.None;
-						desc.szMessage = "Cant Drop Here!";
-					}
-				}
-					((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
+			            default:
+			                desc.type = (int) DataObject.DropImageType.Invalid;
+			                desc.szMessage = "";
+			                break;
+			        }
+			        desc.szInsert = this.Items[row].DisplayName;
+			        if (this._DraggedItemIndexes.Contains(row) || !this.Items[row].IsFolder) {
+			            if (this.Items[row].Extension == ".exe") {
+			                desc.type = (int) DataObject.DropImageType.Copy;
+			                desc.szMessage = "Open With %1";
+			            } else {
+			                desc.type = (Int32) DataObject.DropImageType.None;
+			                desc.szMessage = "Cant Drop Here!";
+			            }
+			        }
+			        ((System.Runtime.InteropServices.ComTypes.IDataObject) e.Data).SetDropDescription(desc);
+			    }
 			} else {
 				this.RefreshItem(_LastDropHighLightedItemIndex);
 				this._LastDropHighLightedItemIndex = -1;
-				if (e.Effect == F.DragDropEffects.Link) {
-					DataObject.DropDescription desc = new DataObject.DropDescription();
-					desc.type = (int)DataObject.DropImageType.Link;
-					desc.szMessage = "Create Link in %1";
-					desc.szInsert = this.CurrentFolder.DisplayName;
-					((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
-				} else if (e.Effect == F.DragDropEffects.Copy) {
-					DataObject.DropDescription desc = new DataObject.DropDescription();
-					desc.type = (int)DataObject.DropImageType.Link;
-					desc.szMessage = "Create a copy in %1";
-					desc.szInsert = this.CurrentFolder.DisplayName;
-					((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
-				}
+			    if (ddResult == HResult.S_OK) {
+			        if (e.Effect == F.DragDropEffects.Link) {
+			            DataObject.DropDescription desc = new DataObject.DropDescription();
+			            desc.type = (int) DataObject.DropImageType.Link;
+			            desc.szMessage = "Create Link in %1";
+			            desc.szInsert = this.CurrentFolder.DisplayName;
+			            ((System.Runtime.InteropServices.ComTypes.IDataObject) e.Data).SetDropDescription(desc);
+			        } else if (e.Effect == F.DragDropEffects.Copy) {
+			            DataObject.DropDescription desc = new DataObject.DropDescription();
+			            desc.type = (int) DataObject.DropImageType.Link;
+			            desc.szMessage = "Create a copy in %1";
+			            desc.szInsert = this.CurrentFolder.DisplayName;
+			            ((System.Runtime.InteropServices.ComTypes.IDataObject) e.Data).SetDropDescription(desc);
+			        }
+			    }
 			}
 
 			if (e.Data.GetDataPresent("DragImageBits"))
@@ -2360,9 +2364,12 @@ namespace BExplorer.Shell {
 			var thread = new Thread(() => {
 				var sink = new FOperationProgressSink(view);
 				var fo = new IIFileOperation(sink, handle, isRecycling);
-				foreach (var item in this.SelectedItems.Select(s => s.ComInterface).ToArray()) {
+				foreach (var item in this.SelectedItems) {
 					fo.DeleteItem(item);
-				}
+          this.BeginInvoke(new MethodInvoker(() => {
+            this._IIListView.SetItemState(item.ItemIndex, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, 0);
+          }));
+        }
 
 				fo.PerformOperations();
 			});
@@ -3027,13 +3034,16 @@ namespace BExplorer.Shell {
 			//if (this._RequestedCurrentLocation != destination) {
 			//  //this.IsCancelRequested = true;
 			//}
-
+		  this.LargeImageList.ResetEvent.Set();
+		  this.SmallImageList.ResetEvent.Set();
 			resetEvent.Set();
 
 			if (this.Threads.Count > 0) {
 				mre.Set();
 				this.resetEvent.Set();
-				foreach (var thread in this.Threads.ToArray()) {
+        this.LargeImageList.ResetEvent.Set();
+        this.SmallImageList.ResetEvent.Set();
+        foreach (var thread in this.Threads.ToArray()) {
 					thread.Abort();
 					this.Threads.Remove(thread);
 				}
@@ -3589,23 +3599,23 @@ namespace BExplorer.Shell {
 			}
 
 			try {
-				var m_dbConnection = new SQLite.SQLiteConnection("Data Source=" + this._DBPath + ";Version=3;");
-				m_dbConnection.Open();
+				var mDBConnection = new SQLite.SQLiteConnection("Data Source=" + this._DBPath + ";Version=3;");
+				mDBConnection.Open();
 
-				var command1 = new SQLite.SQLiteCommand("SELECT * FROM foldersettings WHERE Path=@0", m_dbConnection);
+				var command1 = new SQLite.SQLiteCommand("SELECT * FROM foldersettings WHERE Path=@0", mDBConnection);
 				command1.Parameters.AddWithValue("0", directory.ParsingName);
 
-				var Reader = command1.ExecuteReader();
-				if (Reader.Read()) {
-					var Values = Reader.GetValues();
-					if (Values.Count > 0) {
+				var reader = command1.ExecuteReader();
+				if (reader.Read()) {
+					var values = reader.GetValues();
+					if (values.Count > 0) {
 						result = true;
-						var view = Values.GetValues("View").FirstOrDefault();
-						var iconSize = Values.GetValues("IconSize").FirstOrDefault();
-						var lastSortedColumnIndex = Values.GetValues("LastSortedColumn").FirstOrDefault();
-						var lastSortOrder = Values.GetValues("LastSortOrder").FirstOrDefault();
-						var lastGroupedColumnId = Values.GetValues("LastGroupCollumn").FirstOrDefault();
-						var lastGroupoupOrder = Values.GetValues("LastGroupOrder").FirstOrDefault();
+						var view = values.GetValues("View").FirstOrDefault();
+						var iconSize = values.GetValues("IconSize").FirstOrDefault();
+						var lastSortedColumnIndex = values.GetValues("LastSortedColumn").FirstOrDefault();
+						var lastSortOrder = values.GetValues("LastSortOrder").FirstOrDefault();
+						var lastGroupedColumnId = values.GetValues("LastGroupCollumn").FirstOrDefault();
+						var lastGroupoupOrder = values.GetValues("LastGroupOrder").FirstOrDefault();
 
 						if (view != null)
 							folderSetting.View = (ShellViewStyle)Enum.Parse(typeof(ShellViewStyle), view);
@@ -3618,7 +3628,7 @@ namespace BExplorer.Shell {
 						folderSetting.GroupCollumn = lastGroupedColumnId;
 						folderSetting.GroupOrder = lastGroupoupOrder == SortOrder.Ascending.ToString() ? SortOrder.Ascending : SortOrder.Descending;
 
-						var collumns = Values.GetValues("Columns").FirstOrDefault();
+						var collumns = values.GetValues("Columns").FirstOrDefault();
 						folderSetting.Columns = collumns != null ? XElement.Parse(collumns) : null;
 
 						if (String.IsNullOrEmpty(iconSize))
@@ -3628,7 +3638,7 @@ namespace BExplorer.Shell {
 					}
 				}
 
-				Reader.Close();
+				reader.Close();
 			} catch (Exception) {
 			}
 
@@ -3964,7 +3974,6 @@ namespace BExplorer.Shell {
 		private Int32 _CurrentDrawIndex = -1;
 		[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
 		private void ProcessCustomDrawPostPaint(ref Message m, User32.NMLVCUSTOMDRAW nmlvcd, Int32 index, IntPtr hdc, IListItemEx sho, Color? textColor) {
-			this.resetEvent.Reset();
 			if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0 && this._CurrentDrawIndex == -1) {
 				//var perceivedType = (PerceivedType)sho.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType)).Value;
 				this._CurrentDrawIndex = index;
@@ -4008,7 +4017,6 @@ namespace BExplorer.Shell {
 			}
 
 			this._CurrentDrawIndex = -1;
-			this.resetEvent.Set();
 		}
 
 		private void DrawNormalFolderSubitemsInTiledView(IListItemEx sho, RectangleF lblrectTiles, Graphics g, StringFormat fmt) {
