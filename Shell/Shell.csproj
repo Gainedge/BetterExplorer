@@ -115,7 +115,6 @@
     <Compile Include="ShellItemEqualityComparer.cs" />
     <Compile Include="Custom ContextMenus Remove Soon\FilterMenu_Strings.cs" />
     <Compile Include="FOperationProgressSink.cs" />
-    <Compile Include="Icons.cs" />
     <Compile Include="Interop\WindowsThumbnailProvider.cs" />
     <Compile Include="Interop\IOperationsProgressDialog.cs" />
     <Compile Include="Interop\Wallpaer.cs" />

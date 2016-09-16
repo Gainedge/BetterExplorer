@@ -34,7 +34,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 namespace TsudaKageyu {
-	public class IconExtractor {
+  public class IconFile {
+    public Icon Icon { get; set; }
+    public int Index { get; set; }
+  }
+  public class IconExtractor {
 		////////////////////////////////////////////////////////////////////////
 		// Constants
 

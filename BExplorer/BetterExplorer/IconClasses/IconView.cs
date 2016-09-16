@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
-//using Microsoft.WindowsAPICodePack.Shell;
+using TsudaKageyu;
 
 namespace BetterExplorer {
 
 	public partial class IconView : Form {
-		private List<BExplorer.Shell.Icons.IconFile> icons = null;
+		private List<IconFile> icons = null;
 		private ShellView ShellView;
 		private bool IsLibrary;
 		private VisualStyleRenderer ItemSelectedRenderer = new VisualStyleRenderer("Explorer::ListView", 1, 3);
@@ -38,33 +39,26 @@ namespace BetterExplorer {
 
 			if ((e.State & ListViewItemStates.Hot) != 0 && (e.State & ListViewItemStates.Selected) == 0) {
 				ItemHoverRenderer.DrawBackground(e.Graphics, e.Bounds);
-			}
-			else if ((e.State & ListViewItemStates.Hot) != 0 && (e.State & ListViewItemStates.Selected) != 0) {
+			} else if ((e.State & ListViewItemStates.Hot) != 0 && (e.State & ListViewItemStates.Selected) != 0) {
 				Selectedx2Renderer.DrawBackground(e.Graphics, e.Bounds);
-			}
-			else if ((e.State & ListViewItemStates.Selected) != 0) {
+			} else if ((e.State & ListViewItemStates.Selected) != 0) {
 				ItemSelectedRenderer.DrawBackground(e.Graphics, e.Bounds);
-			}
-			else {
+			} else {
 				e.DrawBackground();
 			}
-			//if ((e.State & ListViewItemStates.) != 0)
-			//{
-			//    e.Graphics.FillRectangle(Brushes.White, e.Bounds);
-			//}
-
 			Icon ico = icons[(int)e.Item.Tag].Icon;
 			if (ico.Width <= 48) {
 				e.Graphics.DrawIcon(icons[(int)e.Item.Tag].Icon,
 						e.Bounds.X + (e.Bounds.Width - ico.Width) / 2, e.Bounds.Y + (e.Bounds.Height - ico.Height) / 2 - 5);
 			}
 			e.DrawText(TextFormatFlags.Bottom | TextFormatFlags.HorizontalCenter | TextFormatFlags.WordEllipsis);
-			//e.DrawDefault = true;
 		}
 
 		private void btnLoad_Click(object sender, EventArgs e) {
 			var dlg = new System.Windows.Forms.OpenFileDialog() {
-				AutoUpgradeEnabled = true, Title = "Select icon file", Filter = "Icon Files |*.exe;*.dll;*.icl; *.ico"
+				AutoUpgradeEnabled = true,
+				Title = "Select icon file",
+				Filter = "Icon Files |*.exe;*.dll;*.icl; *.ico"
 			};
 
 			if (dlg.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {
@@ -83,7 +77,7 @@ namespace BetterExplorer {
 		private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
 			lvIcons.BeginUpdate();
 			lvIcons.Items.Clear();
-			foreach (BExplorer.Shell.Icons.IconFile icon in icons) {
+			foreach (IconFile icon in icons) {
 				lvIcons.Items.Add(new ListViewItem("#" + icon.Index.ToString()) { Tag = icon.Index });
 			}
 
@@ -92,7 +86,9 @@ namespace BetterExplorer {
 		}
 
 		private void bw_DoWork(object sender, DoWorkEventArgs e) {
-			icons = BExplorer.Shell.Icons.ReadIcons(tbLibrary.Text, new System.Drawing.Size(48, 48));
+			TsudaKageyu.IconExtractor ie = new TsudaKageyu.IconExtractor(tbLibrary.Text);
+			var i = 0;
+			icons = ie.GetAllIcons().Select(s => new IconFile() { Icon = s, Index = i++ }).ToList();
 		}
 
 		private void LoadIcons(object Params) {
@@ -100,8 +96,10 @@ namespace BetterExplorer {
 							delegate {
 								lvIcons.BeginUpdate();
 								lvIcons.Items.Clear();
-								icons = BExplorer.Shell.Icons.ReadIcons(Params.ToString(), new System.Drawing.Size(48, 48));
-								foreach (BExplorer.Shell.Icons.IconFile icon in icons) {
+								TsudaKageyu.IconExtractor ie = new TsudaKageyu.IconExtractor(tbLibrary.Text);
+								var i = 0;
+								icons = ie.GetAllIcons().Select(s => new IconFile() { Icon = s, Index = i++ }).ToList();
+								foreach (IconFile icon in icons) {
 									lvIcons.Items.Add(new ListViewItem("#" + icon.Index.ToString()) { Tag = icon.Index });
 								}
 								lvIcons.EndUpdate();
@@ -112,7 +110,7 @@ namespace BetterExplorer {
 			var itemIndex = ShellView.GetFirstSelectedItemIndex();
 			this.ShellView.CurrentRefreshedItemIndex = itemIndex;
 			if (IsLibrary) {
-        this.ShellView.IsLibraryInModify = true;
+				this.ShellView.IsLibraryInModify = true;
 				var lib = ShellView.GetFirstSelectedItem() != null ?
 					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(ShellView.GetFirstSelectedItem().ParsingName), false) :
 					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(ShellView.CurrentFolder.ParsingName), false);
@@ -122,9 +120,7 @@ namespace BetterExplorer {
 
 				ShellView.Items[itemIndex].IsIconLoaded = false;
 				ShellView.RefreshItem(ShellView.GetFirstSelectedItemIndex(), true);
-			}
-			else {
-				//var Item = ShellView.GetFirstSelectedItem() == null ? ShellView.CurrentFolder : ShellView.GetFirstSelectedItem();
+			} else {
 				ShellView.SetFolderIcon(ShellView.GetFirstSelectedItem().ParsingName, tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
 			}
 
