@@ -2252,7 +2252,7 @@ namespace BExplorer.Shell {
 		public void RefreshItem(Int32 index, Boolean isForceRedraw = false, Boolean convertName = true) {
 			if (isForceRedraw) {
 				try {
-					var newItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, this.Items[index].PIDL);
+					var newItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, this.Items[index].ParsingName.ToShellParsingName());
 					newItem.GroupIndex = this.Items[index].GroupIndex;
 					newItem.ItemIndex = index;
 					this.Items[index] = newItem;
@@ -2868,9 +2868,7 @@ namespace BExplorer.Shell {
 				Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEIMAGE,
 				Shell32.HChangeNotifyFlags.SHCNF_DWORD | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, IntPtr.Zero, (IntPtr)sfi.iIcon);
 			}
-
-			//Items[this.GetFirstSelectedItemIndex()] = new ShellItem(wszPath);
-			this.RefreshItem(this._SelectedIndexes[0]);
+			this.RefreshItem(this._SelectedIndexes[0], true);
 		}
 
 		public HResult ClearFolderIcon(String wszPath) {

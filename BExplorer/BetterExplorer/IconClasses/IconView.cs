@@ -13,12 +13,12 @@ using TsudaKageyu;
 namespace BetterExplorer {
 
 	public partial class IconView : Form {
-		private List<IconFile> icons = null;
-		private ShellView ShellView;
-		private bool IsLibrary;
-		private VisualStyleRenderer ItemSelectedRenderer = new VisualStyleRenderer("Explorer::ListView", 1, 3);
-		private VisualStyleRenderer ItemHoverRenderer = new VisualStyleRenderer("Explorer::ListView", 1, 2);
-		private VisualStyleRenderer Selectedx2Renderer = new VisualStyleRenderer("Explorer::ListView", 1, 6);
+		private List<IconFile> _Icons = null;
+		private ShellView _ShellView;
+		private bool _IsLibrary;
+		private readonly VisualStyleRenderer _ItemSelectedRenderer = new VisualStyleRenderer("Explorer::ListView", 1, 3);
+		private readonly VisualStyleRenderer _ItemHoverRenderer = new VisualStyleRenderer("Explorer::ListView", 1, 2);
+		private readonly VisualStyleRenderer _Selectedx2Renderer = new VisualStyleRenderer("Explorer::ListView", 1, 6);
 
 		public IconView() {
 			InitializeComponent();
@@ -27,8 +27,8 @@ namespace BetterExplorer {
 
 		public void LoadIcons(ShellView shellView, bool isLibrary) {
 			tbLibrary.Text = @"C:\Windows\System32\imageres.dll";
-			ShellView = shellView;
-			IsLibrary = isLibrary;
+			this._ShellView = shellView;
+			this._IsLibrary = isLibrary;
 			ShowDialog();
 		}
 
@@ -38,17 +38,17 @@ namespace BetterExplorer {
 			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
 			if ((e.State & ListViewItemStates.Hot) != 0 && (e.State & ListViewItemStates.Selected) == 0) {
-				ItemHoverRenderer.DrawBackground(e.Graphics, e.Bounds);
+				this._ItemHoverRenderer.DrawBackground(e.Graphics, e.Bounds);
 			} else if ((e.State & ListViewItemStates.Hot) != 0 && (e.State & ListViewItemStates.Selected) != 0) {
-				Selectedx2Renderer.DrawBackground(e.Graphics, e.Bounds);
+				this._Selectedx2Renderer.DrawBackground(e.Graphics, e.Bounds);
 			} else if ((e.State & ListViewItemStates.Selected) != 0) {
-				ItemSelectedRenderer.DrawBackground(e.Graphics, e.Bounds);
+				this._ItemSelectedRenderer.DrawBackground(e.Graphics, e.Bounds);
 			} else {
 				e.DrawBackground();
 			}
-			Icon ico = icons[(int)e.Item.Tag].Icon;
+			var ico = _Icons[(int)e.Item.Tag].Icon;
 			if (ico.Width <= 48) {
-				e.Graphics.DrawIcon(icons[(int)e.Item.Tag].Icon,
+				e.Graphics.DrawIcon(_Icons[(int)e.Item.Tag].Icon,
 						e.Bounds.X + (e.Bounds.Width - ico.Width) / 2, e.Bounds.Y + (e.Bounds.Height - ico.Height) / 2 - 5);
 			}
 			e.DrawText(TextFormatFlags.Bottom | TextFormatFlags.HorizontalCenter | TextFormatFlags.WordEllipsis);
@@ -77,7 +77,7 @@ namespace BetterExplorer {
 		private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
 			lvIcons.BeginUpdate();
 			lvIcons.Items.Clear();
-			foreach (IconFile icon in icons) {
+			foreach (IconFile icon in _Icons) {
 				lvIcons.Items.Add(new ListViewItem("#" + icon.Index.ToString()) { Tag = icon.Index });
 			}
 
@@ -86,9 +86,9 @@ namespace BetterExplorer {
 		}
 
 		private void bw_DoWork(object sender, DoWorkEventArgs e) {
-			TsudaKageyu.IconExtractor ie = new TsudaKageyu.IconExtractor(tbLibrary.Text);
+			var ie = new TsudaKageyu.IconExtractor(tbLibrary.Text);
 			var i = 0;
-			icons = ie.GetAllIcons().Select(s => new IconFile() { Icon = s, Index = i++ }).ToList();
+			this._Icons = ie.GetAllIcons().Select(s => new IconFile() { Icon = s, Index = i++ }).ToList();
 		}
 
 		private void LoadIcons(object Params) {
@@ -96,10 +96,10 @@ namespace BetterExplorer {
 							delegate {
 								lvIcons.BeginUpdate();
 								lvIcons.Items.Clear();
-								TsudaKageyu.IconExtractor ie = new TsudaKageyu.IconExtractor(tbLibrary.Text);
+								var ie = new TsudaKageyu.IconExtractor(tbLibrary.Text);
 								var i = 0;
-								icons = ie.GetAllIcons().Select(s => new IconFile() { Icon = s, Index = i++ }).ToList();
-								foreach (IconFile icon in icons) {
+								_Icons = ie.GetAllIcons().Select(s => new IconFile() { Icon = s, Index = i++ }).ToList();
+								foreach (var icon in _Icons) {
 									lvIcons.Items.Add(new ListViewItem("#" + icon.Index.ToString()) { Tag = icon.Index });
 								}
 								lvIcons.EndUpdate();
@@ -107,21 +107,21 @@ namespace BetterExplorer {
 		}
 
 		private void btnSet_Click(object sender, EventArgs e) {
-			var itemIndex = ShellView.GetFirstSelectedItemIndex();
-			this.ShellView.CurrentRefreshedItemIndex = itemIndex;
-			if (IsLibrary) {
-				this.ShellView.IsLibraryInModify = true;
-				var lib = ShellView.GetFirstSelectedItem() != null ?
-					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(ShellView.GetFirstSelectedItem().ParsingName), false) :
-					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(ShellView.CurrentFolder.ParsingName), false);
+			var itemIndex = _ShellView.GetFirstSelectedItemIndex();
+			this._ShellView.CurrentRefreshedItemIndex = itemIndex;
+			if (this._IsLibrary) {
+				this._ShellView.IsLibraryInModify = true;
+				var lib = _ShellView.GetFirstSelectedItem() != null ?
+					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(_ShellView.GetFirstSelectedItem().ParsingName), false) :
+					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(_ShellView.CurrentFolder.ParsingName), false);
 
 				lib.IconResourceId = new BExplorer.Shell.Interop.IconReference(tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
 				lib.Close();
 
-				ShellView.Items[itemIndex].IsIconLoaded = false;
-				ShellView.RefreshItem(ShellView.GetFirstSelectedItemIndex(), true);
+				this._ShellView.Items[itemIndex].IsIconLoaded = false;
+				this._ShellView.RefreshItem(this._ShellView.GetFirstSelectedItemIndex(), true);
 			} else {
-				ShellView.SetFolderIcon(ShellView.GetFirstSelectedItem().ParsingName, tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
+				this._ShellView.SetFolderIcon(this._ShellView.GetFirstSelectedItem().ParsingName, tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
 			}
 
 			this.Close();
@@ -142,12 +142,12 @@ namespace BetterExplorer {
 		}
 
 		private void IconView_Load(object sender, EventArgs e) {
-			LoadLib();
+			this.LoadLib();
 		}
 
 		private void tbLibrary_KeyUp(object sender, KeyEventArgs e) {
 			if (e.KeyData == Keys.Enter) {
-				LoadLib();
+				this.LoadLib();
 			}
 		}
 	}
