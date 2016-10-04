@@ -53,7 +53,7 @@ namespace BExplorer.Shell.Interop {
 				IShellItem psiItem,
 				IFileOperationProgressSink pfopsItem);
 
-		void DeleteItems([MarshalAs(UnmanagedType.Interface)] object punkItems);
+		void DeleteItems([MarshalAs(UnmanagedType.IUnknown)] object punkItems);
 
 		uint NewItem(
 				IShellItem psiDestinationFolder,

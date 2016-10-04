@@ -252,3 +252,5 @@ packages/
 .idea.BExplorer/
 *.opendb
 *.db
+.vs/
+BExplorer.sln.DotSettings

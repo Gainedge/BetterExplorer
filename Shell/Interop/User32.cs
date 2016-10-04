@@ -874,39 +874,42 @@ public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter,
 
 		}
 
-		//public static int SendWindowsStringMessage(int hWnd, int wParam, string msg,
-		//				string Share = "", string ShareName = "", string Description = "", string Domain = "", string User = "", int Permis = 0x0) {
-		//	int result = 0;
+        //public static int SendWindowsStringMessage(int hWnd, int wParam, string msg,
+        //				string Share = "", string ShareName = "", string Description = "", string Domain = "", string User = "", int Permis = 0x0) {
+        //	int result = 0;
 
-		//	if (hWnd != 0) {
-		//		ShareInfo shi = new ShareInfo();
-		//		shi.IsSetPermisions = Permis;
-		//		shi.lpDescription = Description;
-		//		shi.lpSharingName = ShareName;
-		//		shi.lpUserName = User;
-		//		shi.lpShare = Share;
-		//		shi.lpDomain = Domain;
-		//		shi.lpMsg = msg;
+        //	if (hWnd != 0) {
+        //		ShareInfo shi = new ShareInfo();
+        //		shi.IsSetPermisions = Permis;
+        //		shi.lpDescription = Description;
+        //		shi.lpSharingName = ShareName;
+        //		shi.lpUserName = User;
+        //		shi.lpShare = Share;
+        //		shi.lpDomain = Domain;
+        //		shi.lpMsg = msg;
 
-		//		IntPtr p = Marshal.AllocHGlobal(Marshal.SizeOf(shi));
-		//		Marshal.StructureToPtr(shi, p, false);
-		//		string str = msg + ";" + Share + ";" + ShareName + ";" + Domain +
-		//				";" + User + ";" + Description;
-		//		byte[] sarr = System.Text.Encoding.Default.GetBytes(str);
-		//		int len = Marshal.SizeOf(shi);//sarr.Length;
-		//		COPYDATASTRUCT cds = new COPYDATASTRUCT();
-		//		cds.dwData = IntPtr.Zero;
-		//		cds.lpData = p;
-		//		cds.cbData = len;
-		//		int res = SendMessage(hWnd, WM_COPYDATA, wParam, ref cds);
-		//		Marshal.FreeCoTaskMem(p);
-		//		result = res;//SendMessage(hWnd, WM_COPYDATA, wParam, ref cds);
-		//	}
+        //		IntPtr p = Marshal.AllocHGlobal(Marshal.SizeOf(shi));
+        //		Marshal.StructureToPtr(shi, p, false);
+        //		string str = msg + ";" + Share + ";" + ShareName + ";" + Domain +
+        //				";" + User + ";" + Description;
+        //		byte[] sarr = System.Text.Encoding.Default.GetBytes(str);
+        //		int len = Marshal.SizeOf(shi);//sarr.Length;
+        //		COPYDATASTRUCT cds = new COPYDATASTRUCT();
+        //		cds.dwData = IntPtr.Zero;
+        //		cds.lpData = p;
+        //		cds.cbData = len;
+        //		int res = SendMessage(hWnd, WM_COPYDATA, wParam, ref cds);
+        //		Marshal.FreeCoTaskMem(p);
+        //		result = res;//SendMessage(hWnd, WM_COPYDATA, wParam, ref cds);
+        //	}
 
-		//	return result;
-		//}
+        //	return result;
+        //}
 
-		public static string LoadResourceString(string libraryName, uint ident, string defaultText) {
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr FindResourceEx(IntPtr hModule, UInt16 lpType, IntPtr lpName, ushort wLanguage);
+
+        public static string LoadResourceString(string libraryName, uint ident, string defaultText) {
 			IntPtr libraryHandle = LoadLibrary(libraryName);
 			String Text = defaultText;
 			if (libraryHandle != IntPtr.Zero) {

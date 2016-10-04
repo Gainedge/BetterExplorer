@@ -16,26 +16,26 @@ namespace BExplorer.Shell {
 				if (components != null) {
 					components.Dispose();
 				}
-				if (bw != null) {
-					bw.Dispose();
-					bw = null;
+				if (_Bw != null) {
+					_Bw.Dispose();
+					_Bw = null;
 				}
 				
 				if (CurrentFolder != null) {
 					CurrentFolder.Dispose();
 					CurrentFolder = null;
 				}
-				if (selectionTimer != null) {
-					selectionTimer.Dispose();
-					selectionTimer = null;
+				if (_SelectionTimer != null) {
+					_SelectionTimer.Dispose();
+					_SelectionTimer = null;
 				}
-				if (small != null) {
-					small.Dispose();
-					small = null;
+				if (_Small != null) {
+					_Small.Dispose();
+					_Small = null;
 				}
-				if (resetEvent != null) {
-					resetEvent.Dispose();
-					resetEvent = null;
+				if (_ResetEvent != null) {
+					_ResetEvent.Dispose();
+					_ResetEvent = null;
 				}
 				if (_ResetTimer != null) {
 					_ResetTimer.Dispose();
@@ -45,9 +45,9 @@ namespace BExplorer.Shell {
 					_KeyJumpTimer.Dispose();
 					_KeyJumpTimer = null;
 				}
-				if (_kpreselitem != null) {
-					_kpreselitem.Dispose();
-					_kpreselitem = null;
+				if (_Kpreselitem != null) {
+					_Kpreselitem.Dispose();
+					_Kpreselitem = null;
 				}
 			}
 			base.Dispose(disposing);

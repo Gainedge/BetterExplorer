@@ -4,19 +4,17 @@ using System.Runtime.InteropServices;
 using BExplorer.Shell._Plugin_Interfaces;
 using System.Linq;
 
-namespace BExplorer.Shell
-{
+namespace BExplorer.Shell {
 	/// <summary>Contains file operations that has a callback for UI operations/display</summary>
 	/// <remarks>Every operation uses the callback if possible</remarks>
-	public class IIFileOperation : IDisposable
-	{
-		private static readonly Guid CLSID_FileOperation = new Guid("3ad05575-8857-4850-9277-11b85bdb8e09");
-		private static readonly Type _fileOperationType = Type.GetTypeFromCLSID(CLSID_FileOperation);
+	public class IIFileOperation : IDisposable {
+		private static readonly Guid _CLSIDFileOperation = new Guid("3ad05575-8857-4850-9277-11b85bdb8e09");
+		private static readonly Type _FileOperationType = Type.GetTypeFromCLSID(_CLSIDFileOperation);
 
-		private bool _disposed;
-		private IFileOperation _fileOperation;
-		private FileOperationProgressSink _callbackSink;
-		private uint _sinkCookie;
+		private bool _Disposed;
+		private IFileOperation _FileOperation;
+		private FileOperationProgressSink _CallbackSink;
+		private uint _SinkCookie;
 		private Boolean _IsCopyInSameFolder { get; set; }
 
 		/// <summary>
@@ -57,28 +55,33 @@ namespace BExplorer.Shell
 		/// <param name="callbackSink"></param>
 		/// <param name="owner"></param>
 		/// <param name="isRecycle"></param>
-		public IIFileOperation(FileOperationProgressSink callbackSink, IntPtr owner, Boolean isRecycle)
-		{
-			_callbackSink = callbackSink;
-			_fileOperation = (IFileOperation)Activator.CreateInstance(_fileOperationType);
+		public IIFileOperation(FileOperationProgressSink callbackSink, IntPtr owner, Boolean isRecycle) {
+			this._CallbackSink = callbackSink;
+			this._FileOperation = (IFileOperation)Activator.CreateInstance(_FileOperationType);
 
 			var flags = isRecycle ? FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_ALLOWUNDO : FileOperationFlags.FOF_NOCONFIRMMKDIR;
-			_fileOperation.SetOperationFlags(flags);
+			this._FileOperation.SetOperationFlags(flags);
 
-			if (_callbackSink != null) _sinkCookie = _fileOperation.Advise(_callbackSink);
-			if (owner != IntPtr.Zero) _fileOperation.SetOwnerWindow((uint)owner);
+			if (this._CallbackSink != null) this._SinkCookie = this._FileOperation.Advise(_CallbackSink);
+			if (owner != IntPtr.Zero) this._FileOperation.SetOwnerWindow((uint)owner);
 		}
 
 		public IIFileOperation(FileOperationProgressSink callbackSink, IntPtr owner, Boolean isRecycle, Boolean isCopyInSameFolder) {
-			_callbackSink = callbackSink;
+			this._CallbackSink = callbackSink;
 			this._IsCopyInSameFolder = isCopyInSameFolder;
-			_fileOperation = (IFileOperation)Activator.CreateInstance(_fileOperationType);
+			_FileOperation = (IFileOperation)Activator.CreateInstance(_FileOperationType);
 
 			if (!isRecycle)
-				this._fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR);
+				this._FileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR);
 
-			if (_callbackSink != null) _sinkCookie = _fileOperation.Advise(_callbackSink);
-			if (owner != IntPtr.Zero) _fileOperation.SetOwnerWindow((uint)owner);
+			if (_CallbackSink != null) _SinkCookie = _FileOperation.Advise(_CallbackSink);
+			if (owner != IntPtr.Zero) _FileOperation.SetOwnerWindow((uint)owner);
+		}
+
+		public void NewItem(IListItemEx destinationFolder, String name, FileAttributes attributes) {
+			this._FileOperation.SetOperationFlags(FileOperationFlags.FOF_RENAMEONCOLLISION | FileOperationFlags.FOF_SILENT);
+			this._FileOperation.NewItem(destinationFolder.ComInterface, attributes, name,
+				null, null);
 		}
 
 		/// <summary>
@@ -86,21 +89,20 @@ namespace BExplorer.Shell
 		/// </summary>
 		/// <param name="source">The item being copied</param>
 		/// <param name="destination">The location to be copied to</param>
-		public void CopyItem(IShellItem source, IListItemEx destination)
-		{
-			ThrowIfDisposed();
+		public void CopyItem(IShellItem source, IListItemEx destination) {
+			this.ThrowIfDisposed();
 			if (this._IsCopyInSameFolder) {
-				this._fileOperation.SetOperationFlags(FileOperationFlags.FOF_RENAMEONCOLLISION | FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMMKDIR);
+				this._FileOperation.SetOperationFlags(FileOperationFlags.FOF_RENAMEONCOLLISION | FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMMKDIR);
 			}
-			_fileOperation.CopyItem(source, destination.ComInterface, null, null);
+			this._FileOperation.CopyItem(source, destination.ComInterface, null, null);
 		}
 
 		public void CopyItems(IShellItemArray source, IListItemEx destination) {
-			ThrowIfDisposed();
+			this.ThrowIfDisposed();
 			if (this._IsCopyInSameFolder) {
-				this._fileOperation.SetOperationFlags(FileOperationFlags.FOF_RENAMEONCOLLISION | FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMMKDIR);
+				this._FileOperation.SetOperationFlags(FileOperationFlags.FOF_RENAMEONCOLLISION | FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMMKDIR);
 			}
-			_fileOperation.CopyItems(source, destination.ComInterface);
+			this._FileOperation.CopyItems(source, destination.ComInterface);
 		}
 
 		/// <summary>
@@ -109,15 +111,14 @@ namespace BExplorer.Shell
 		/// <param name="source">The item being moved</param>
 		/// <param name="destination">The location to be moved to</param>
 		/// <param name="newName">The new name of the file</param>
-		public void MoveItem(IShellItem source, IListItemEx destination, string newName)
-		{
-			ThrowIfDisposed();
-			_fileOperation.MoveItem(source, destination.ComInterface, newName, null);
+		public void MoveItem(IShellItem source, IListItemEx destination, string newName) {
+			this.ThrowIfDisposed();
+			this._FileOperation.MoveItem(source, destination.ComInterface, newName, null);
 		}
 
 		public void MoveItems(IShellItemArray source, IListItemEx destination) {
-			ThrowIfDisposed();
-			this._fileOperation.MoveItems(source, destination.ComInterface);
+			this.ThrowIfDisposed();
+			this._FileOperation.MoveItems(source, destination.ComInterface);
 		}
 
 		/// <summary>
@@ -125,34 +126,33 @@ namespace BExplorer.Shell
 		/// </summary>
 		/// <param name="source">The IShellItem to be renamed</param>
 		/// <param name="newName">The new name</param>
-		public void RenameItem(IShellItem source, string newName)
-		{
-			this._fileOperation.SetOperationFlags(FileOperationFlags.FOF_SILENT);
-			this._fileOperation.RenameItem(source, newName, null);
+		public void RenameItem(IShellItem source, string newName) {
+			this._FileOperation.SetOperationFlags(FileOperationFlags.FOF_SILENT);
+			this._FileOperation.RenameItem(source, newName, null);
 		}
 
 		/// <summary>
 		/// Deletes the source item
 		/// </summary>
 		/// <param name="source">The item to delete</param>
-		public void DeleteItem(IListItemEx source)
-		{
-			ThrowIfDisposed();
-			_fileOperation.DeleteItem(source.ComInterface, null);
+		public void DeleteItem(IListItemEx source) {
+			this.ThrowIfDisposed();
+			this._FileOperation.DeleteItem(source.ComInterface, null);
+		}
+
+		public void DeleteItems(IShellItemArray source) {
+			this.ThrowIfDisposed();
+			this._FileOperation.DeleteItems(source);
 		}
 
 		/// <summary>
 		/// Preforms PerformOperations
 		/// </summary>
-		public void PerformOperations()
-		{
-			ThrowIfDisposed();
-			try
-			{
-				_fileOperation.PerformOperations();
-			}
-			catch
-			{
+		public void PerformOperations() {
+			this.ThrowIfDisposed();
+			try {
+				this._FileOperation.PerformOperations();
+			} catch {
 			}
 		}
 
@@ -160,27 +160,23 @@ namespace BExplorer.Shell
 		/// Returns GetAnyOperationsAborted
 		/// </summary>
 		/// <returns></returns>
-		public bool GetAnyOperationAborted()
-		{
-			ThrowIfDisposed();
-			return this._fileOperation.GetAnyOperationsAborted();
+		public bool GetAnyOperationAborted() {
+			this.ThrowIfDisposed();
+			return this._FileOperation.GetAnyOperationsAborted();
 		}
 
-		private void ThrowIfDisposed()
-		{
-			if (_disposed) throw new ObjectDisposedException(GetType().Name);
+		private void ThrowIfDisposed() {
+			if (this._Disposed) throw new ObjectDisposedException(GetType().Name);
 		}
 
 		/// <summary>
 		/// Disposes of the object
 		/// </summary>
-		public void Dispose()
-		{
-			if (!_disposed)
-			{
-				_disposed = true;
-				if (_callbackSink != null) _fileOperation.Unadvise(_sinkCookie);
-				Marshal.FinalReleaseComObject(_fileOperation);
+		public void Dispose() {
+			if (!this._Disposed) {
+				this._Disposed = true;
+				if (this._CallbackSink != null) this._FileOperation.Unadvise(this._SinkCookie);
+				Marshal.FinalReleaseComObject(this._FileOperation);
 			}
 		}
 	}

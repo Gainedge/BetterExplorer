@@ -59,6 +59,7 @@ namespace BExplorer.Shell.Interop {
 		HResult ArrangeItems(int a);
 		HResult RecomputeItems(int a);
 		HResult GetEditControl(out IntPtr handle);
+    [PreserveSig]
 		HResult EditLabel(LVITEMINDEX index, IntPtr a, out IntPtr handle);
 		HResult EditGroupLabel(int a);
 		HResult CancelEditLabel();

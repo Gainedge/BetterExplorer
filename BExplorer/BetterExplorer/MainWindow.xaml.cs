@@ -778,7 +778,7 @@ namespace BetterExplorer {
 			if (_ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName)
 				_ShellListView.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString());
 			else
-				_ShellListView.CreateNewFolder(FindResource("btnNewFolderCP").ToString());
+				_ShellListView.CreateNewFolder(null);
 		}
 
 		private void btnPasetShC_Click(object sender, RoutedEventArgs e) {

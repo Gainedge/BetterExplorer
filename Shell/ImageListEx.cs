@@ -187,10 +187,10 @@ namespace BExplorer.Shell {
 					if (sho.IsIconLoaded ||
 							(((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS ||
 								(!this._ShellViewEx.IsSearchNavigating &&
-								 this._ShellViewEx._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Libraries.ParsingName,
+								 this._ShellViewEx.RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Libraries.ParsingName,
 									 StringComparison.InvariantCultureIgnoreCase)) ||
 								(!this._ShellViewEx.IsSearchNavigating &&
-								 this._ShellViewEx._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName,
+								 this._ShellViewEx.RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName,
 									 StringComparison.InvariantCultureIgnoreCase))))) {
 						hThumbnail = sho.GetHBitmap(this._CurrentSize, false);
 						if (hThumbnail != IntPtr.Zero) {
@@ -336,7 +336,7 @@ namespace BExplorer.Shell {
 						fmt.LineAlignment = StringAlignment.Center;
 
 						var lblrectTiles = new RectangleF(lableBounds.Left, iconBounds.Top + 6, lableBounds.Right - lableBounds.Left, 15);
-						if (this._ShellViewEx._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) &&
+						if (this._ShellViewEx.RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) &&
 								(sho.IsDrive || sho.IsNetworkPath))
 							this.DrawComputerTiledModeView(sho, g, lblrectTiles, fmt);
 					}
