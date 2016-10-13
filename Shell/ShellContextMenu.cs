@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using System.Threading;
 using System.Runtime.ExceptionServices;
 using System.Linq;
+using System.Security.AccessControl;
 using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
@@ -77,7 +78,7 @@ namespace BExplorer.Shell {
 		IContextMenu m_ComInterface;
 		IContextMenu2 m_ComInterface2;
 		IContextMenu3 m_ComInterface3;
-
+	  private IListItemEx[] _Items;
 		IntPtr _NewMenuPtr = IntPtr.Zero;
 
 
@@ -115,8 +116,9 @@ namespace BExplorer.Shell {
 		/// <param name="item">
 		/// The item to which the context menu should refer.
 		/// </param>
-		public ShellContextMenu(IListItemEx item) {
-			Initialize(new IListItemEx[] { item });
+		public ShellContextMenu(ShellView shellView, IListItemEx item) {
+      this._ShellView = shellView;
+      Initialize(new IListItemEx[] { item });
 		}
 
 		/// <summary>
@@ -253,9 +255,13 @@ namespace BExplorer.Shell {
 				}
 				this._NewMenuPtr = itemInfo.hSubMenu;
 
-				if (IsOnEmpty) {
-					this.GenerateExplorerBackgroundMenuItems(view, mnu, sortMenu, groupMenu);
-				}
+			  if (IsOnEmpty) {
+			    this.GenerateExplorerBackgroundMenuItems(view, mnu, sortMenu, groupMenu);
+			  } else {
+			    if (this._Items.FirstOrDefault()?.IsFolder == true) {
+            this.GenerateMenuItem(mnu, System.Windows.Application.Current?.FindResource("mnuOpenNewTab")?.ToString(), 301, false, 1);
+          }
+			  }
 
 				this.RemoveDuplicatedSeparators(mnu);
 
@@ -314,12 +320,15 @@ namespace BExplorer.Shell {
 								this._ShellView.DisableGroups();
 							}
 							break;
+            case 301:
+              this._ShellView.RaiseMiddleClickOnItem(this._Items.First());
+					    break;
 						default:
 							break;
 					}
 					if (command >= 262 && command <= 262 + this._ShellView.Collumns.Count) {
 						this._ShellView.SetSortCollumn(true, this._ShellView.Collumns[command - 262], SortOrder.Ascending);
-					} else if (command > 260) {
+					} else if (command > 260 && command != 301) {
 						if (!this._ShellView.IsGroupsEnabled)
 							this._ShellView.EnableGroups();
 						this._ShellView.GenerateGroupsFromColumn(this._ShellView.Collumns[command - (262 + this._ShellView.Collumns.Count) - 1], false);
@@ -533,7 +542,7 @@ namespace BExplorer.Shell {
 			miiview.dwTypeData = header;
 			User32.InsertMenuItem(parent.Handle, 0, true, ref miiview);
 		}
-		private void GenerateMenuItem(ContextMenu view, String header, int id, bool isRadio = false) {
+		private void GenerateMenuItem(ContextMenu view, String header, int id, bool isRadio = false, uint atPosition = 0) {
 			MENUITEMINFO miidetails = new MENUITEMINFO();
 			miidetails.cbSize = (uint)Marshal.SizeOf(miidetails);
 			miidetails.fMask = MIIM.MIIM_STRING | MIIM.MIIM_ID | MIIM.MIIM_FTYPE | MIIM.MIIM_STATE;
@@ -542,7 +551,7 @@ namespace BExplorer.Shell {
 			miidetails.wID = id;
 			miidetails.dwItemData = IntPtr.Zero;
 			miidetails.dwTypeData = header;
-			User32.InsertMenuItem(view.Handle, 0, true, ref miidetails);
+			User32.InsertMenuItem(view.Handle, atPosition, true, ref miidetails);
 		}
 		private void GenerateMenuItemExecutable(ContextMenu view, String header, int id) {
 			MENUITEMINFO miidetails = new MENUITEMINFO();
@@ -563,6 +572,7 @@ namespace BExplorer.Shell {
 			User32.InsertMenuItem(view.Handle, 0, true, ref miidetails);
 		}
 		void Initialize(IListItemEx[] items) {
+		  this._Items = items;
 			IntPtr[] pidls = new IntPtr[items.Length];
 			IListItemEx parent = null;
 

@@ -34,15 +34,16 @@ namespace BExplorer.Shell {
 
 		[HandleProcessCorruptedStateExceptions]
 		public override void PostDeleteItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, uint hrDelete, IShellItem psiNewlyCreated) {
-			if (hrDelete == 2555912) {
-				var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
-			  if (this._View.CurrentFolder.Equals(theNewItem.Parent)) {
-			    Shell32.SHChangeNotify(
-			      theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
-			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
-			  }
-			  theNewItem.Dispose();
-			}
+			//base.PostDeleteItem(dwFlags,psiItem,hrDelete,psiNewlyCreated);
+			//if (hrDelete == 2555912) {
+			//	var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
+			//  if (this._View.CurrentFolder.Equals(theNewItem.Parent)) {
+			//    Shell32.SHChangeNotify(
+			//      theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
+			//      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+			//  }
+			//  theNewItem.Dispose();
+			//}
 		  //if (psiItem != null) {
 		  //  Marshal.FinalReleaseComObject(psiItem);
 		  //}
@@ -59,20 +60,20 @@ namespace BExplorer.Shell {
 
 		[HandleProcessCorruptedStateExceptions]
 		public override void PostCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrCopy, IShellItem psiNewlyCreated) {
-			if (hrCopy == 0) {
-        var destination = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiDestinationFolder);
-			  if (destination.Equals(this._View.CurrentFolder)) {
-			    var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
-			    Shell32.SHChangeNotify(
-			      theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
-			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
-			    this._View.LargeImageList.SupressThumbnailGeneration(false);
-			    Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
-			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
-			    theNewItem.Dispose();
-			  }
-        destination.Dispose();
-			}
+			//if (hrCopy == 0) {
+   //     var destination = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiDestinationFolder);
+			//  if (destination.Equals(this._View.CurrentFolder)) {
+			//    var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
+			//    Shell32.SHChangeNotify(
+			//      theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
+			//      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+			//    this._View.LargeImageList.SupressThumbnailGeneration(false);
+			//    Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
+			//      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+			//    theNewItem.Dispose();
+			//  }
+   //     destination.Dispose();
+			//}
       //if (psiItem != null) {
       //  Marshal.FinalReleaseComObject(psiItem);
       //}
@@ -85,22 +86,22 @@ namespace BExplorer.Shell {
 
 		[HandleProcessCorruptedStateExceptions]
 		public override void PostMoveItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrMove, IShellItem psiNewlyCreated) {
-			if (hrMove == 0) {
-        var destination = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiDestinationFolder);
-			  if (destination.Equals(this._View.CurrentFolder)) {
-			    var theOldItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
-			    var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
-			    Shell32.SHChangeNotify(
-			      theOldItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
-			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theOldItem.PIDL, IntPtr.Zero);
-					this._View.LargeImageList.SupressThumbnailGeneration(false);
-					Shell32.SHChangeNotify(
-			      theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
-			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
-			    theOldItem.Dispose();
-			    theNewItem.Dispose();
-			  }
-			}
+			//if (hrMove == 0) {
+   //     var destination = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiDestinationFolder);
+			//  if (destination.Equals(this._View.CurrentFolder)) {
+			//    var theOldItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
+			//    var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
+			//    Shell32.SHChangeNotify(
+			//      theOldItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
+			//      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theOldItem.PIDL, IntPtr.Zero);
+			//		this._View.LargeImageList.SupressThumbnailGeneration(false);
+			//		Shell32.SHChangeNotify(
+			//      theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
+			//      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+			//    theOldItem.Dispose();
+			//    theNewItem.Dispose();
+			//  }
+			//}
       //Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
     }
 

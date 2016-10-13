@@ -536,32 +536,41 @@ namespace BExplorer.Shell {
 			try {
 				while (_ItemsQueue.Count() > 0) {
 					var obj = _ItemsQueue.Dequeue();
+					if (obj.Item1 == ItemUpdateType.RecycleBin) {
+						this.RaiseRecycleBinUpdated();
+					}
 					if (obj.Item1 == ItemUpdateType.Deleted) {
-						var worker = new Thread(() => {
-							var itemForDelete = this.Items.ToArray().SingleOrDefault(s =>
-									s.Equals(obj.Item2) || (
-										obj.Item2.Extension.Equals(".library-ms") &&
-										s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName,
-											Path.GetFileName(obj.Item2.ParsingName)))
-									)
-							);
+						//var worker = new Thread(() => {
+						//var itemForDelete = this.Items.ToArray().SingleOrDefault(s =>
+						//		s.Equals(obj.Item2) || (
+						//			obj.Item2.Extension.Equals(".library-ms") &&
+						//			s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName,
+						//				Path.GetFileName(obj.Item2.ParsingName)))
+						//		)
+						//);
 
-							if (itemForDelete != null) {
-								Items.Remove(itemForDelete);
-								this._AddedItems.Remove(obj.Item2.PIDL);
-								//TODO: Make this to work in threaded environment
-								//itemForDelete.Dispose();
-							}
+						//if (itemForDelete != null) {
+						Items.Remove(obj.Item2);
+						this._AddedItems.Remove(obj.Item2.PIDL);
+						//TODO: Make this to work in threaded environment
+						//itemForDelete.Dispose();
+						//}
 
-							obj.Item2.Dispose();
-							this.Invoke((Action)(this.ResortListViewItems));
-						});
-						worker.SetApartmentState(ApartmentState.STA);
-						worker.Start();
+						obj.Item2.Dispose();
+						//this.Invoke((Action)(this.ResortListViewItems));
+						//});
+						//worker.SetApartmentState(ApartmentState.STA);
+						//worker.Start();
+					} else if (obj.Item1 == ItemUpdateType.Created) {
+						if (obj.Item2.ParsingName.StartsWith(this.CurrentFolder.ParsingName) && !this.Items.Contains(obj.Item2, new ShellItemEqualityComparer())) {
+							obj.Item2.ItemIndex = this.Items.Count;
+							Items.Add(obj.Item2);
+							this._AddedItems.Add(obj.Item2.PIDL);
+						}
 					} else if (obj.Item1 != ItemUpdateType.RecycleBin) {
 						var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj.Item2));
 						if (existingItem == null) {
-							if (obj.Item2.Extension.ToLowerInvariant() != ".tmp" && obj.Item2.Parent.Equals(this.CurrentFolder)) {
+							if (obj.Item2.Extension.ToLowerInvariant() != ".tmp" && obj.Item2.ParsingName.StartsWith(this.CurrentFolder.ParsingName)) {
 								if (!Items.Contains(obj.Item2, new ShellItemEqualityComparer()) &&
 										!String.IsNullOrEmpty(obj.Item2.ParsingName)) {
 									obj.Item2.ItemIndex = this.Items.Count;
@@ -576,13 +585,13 @@ namespace BExplorer.Shell {
 								}
 							}
 						}
-						this.ResortListViewItems();
+						//this.ResortListViewItems();
 					} else {
 						continue;
 					}
 				}
-
-
+				this.ResortListViewItems();
+				this.ItemUpdated?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, null, null, -1));
 			} catch (Exception) {
 			}
 
@@ -1480,7 +1489,7 @@ namespace BExplorer.Shell {
 												if (currentCollumn.CollumnType == typeof(DateTime))
 													val = ((DateTime)valueCached).ToString(Thread.CurrentThread.CurrentUICulture);
 												else if (currentCollumn.CollumnType == typeof(Int64))
-													val = $"{(Math.Ceiling(Convert.ToDouble(valueCached.ToString()) / 1024).ToString("# ### ### ##0"))} KB";
+													val = $"{Math.Ceiling(Convert.ToDouble(valueCached.ToString()) / 1024):# ### ### ##0} KB";
 												else if (currentCollumn.CollumnType == typeof(PerceivedType))
 													val = ((PerceivedType)valueCached).ToString();
 												else if (currentCollumn.CollumnType == typeof(FileAttributes))
@@ -1506,12 +1515,12 @@ namespace BExplorer.Shell {
 														this.LargeImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
 													}
 												} else {
-													String val = String.Empty;
+													var val = String.Empty;
 													if (currentCollumn.CollumnType == typeof(DateTime))
 														val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentUICulture);
 													else if (currentCollumn.CollumnType == typeof(Int64))
 														val =
-															$"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0")} KB";
+															$"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024):# ### ### ##0} KB";
 													else if (currentCollumn.CollumnType == typeof(PerceivedType))
 														val = ((PerceivedType)pvar.Value).ToString();
 													else if (currentCollumn.CollumnType == typeof(FileAttributes))
@@ -1870,7 +1879,7 @@ namespace BExplorer.Shell {
 
 							if (nmhdrHdn.iItem != -1 && nmhdrHdn.hdr.hwndFrom == this.LVHandle) {
 								var selitems = this.SelectedItems;
-								var cm = new ShellContextMenu(selitems.ToArray());
+								var cm = new ShellContextMenu(selitems.ToArray(), SVGIO.SVGIO_SELECTION, this);
 								cm.ShowContextMenu(this, itemActivate.ptAction, CMF.CANRENAME);
 							} else if (nmhdrHdn.iItem == -1) {
 								var cm = new ShellContextMenu(new IListItemEx[1] { this.CurrentFolder }, SVGIO.SVGIO_BACKGROUND, this);
@@ -2070,6 +2079,10 @@ namespace BExplorer.Shell {
 		}
 		*/
 
+		public void RaiseMiddleClickOnItem(IListItemEx item) {
+			if (this.ItemMiddleClick != null)
+				this.ItemMiddleClick.Invoke(this, new NavigatedEventArgs(item, item));
+		}
 		public void SaveSettingsToDatabase(IListItemEx destination) {
 			if (CurrentFolder == null || !CurrentFolder.IsFolder) return;
 
@@ -2397,6 +2410,9 @@ namespace BExplorer.Shell {
 				}
 
 				fo.PerformOperations();
+				if (isRecycling) {
+					this.RaiseRecycleBinUpdated();
+				}
 			});
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
@@ -2723,46 +2739,77 @@ namespace BExplorer.Shell {
 				this.Groups.Add(uspec);
 
 				var testgrn = new ListViewGroupEx();
-				testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) == 0 && !w.IsFolder).ToArray();
+				testgrn.Items =
+					this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) == 0 && !w.IsFolder)
+						.ToArray();
 				testgrn.Header = $"Empty ({testgrn.Items.Count()})";
 				testgrn.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgrn);
 
 				var testgr = new ListViewGroupEx();
-				testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 10 * 1024).ToArray();
+				testgr.Items =
+					this.Items.Where(
+						w =>
+							Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 0 &&
+							Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 10 * 1024).ToArray();
 				testgr.Header = $"Very Small ({testgr.Items.Count()})";
 				testgr.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr);
 
 				var testgr2 = new ListViewGroupEx();
-				testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 100 * 1024).ToArray();
+				testgr2.Items =
+					this.Items.Where(
+						w =>
+							Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 10 * 1024 &&
+							Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 100 * 1024).ToArray();
 				testgr2.Header = $"Small ({testgr2.Items.Count()})";
 				testgr2.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr2);
 
 				var testgr3 = new ListViewGroupEx();
-				testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 1 * 1024 * 1024).ToArray();
-				testgr3.Header = $"Medium ({ testgr3.Items.Count()})";
+				testgr3.Items =
+					this.Items.Where(
+						w =>
+							Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 100 * 1024 &&
+							Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 1 * 1024 * 1024).ToArray();
+				testgr3.Header = $"Medium ({testgr3.Items.Count()})";
 				testgr3.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr3);
 
 				var testgr4 = new ListViewGroupEx();
-				testgr4.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 16 * 1024 * 1024).ToArray();
+				testgr4.Items =
+					this.Items.Where(
+						w =>
+							Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 1 * 1024 * 1024 &&
+							Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 16 * 1024 * 1024).ToArray();
 				testgr4.Header = $"Big ({testgr4.Items.Count()})";
 				testgr4.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr4);
 
 				var testgr5 = new ListViewGroupEx();
-				testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 16 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 128 * 1024 * 1024).ToArray();
+				testgr5.Items =
+					this.Items.Where(
+						w =>
+							Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 16 * 1024 * 1024 &&
+							Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 128 * 1024 * 1024).ToArray();
 				testgr5.Header = $"Huge ({testgr5.Items.Count()})";
 				testgr5.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr5);
 
 				var testgr6 = new ListViewGroupEx();
-				testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 128 * 1024 * 1024).ToArray();
+				testgr6.Items =
+					this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 128 * 1024 * 1024)
+						.ToArray();
 				testgr6.Header = $"Gigantic ({testgr6.Items.Count()})";
 				testgr6.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr6);
+			} else if (col.CollumnType == typeof(PerceivedType)) {
+				var groups = this.Items.GroupBy(k => k.GetPropertyValue(col.pkey, typeof(String)).Value, e => e).OrderBy(o => o.Key);
+				var i = reversed ? groups.Count() - 1 : 0;
+				foreach (var group in groups.ToArray()) {
+					var groupItems = group.Select(s => s).ToArray();
+					this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{((PerceivedType)group.Key).ToString()} ({groupItems.Count()})" });
+				}
 			} else {
 				var groups = this.Items.GroupBy(k => k.GetPropertyValue(col.pkey, typeof(String)).Value, e => e).OrderBy(o => o.Key);
 				var i = reversed ? groups.Count() - 1 : 0;
@@ -3063,8 +3110,8 @@ namespace BExplorer.Shell {
 					};
 					this._FsWatcher.Created += (sender, args) => {
 						try {
-							var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
-							if (existing != null) return;
+							//var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
+							//if (existing != null) return;
 							if (Path.GetExtension(args.FullPath).ToLowerInvariant() == ".tmp") {
 								if (!this._TemporaryFiles.Contains(args.FullPath))
 									this._TemporaryFiles.Add(args.FullPath);
@@ -3115,7 +3162,7 @@ namespace BExplorer.Shell {
 			this._IsDisplayEmptyText = false;
 			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, 0, 0);
 			this.DisableGroups();
-
+			this.Focus(false, true);
 			this._ItemForRename = -1;
 			this._LastItemForRename = -1;
 			Items.Clear();
@@ -3757,14 +3804,13 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_RMDIR:
 							case ShellNotifications.SHCNE.SHCNE_DELETE:
 								var objDelete = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-								if (
-									(this.CurrentFolder != null && (objDelete.Parent != null && (objDelete.Parent.Equals(this.CurrentFolder) || (objDelete.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName)))))
-									&&
-									this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, objDelete.Clone()))
-								) {
+								if (this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.RecycleBin, FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, ((ShellItem)KnownFolders.RecycleBin).ComInterface)))) {
+									this.UnvalidateDirectory();
+								}
+								if ((this.CurrentFolder != null && (objDelete.ParsingName.StartsWith(this.CurrentFolder.ParsingName) || (objDelete.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName))))
+										&& this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, objDelete.Clone()))) {
 									this.UnvalidateDirectory();
 									objDelete.Dispose();
-									this.RaiseRecycleBinUpdated();
 									break;
 								}
 								break;
@@ -3849,6 +3895,11 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
 								if (this.CurrentFolder != null && this.CurrentFolder.ParsingName.Equals(KnownFolders.Computer.ParsingName))
 									this.InsertNewItem(FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1));
+								break;
+							case ShellNotifications.SHCNE.SHCNE_FREESPACE:
+								//if (this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.RecycleBin, FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, ((ShellItem)KnownFolders.RecycleBin).ComInterface)))) {
+								//	this.UnvalidateDirectory();
+								//}
 								break;
 						}
 					} catch {

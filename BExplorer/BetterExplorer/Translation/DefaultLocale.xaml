@@ -380,6 +380,7 @@
     <system:String x:Key="txtYes">Yes</system:String>
     <system:String x:Key="txtNo">No</system:String>
     <system:String x:Key="txtType">Type</system:String>
+	  <system:String x:Key="mnuOpenNewTab">Open in separate tab</system:String>
     <!-- (file type) -->
     <system:String x:Key="txtFile">file</system:String>
     <system:String x:Key="txtShortcut">shortcut</system:String>

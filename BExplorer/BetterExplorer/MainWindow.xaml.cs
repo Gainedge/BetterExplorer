@@ -412,7 +412,8 @@ namespace BetterExplorer {
 		}
 
 		private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, IListItemEx selectedItem) {
-
+      if (selectedItem == null) return;
+		  
 			#region Search Contextual Tab
 			ctgSearch.Visibility = BooleanToVisibiliy(_ShellListView.CurrentFolder.IsSearchFolder);
 			if (ctgSearch.Visibility == Visibility.Visible && !_ShellListView.CurrentFolder.IsSearchFolder) {
@@ -3544,6 +3545,7 @@ namespace BetterExplorer {
 			}
 
 			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
+				this._ShellListView.Focus(false, true);
 				var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
 				if (selectedItem == null) {
 					this.tcMain.SelectedItem = this.tcMain.Items.OfType<Wpf.Controls.TabItem>().Last();
@@ -3582,7 +3584,7 @@ namespace BetterExplorer {
 			}));
 			////This initially setup the statusbar after program opens
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-				SetUpStatusBarOnSelectOrNavigate(_ShellListView.SelectedItems == null ? 0 : _ShellListView.GetSelectedCount());
+				this.SetUpStatusBarOnSelectOrNavigate(_ShellListView.SelectedItems == null ? 0 : _ShellListView.GetSelectedCount());
 			}));
 			//Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart) (() => {
 			//    Thread.Sleep(1500);
@@ -3594,7 +3596,7 @@ namespace BetterExplorer {
 			//this.bcbc.SetProgressValue(0, TimeSpan.FromSeconds(0));
 			//}));
 
-			this._ShellListView.Focus();
+			
 		}
 
 		private void SetupUIonNavComplete(NavigatedEventArgs e) {

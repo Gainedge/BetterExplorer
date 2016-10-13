@@ -757,7 +757,7 @@ namespace BExplorer.Shell {
 		private void ShellTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
 			if (e.Button == F.MouseButtons.Right) {
 				if (e.Node.Tag != null)
-					new ShellContextMenu(e.Node.Tag as IListItemEx).ShowContextMenu(this, e.Location, CMF.CANRENAME);
+					new ShellContextMenu(this.ShellListView, e.Node.Tag as IListItemEx).ShowContextMenu(this, e.Location, CMF.CANRENAME);
 			} else if (e.Button == F.MouseButtons.Left) {
 				if (e.X > e.Node.Bounds.Left - 5 - 16)
 					this._IsNavigate = true;

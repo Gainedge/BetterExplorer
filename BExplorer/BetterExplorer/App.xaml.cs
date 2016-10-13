@@ -122,6 +122,13 @@ namespace BetterExplorer {
 
 
 		protected override void OnStartup(StartupEventArgs e) {
+			System.Diagnostics.Process process = System.Diagnostics.Process.GetCurrentProcess();
+			process.PriorityClass = System.Diagnostics.ProcessPriorityClass.Normal;
+
+			// Set the current thread to run at 'Highest' Priority
+			Thread thread = System.Threading.Thread.CurrentThread;
+			thread.Priority = ThreadPriority.Highest;
+
 			string locale = ""; bool dmi = true;
 			Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);

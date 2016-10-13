@@ -605,9 +605,9 @@ namespace BExplorer.Shell.Interop
                 //System.Windows.Forms.MessageBox.Show(info.Notification.ToString());
 
                 //Not supported notifications
-                if (info.Notification == SHCNE.SHCNE_FREESPACE ||
-                    info.Notification == SHCNE.SHCNE_UPDATEIMAGE)
-                    return (false);
+                //if (info.Notification == SHCNE.SHCNE_FREESPACE ||
+                //    info.Notification == SHCNE.SHCNE_UPDATEIMAGE)
+                //    return (false);
 
                 info.Item1 = shNotify.dwItem1;
                 info.Item2 = shNotify.dwItem2;

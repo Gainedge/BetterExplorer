@@ -52,6 +52,7 @@ namespace BExplorer.Shell.Interop {
 		HResult GetItemPosition(LVITEMINDEX index, out POINT position);
 		HResult SetItemPosition(int a, POINT p);
 		HResult ScrollView(int a, int b);
+		[PreserveSig]
 		HResult EnsureItemVisible(LVITEMINDEX item, Boolean b);
 		HResult EnsureSubItemVisible(LVITEMINDEX item, int a);
 		HResult EditSubItem(LVITEMINDEX item, int a);
