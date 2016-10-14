@@ -565,7 +565,7 @@ namespace BExplorer.Shell {
 						if (obj.Item2.ParsingName.StartsWith(this.CurrentFolder.ParsingName) && !this.Items.Contains(obj.Item2, new ShellItemEqualityComparer())) {
 							obj.Item2.ItemIndex = this.Items.Count;
 							Items.Add(obj.Item2);
-							this._AddedItems.Add(obj.Item2.PIDL);
+							this._AddedItems.Add(obj.Item2.PIDL); 
 						}
 					} else if (obj.Item1 != ItemUpdateType.RecycleBin) {
 						var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj.Item2));
