@@ -2486,7 +2486,7 @@ public Rect GetItemBounds(Int32 index, Int32 mode)
 				this.SmallImageList.AttachToListView(this, 1);
 				var newW = 0;
 				var newH = 0;
-				this._IIListView.SetIconSpacing(value + 45, value + 38, out newW, out newH);
+				this._IIListView?.SetIconSpacing(value + 45, value + 38, out newW, out newH);
 				//User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, (IntPtr)User32.MAKELONG((Int32)(value * 1.3), (Int32)(value * 1.4)));
 			} catch (Exception) {
 			}
@@ -2576,6 +2576,7 @@ public Rect GetItemBounds(Int32 index, Int32 mode)
 		}
 
 		public void SetSortCollumn(Boolean isReorder, Collumns column, SortOrder order, Boolean reverseOrder = true) {
+			if (column == null) return;
 			try {
 				var itemsArray = this.Items;
 				var selectedItems = this.SelectedItems.ToArray();
