@@ -126,10 +126,17 @@ namespace BetterExplorer.UsbEject
 		internal struct SP_DEVICE_INTERFACE_DETAIL_DATA
 		{
 			internal int cbSize;
-            internal short devicePath;
+			internal short DevicePath;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        internal struct SP_DEVICE_INTERFACE_DETAIL_DATA2 {
+            internal int cbSize;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 1024)]
+            internal string DevicePath;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
 		internal class SP_DEVICE_INTERFACE_DATA 
 		{
 			internal int cbSize = Marshal.SizeOf(typeof(SP_DEVICE_INTERFACE_DATA));
