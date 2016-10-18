@@ -926,8 +926,11 @@ Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 																(Action)(() => {
 																	this.beNotifyIcon.ShowBalloonTip("Information", $"It is safe to remove {item.LogicalDrive}", Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
 																	var tabsForRemove = tcMain.Items.OfType<Wpf.Controls.TabItem>().Where(w => {
-																		var root = Path.GetPathRoot(w.ShellObject.ParsingName.ToShellParsingName());
-																		return root != null && (w.ShellObject.IsFileSystem &&
+																	    var root = String.Empty;
+                                                                        try {
+                                                                            root = Path.GetPathRoot(w.ShellObject.ParsingName.ToShellParsingName());
+                                                                        } catch {}
+																		return !String.IsNullOrEmpty(root) && (w.ShellObject.IsFileSystem &&
 																										root.ToLowerInvariant() == $"{DriveLetter}:\\".ToLowerInvariant());
 																	}).ToArray();
 

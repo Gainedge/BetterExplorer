@@ -1598,12 +1598,16 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 							#region Case
 
 							var nlcv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
-							if (!this.IsGroupsEnabled) {
-								SetSortCollumn(true, this.Collumns[nlcv.iSubItem], this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
+					        var sortOrder = SortOrder.Ascending;
+					        if (this.LastSortedColumnId == this.Collumns[nlcv.iSubItem].ID) {
+					            sortOrder = this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+					        } 
+                            if (!this.IsGroupsEnabled) {
+                                SetSortCollumn(true, this.Collumns[nlcv.iSubItem], sortOrder);
 							} else if (this.LastGroupCollumn == this.Collumns[nlcv.iSubItem]) {
 								this.SetGroupOrder();
 							} else {
-								SetSortCollumn(true, this.Collumns[nlcv.iSubItem], this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
+								SetSortCollumn(true, this.Collumns[nlcv.iSubItem], sortOrder);
 								this.SetGroupOrder(false);
 							}
 							break;

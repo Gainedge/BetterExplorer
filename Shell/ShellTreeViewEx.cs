@@ -972,7 +972,11 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
 								var objDr = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
 								try {
-									computerNode.Nodes.Remove(computerNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).ParsingName == objDr.ParsingName));
+								    var theNode =
+								        computerNode.Nodes.OfType<TreeNode>()
+								            .FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx)?.ParsingName == objDr?.ParsingName);
+                                    if (theNode != null)
+                                        computerNode.Nodes.Remove(theNode);
 								} catch (NullReferenceException) {
 
 								}
