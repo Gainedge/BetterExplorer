@@ -651,10 +651,27 @@ namespace BExplorer.Shell {
 					var t = new Thread(() => {
 						//var nodes = await Task.Run(() => {
 						var nodesTemp = new List<TreeNode>();
-						foreach (var item in sho.Where(w => sho.IsFileSystem || Path.GetExtension(sho.ParsingName).ToLowerInvariant() == ".library-ms" ? ((w.IsFolder || w.IsLink) && (this.IsShowHiddenItems ? true : w.IsHidden == false)) : true)) {
-							var itemNode = new TreeNode(item.DisplayName);
+                        if (sho?.IsLink == true) {
+                            try {
+                                var shellLink = new ShellLink(sho.ParsingName);
+                                var linkTarget = shellLink.TargetPIDL;
+                                sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
+                                shellLink.Dispose();
+                            } catch { }
+                        }
+                        foreach (var item in sho?.Where(w => !sho.IsFileSystem && Path.GetExtension(sho?.ParsingName).ToLowerInvariant() != ".library-ms" || ((w.IsFolder || w.IsLink) && (this.IsShowHiddenItems || w.IsHidden == false)))) {
+                            if (item?.IsLink == true) {
+                                try {
+                                    var shellLink = new ShellLink(item.ParsingName);
+                                    var linkTarget = shellLink.TargetPIDL;
+                                    var itemLinkReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
+                                    shellLink.Dispose();
+                                    if (!itemLinkReal.IsFolder) continue;
+                                } catch { }
+                            }
+                            var itemNode = new TreeNode(item.DisplayName);
 							IListItemEx itemReal = null;
-							if (item.Parent != null && item.Parent.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
+							if (item.Parent?.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
 								itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.ParsingName.ToShellParsingName());
 							} else {
 								itemReal = item;
