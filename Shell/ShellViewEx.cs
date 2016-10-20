@@ -3860,6 +3860,7 @@ private void NavigateNet(IListItemEx destination, Boolean isInSameTab = false, B
 								if ((this.CurrentFolder != null && (objDelete.ParsingName.StartsWith(this.CurrentFolder.ParsingName) || (objDelete.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName))))
 												&& this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, objDelete.Clone()))) {
 									this.UnvalidateDirectory();
+									this.RaiseItemUpdated(ItemUpdateType.Deleted, null, objDelete, -1);
 									objDelete.Dispose();
 									break;
 								}

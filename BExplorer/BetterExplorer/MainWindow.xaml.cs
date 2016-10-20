@@ -3422,7 +3422,7 @@ item.IsChecked = false;
 				//	_ShellListView.RenameSelectedItem();
 				//	this._ShellListView.IsRenameNeeded = false;
 				//}
-				if (e.UpdateType == ItemUpdateType.DriveRemoved) {
+				if (e.UpdateType == ItemUpdateType.DriveRemoved || (e.UpdateType == ItemUpdateType.Deleted && e.NewItem.IsFolder)) {
 					foreach (var tab in this.tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray().Where(w => w.ShellObject.ParsingName.StartsWith(e.NewItem.ParsingName))) {
 						this.tcMain.RemoveTabItem(tab, false);
 					}

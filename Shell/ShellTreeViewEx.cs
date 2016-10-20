@@ -27,14 +27,11 @@ namespace BExplorer.Shell {
 		public TreeViewBase ShellTreeView;
 		public Boolean IsShowHiddenItems { get; set; }
 
-		public ShellView ShellListView
-		{
-			private get
-			{
+		public ShellView ShellListView {
+			private get {
 				return _ShellListView;
 			}
-			set
-			{
+			set {
 				_ShellListView = value;
 				_ShellListView.Navigated += ShellListView_Navigated;
 			}
@@ -106,7 +103,7 @@ namespace BExplorer.Shell {
 			ShellTreeView.Nodes.Add(favoritesRoot);
 			favoritesRoot.Expand();
 
-			ShellTreeView.Nodes.AddRange(new[] {new TreeNode(), librariesRoot, new TreeNode(), computerRoot, new TreeNode(), networkRoot});
+			ShellTreeView.Nodes.AddRange(new[] { new TreeNode(), librariesRoot, new TreeNode(), computerRoot, new TreeNode(), networkRoot });
 
 			librariesRoot.Expand();
 			computerRoot.Expand();
@@ -135,7 +132,7 @@ namespace BExplorer.Shell {
 
 		public TreeNode FromItem(IListItemEx item, TreeNode rootNode) {
 			foreach (TreeNode node in rootNode.Nodes) {
-				if (node.Tag as IListItemEx != null && (node.Tag as IListItemEx).Equals(item)) return node;
+				if ((node.Tag as IListItemEx)?.Equals(item) == true) return node;
 				TreeNode next = FromItem(item, node);
 				if (next != null) return next;
 			}
@@ -143,8 +140,11 @@ namespace BExplorer.Shell {
 		}
 
 		public TreeNode FromItem(IListItemEx item) {
-			foreach (TreeNode node in this.ShellTreeView.Nodes) {
-				if (node.Tag as IListItemEx != null && (node.Tag as IListItemEx).Equals(item)) return node;
+			foreach (TreeNode node in this.ShellTreeView.Nodes.OfType<TreeNode>().Where(w => {
+				var nodeItem = w.Tag as IListItemEx;
+				return nodeItem != null && (w.Tag != null && !nodeItem.ParsingName.Equals(KnownFolders.Links.ParsingName));
+			})) {
+				if ((node.Tag as IListItemEx)?.Equals(item) == true) return node;
 				TreeNode next = FromItem(item, node);
 				if (next != null) return next;
 			}
@@ -324,6 +324,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void ShellTreeView_MouseDown(object sender, MouseEventArgs e) {
+			this.isFromTreeview = true;
 			if (NodeClick != null) {
 				var treeNode = this.ShellTreeView.GetNodeAt(e.X, e.Y);
 				NodeClick.Invoke(this, new TreeNodeMouseClickEventArgs(treeNode, e.Button, e.Clicks, e.X, e.Y));
@@ -525,36 +526,36 @@ namespace BExplorer.Shell {
 		}
 
 		/*
-		public void DoCopy(IDataObject dataObject, IListItemEx destination)
+public void DoCopy(IDataObject dataObject, IListItemEx destination)
+{
+		var handle = this.Handle;
+		var thread = new Thread(() =>
 		{
-				var handle = this.Handle;
-				var thread = new Thread(() =>
+				var items = new IShellItem[0];
+				if (dataObject.GetDataPresent("FileDrop"))
+						items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
+				else
+						items = dataObject.ToShellItemArray().ToArray();
+
+				try
 				{
-						var items = new IShellItem[0];
-						if (dataObject.GetDataPresent("FileDrop"))
-								items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
-						else
-								items = dataObject.ToShellItemArray().ToArray();
-
-						try
+						var fo = new IIFileOperation(handle);
+						foreach (var item in items)
 						{
-								var fo = new IIFileOperation(handle);
-								foreach (var item in items)
-								{
-										fo.CopyItem(item, destination);
-								}
+								fo.CopyItem(item, destination);
+						}
 
-								fo.PerformOperations();
-						}
-						catch (SecurityException)
-						{
-								throw;
-						}
-				});
-				thread.SetApartmentState(ApartmentState.STA);
-				thread.Start();
-		}
-		*/
+						fo.PerformOperations();
+				}
+				catch (SecurityException)
+				{
+						throw;
+				}
+		});
+		thread.SetApartmentState(ApartmentState.STA);
+		thread.Start();
+}
+*/
 
 		public void PasteAvailableFiles() {
 			var selectedItem = this.ShellTreeView.SelectedNode.Tag as IListItemEx;
@@ -563,21 +564,20 @@ namespace BExplorer.Shell {
 			var thread = new Thread(() => {
 				var dataObject = F.Clipboard.GetDataObject();
 				var dropEffect = dataObject.ToDropEffect();
-				var items = new IShellItem[0];
-				if (dataObject.GetDataPresent("FileDrop"))
-					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
-				else
-					items = dataObject.ToShellItemArray().ToArray();
+				IShellItemArray items = null;
+				if (dataObject.GetDataPresent("FileDrop")) {
+					//TODO: Fix FileDorp option
+					//items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
+				} else {
+					items = dataObject.ToShellItemArray();
+				}
 
 				try {
-					//TODO: Check this for each
 					var fo = new IIFileOperation(handle);
-					foreach (var item in items) {
-						//if (dropEffect == System.Windows.DragDropEffects.Copy)
-						//	fo.CopyItem(item, selectedItem);
-						//else
-						//	fo.MoveItem(item, selectedItem.ComInterface, null);
-					}
+					if (dropEffect == System.Windows.DragDropEffects.Copy)
+						fo.CopyItems(items, selectedItem);
+					else
+						fo.MoveItems(items, selectedItem);
 
 					fo.PerformOperations();
 				} catch (SecurityException) {
@@ -651,25 +651,25 @@ namespace BExplorer.Shell {
 					var t = new Thread(() => {
 						//var nodes = await Task.Run(() => {
 						var nodesTemp = new List<TreeNode>();
-                        if (sho?.IsLink == true) {
-                            try {
-                                var shellLink = new ShellLink(sho.ParsingName);
-                                var linkTarget = shellLink.TargetPIDL;
-                                sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
-                                shellLink.Dispose();
-                            } catch { }
-                        }
-                        foreach (var item in sho?.Where(w => !sho.IsFileSystem && Path.GetExtension(sho?.ParsingName).ToLowerInvariant() != ".library-ms" || ((w.IsFolder || w.IsLink) && (this.IsShowHiddenItems || w.IsHidden == false)))) {
-                            if (item?.IsLink == true) {
-                                try {
-                                    var shellLink = new ShellLink(item.ParsingName);
-                                    var linkTarget = shellLink.TargetPIDL;
-                                    var itemLinkReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
-                                    shellLink.Dispose();
-                                    if (!itemLinkReal.IsFolder) continue;
-                                } catch { }
-                            }
-                            var itemNode = new TreeNode(item.DisplayName);
+						if (sho?.IsLink == true) {
+							try {
+								var shellLink = new ShellLink(sho.ParsingName);
+								var linkTarget = shellLink.TargetPIDL;
+								sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
+								shellLink.Dispose();
+							} catch { }
+						}
+						foreach (var item in sho?.Where(w => !sho.IsFileSystem && Path.GetExtension(sho?.ParsingName).ToLowerInvariant() != ".library-ms" || ((w.IsFolder || w.IsLink) && (this.IsShowHiddenItems || w.IsHidden == false)))) {
+							if (item?.IsLink == true) {
+								try {
+									var shellLink = new ShellLink(item.ParsingName);
+									var linkTarget = shellLink.TargetPIDL;
+									var itemLinkReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
+									shellLink.Dispose();
+									if (!itemLinkReal.IsFolder) continue;
+								} catch { }
+							}
+							var itemNode = new TreeNode(item.DisplayName);
 							IListItemEx itemReal = null;
 							if (item.Parent?.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
 								itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.ParsingName.ToShellParsingName());
@@ -759,11 +759,12 @@ namespace BExplorer.Shell {
 			thread.Start();
 		}
 
-		[Obsolete("Does nothing")]
+
 		private void ShellTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
 			IntPtr dataObjPtr = IntPtr.Zero;
 			var shellItem = ((e.Item as TreeNode).Tag as IListItemEx);
 			if (shellItem != null) {
+				//TODO: Fix the dead code here
 				//System.Runtime.InteropServices.ComTypes.IDataObject dataObject = shellItem.GetIDataObject(out dataObjPtr);
 
 				//uint ef = 0;
@@ -788,15 +789,13 @@ namespace BExplorer.Shell {
 						// Stop editing without canceling the label change.
 						e.Node.EndEdit(false);
 						var fo = new IIFileOperation(this.Handle);
-						fo.RenameItem((e.Node.Tag as IListItemEx).ComInterface, e.Label);
+						fo.RenameItem((e.Node.Tag as IListItemEx)?.ComInterface, e.Label);
 						fo.PerformOperations();
 					} else {
 						/* Cancel the label edit action, inform the user, and
 							 place the node in edit mode again. */
 						e.CancelEdit = true;
-						MessageBox.Show("Invalid tree node label.\n" +
-							 "The invalid characters are: '@','.', ',', '!'",
-							 "Node Label Edit");
+						MessageBox.Show("Invalid tree node label.\n The invalid characters are: '@','.', ',', '!'", "Node Label Edit");
 						e.Node.BeginEdit();
 					}
 				} else {
@@ -989,11 +988,11 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
 								var objDr = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
 								try {
-								    var theNode =
-								        computerNode.Nodes.OfType<TreeNode>()
-								            .FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx)?.ParsingName == objDr?.ParsingName);
-                                    if (theNode != null)
-                                        computerNode.Nodes.Remove(theNode);
+									var theNode =
+											computerNode.Nodes.OfType<TreeNode>()
+													.FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx)?.ParsingName == objDr?.ParsingName);
+									if (theNode != null)
+										computerNode.Nodes.Remove(theNode);
 								} catch (NullReferenceException) {
 
 								}
