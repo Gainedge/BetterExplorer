@@ -432,7 +432,7 @@ namespace BExplorer.Shell {
 		private ListViewEditor _EditorSubclass;
 		private readonly F.Timer _UnvalidateTimer = new F.Timer();
 		private readonly F.Timer _MaintenanceTimer = new F.Timer();
-		private readonly F.Timer _NavWaitTimer = new F.Timer() { Interval = 450, Enabled = false };
+		private readonly F.Timer _NavWaitTimer = new F.Timer() { Interval = 150, Enabled = false };
 		private readonly String _DBPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite");
 
 		private List<Int32> _SelectedIndexes {
@@ -565,7 +565,7 @@ namespace BExplorer.Shell {
 						if (obj.Item2.ParsingName.StartsWith(this.CurrentFolder.ParsingName) && !this.Items.Contains(obj.Item2, new ShellItemEqualityComparer())) {
 							obj.Item2.ItemIndex = this.Items.Count;
 							Items.Add(obj.Item2);
-							this._AddedItems.Add(obj.Item2.PIDL); 
+							this._AddedItems.Add(obj.Item2.PIDL);
 						}
 					} else if (obj.Item1 != ItemUpdateType.RecycleBin) {
 						var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj.Item2));
@@ -1598,12 +1598,12 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 							#region Case
 
 							var nlcv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
-					        var sortOrder = SortOrder.Ascending;
-					        if (this.LastSortedColumnId == this.Collumns[nlcv.iSubItem].ID) {
-					            sortOrder = this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
-					        } 
-                            if (!this.IsGroupsEnabled) {
-                                SetSortCollumn(true, this.Collumns[nlcv.iSubItem], sortOrder);
+							var sortOrder = SortOrder.Ascending;
+							if (this.LastSortedColumnId == this.Collumns[nlcv.iSubItem].ID) {
+								sortOrder = this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+							}
+							if (!this.IsGroupsEnabled) {
+								SetSortCollumn(true, this.Collumns[nlcv.iSubItem], sortOrder);
 							} else if (this.LastGroupCollumn == this.Collumns[nlcv.iSubItem]) {
 								this.SetGroupOrder();
 							} else {
@@ -2229,6 +2229,11 @@ public void FileNameChangeAttempt(String NewName, Boolean Cancel)
 									(obj2.Extension.Equals(".library-ms") &&
 									 s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
 			if (theItem == null) {
+				if (oldItem != null) {
+					this.Items.Remove(oldItem);
+					this._AddedItems.Remove(oldItem.PIDL);
+					//this.ResortListViewItems();
+				}
 				this.Items.Add(obj2.Extension.Equals(".library-ms")
 					? FileSystemListItem.InitializeWithIShellItem(this.LVHandle,
 						ShellLibrary.Load(obj2.DisplayName, true).ComInterface)
@@ -3139,8 +3144,8 @@ public Rect GetItemBounds(Int32 index, Int32 mode)
 			if (destination.IsFileSystem) {
 				if (this._FsWatcher != null) {
 					this._FsWatcher.Dispose();
-					this._FsWatcher = new FileSystemWatcher(destination.ParsingName);
-					this._FsWatcher.InternalBufferSize = 16 * 1024 * 1024;
+					this._FsWatcher = new FileSystemWatcher(@destination.ParsingName);
+					//this._FsWatcher.InternalBufferSize = 64 * 1024 * 1024;
 					this._FsWatcher.Changed += (sender, args) => {
 						try {
 							var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
@@ -3158,15 +3163,19 @@ public Rect GetItemBounds(Int32 index, Int32 mode)
 						} catch {
 						}
 					};
-					this._FsWatcher.Created += (sender, args) => {
+					this._FsWatcher.Error += (sender, args) => {
+						var ex = args.GetException();
+					};
+						this._FsWatcher.Created += (sender, args) => {
 						try {
 							//var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
 							//if (existing != null) return;
-							if (Path.GetExtension(args.FullPath).ToLowerInvariant() == ".tmp" || Path.GetExtension(args.FullPath) == String.Empty) {
+							if (Path.GetExtension(args.FullPath).ToLowerInvariant() == ".tmp" ||
+									Path.GetExtension(args.FullPath) == String.Empty) {
 								if (!this._TemporaryFiles.Contains(args.FullPath))
 									this._TemporaryFiles.Add(args.FullPath);
 							}
-							var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
+							var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
 							if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
 								if (this.IsRenameNeeded) {
 									var existingItem = this.Items.ToArray().FirstOrDefault(s => s.Equals(obj));
@@ -3183,18 +3192,13 @@ public Rect GetItemBounds(Int32 index, Int32 mode)
 										this.UnvalidateDirectory();
 								}
 							}
+						} catch (FileNotFoundException) {
+							this.QueueDeleteItem(args);
 						} catch { }
 					};
 					this._FsWatcher.Deleted += (sender, args) => {
 						//args.FullPath
-						this._TemporaryFiles.Remove(args.FullPath);
-						var existingItem = this.Items.ToArray().FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
-						if (existingItem != null) {
-							if (this._TemporaryFiles.Count(c => c.Contains(Path.GetFileName(existingItem.ParsingName))) == 0) {
-								this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, existingItem));
-								this.UnvalidateDirectory();
-							}
-						}
+						this.QueueDeleteItem(args);
 					};
 					this._FsWatcher.Renamed += (sender, args) => {
 					};
@@ -3399,6 +3403,17 @@ public Rect GetItemBounds(Int32 index, Int32 mode)
 			navigationThread.SetApartmentState(ApartmentState.STA);
 			this._Threads.Add(navigationThread);
 			navigationThread.Start();
+		}
+
+		private void QueueDeleteItem(FileSystemEventArgs args) {
+			this._TemporaryFiles.Remove(args.FullPath);
+			var existingItem = this.Items.ToArray().FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
+			if (existingItem != null) {
+				if (existingItem.IsFolder || this._TemporaryFiles.Count(c => c.Contains(Path.GetFileName(existingItem.ParsingName))) == 0) {
+					this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, existingItem), true);
+					this.UnvalidateDirectory();
+				}
+			}
 		}
 
 		private void NavigateSearch(IListItemEx destination, Boolean isInSameTab = false, Boolean refresh = false, Boolean isCancel = false) {
@@ -3833,22 +3848,24 @@ private void NavigateNet(IListItemEx destination, Boolean isInSameTab = false, B
 						switch (info.Notification) {
 							case ShellNotifications.SHCNE.SHCNE_MKDIR:
 							case ShellNotifications.SHCNE.SHCNE_CREATE:
-								var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-								if (this.CurrentFolder != null && (obj.Parent != null && (obj.Parent.Equals(this.CurrentFolder) || (obj.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName))))) {
-									if (this.IsRenameNeeded) {
-										var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
-										if (existingItem == null) {
-											var itemIndex = this.InsertNewItem(obj.Clone(true));
-											this.SelectItemByIndex(itemIndex, true, true);
-											this.RenameSelectedItem(itemIndex);
-											this.IsRenameNeeded = false;
-										} else {
-											this.RenameSelectedItem(existingItem.ItemIndex);
+								try {
+									var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
+									if (this.CurrentFolder != null && (obj.Parent != null && (obj.Parent.Equals(this.CurrentFolder) || (obj.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName))))) {
+										if (this.IsRenameNeeded) {
+											var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
+											if (existingItem == null) {
+												var itemIndex = this.InsertNewItem(obj.Clone(true));
+												this.SelectItemByIndex(itemIndex, true, true);
+												this.RenameSelectedItem(itemIndex);
+												this.IsRenameNeeded = false;
+											} else {
+												this.RenameSelectedItem(existingItem.ItemIndex);
+											}
+										} else if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj))) {
+											this.UnvalidateDirectory();
 										}
-									} else if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj))) {
-										this.UnvalidateDirectory();
 									}
-								}
+								} catch (FileNotFoundException) {}
 								break;
 
 							case ShellNotifications.SHCNE.SHCNE_RMDIR:
@@ -3858,7 +3875,7 @@ private void NavigateNet(IListItemEx destination, Boolean isInSameTab = false, B
 									this.UnvalidateDirectory();
 								}
 								if ((this.CurrentFolder != null && (objDelete.ParsingName.StartsWith(this.CurrentFolder.ParsingName) || (objDelete.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName))))
-												&& this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, objDelete.Clone()))) {
+												&& this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, objDelete.Clone()), true)) {
 									this.UnvalidateDirectory();
 									this.RaiseItemUpdated(ItemUpdateType.Deleted, null, objDelete, -1);
 									objDelete.Dispose();

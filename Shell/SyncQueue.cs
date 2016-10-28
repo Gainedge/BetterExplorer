@@ -77,8 +77,8 @@ namespace BExplorer.Shell {
 		/// Adds an object to the end of the System.Collections.Generic.Queue[T] then runs System.Threading.Monitor.PulseAll(queue) when queue.Count == 1;
 		/// </summary>
 		/// <param name="item">The object to add to the System.Collections.Generic.Queue[T]. The value can be null for reference types.</param>
-		public Boolean Enqueue(T item) {
-			if (!queue.Contains(item)) {
+		public Boolean Enqueue(T item, Boolean force = false) {
+			if (!queue.Contains(item) || force) {
 				queue.Enqueue(item);
 				return true;
 			} else {
