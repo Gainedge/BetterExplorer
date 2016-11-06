@@ -1568,7 +1568,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 								}
 							}
 
-              if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS && !this.CurrentFolder.ParsingName.Equals(KnownFolders.Computer.ParsingName)) {
+              if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS && this.CurrentFolder?.ParsingName.Equals(KnownFolders.Computer.ParsingName) == false) {
 								int[] columns = null;
 								var refGuidPDL = typeof(IPropertyDescriptionList).GUID;
 								var refGuidPD = typeof(IPropertyDescription).GUID;
@@ -1769,17 +1769,6 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 							var nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 							if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE) {
 								this._IsDragSelect = nlv.uNewState;
-								if (IsGroupsEnabled) {
-									if (nlv.iItem != -1) {
-										var itemBounds = new User32.RECT();
-										var lvi = new LVITEMINDEX() { iItem = nlv.iItem, iGroup = this.GetGroupIndex(nlv.iItem) };
-										User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-										RedrawWindow(itemBounds);
-									} else {
-										RedrawWindow();
-									}
-								}
-
 								if (nlv.iItem != _LastItemForRename)
 									_LastItemForRename = -1;
 								if (!_SelectionTimer.Enabled)
