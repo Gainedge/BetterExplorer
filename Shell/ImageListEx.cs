@@ -120,9 +120,9 @@ namespace BExplorer.Shell {
 		}
 
 		public void EnqueueSubitemsGet(Tuple<int, int, PROPERTYKEY> item) {
-		    Task.Run(() => {
-		        this._ItemsForSubitemsUpdate.Enqueue(item);
-		    });
+			Task.Run(() => {
+				this._ItemsForSubitemsUpdate.Enqueue(item);
+			});
 		}
 
 
@@ -143,9 +143,9 @@ namespace BExplorer.Shell {
 
 		public void DrawIcon(IntPtr hdc, Int32 index, IListItemEx sho, User32.RECT iconBounds, Boolean isGhosted, Boolean isHot) {
 			if (sho.OverlayIconIndex == -1) {
-			    Task.Run(() => {
-			        this._OverlayQueue.Enqueue(index);
-			    });
+				Task.Run(() => {
+					this._OverlayQueue.Enqueue(index);
+				});
 			}
 			//TODO: Check why the same code is called 2 times here. It can be fixed by if (!this._RedrawQueue) {
 			if (this._CurrentSize != 16) {
@@ -175,9 +175,9 @@ namespace BExplorer.Shell {
 																 !sho.IsOnlyLowQuality;
 					if (sho.IsNeedRefreshing) {
 						sho.IsThumbnailLoaded = false;
-					    Task.Run(() => {
-					        this._ThumbnailsForCacheLoad.Enqueue(index);
-					    });
+						Task.Run(() => {
+							this._ThumbnailsForCacheLoad.Enqueue(index);
+						});
 					} else {
 						sho.IsThumbnailLoaded = true;
 						sho.IsNeedRefreshing = false;
@@ -203,24 +203,24 @@ namespace BExplorer.Shell {
 							sho.IsThumbnailLoaded = true;
 							sho.IsNeedRefreshing = false;
 							sho.IsIconLoaded = false;
-                            //if (!this._IconsForRetreval.Contains(index))
-						    Task.Run(() => {
-						        this._IconsForRetreval.Enqueue(index);
-						    });
+							//if (!this._IconsForRetreval.Contains(index))
+							Task.Run(() => {
+								this._IconsForRetreval.Enqueue(index);
+							});
 						}
-					    if (!sho.IsThumbnailLoaded || sho.IsNeedRefreshing)
-					        Task.Run(() => {
-					            this._ThumbnailsForCacheLoad.Enqueue(index);
-					        });
+						if (!sho.IsThumbnailLoaded || sho.IsNeedRefreshing)
+							Task.Run(() => {
+								this._ThumbnailsForCacheLoad.Enqueue(index);
+							});
 					} else {
 						var editControl = User32.SendMessage(this._ShellViewEx.LVHandle, 0x1018, 0, 0);
 						if (editControl == IntPtr.Zero) {
 							this.DrawDefaultIcons(hdc, sho, iconBounds);
 							sho.IsIconLoaded = false;
-                            //if (!this._IconsForRetreval.Contains(index))
-						    Task.Run(() => {
-						        this._IconsForRetreval.Enqueue(index);
-						    });
+							//if (!this._IconsForRetreval.Contains(index))
+							Task.Run(() => {
+								this._IconsForRetreval.Enqueue(index);
+							});
 						} else {
 							hThumbnail = sho.GetHBitmap(this._CurrentSize, false);
 							if (hThumbnail != IntPtr.Zero) {
@@ -230,10 +230,10 @@ namespace BExplorer.Shell {
 							} else {
 								this.DrawDefaultIcons(hdc, sho, iconBounds);
 								sho.IsIconLoaded = false;
-                                //if (!this._IconsForRetreval.Contains(index))
-							    Task.Run(() => {
-							        this._IconsForRetreval.Enqueue(index);
-							    });
+								//if (!this._IconsForRetreval.Contains(index))
+								Task.Run(() => {
+									this._IconsForRetreval.Enqueue(index);
+								});
 							}
 							if ((sho.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) {
 								sho.ShieldedIconIndex = this._ShieldIconIndex;
@@ -356,13 +356,13 @@ namespace BExplorer.Shell {
 				} else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
 					if (!sho.IsIconLoaded) {
 						if (sho.IsNetworkPath || this._ShellViewEx.IsSearchNavigating) {
-						    Task.Run(() => {
-						        this._IconsForRetreval.Enqueue(index);
-						    });
+							Task.Run(() => {
+								this._IconsForRetreval.Enqueue(index);
+							});
 						} else {
-						    Task.Run(() => {
-						        this._IconsForRetreval.Enqueue(index);
-						    });
+							Task.Run(() => {
+								this._IconsForRetreval.Enqueue(index);
+							});
 						}
 						this._Small.DrawIcon(hdc, this._ExeFallBackIndex,
 							new Point(iconBounds.Left + (iconBounds.Right - iconBounds.Left - this._CurrentSize) / 2,
@@ -551,14 +551,19 @@ namespace BExplorer.Shell {
 					var isi2 = (IShellItem2)temp.ComInterface;
 					var pvar = new PropVariant();
 					var pk = index.Item3;
+					if (pk.fmtid == SystemProperties.DriveFreeSpace.fmtid && pk.pid == SystemProperties.DriveFreeSpace.pid) continue;
 					var guid = new Guid(InterfaceGuids.IPropertyStore);
 					IPropertyStore propStore = null;
 					isi2.GetPropertyStore(GetPropertyStoreOptions.Default, ref guid, out propStore);
 					if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-						if (!currentItem.ColumnValues.Keys.Contains(pk)) {
-							currentItem.ColumnValues.Add(pk, pvar.Value);
-							if (!this._RedrawQueue.Contains(index.Item1))
-								this._RedrawQueue.Enqueue(index.Item1);
+						if (currentItem.ColumnValues.Keys.Count(s => s.fmtid == pk.fmtid && s.pid == pk.pid) == 0) {
+							try {
+								currentItem.ColumnValues.Add(pk, pvar.Value);
+								if (!this._RedrawQueue.Contains(index.Item1))
+									this._RedrawQueue.Enqueue(index.Item1);
+							} catch {
+								//TODO: Fix this try-catch!!!!!
+							}
 						}
 
 						pvar.Dispose();
