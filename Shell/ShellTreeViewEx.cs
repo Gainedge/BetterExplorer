@@ -226,8 +226,10 @@ namespace BExplorer.Shell {
 		}
 
 		public void RenameItem(IListItemEx prevItem, IListItemEx newItem) {
-			this.DeleteItem(prevItem);
-			this.AddItem(newItem);
+		  if (!newItem.Equals(prevItem)) {
+		    this.DeleteItem(prevItem);
+		    this.AddItem(newItem);
+		  }
 		}
 
 		private void InitTreeView() {
@@ -973,7 +975,9 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 								break;
 							case ShellNotifications.SHCNE.SHCNE_RMDIR:
 								var objDelDir = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
-								this.DeleteItem(objDelDir);
+								if (objDelDir.IsFolder && objDelDir.IsFileSystem) {
+									this.DeleteItem(objDelDir);
+								}
 								break;
 							case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
 							case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
@@ -987,15 +991,11 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 								break;
 							case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
 								var objDr = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
-								try {
-									var theNode =
-											computerNode.Nodes.OfType<TreeNode>()
-													.FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx)?.ParsingName == objDr?.ParsingName);
-									if (theNode != null)
-										computerNode.Nodes.Remove(theNode);
-								} catch (NullReferenceException) {
-
-								}
+								var theNode =
+										computerNode.Nodes.OfType<TreeNode>()
+												.FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx)?.Equals(objDr) == true);
+								if (theNode != null)
+									computerNode.Nodes.Remove(theNode);
 								objDr.Dispose();
 								break;
 							case ShellNotifications.SHCNE.SHCNE_DRIVEADD:

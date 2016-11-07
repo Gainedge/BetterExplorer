@@ -2214,7 +2214,7 @@ public void FileNameChangeAttempt(String NewName, Boolean Cancel)
 		}
 
 		public void UpdateItem(IListItemEx obj1, IListItemEx obj2) {
-			if (!obj2.Parent.Equals(this.CurrentFolder)) return;
+			if (!obj2.Parent.Equals(this.CurrentFolder) || obj2.Equals(obj1)) return;
 			var items = this.Items.ToArray();
 			var oldItem =
 					items.SingleOrDefault(
@@ -2232,16 +2232,11 @@ public void FileNameChangeAttempt(String NewName, Boolean Cancel)
 				if (oldItem != null) {
 					this.Items.Remove(oldItem);
 					this._AddedItems.Remove(oldItem.PIDL);
-					//this.ResortListViewItems();
 				}
 				this.Items.Add(obj2.Extension.Equals(".library-ms")
 					? FileSystemListItem.InitializeWithIShellItem(this.LVHandle,
 						ShellLibrary.Load(obj2.DisplayName, true).ComInterface)
 					: obj2);
-				//if (oldItem != null) {
-				//	if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, oldItem)))
-				//		this.UnvalidateDirectory();
-				//}
 				var col = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == this.LastSortedColumnId).Value;
 				this.SetSortCollumn(true, col, this.LastSortOrder, false);
 				if (this.IsGroupsEnabled) this.SetGroupOrder(false);
