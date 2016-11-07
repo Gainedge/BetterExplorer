@@ -1502,68 +1502,73 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 									nmlv.item.pszText = currentItem.DisplayName;
 									Marshal.StructureToPtr(nmlv, m.LParam, false);
 								} else {
-									if ((View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details || this.View == ShellViewStyle.Tile)) {
-										var currentCollumn = this.View == ShellViewStyle.Tile ? this.AllAvailableColumns.Values.ToArray()[nmlv.item.iSubItem] : this.Collumns[nmlv.item.iSubItem];
+									if ((View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details) || (this.View == ShellViewStyle.Tile && this.AllAvailableColumns.Count >= nmlv.item.iSubItem)) {
+									    var currentCollumn = this.View == ShellViewStyle.Tile
+									      ? this.AllAvailableColumns.Values.ToArray()[nmlv.item.iSubItem]
+									      : this.Collumns[nmlv.item.iSubItem];
 
 
-										Object valueCached;
-										if (currentItem.ColumnValues.TryGetValue(currentCollumn.pkey, out valueCached)) {
-											String val = String.Empty;
-											if (valueCached != null) {
-												if (currentCollumn.CollumnType == typeof(DateTime))
-													val = ((DateTime)valueCached).ToString(Thread.CurrentThread.CurrentUICulture);
-												else if (currentCollumn.CollumnType == typeof(Int64))
-													val = $"{Math.Ceiling(Convert.ToDouble(valueCached.ToString()) / 1024):# ### ### ##0} KB";
-												else if (currentCollumn.CollumnType == typeof(PerceivedType))
-													val = ((PerceivedType)valueCached).ToString();
-												else if (currentCollumn.CollumnType == typeof(FileAttributes))
-													val = this.GetFilePropertiesString(valueCached);
-												else
-													val = valueCached.ToString();
-											}
+									    Object valueCached;
+									    if (currentItem.ColumnValues.TryGetValue(currentCollumn.pkey, out valueCached)) {
+									      String val = String.Empty;
+									      if (valueCached != null) {
+									        if (currentCollumn.CollumnType == typeof(DateTime))
+									          val = ((DateTime) valueCached).ToString(Thread.CurrentThread.CurrentUICulture);
+									        else if (currentCollumn.CollumnType == typeof(Int64))
+									          val = $"{Math.Ceiling(Convert.ToDouble(valueCached.ToString())/1024):# ### ### ##0} KB";
+									        else if (currentCollumn.CollumnType == typeof(PerceivedType))
+									          val = ((PerceivedType) valueCached).ToString();
+									        else if (currentCollumn.CollumnType == typeof(FileAttributes))
+									          val = this.GetFilePropertiesString(valueCached);
+									        else
+									          val = valueCached.ToString();
+									      }
 
-											nmlv.item.pszText = val.Trim();
-										} else {
-											var temp = currentItem;
-											var isi2 = (IShellItem2)temp.ComInterface;
-											var guid = new Guid(InterfaceGuids.IPropertyStore);
-											IPropertyStore propStore = null;
-											isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
-											PROPERTYKEY pk = currentCollumn.pkey;
-											var pvar = new PropVariant();
-											if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-												if (pvar.Value == null) {
-													if (this.IconSize == 16) {
-														this.SmallImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
-													} else {
-														this.LargeImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
-													}
-												} else {
-													var val = String.Empty;
-													if (currentCollumn.CollumnType == typeof(DateTime))
-														val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentUICulture);
-													else if (currentCollumn.CollumnType == typeof(Int64))
-														val =
-																$"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024):# ### ### ##0} KB";
-													else if (currentCollumn.CollumnType == typeof(PerceivedType))
-														val = ((PerceivedType)pvar.Value).ToString();
-													else if (currentCollumn.CollumnType == typeof(FileAttributes))
-														val = this.GetFilePropertiesString(pvar.Value);
-													else
-														val = pvar.Value.ToString();
+									      nmlv.item.pszText = val.Trim();
+									    }
+									    else {
+									      var temp = currentItem;
+									      var isi2 = (IShellItem2) temp.ComInterface;
+									      var guid = new Guid(InterfaceGuids.IPropertyStore);
+									      IPropertyStore propStore = null;
+									      isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
+									      PROPERTYKEY pk = currentCollumn.pkey;
+									      var pvar = new PropVariant();
+									      if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
+									        if (pvar.Value == null) {
+									          if (this.IconSize == 16) {
+									            this.SmallImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
+									          }
+									          else {
+									            this.LargeImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
+									          }
+									        }
+									        else {
+									          var val = String.Empty;
+									          if (currentCollumn.CollumnType == typeof(DateTime))
+									            val = ((DateTime) pvar.Value).ToString(Thread.CurrentThread.CurrentUICulture);
+									          else if (currentCollumn.CollumnType == typeof(Int64))
+									            val =
+									              $"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString())/1024):# ### ### ##0} KB";
+									          else if (currentCollumn.CollumnType == typeof(PerceivedType))
+									            val = ((PerceivedType) pvar.Value).ToString();
+									          else if (currentCollumn.CollumnType == typeof(FileAttributes))
+									            val = this.GetFilePropertiesString(pvar.Value);
+									          else
+									            val = pvar.Value.ToString();
 
-													nmlv.item.pszText = val.Trim();
-													pvar.Dispose();
-												}
-											}
-										}
+									          nmlv.item.pszText = val.Trim();
+									          pvar.Dispose();
+									        }
+									      }
+									    }
 									}
 
 									Marshal.StructureToPtr(nmlv, m.LParam, false);
 								}
 							}
 
-							if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS) {
+              if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS && this.CurrentFolder?.ParsingName.Equals(KnownFolders.Computer.ParsingName) == false) {
 								int[] columns = null;
 								var refGuidPDL = typeof(IPropertyDescriptionList).GUID;
 								var refGuidPD = typeof(IPropertyDescription).GUID;
@@ -1583,8 +1588,13 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 									propertyDescriptionList.GetAt(i, ref refGuidPD, out propertyDescription);
 									PROPERTYKEY pkey;
 									propertyDescription.GetPropertyKey(out pkey);
-									var column = this.AllAvailableColumns[pkey];
-									columns[i] = column.Index;
+								  Collumns column = null;
+								  if (this.AllAvailableColumns.TryGetValue(pkey, out column)) {
+								    columns[i] = column.Index;
+								  }
+								  else {
+								    columns[i] = 0;
+								  }
 								}
 								Marshal.Copy(columns, 0, nmlv.item.puColumns, nmlv.item.cColumns);
 								Marshal.StructureToPtr(nmlv, m.LParam, false);
@@ -1759,17 +1769,6 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 							var nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 							if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE) {
 								this._IsDragSelect = nlv.uNewState;
-								if (IsGroupsEnabled) {
-									if (nlv.iItem != -1) {
-										var itemBounds = new User32.RECT();
-										var lvi = new LVITEMINDEX() { iItem = nlv.iItem, iGroup = this.GetGroupIndex(nlv.iItem) };
-										User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-										RedrawWindow(itemBounds);
-									} else {
-										RedrawWindow();
-									}
-								}
-
 								if (nlv.iItem != _LastItemForRename)
 									_LastItemForRename = -1;
 								if (!_SelectionTimer.Enabled)
@@ -3896,8 +3895,10 @@ private void NavigateNet(IListItemEx destination, Boolean isInSameTab = false, B
 										if (this.View == ShellViewStyle.Details) {
 											foreach (var collumn in this.Collumns) {
 												if (collumn.Index > 0) {
-													this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingUItem.ItemIndex,
+													if (this.IconSize == 16) {
+														this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingUItem.ItemIndex,
 															collumn.Index, collumn.pkey));
+													}
 												}
 											}
 										}
@@ -3925,8 +3926,10 @@ private void NavigateNet(IListItemEx destination, Boolean isInSameTab = false, B
 								if (this.View == ShellViewStyle.Details) {
 									foreach (var collumn in this.Collumns) {
 										if (collumn.Index > 0) {
-											this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingItemNetA.ItemIndex,
+											if (this.IconSize == 16) {
+												this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingItemNetA.ItemIndex,
 													collumn.Index, collumn.pkey));
+											}
 										}
 									}
 								}

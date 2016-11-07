@@ -989,6 +989,7 @@ Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 			var firstSelectedItem = _ShellListView.GetFirstSelectedItem();
 			if (firstSelectedItem?.GetDriveInfo().DriveType == DriveType.Removable || firstSelectedItem.GetDriveInfo().DriveType == DriveType.Fixed) {
 				EjectDisk(GetDriveLetterFromDrivePath(firstSelectedItem.ParsingName));
+				//USBEject.EjectDrive(GetDriveLetterFromDrivePath(firstSelectedItem.ParsingName));
 			}
 		}
 
