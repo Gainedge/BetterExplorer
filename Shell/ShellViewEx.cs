@@ -572,7 +572,7 @@ namespace BExplorer.Shell {
 						if (existingItem == null) {
 							if (obj.Item2.ParsingName.StartsWith(this.CurrentFolder.ParsingName)) {
 								if (!Items.Contains(obj.Item2, new ShellItemEqualityComparer()) &&
-												!String.IsNullOrEmpty(obj.Item2.ParsingName)) {
+										!String.IsNullOrEmpty(obj.Item2.ParsingName)) {
 									obj.Item2.ItemIndex = this.Items.Count;
 									Items.Add(obj.Item2);
 									this._AddedItems.Add(obj.Item2.PIDL);
@@ -584,6 +584,12 @@ namespace BExplorer.Shell {
 									this.RefreshItem(index, true);
 								}
 							}
+						} else {
+							if (this.IconSize == 16)
+								this.SmallImageList.EnqueueOverlay(existingItem.ItemIndex);
+							else
+								this.LargeImageList.EnqueueOverlay(existingItem.ItemIndex);
+							this.RefreshItem(existingItem.ItemIndex, true);
 						}
 						//this.ResortListViewItems();
 					} else {
@@ -1503,72 +1509,69 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 									Marshal.StructureToPtr(nmlv, m.LParam, false);
 								} else {
 									if ((View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details) || (this.View == ShellViewStyle.Tile && this.AllAvailableColumns.Count >= nmlv.item.iSubItem)) {
-									    var currentCollumn = this.View == ShellViewStyle.Tile
-									      ? this.AllAvailableColumns.Values.ToArray()[nmlv.item.iSubItem]
-									      : this.Collumns[nmlv.item.iSubItem];
+										var currentCollumn = this.View == ShellViewStyle.Tile
+											? this.AllAvailableColumns.Values.ToArray()[nmlv.item.iSubItem]
+											: this.Collumns[nmlv.item.iSubItem];
 
 
-									    Object valueCached;
-									    if (currentItem.ColumnValues.TryGetValue(currentCollumn.pkey, out valueCached)) {
-									      String val = String.Empty;
-									      if (valueCached != null) {
-									        if (currentCollumn.CollumnType == typeof(DateTime))
-									          val = ((DateTime) valueCached).ToString(Thread.CurrentThread.CurrentUICulture);
-									        else if (currentCollumn.CollumnType == typeof(Int64))
-									          val = $"{Math.Ceiling(Convert.ToDouble(valueCached.ToString())/1024):# ### ### ##0} KB";
-									        else if (currentCollumn.CollumnType == typeof(PerceivedType))
-									          val = ((PerceivedType) valueCached).ToString();
-									        else if (currentCollumn.CollumnType == typeof(FileAttributes))
-									          val = this.GetFilePropertiesString(valueCached);
-									        else
-									          val = valueCached.ToString();
-									      }
+										Object valueCached;
+										if (currentItem.ColumnValues.TryGetValue(currentCollumn.pkey, out valueCached)) {
+											String val = String.Empty;
+											if (valueCached != null) {
+												if (currentCollumn.CollumnType == typeof(DateTime))
+													val = ((DateTime)valueCached).ToString(Thread.CurrentThread.CurrentUICulture);
+												else if (currentCollumn.CollumnType == typeof(Int64))
+													val = $"{Math.Ceiling(Convert.ToDouble(valueCached.ToString()) / 1024):# ### ### ##0} KB";
+												else if (currentCollumn.CollumnType == typeof(PerceivedType))
+													val = ((PerceivedType)valueCached).ToString();
+												else if (currentCollumn.CollumnType == typeof(FileAttributes))
+													val = this.GetFilePropertiesString(valueCached);
+												else
+													val = valueCached.ToString();
+											}
 
-									      nmlv.item.pszText = val.Trim();
-									    }
-									    else {
-									      var temp = currentItem;
-									      var isi2 = (IShellItem2) temp.ComInterface;
-									      var guid = new Guid(InterfaceGuids.IPropertyStore);
-									      IPropertyStore propStore = null;
-									      isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
-									      PROPERTYKEY pk = currentCollumn.pkey;
-									      var pvar = new PropVariant();
-									      if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-									        if (pvar.Value == null) {
-									          if (this.IconSize == 16) {
-									            this.SmallImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
-									          }
-									          else {
-									            this.LargeImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
-									          }
-									        }
-									        else {
-									          var val = String.Empty;
-									          if (currentCollumn.CollumnType == typeof(DateTime))
-									            val = ((DateTime) pvar.Value).ToString(Thread.CurrentThread.CurrentUICulture);
-									          else if (currentCollumn.CollumnType == typeof(Int64))
-									            val =
-									              $"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString())/1024):# ### ### ##0} KB";
-									          else if (currentCollumn.CollumnType == typeof(PerceivedType))
-									            val = ((PerceivedType) pvar.Value).ToString();
-									          else if (currentCollumn.CollumnType == typeof(FileAttributes))
-									            val = this.GetFilePropertiesString(pvar.Value);
-									          else
-									            val = pvar.Value.ToString();
+											nmlv.item.pszText = val.Trim();
+										} else {
+											var temp = currentItem;
+											var isi2 = (IShellItem2)temp.ComInterface;
+											var guid = new Guid(InterfaceGuids.IPropertyStore);
+											IPropertyStore propStore = null;
+											isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
+											PROPERTYKEY pk = currentCollumn.pkey;
+											var pvar = new PropVariant();
+											if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
+												if (pvar.Value == null) {
+													if (this.IconSize == 16) {
+														this.SmallImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
+													} else {
+														this.LargeImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
+													}
+												} else {
+													var val = String.Empty;
+													if (currentCollumn.CollumnType == typeof(DateTime))
+														val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentUICulture);
+													else if (currentCollumn.CollumnType == typeof(Int64))
+														val =
+															$"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024):# ### ### ##0} KB";
+													else if (currentCollumn.CollumnType == typeof(PerceivedType))
+														val = ((PerceivedType)pvar.Value).ToString();
+													else if (currentCollumn.CollumnType == typeof(FileAttributes))
+														val = this.GetFilePropertiesString(pvar.Value);
+													else
+														val = pvar.Value.ToString();
 
-									          nmlv.item.pszText = val.Trim();
-									          pvar.Dispose();
-									        }
-									      }
-									    }
+													nmlv.item.pszText = val.Trim();
+													pvar.Dispose();
+												}
+											}
+										}
 									}
 
 									Marshal.StructureToPtr(nmlv, m.LParam, false);
 								}
 							}
 
-              if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS && this.CurrentFolder?.ParsingName.Equals(KnownFolders.Computer.ParsingName) == false) {
+							if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS && this.CurrentFolder?.ParsingName.Equals(KnownFolders.Computer.ParsingName) == false) {
 								int[] columns = null;
 								var refGuidPDL = typeof(IPropertyDescriptionList).GUID;
 								var refGuidPD = typeof(IPropertyDescription).GUID;
@@ -1588,13 +1591,12 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 									propertyDescriptionList.GetAt(i, ref refGuidPD, out propertyDescription);
 									PROPERTYKEY pkey;
 									propertyDescription.GetPropertyKey(out pkey);
-								  Collumns column = null;
-								  if (this.AllAvailableColumns.TryGetValue(pkey, out column)) {
-								    columns[i] = column.Index;
-								  }
-								  else {
-								    columns[i] = 0;
-								  }
+									Collumns column = null;
+									if (this.AllAvailableColumns.TryGetValue(pkey, out column)) {
+										columns[i] = column.Index;
+									} else {
+										columns[i] = 0;
+									}
 								}
 								Marshal.Copy(columns, 0, nmlv.item.puColumns, nmlv.item.cColumns);
 								Marshal.StructureToPtr(nmlv, m.LParam, false);
@@ -2072,40 +2074,6 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
 		#region Public Methods
 
-		/*
-public void FileNameChangeAttempt(String NewName, Boolean Cancel)
-{
-	if (_ItemForRealName_IsAny && this.Items != null && this.Items.Count >= _ItemForRename)
-	{
-		var item = this.Items[_ItemForRename];
-		if (!Cancel)
-		{
-			_LastItemForRename = _ItemForRename;
-			if (item.DisplayName != NewName)
-			{
-				IsRenameInProgress = true;
-				this._NewName = NewName;
-				this.BeginInvoke((Action)(() =>
-				{
-					this.RefreshItem(_ItemForRename);
-					RenameShellItem(item.ComInterface, NewName, (item.DisplayName != Path.GetFileName(item.ParsingName)) && !item.IsFolder, item.Extension);
-				}));
-			}
-		}
-		else
-		{
-			this._NewName = String.Empty;
-			this.BeginInvoke((Action)(() => this.RefreshItem(_ItemForRename)));
-		}
-
-		this.RedrawWindow();
-	}
-
-	_ItemForRename = -1;
-	this.IsFocusAllowed = true;
-}
-*/
-
 		public void RaiseMiddleClickOnItem(IListItemEx item) {
 			if (this.ItemMiddleClick != null)
 				this.ItemMiddleClick.Invoke(this, new NavigatedEventArgs(item, item));
@@ -2259,17 +2227,6 @@ public void FileNameChangeAttempt(String NewName, Boolean Cancel)
 			this.Focus();
 		}
 
-		/*
-public Rect GetItemBounds(Int32 index, Int32 mode)
-{
-	var lviLe = this.ToLvItemIndex(index);
-	var labelBounds = new User32.RECT();
-	labelBounds.Left = mode;
-	var res = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
-	return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
-}
-*/
-
 		public void RaiseRecycleBinUpdated() => this.ItemUpdated?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.RecycleBin, null, null, -1));
 
 		public void RaiseItemUpdated(ItemUpdateType type, IListItemEx old, IListItemEx newItem, Int32 index) {
@@ -2320,17 +2277,20 @@ public Rect GetItemBounds(Int32 index, Int32 mode)
 		public void RefreshItem(Int32 index, Boolean isForceRedraw = false) {
 			if (isForceRedraw) {
 				try {
+					_ResetEvent.Set();
 					var newItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, this.Items[index].ParsingName.ToShellParsingName());
 					newItem.GroupIndex = this.Items[index].GroupIndex;
 					newItem.ItemIndex = index;
 					this.Items[index] = newItem;
 					this.Items[index].IsNeedRefreshing = true;
 					this.Items[index].IsInvalid = true;
-					this.Items[index].OverlayIconIndex = -1;
+					//this.Items[index].OverlayIconIndex = -1;
+					this.SmallImageList.EnqueueOverlay(index);
 					this.Items[index].IsOnlyLowQuality = false;
 					this.Items[index].IsIconLoaded = false;
-					_ResetEvent.Set();
+
 				} catch (FileNotFoundException) {
+					_ResetEvent.Set();
 					//In case the event late and the file is not there anymore or changed catch the exception
 					var newItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, this.Items[index].PIDL);
 					newItem.GroupIndex = this.Items[index].GroupIndex;
@@ -2338,14 +2298,14 @@ public Rect GetItemBounds(Int32 index, Int32 mode)
 					this.Items[index] = newItem;
 					this.Items[index].IsNeedRefreshing = true;
 					this.Items[index].IsInvalid = true;
-					this.Items[index].OverlayIconIndex = -1;
+					//this.Items[index].OverlayIconIndex = -1;
+					this.SmallImageList.EnqueueOverlay(index);
 					this.Items[index].IsOnlyLowQuality = false;
 					this.Items[index].IsIconLoaded = false;
-					_ResetEvent.Set();
 				} catch { }
 			}
 
-			this.BeginInvoke(new MethodInvoker(() => {
+			this.Invoke(new MethodInvoker(() => {
 				this._IIListView.UpdateItem(index);
 				this._IIListView.RedrawItems(index, index);
 			}));
@@ -3160,7 +3120,7 @@ public Rect GetItemBounds(Int32 index, Int32 mode)
 					this._FsWatcher.Error += (sender, args) => {
 						var ex = args.GetException();
 					};
-						this._FsWatcher.Created += (sender, args) => {
+					this._FsWatcher.Created += (sender, args) => {
 						try {
 							//var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
 							//if (existing != null) return;
@@ -3819,7 +3779,10 @@ private void NavigateNet(IListItemEx destination, Boolean isInSameTab = false, B
 
 		private LVITEMINDEX ToLvItemIndex(Int32 index) => new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
 
-		public void RedrawItem(Int32 index) {
+		public void RedrawItem(Int32 index, Int32 delay = -1) {
+			if (delay > -1) {
+				Thread.Sleep(delay);
+			}
 			var itemBounds = new User32.RECT() { Left = 1 };
 			var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
 			User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
@@ -3859,7 +3822,7 @@ private void NavigateNet(IListItemEx destination, Boolean isInSameTab = false, B
 											this.UnvalidateDirectory();
 										}
 									}
-								} catch (FileNotFoundException) {}
+								} catch (FileNotFoundException) { }
 								break;
 
 							case ShellNotifications.SHCNE.SHCNE_RMDIR:
@@ -3967,6 +3930,9 @@ private void NavigateNet(IListItemEx destination, Boolean isInSameTab = false, B
 								//if (this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.RecycleBin, FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, ((ShellItem)KnownFolders.RecycleBin).ComInterface)))) {
 								//	this.UnvalidateDirectory();
 								//}
+								break;
+							case ShellNotifications.SHCNE.SHCNE_UPDATEIMAGE:
+
 								break;
 						}
 					} catch {

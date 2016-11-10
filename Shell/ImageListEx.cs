@@ -141,11 +141,14 @@ namespace BExplorer.Shell {
 			this._IsSupressedTumbGeneration = isSupress;
 		}
 
+	    public void EnqueueOverlay(Int32 index) {
+            Thread.Sleep(150);
+	        this._OverlayQueue.Enqueue(index);
+	    }
+
 		public void DrawIcon(IntPtr hdc, Int32 index, IListItemEx sho, User32.RECT iconBounds, Boolean isGhosted, Boolean isHot) {
 			if (sho.OverlayIconIndex == -1) {
-				Task.Run(() => {
-					this._OverlayQueue.Enqueue(index);
-				});
+				this._OverlayQueue.Enqueue(index, true);
 			}
 			//TODO: Check why the same code is called 2 times here. It can be fixed by if (!this._RedrawQueue) {
 			if (this._CurrentSize != 16) {
@@ -459,9 +462,9 @@ namespace BExplorer.Shell {
 					this._Small.GetIconIndexWithOverlay(sho.PIDL, out overlayIndex);
 					shoTemp.OverlayIconIndex = overlayIndex;
 					if (overlayIndex > 0) {
-						if (!this._RedrawQueue.Contains(index))
-							this._RedrawQueue.Enqueue(index);
-					}
+                        if (!this._RedrawQueue.Contains(index))
+                            this._RedrawQueue.Enqueue(index);
+                    }
 				} catch { }
 			}
 		}
