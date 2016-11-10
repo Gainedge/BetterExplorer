@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BExplorer.Shell;
 using Microsoft.Win32;
 
 namespace BetterExplorer {
@@ -103,32 +104,28 @@ namespace BetterExplorer {
 				using (var s = new System.IO.FileStream(filename, System.IO.FileMode.Open)) {
 					return System.Windows.Markup.XamlReader.Load(s) as System.Windows.ResourceDictionary;
 				}
-			}
-			else {
+			} else {
 				return null;
 			}
 		}//TODO: Move somewhere else later
 
 
 		public static string AppDirectoryItem(string FileName) {
-			String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-			string dir = System.IO.Path.GetDirectoryName(CurrentexePath);
+			var currentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
+			var dir = System.IO.Path.GetDirectoryName(currentexePath);
 			return System.IO.Path.Combine(dir, FileName);
 		}
 
-		public static string CombinePaths(List<BExplorer.Shell._Plugin_Interfaces.IListItemEx> paths, string separatorvalue = ";", bool checkforfolders = false)
-		{
-			//TODO: Consider inlining this into the two places it is used
-			string ret = "";
+		public static string CombinePaths(List<BExplorer.Shell._Plugin_Interfaces.IListItemEx> paths, string separatorvalue = ";", bool checkforfolders = false) {
+			var ret = String.Empty;
 
-			foreach (var item in paths)
-			{
+			foreach (var item in paths) {
 				if (!checkforfolders)
-					ret += separatorvalue + item.ParsingName.Replace(@"\\", @"\");
+					ret += separatorvalue + item.ParsingName.ToShellParsingName();
 				else if (item.IsFolder)
-					ret += $"{separatorvalue}(f){item.ParsingName.Replace(@"\\", @"\")}";
+					ret += $"{separatorvalue}(f){item.ParsingName.ToShellParsingName()}";
 				else
-					ret += separatorvalue + item.ParsingName.Replace(@"\\", @"\");
+					ret += separatorvalue + item.ParsingName.ToShellParsingName();
 			}
 
 			if (ret.StartsWith(separatorvalue))
