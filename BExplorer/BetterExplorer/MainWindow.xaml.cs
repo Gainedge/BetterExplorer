@@ -2874,6 +2874,11 @@ item.IsChecked = false;
 
 		void gli_Click(object sender, Tuple<string> e) {
 			var list = SavedTabsList.LoadTabList($"{sstdir}{e.Item1}.txt");
+			if (list.Count > 0) {
+				foreach (var tabItem in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray()) {
+					tcMain.RemoveTabItem(tabItem, true, true);
+				}
+			}
 			for (int i = 0; i < list.Count; i++) {
 				var tabitem = tcMain.NewTab(list[i].ToShellParsingName());
 				if (i == list.Count - 1)
