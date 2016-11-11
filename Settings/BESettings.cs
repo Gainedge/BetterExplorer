@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Win32;
 
 namespace Settings {
 	public static class BESettings {
@@ -24,5 +25,15 @@ namespace Settings {
 		public static Boolean IsRestoreTabs { get; set; }
 		public static Boolean IsTraditionalNameGrouping { get; set; }
 		public static Boolean CanLogAction { get; set; }
+		public static String StartupLocation { get; set; }
+
+		public static void LoadSettings() {
+			var rkRoot = Registry.CurrentUser;
+			var rksRoot = rkRoot.OpenSubKey(@"Software\BExplorer", true) ?? rkRoot.CreateSubKey(@"Software\BExplorer");
+			BESettings.StartupLocation = rksRoot?.GetValue("StartUpLoc", "shell:::{031E4825-7B94-4DC3-B131-E946B44C8DD5}").ToString();
+			rksRoot?.Close();
+			rkRoot.Close();
+			
+		}
 	}
 }

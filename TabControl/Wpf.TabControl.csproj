@@ -115,6 +115,10 @@
     <Resource Include="Images\newtab.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Settings\Settings.csproj">
+      <Project>{b40d0f31-9d30-4292-9717-bb21fc94c49c}</Project>
+      <Name>Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Shell\Shell.csproj">
       <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
       <Name>Shell</Name>

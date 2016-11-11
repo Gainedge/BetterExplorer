@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
+using Microsoft.Win32;
+using Settings;
 
 namespace Wpf.Controls {
 
@@ -145,8 +147,9 @@ namespace Wpf.Controls {
 			worker("Close all tabs", new RoutedEventHandler(
 				(owner, a) => {
 					foreach (TabItem tabItem in tc.Items.OfType<TabItem>().ToArray()) {
-						if (!tabItem.Equals(firstItem)) tc.RemoveTabItem(tabItem);
+							tc.RemoveTabItem(tabItem, true, true);
 					}
+						tc.NewTab(BESettings.StartupLocation, true);
 				}));
 
 			worker("Close all other tabs", new RoutedEventHandler((owner, a) => tc.CloseAllTabsButThis(this)));

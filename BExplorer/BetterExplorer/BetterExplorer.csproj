@@ -697,6 +697,10 @@
       <Project>{2f36cce1-9d03-4518-9bfd-82e36ea1a64e}</Project>
       <Name>StarRatingControl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Settings\Settings.csproj">
+      <Project>{b40d0f31-9d30-4292-9717-bb21fc94c49c}</Project>
+      <Name>Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj">
       <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
       <Name>SevenZip2010</Name>
@@ -1190,7 +1194,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

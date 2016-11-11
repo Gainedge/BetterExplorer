@@ -364,7 +364,7 @@ namespace Wpf.Controls {
 		/// Called by a child Header that wants to remove itself by clicking on the close button
 		/// </summary>
 		/// <param name="tabItem"></param>
-		public void RemoveTabItem(TabItem tabItem, Boolean allowReopening = true) {
+		public void RemoveTabItem(TabItem tabItem, Boolean allowReopening = true, Boolean isCloseLastTab = false) {
       this.IsInTabDragDrop = false;
 			if (IsFixedSize)
 				throw new InvalidOperationException("ItemsSource is Fixed Size");
@@ -372,7 +372,7 @@ namespace Wpf.Controls {
 			if (allowReopening)
 				this.ReopenableTabs.Add(tabItem.log);
 
-			if (this.Items.OfType<TabItem>().Count() == 1)
+			if (this.Items.OfType<TabItem>().Count() == 1 && !isCloseLastTab)
 				return;
 			else if (ItemsSource == null)
 				this.Items.Remove(tabItem);
@@ -382,7 +382,7 @@ namespace Wpf.Controls {
 				if (listItem != null && list != null)
 					list.Remove(listItem);
 			}
-			if (this.SelectedItem == null)
+			if (this.SelectedItem == null && !isCloseLastTab)
 				this.SelectedItem = this.Items.OfType<TabItem>().ToArray()[this.Items.OfType<TabItem>().Count() - 1];
 		}
 

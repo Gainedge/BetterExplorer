@@ -43,6 +43,7 @@ using BExplorer.Shell.CommonFileDialogs;
 using BExplorer.Shell.DropTargetHelper;
 using WIN = System.Windows;
 using BExplorer.Shell._Plugin_Interfaces;
+using Settings;
 using TaskDialogInterop;
 using Image = System.Windows.Controls.Image;
 
@@ -1361,6 +1362,7 @@ Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 		}
 
 		private void LoadRegistryRelatedSettings() {
+			BESettings.LoadSettings();
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
 

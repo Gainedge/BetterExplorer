@@ -2181,7 +2181,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 		}
 
 		public void UpdateItem(IListItemEx obj1, IListItemEx obj2) {
-			if (!obj2.Parent.Equals(this.CurrentFolder) || obj2.Equals(obj1)) return;
+			if (obj2.Parent?.Equals(this.CurrentFolder) == false || obj2.Equals(obj1)) return;
 			var items = this.Items.ToArray();
 			var oldItem =
 					items.SingleOrDefault(
