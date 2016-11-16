@@ -1907,14 +1907,18 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 								this.ToolTip.HideTooltip();
 
 							if (nmhdrHdn.iItem != -1 && nmhdrHdn.hdr.hwndFrom == this.LVHandle) {
+								//Workaround for cases where on right click over an ites the item is not actually selected
+								if (this.GetSelectedCount() == 0) {
+									this.SelectItemByIndex(nmhdrHdn.iItem);
+								}
 								var selitems = this.SelectedItems;
 								var cm = new ShellContextMenu(selitems.ToArray(), SVGIO.SVGIO_SELECTION, this);
 								cm.ShowContextMenu(this, itemActivate.ptAction, CMF.CANRENAME);
 							} else if (nmhdrHdn.iItem == -1) {
 								var cm = new ShellContextMenu(new IListItemEx[1] { this.CurrentFolder }, SVGIO.SVGIO_BACKGROUND, this);
 								cm.ShowContextMenu(this, itemActivate.ptAction, 0, true);
-							} else if (ColumnHeaderRightClick != null) {
-								ColumnHeaderRightClick(this, new MouseEventArgs(F.MouseButtons.Right, 1, MousePosition.X, MousePosition.Y, 0));
+							} else {
+								this.ColumnHeaderRightClick?.Invoke(this, new MouseEventArgs(F.MouseButtons.Right, 1, MousePosition.X, MousePosition.Y, 0));
 							}
 							break;
 
@@ -2488,9 +2492,9 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 					this._IIListView.SetItemState(-1, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, 0);
 				}));
 			}
-			this.BeginInvoke((Action)(() => {
-				this._IIListView.SetItemState(index, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, LVIS.LVIS_SELECTED);
-			}));
+			var lvii = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
+			var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
+			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
 
 			if (ensureVisisble) {
 				this.BeginInvoke((Action)(() => this._IIListView.EnsureItemVisible(this.ToLvItemIndex(index), true)));
