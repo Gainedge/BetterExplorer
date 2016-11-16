@@ -143,9 +143,9 @@
     <Reference Include="ControlzEx">
       <HintPath>..\..\External References\FluentRibbon\ControlzEx.dll</HintPath>
     </Reference>
-    <Reference Include="Fluent, Version=3.5.1.198, Culture=neutral, PublicKeyToken=3e436e32a8c5546f, processorArchitecture=MSIL">
+    <Reference Include="Fluent, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External References\Fluent.dll</HintPath>
+      <HintPath>..\..\External References\FluentRibbon\Fluent.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis, Version=1.16.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Google.Apis.1.16.0\lib\net45\Google.Apis.dll</HintPath>

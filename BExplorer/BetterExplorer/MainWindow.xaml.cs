@@ -406,8 +406,6 @@ Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 		}
 
 		private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, IListItemEx selectedItem) {
-			if (selectedItem == null) return;
-
 			#region Search Contextual Tab
 			ctgSearch.Visibility = BooleanToVisibiliy(_ShellListView.CurrentFolder.IsSearchFolder);
 			if (ctgSearch.Visibility == Visibility.Visible && !_ShellListView.CurrentFolder.IsSearchFolder) {
@@ -458,14 +456,14 @@ Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 			#endregion
 
 			#region Application Context Tab
-			ctgExe.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".exe" || Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".msi"));
+			ctgExe.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && selectedItem != null && !selectedItem.IsFolder && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".exe" || Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".msi"));
 			if (asApplication && ctgExe.Visibility == Visibility.Visible) {
 				TheRibbon.SelectedTabItem = ctgExe.Items[0];
 			}
 			#endregion
 
 			#region Image Context Tab
-			ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
+			ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && selectedItem != null && !selectedItem.IsFolder && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
 			if (ctgImage.Visibility == Visibility.Visible) {
 				try {
 					if (new FileInfo(selectedItem.ParsingName).Length != 0) {
@@ -483,7 +481,7 @@ Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 			#endregion
 
 			#region Virtual Disk Context Tab
-			ctgVirtualDisk.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".iso");
+			ctgVirtualDisk.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && selectedItem != null && !selectedItem.IsFolder && Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".iso");
 			if (asVirtualDrive && ctgVirtualDisk.Visibility == Visibility.Visible) {
 				TheRibbon.SelectedTabItem = ctgVirtualDisk.Items[0];
 			}
