@@ -3484,18 +3484,18 @@ item.IsChecked = false;
 				});
 			}
 
-			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
+			Dispatcher.Invoke(DispatcherPriority.Render, (Action)(() => {
 				this._ShellListView.Focus(false, true);
 				var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
 				if (selectedItem == null) {
 					this.tcMain.SelectedItem = this.tcMain.Items.OfType<Wpf.Controls.TabItem>().Last();
 					selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
 				}
+				var oldCurrentItem = selectedItem.ShellObject;
 				var curentFolder = this._ShellListView.CurrentFolder.Clone();
 				selectedItem.Header = this._ShellListView.CurrentFolder.DisplayName;
 				selectedItem.Icon = curentFolder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 				selectedItem.ShellObject = this._ShellListView.CurrentFolder;
-				curentFolder.Dispose();
 				if (selectedItem != null) {
 					var selectedPaths = selectedItem.SelectedItems;
 					if (selectedPaths?.Count > 0) {
@@ -3509,17 +3509,30 @@ item.IsChecked = false;
 							}
 						}
 					} else {
-						if (selectedItem.log.CurrentLocPos >= 0 &&
-								selectedItem.log.CurrentLocPos <= selectedItem.log.HistoryItemsList.Count - 1) {
-							var beforeItem = selectedItem.log.HistoryItemsList[selectedItem.log.CurrentLocPos];
-							var realItem = this._ShellListView.Items.ToArray().FirstOrDefault(w => w.GetUniqueID() == beforeItem.GetUniqueID());
-							if (realItem != null) {
-								this._ShellListView.SelectItemByIndex(realItem.ItemIndex, true, true);
+						var realItem = this._ShellListView.Items.ToArray().FirstOrDefault(w => w.GetUniqueID() == oldCurrentItem.GetUniqueID());
+						if (realItem != null) {
+							this._ShellListView.SelectItems(new[] {realItem});
+						} else {
+							if (!curentFolder.ParsingName.Contains(oldCurrentItem.ParsingName)) {
+								var parents = new List<IListItemEx>();
+								var parent = oldCurrentItem.Parent;
+								while (parent != null) {
+									parents.Add(parent);
+									realItem = this._ShellListView.Items.ToArray().FirstOrDefault(w => w.GetUniqueID() == parent.GetUniqueID());
+									if (realItem != null) {
+										this._ShellListView.SelectItems(new[] {realItem});
+										break;
+									}
+									parent = parent.Parent;
+								}
 							}
 						}
+
 						//this._ShellListView.ScrollToTop();
 					}
 				}
+				oldCurrentItem.Dispose();
+				curentFolder.Dispose();
 			}));
 			////This initially setup the statusbar after program opens
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
