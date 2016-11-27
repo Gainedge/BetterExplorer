@@ -22,6 +22,8 @@ using BExplorer.Shell.Interop;
 using Path = System.IO.Path;
 
 namespace BExplorer.Shell {
+	using System.Runtime.InteropServices;
+
 	/// <summary>
 	/// Interaction logic for ToolTip.xaml
 	/// </summary>
@@ -74,8 +76,12 @@ namespace BExplorer.Shell {
 				}
 				Contents = Type == 0 ? $"{clonedCurrentItem.DisplayName}\r\n{clonedCurrentItem.ToolTipText}" : clonedCurrentItem.ToolTipText;
 				RaisePropertyChanged("Contents");
-				if (((PerceivedType)clonedCurrentItem.GetPropertyValue(SystemProperties.PerceivedType, typeof (PerceivedType)).Value) ==
-				    PerceivedType.Image && !clonedCurrentItem.IsFolder) {
+				// BUG: clonedCurrentItem.GetPropertyValue returned VT_EMPTY, edge case included to handle this
+					        //var perceivedTypeProperty = clonedCurrentItem.GetPropertyValue(
+						        //SystemProperties.PerceivedType,
+						        //typeof(PerceivedType));
+				if (/*perceivedTypeProperty.VarType != VarEnum.VT_EMPTY && */((PerceivedType)clonedCurrentItem.GetPropertyValue(SystemProperties.PerceivedType,typeof(PerceivedType)).Value) ==
+						PerceivedType.Image && !clonedCurrentItem.IsFolder) {
 					var image = clonedCurrentItem.ThumbnailSource(350, ShellThumbnailFormatOption.Default,
 						ShellThumbnailRetrievalOption.Default);
 					image.Freeze();
