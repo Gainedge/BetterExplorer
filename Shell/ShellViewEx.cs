@@ -2270,7 +2270,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 		/// <summary> Navigates to the parent of the currently displayed folder. </summary>
 		public void NavigateParent() {
 			if (this.CurrentFolder != null)
-				Navigate_Full(this.CurrentFolder.Clone().Parent, true, true);
+				Navigate_Full(this.CurrentFolder.Parent, true, true);
 		}
 
 		public void RefreshContents() {
@@ -2492,12 +2492,12 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 					this._IIListView.SetItemState(-1, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, 0);
 				}));
 			}
-			var lvii = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
+			var lvii = this.ToLvItemIndex(index);
 			var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
 			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
 
 			if (ensureVisisble) {
-				this.BeginInvoke((Action)(() => this._IIListView.EnsureItemVisible(this.ToLvItemIndex(index), true)));
+				this.BeginInvoke((Action)(() => this._IIListView.EnsureItemVisible(lvii, true)));
 			}
 		}
 
