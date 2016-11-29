@@ -254,3 +254,4 @@ packages/
 *.db
 .vs/
 BExplorer.sln.DotSettings
+/.nuget/NuGet.exe
