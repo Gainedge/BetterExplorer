@@ -3100,7 +3100,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
 			if (destination.IsFileSystem) {
 				if (this._FsWatcher != null) {
-					this._FsWatcher.Dispose();
+				  this.BeginInvoke((MethodInvoker) (() => this._FsWatcher.Dispose()));
 					this._FsWatcher = new FileSystemWatcher(@destination.ParsingName);
 					//this._FsWatcher.InternalBufferSize = 64 * 1024 * 1024;
 					this._FsWatcher.Changed += (sender, args) => {
