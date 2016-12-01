@@ -146,7 +146,7 @@ namespace BetterExplorer {
 
 			//// loads current Ribbon color theme
 			try {
-				var Color = Convert.ToString(rks.GetValue("CurrentTheme", "Blue"));
+				var color = Convert.ToString(rks.GetValue("CurrentTheme", "Blue"));
 				var owner = Application.Current.MainWindow;
 				if (owner != null) {
 					owner.Resources.BeginInit();
@@ -155,41 +155,31 @@ namespace BetterExplorer {
 						owner.Resources.MergedDictionaries.RemoveAt(0);
 					}
 
-					if (string.IsNullOrEmpty(Color) == false) {
-						owner.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri(Color) });
+					if (string.IsNullOrEmpty(color) == false) {
+						owner.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri(color) });
 					}
 
 					owner.Resources.EndInit();
 				}
 				Application.Current.Resources.BeginInit();
-				
+
 				Application.Current.Resources.MergedDictionaries.RemoveAt(1);
 
-				switch (Color) {
+				switch (color) {
 					case "Blue":
 					case "Silver":
 					case "Black":
 					case "Green":
-						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{Color}.xaml") });
+						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{color}.xaml") });
 						break;
 					case "Metro":
 						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Office2013/Generic.xaml") });
 						break;
 					default:
-						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{Color}.xaml") });
+						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{color}.xaml") });
 						break;
 				}
 				Application.Current.Resources.EndInit();
-
-				if (owner is RibbonWindow) {
-					owner.Style = null;
-					owner.Style = owner.FindResource("RibbonWindowStyle") as Style;
-					owner.Style = null;
-
-					// Resize Window to work around alignment issues caused by theme change
-					++owner.Width;
-					--owner.Width;
-				}
 			} catch (Exception ex) {
 				//MessageBox.Show(String.Format("An error occurred while trying to load the theme data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "RibbonTheme Error - " + ex.ToString());
 				MessageBox.Show($"An error occurred while trying to load the theme data from the Registry. \n\r \n\rRibbonTheme Error - {ex.ToString()}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message);
@@ -208,7 +198,7 @@ namespace BetterExplorer {
 					IsStartMinimized = true;
 			}
 
-			if (dmi && !ApplicationInstanceManager.CreateSingleInstance(Assembly.GetExecutingAssembly().GetName().Name, SingleInstanceCallback))
+			if (!ApplicationInstanceManager.CreateSingleInstance(Assembly.GetExecutingAssembly().GetName().Name, SingleInstanceCallback) && dmi)
 				return; // exit, if same app. is running
 
 			base.OnStartup(e);
@@ -255,10 +245,6 @@ namespace BetterExplorer {
 				if (args?.CommandLineArgs == null || !args.CommandLineArgs.Any()) return;
 				if (args.CommandLineArgs.Length == 1) {
 					win.Visibility = Visibility.Visible;
-					//if (win.WindowState == WindowState.Minimized) {
-					//	User32.ShowWindow((PresentationSource.FromVisual(win) as HwndSource).Handle, User32.ShowWindowCommands.Restore);
-					//}
-					//User32.ForceForegroundWindow(win);
 					windowsActivate.ActivateForm(win, null, IntPtr.Zero);
 				} else {
 					if (args.CommandLineArgs[1] == "/nw") {
@@ -267,9 +253,6 @@ namespace BetterExplorer {
 						IListItemEx sho = null;
 						if (args.CommandLineArgs[1] == "t") {
 							win.Visibility = Visibility.Visible;
-							//if (win.WindowState == WindowState.Minimized)
-							//	User32.ShowWindow((PresentationSource.FromVisual(win) as HwndSource).Handle,
-							//		User32.ShowWindowCommands.Restore);
 							windowsActivate.ActivateForm(win, null, IntPtr.Zero);
 
 							sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, startUpLocation.ToShellParsingName());
@@ -294,8 +277,6 @@ namespace BetterExplorer {
 							CreateInitialTab(win, sho);
 						}
 					}
-					//User32.ForceForegroundWindow(win);
-
 					windowsActivate.ActivateForm(win, null, IntPtr.Zero);
 				}
 			};
@@ -303,11 +284,10 @@ namespace BetterExplorer {
 		}
 
 		private void Win_StateChanged(object sender, EventArgs e) {
-			if ((sender as Window).WindowState != WindowState.Minimized) {
+			if ((sender as Window)?.WindowState != WindowState.Minimized) {
 				(sender as Window).Visibility = Visibility.Visible;
 				CombinedWindowActivator windowsActivate = new CombinedWindowActivator();
 				windowsActivate.ActivateForm(sender as Window, null, IntPtr.Zero);
-				//User32.ForceForegroundWindow(sender as Window);
 			}
 		}
 

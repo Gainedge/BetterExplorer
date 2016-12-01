@@ -3098,76 +3098,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				}
 			}
 
-			if (destination.IsFileSystem) {
-				if (this._FsWatcher != null) {
-				  this.BeginInvoke((MethodInvoker) (() => this._FsWatcher.Dispose()));
-					this._FsWatcher = new FileSystemWatcher(@destination.ParsingName);
-					//this._FsWatcher.InternalBufferSize = 64 * 1024 * 1024;
-					this._FsWatcher.Changed += (sender, args) => {
-						try {
-							var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
-							if (this.CurrentFolder != null && objUpdateItem.Parent != null && objUpdateItem.Parent.Equals(this.CurrentFolder)) {
-								var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
-								if (exisitingUItem != null)
-									this.RefreshItem(exisitingUItem.ItemIndex, true);
 
-								if (this.RequestedCurrentLocation != null && objUpdateItem.Equals(this.RequestedCurrentLocation))
-									this.UnvalidateDirectory();
-							}
-						} catch (FileNotFoundException) {
-							//Probably a temporary file 
-							this._TemporaryFiles.Add(args.FullPath);
-						} catch {
-						}
-					};
-					this._FsWatcher.Error += (sender, args) => {
-						var ex = args.GetException();
-					};
-					this._FsWatcher.Created += (sender, args) => {
-						try {
-							//var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
-							//if (existing != null) return;
-							if (Path.GetExtension(args.FullPath).ToLowerInvariant() == ".tmp" ||
-											Path.GetExtension(args.FullPath) == String.Empty) {
-								if (!this._TemporaryFiles.Contains(args.FullPath))
-									this._TemporaryFiles.Add(args.FullPath);
-							}
-							var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
-							if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
-								if (this.IsRenameNeeded) {
-									var existingItem = this.Items.ToArray().FirstOrDefault(s => s.Equals(obj));
-									if (existingItem == null) {
-										var itemIndex = this.InsertNewItem(obj);
-										this.SelectItemByIndex(itemIndex, true, true);
-										this.RenameSelectedItem(itemIndex);
-										this.IsRenameNeeded = false;
-									} else {
-										this.RenameSelectedItem(existingItem.ItemIndex);
-									}
-								} else {
-									if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj)))
-										this.UnvalidateDirectory();
-								}
-							}
-						} catch (FileNotFoundException) {
-							this.QueueDeleteItem(args);
-						} catch { }
-					};
-					this._FsWatcher.Deleted += (sender, args) => {
-						//args.FullPath
-						this.QueueDeleteItem(args);
-					};
-					this._FsWatcher.Renamed += (sender, args) => {
-					};
-
-					this._FsWatcher.IncludeSubdirectories = false;
-					this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.Attributes |
-																																					 NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
-																																					 NotifyFilters.Size;
-				}
-
-				this._FsWatcher.EnableRaisingEvents = true;
-			}
 
 			this._UnvalidateTimer.Stop();
 			this._IsDisplayEmptyText = false;
@@ -3247,6 +3178,77 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
 			var navigationThread = new Thread(() => {
 				destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
+				if (destination.IsFileSystem) {
+					if (this._FsWatcher != null) {
+						this._FsWatcher.EnableRaisingEvents = false;
+						this._FsWatcher.Dispose();
+						this._FsWatcher = new FileSystemWatcher(@destination.ParsingName);
+						//this._FsWatcher.InternalBufferSize = 64 * 1024 * 1024;
+						this._FsWatcher.Changed += (sender, args) => {
+							try {
+								var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
+								if (this.CurrentFolder != null && objUpdateItem.Parent != null && objUpdateItem.Parent.Equals(this.CurrentFolder)) {
+									var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
+									if (exisitingUItem != null)
+										this.RefreshItem(exisitingUItem.ItemIndex, true);
+
+									if (this.RequestedCurrentLocation != null && objUpdateItem.Equals(this.RequestedCurrentLocation))
+										this.UnvalidateDirectory();
+								}
+							} catch (FileNotFoundException) {
+								//Probably a temporary file 
+								this._TemporaryFiles.Add(args.FullPath);
+							} catch {
+							}
+						};
+						this._FsWatcher.Error += (sender, args) => {
+							var ex = args.GetException();
+						};
+						this._FsWatcher.Created += (sender, args) => {
+							try {
+								//var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
+								//if (existing != null) return;
+								if (Path.GetExtension(args.FullPath).ToLowerInvariant() == ".tmp" ||
+												Path.GetExtension(args.FullPath) == String.Empty) {
+									if (!this._TemporaryFiles.Contains(args.FullPath))
+										this._TemporaryFiles.Add(args.FullPath);
+								}
+								var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
+								if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
+									if (this.IsRenameNeeded) {
+										var existingItem = this.Items.ToArray().FirstOrDefault(s => s.Equals(obj));
+										if (existingItem == null) {
+											var itemIndex = this.InsertNewItem(obj);
+											this.SelectItemByIndex(itemIndex, true, true);
+											this.RenameSelectedItem(itemIndex);
+											this.IsRenameNeeded = false;
+										} else {
+											this.RenameSelectedItem(existingItem.ItemIndex);
+										}
+									} else {
+										if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj)))
+											this.UnvalidateDirectory();
+									}
+								}
+							} catch (FileNotFoundException) {
+								this.QueueDeleteItem(args);
+							} catch { }
+						};
+						this._FsWatcher.Deleted += (sender, args) => {
+							//args.FullPath
+							this.QueueDeleteItem(args);
+						};
+						this._FsWatcher.Renamed += (sender, args) => {
+						};
+
+						this._FsWatcher.IncludeSubdirectories = false;
+						this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.Attributes |
+																																						 NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
+																																						 NotifyFilters.Size;
+					}
+
+					this._FsWatcher.EnableRaisingEvents = true;
+				}
 				this.RequestedCurrentLocation = destination;
 
 				var column = columns ?? this.AllAvailableColumns.Single(s => s.Value.ID == "A0").Value;
