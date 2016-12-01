@@ -234,7 +234,7 @@ namespace BetterExplorer {
 
 		private void RibbonWindow_Initialized(object sender, EventArgs e) {
 			LoadInitialWindowPositionAndState();
-			LoadColorCodesFromFile();
+			LoadColorCodesFromFile(); 
 
 			AppCommands.RoutedNewTab.InputGestures.Add(new KeyGesture(Key.T, ModifierKeys.Control));
 			AppCommands.RoutedEnterInBreadCrumbCombo.InputGestures.Add(new KeyGesture(Key.E, ModifierKeys.Alt));
