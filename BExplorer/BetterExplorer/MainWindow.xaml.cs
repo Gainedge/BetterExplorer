@@ -3706,6 +3706,7 @@ if (e.Folder.ParsingName == KnownFolders.RecycleBin.ParsingName) {
 			this.CommandBindings.AddRange(new[]
 			{
 								new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click),
+								new CommandBinding(AppCommands.RoutedNavigateFF, rightNavBut_Click),
 								new CommandBinding(AppCommands.RoutedNavigateUp, btnUpLevel_Click),
 								new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox),
 								new CommandBinding(AppCommands.RoutedNewTab, (sender, e) => tcMain.NewTab()),
