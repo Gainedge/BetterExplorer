@@ -10,6 +10,9 @@ using Size = System.Drawing.Size;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
 
+	/// <summary>
+	/// A representation of items on a standard physical/local file system
+	/// </summary>
 	public class FileSystemListItem : IListItemEx {
 
 		#region Private Members
@@ -20,14 +23,19 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		#region IListItemEx Members
 
+		/// <summary>The COM interface for this item</summary>
 		public IShellItem ComInterface => this._Item.ComInterface;
 
+		/// <summary>The text that represents the display name</summary>
 		public string DisplayName { get; set; }
 
+		/// <summary>Does the current item need to be refreshed in the ShellListView</summary>
 		public bool IsNeedRefreshing { get; set; }
 
+		/// <summary>Assigned values but never used</summary>
 		public bool IsInvalid { get; set; }
 
+		/// <summary>Changes how the item gets loaded</summary>
 		public bool IsOnlyLowQuality { get; set; }
 
 		public bool IsThumbnailLoaded { get; set; }
@@ -38,7 +46,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		private IExtractIconPWFlags _IconType = IExtractIconPWFlags.GIL_PERCLASS;
 
-		public Interop.IExtractIconPWFlags IconType {
+		public IExtractIconPWFlags IconType {
 			get { return this.IsParentSearchFolder ? IExtractIconPWFlags.GIL_PERINSTANCE : this._Item.GetIconType(); }
 			set { this._IconType = value; }
 		}
@@ -49,28 +57,36 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public IntPtr AbsolutePidl => this._Item.AbsolutePidl;
 
+		/// <summary>Index of the ShieldedIcon</summary>
 		public int ShieldedIconIndex { get; set; }
 
+		/// <summary>Is this item's icon loaded yet?</summary>
 		public bool IsIconLoaded { get; set; }
 
 		public string ParsingName { get; set; }
 
+		/// <summary>The file system extension for this item</summary>
 		public string Extension { get; set; }
 
+		/// <summary>The file system path</summary>
 		public string FileSystemPath { get; set; }
 
 		public bool IsBrowsable { get; set; }
 
+		/// <summary>Is this a folder?</summary>
 		public bool IsFolder { get; set; }
 
+		/// <summary>Does this have folders?</summary>
 		public bool HasSubFolders => this._Item.HasSubFolders;
 
+		/// <summary>Is this item normally hidden?</summary>
 		public bool IsHidden { get; set; }
 
 		public bool IsFileSystem { get; set; }
 
 		public bool IsNetworkPath { get; set; }
 
+		/// <summary>Is current item represent a system drive?</summary>
 		public bool IsDrive { get; set; }
 
 		public bool IsShared { get; set; }
@@ -142,7 +158,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public ShellSearchFolder searchFolder { get; set; }
 
-		public Dictionary<Interop.PROPERTYKEY, object> ColumnValues { get; set; }
+		public Dictionary<PROPERTYKEY, object> ColumnValues { get; set; }
 
 		public int ItemIndex { get; set; }
 
@@ -194,6 +210,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			this.ColumnValues = new Dictionary<PROPERTYKEY, Object>();
 		}
 
+		/// <summary>
+		/// Gets all the sub items
+		/// </summary>
+		/// <param name="isEnumHidden">Should we include the hidden items?</param>
+		/// <returns></returns>
 		IListItemEx[] IListItemEx.GetSubItems(bool isEnumHidden) {
 			TaskScheduler taskScheduler = null;
 			try {
@@ -308,8 +329,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			return this._Item.Thumbnail.BitmapSource;
 		}
 
+		/// <summary>Is the current item a search folder?</summary>
 		public bool IsSearchFolder { get; set; }
 
+		/// <summary>The logical parent for this item</summary>
 		public IListItemEx Parent {
 			get {
 				if (this.IsSearchFolder || this._Item.Parent == null) return null;
@@ -326,8 +349,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public string ToolTipText => this._Item.ToolTipText;
 
+		/// <summary>Returns drive information</summary>
 		public System.IO.DriveInfo GetDriveInfo() => this._Item.GetDriveInfo();
 
+		/// <summary>Gets the item's BitmapSource</summary>
 		public BitmapSource BitmapSource {
 			get {
 				this._Item.Thumbnail.CurrentSize = new System.Windows.Size(48, 48);
@@ -407,10 +432,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		#region IEquatable<IListItemEx> Members
 
-		public bool Equals(IListItemEx other) {
-			if (other == null) return false;
-			return other.ParsingName.Equals(this.ParsingName, StringComparison.InvariantCultureIgnoreCase);
-		}
+		public bool Equals(IListItemEx other) => other == null ?  false : other.ParsingName.Equals(this.ParsingName, StringComparison.InvariantCultureIgnoreCase);
+		
 
 		#endregion IEquatable<IListItemEx> Members
 
@@ -418,9 +441,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public bool Equals(IListItemEx x, IListItemEx y) => x.Equals(y);
 
-		public int GetHashCode(IListItemEx obj) {
-			return 0;
-		}
+		public int GetHashCode(IListItemEx obj) => 0;
+		
 
 		#endregion IEqualityComparer<IListItemEx> Members
 

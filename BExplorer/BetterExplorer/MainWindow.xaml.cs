@@ -393,7 +393,15 @@ namespace BetterExplorer {
                         }
                       }));
     }
-
+	
+	/// <summary>
+	/// Sets up each ribbon tab after select or navigate in ShellListView
+	/// </summary>
+	/// <param name="selectedItemsCount">The number of items selected</param>
+	/// <param name="selectedItem">The last selected item</param>
+	/// <remarks>
+	/// Only used in SetupUIOnSelectOrNavigate
+	/// </remarks>
     private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, IListItemEx selectedItem) {
       #region Search Contextual Tab
       ctgSearch.Visibility = BooleanToVisibiliy(_ShellListView.CurrentFolder.IsSearchFolder);

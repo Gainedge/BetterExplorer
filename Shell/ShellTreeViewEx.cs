@@ -760,8 +760,7 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}
-
-
+		
 		private void ShellTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
 			IntPtr dataObjPtr = IntPtr.Zero;
 			var shellItem = ((e.Item as TreeNode).Tag as IListItemEx);

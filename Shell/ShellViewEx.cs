@@ -2509,18 +2509,25 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			selectionThread.Start();
 		}
 
-		public void SelectItemByIndex(Int32 index, Boolean ensureVisisble = false, Boolean deselectOthers = false) {
+		/// <summary>
+		/// Set this to focus then select an item by its index
+		/// </summary>
+		/// <param name="index">Index of item</param>
+		/// <param name="ensureVisability">Ensure that the item is visible?</param>
+		/// <param name="deselectOthers">Deselect all other items?</param>
+		public void SelectItemByIndex(Int32 index, Boolean ensureVisability = false, Boolean deselectOthers = false) {
 			this.Focus();
 			if (deselectOthers) {
 				this.BeginInvoke((Action)(() => {
 					this._IIListView.SetItemState(-1, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, 0);
 				}));
 			}
+
 			var lvii = this.ToLvItemIndex(index);
 			var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
 			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
 
-			if (ensureVisisble) {
+			if (ensureVisability) {
 				this.BeginInvoke((Action)(() => this._IIListView.EnsureItemVisible(lvii, true)));
 			}
 		}
@@ -2649,26 +2656,31 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			Navigate(destination, isInSameTab, refresh, this.IsNavigationInProgress);
 		}
 
-		public void Navigate_Full(String query, Boolean saveFolderSettings, Boolean isInSameTab = false, Boolean refresh = false) {
+		/// <summary>
+		/// Navigates to a search folder
+		/// </summary>
+		/// <param name="SearchQuery">The query of the search</param>
+		/// <param name="saveFolderSettings">Should the folder's settings be saved?</param>
+		/// <param name="isInSameTab"></param>
+		/// <param name="refresh">Should the List be Refreshed?</param>
+		public void Navigate_Full(String SearchQuery, Boolean saveFolderSettings, Boolean isInSameTab = false, Boolean refresh = false) {
 			this.IsSearchNavigating = true;
 			if (saveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
 
 			_ResetEvent.Set();
-			var searchCondition = SearchConditionFactory.ParseStructuredQuery(this.PrepareSearchQuery(query));
+			var searchCondition = SearchConditionFactory.ParseStructuredQuery(this.PrepareSearchQuery(SearchQuery));
 			var shellItem = new ShellItem(this.CurrentFolder.PIDL);
 			var searchFolder = new ShellSearchFolder(searchCondition, shellItem);
 			IListItemEx searchItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, searchFolder);
 			this.NavigateSearch(searchItem, isInSameTab, refresh, this.IsNavigationInProgress);
 		}
 
+		/// <summary>Invalidates the director</summary>
+		/// <remarks>Starts restarts <see cref="_UnvalidateTimer"/></remarks>
 		public void UnvalidateDirectory() {
 			Action worker = () => {
-				if (this._UnvalidateTimer.Enabled) {
-					this._UnvalidateTimer.Stop();
-					this._UnvalidateTimer.Start();
-				} else {
-					this._UnvalidateTimer.Start();
-				}
+				if (this._UnvalidateTimer.Enabled) this._UnvalidateTimer.Stop();				
+				this._UnvalidateTimer.Start();			
 			};
 
 			if (this.InvokeRequired)
@@ -2677,10 +2689,11 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				worker();
 		}
 
+		/// <summary>Cancels navigation</summary>
 		public void CancelNavigation() {
 			this._SearchTimer.Stop();
 			this.IsCancelRequested = true;
-			if (this._Threads.Count > 0) {
+			if (this._Threads.Any()) {
 				_Mre.Set();
 				this._ResetEvent.Set();
 				foreach (var thread in this._Threads.ToArray()) {
@@ -2690,6 +2703,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			}
 		}
 
+		/// <summary>Disables/Removes grouping</summary>
 		public void DisableGroups() {
 			if (!this.IsGroupsEnabled) return;
 			this.Groups.Clear();
@@ -2701,6 +2715,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			this.IsGroupsEnabled = false;
 		}
 
+		/// <summary>Enables/Adds groupings</summary>
 		public void EnableGroups() {
 			if (this.IsGroupsEnabled || this.IsSearchNavigating) return;
 			var ptr = Marshal.GetComInterfaceForObject(new VirtualGrouping(this), typeof(IOwnerDataCallback));
@@ -2876,28 +2891,31 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 		/// <param name="reverse">Reverse the Current Sort Order?</param>
 		public void SetGroupOrder(Boolean reverse = true) => GenerateGroupsFromColumn(LastGroupCollumn, reverse && LastGroupOrder == SortOrder.Ascending);
 
+		/// <summary>Returns the first selected item OR null if there is no selected item</summary>
 		[DebuggerStepThrough]
 		public IListItemEx GetFirstSelectedItem() {
 			var lvi = this.ToLvItemIndex(-1);
-			//var lvi = new LVITEMINDEX();
-			//this._IIListView.GetNextItem(ref lviIn, (ulong)LVNI.LVNI_SELECTED, out lvi);
 			User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
-			if (lvi.iItem == -1 || this.Items.Count < lvi.iItem) return null;
-			return this.Items[lvi.iItem];
+			return lvi.iItem == -1 || this.Items.Count < lvi.iItem ? null : this.Items[lvi.iItem];
 		}
 
+		/// <summary>Returns the first selected item's index OR -1 if there is no selected item</summary>
 		public Int32 GetFirstSelectedItemIndex() {
 			var lvi = this.ToLvItemIndex(-1);
 			User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
-			if (lvi.iItem == -1) return -1;
 			return lvi.iItem;
 		}
 
+		/// <summary>
+		/// Creates a new folder in the current directory and assigns a default name if none is specified. Returns the name
+		/// </summary>
+		/// <param name="name">The name of the new folder</param>
+		/// <returns>Returns the name and assigns a default name if none is specified</returns>
 		public String CreateNewFolder(String name) {
 			if (String.IsNullOrEmpty(name)) {
-				name = User32.LoadResourceString(
-																				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 30396, "New Folder");
+				name = User32.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 30396, "New Folder");
 			}
+
 			var fo = new IIFileOperation(this.Handle, false);
 			fo.NewItem(this.CurrentFolder, name, FileAttributes.Directory | FileAttributes.Normal);
 			fo.PerformOperations();
@@ -2905,6 +2923,11 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			return name;
 		}
 
+		/// <summary>
+		/// Creates a new library folder
+		/// </summary>
+		/// <param name="name">The name of the lbrary folder youi want</param>
+		/// <returns></returns>
 		public ShellLibrary CreateNewLibrary(String name) {
 			String endname = name;
 			Int32 suffix = 0;
@@ -2927,18 +2950,20 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
 			return new ShellLibrary(endname, false);
 		}
-
+		
+		/// <summary>
+		/// Sets the folder's icon
+		/// </summary>
+		/// <param name="wszPath">??</param>
+		/// <param name="wszExpandedIconPath">??</param>
+		/// <param name="iIcon">??</param>
 		public void SetFolderIcon(String wszPath, String wszExpandedIconPath, Int32 iIcon) {
 			var fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS() { iIconIndex = iIcon, cchIconFile = 0, dwMask = Shell32.FCSM_ICONFILE };
 			fcs.dwSize = (UInt32)Marshal.SizeOf(fcs);
 			fcs.pszIconFile = wszExpandedIconPath.Replace(@"\\", @"\");
 			// Set the folder icon
 			HResult hr = Shell32.SHGetSetFolderCustomSettings(ref fcs, wszPath.Replace(@"\\", @"\"), Shell32.FCS_FORCEWRITE);
-
-			if (hr == HResult.S_OK) {
-				// Update the icon cache
-				this.UpdateIconCacheForFolder(wszPath);
-			}
+			if (hr == HResult.S_OK) this.UpdateIconCacheForFolder(wszPath); // Update the icon cache			
 			this.RefreshItem(this._SelectedIndexes[0], true);
 		}
 
@@ -2948,12 +2973,16 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 											SHGFI.IconLocation);
 			Int32 iIconIndex = Shell32.Shell_GetCachedImageIndex(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0);
 			Shell32.SHUpdateImage(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0x0002, iIconIndex);
-			//RefreshExplorer();
 			Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEIMAGE,
 											Shell32.HChangeNotifyFlags.SHCNF_DWORD | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, IntPtr.Zero,
 											(IntPtr)sfi.iIcon);
 		}
 
+		/// <summary>
+		/// Removes the folder's icon
+		/// </summary>
+		/// <param name="wszPath">??</param>
+		/// <returns></returns>
 		public HResult ClearFolderIcon(String wszPath) {
 			var fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS() { dwMask = Shell32.FCSM_ICONFILE };
 			fcs.dwSize = (UInt32)Marshal.SizeOf(fcs);
@@ -2968,6 +2997,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			return hr;
 		}
 
+		/// <summary>Sets focus to tis control then deselects all items</summary>
 		public void DeSelectAllItems() {
 			this.BeginInvoke(new MethodInvoker(() => {
 				this._IIListView.SetItemState(-1, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, 0);
@@ -2977,11 +3007,13 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
 		public Boolean IsFocusAllowed = true;
 
-		/// <summary> Gives the ShellListView focus </summary>
+		/// <summary>
+		/// Gives the ShellListView focus
+		/// </summary>
+		/// <param name="isActiveCheck">Require this <see cref=".Windows.Application.Current.MainWindow.IsActive">application's MainWindow</see> to be activate the control</param>
+		/// <param name="isForce">Force this to make the control active no matter what</param>
 		public void Focus(Boolean isActiveCheck = true, Boolean isForce = false) {
 			if (System.Windows.Application.Current == null) return;
-			//if (_ItemForRealName_IsAny) return;
-
 			if (User32.GetForegroundWindow() != this.LVHandle) {
 				this.Invoke(new MethodInvoker(() => {
 					if (isForce || ((System.Windows.Application.Current.MainWindow.IsActive || !isActiveCheck) && (IsFocusAllowed && this.Bounds.Contains(Cursor.Position))))
@@ -2992,6 +3024,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
 		public Int32 GetSelectedCount() => (Int32)User32.SendMessage(this.LVHandle, MSG.LVM_GETSELECTEDCOUNT, 0, 0);
 
+		/// <summary>Inverse the selection of items</summary>
 		public void InvertSelection() {
 			Int32 itemCount = 0;
 			this._IIListView.GetItemCount(out itemCount);
@@ -3004,12 +3037,14 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			this.Focus();
 		}
 
+		/// <summary>
+		/// Automatically resize all controls
+		/// </summary>
+		/// <param name="autosizeParam">??</param>
 		public void AutosizeAllColumns(Int32 autosizeParam) {
-			//this.SuspendLayout();
 			for (Int32 i = 0; i < this.Collumns.Count; i++) {
 				AutosizeColumn(i, autosizeParam);
 			}
-			//this.ResumeLayout();
 		}
 
 		#endregion Public Methods
@@ -3122,8 +3157,6 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 					this._Threads.Remove(thread);
 				}
 			}
-
-
 
 			this._UnvalidateTimer.Stop();
 			this._IsDisplayEmptyText = false;
@@ -3259,23 +3292,18 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 								this.QueueDeleteItem(args);
 							} catch { }
 						};
-						this._FsWatcher.Deleted += (sender, args) => {
-							//args.FullPath
-							this.QueueDeleteItem(args);
-						};
-						this._FsWatcher.Renamed += (sender, args) => {
-						};
 
+						this._FsWatcher.Deleted += (sender, args) => this.QueueDeleteItem(args);						
+						this._FsWatcher.Renamed += (sender, args) => { };
 						this._FsWatcher.IncludeSubdirectories = false;
 						this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.Attributes |
-																																						 NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
-																																						 NotifyFilters.Size;
+						NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size;
 					}
 
 					this._FsWatcher.EnableRaisingEvents = true;
 				}
-				this.RequestedCurrentLocation = destination;
 
+				this.RequestedCurrentLocation = destination;
 				var column = columns ?? this.AllAvailableColumns.Single(s => s.Value.ID == "A0").Value;
 				var order = folderSettings.SortOrder;
 				var content = destination;
@@ -3347,6 +3375,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 					this.Items.ToList().ForEach(e => e.ItemIndex = i++);
 					User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
 				}
+
 				if (this.IsGroupsEnabled) {
 					var colData = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == folderSettings.GroupCollumn).Value;
 					this.GenerateGroupsFromColumn(colData, folderSettings.GroupOrder == SortOrder.Descending);
@@ -4097,7 +4126,9 @@ navigationThread.Start();
 			}
 		}
 
+
 		private void AutosizeColumn(Int32 index, Int32 autosizeStyle) => User32.SendMessage(this.LVHandle, LVM.SETCOLUMNWIDTH, index, autosizeStyle);
+
 		private Int32 _CurrentDrawIndex = -1;
 		[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
 		private void ProcessCustomDrawPostPaint(ref Message m, User32.NMLVCUSTOMDRAW nmlvcd, Int32 index, IntPtr hdc, IListItemEx sho, Color? textColor) {
