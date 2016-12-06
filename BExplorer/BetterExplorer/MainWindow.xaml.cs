@@ -170,9 +170,7 @@ namespace BetterExplorer {
 
       var location = new System.Drawing.Point();
       try {
-        location = new System.Drawing.Point(
-                                        Convert.ToInt32(rks.GetValue("LastWindowPosLeft", "0")),
-                     Convert.ToInt32(rks.GetValue("LastWindowPosTop", "0")));
+        location = new System.Drawing.Point(Convert.ToInt32(rks.GetValue("LastWindowPosLeft", "0")), Convert.ToInt32(rks.GetValue("LastWindowPosTop", "0")));
       } catch {}
 
       if (location != null) {
@@ -250,6 +248,9 @@ namespace BetterExplorer {
 
     #region ViewEnumerationComplete
 
+	/// <summary>
+	/// Sets up btnSort and btnGroup so they have the correct items after navigating 
+	/// </summary>
     private void SetSortingAndGroupingButtons() {
       btnSort.Items.Clear();
       btnGroup.Items.Clear();
@@ -309,12 +310,8 @@ namespace BetterExplorer {
         //TODO: Try to remove this Try Catch!!
         try {
           var IsChecked = _ShellListView.Collumns.Any(col => col.pkey.fmtid == allAvailColls[j].pkey.fmtid && col.pkey.pid == allAvailColls[j].pkey.pid);
-          btnMoreColls.Items.Add(
-                                          Utilities.Build_MenuItem(allAvailColls[j].Name, allAvailColls[j], checkable: true, onClick: mic_Click, isChecked: IsChecked)
-          );
-          chcm.Items.Add(
-                                          Utilities.Build_MenuItem(allAvailColls[j].Name, allAvailColls[j], checkable: true, onClick: mic_Click, isChecked: IsChecked)
-          );
+          btnMoreColls.Items.Add(Utilities.Build_MenuItem(allAvailColls[j].Name, allAvailColls[j], checkable: true, onClick: mic_Click, isChecked: IsChecked));
+          chcm.Items.Add(Utilities.Build_MenuItem(allAvailColls[j].Name, allAvailColls[j], checkable: true, onClick: mic_Click, isChecked: IsChecked));
         } catch (Exception) {
         }
       }
@@ -376,16 +373,6 @@ namespace BetterExplorer {
     void LinksFolderWarcher_Renamed(object sender, RenamedEventArgs e) {
       Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(
           () => btnFavorites.Items.OfType<MenuItem>().First(x => (x.Tag as ShellItem).ParsingName == e.OldFullPath).Header = Path.GetFileNameWithoutExtension(e.Name)));
-
-      /*
-Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-				(Action)(() => {
-					foreach (MenuItem item in btnFavorites.Items.OfType<MenuItem>()) {
-						if ((item.Tag as ShellItem).ParsingName == e.OldFullPath)
-							item.Header = Path.GetFileNameWithoutExtension(e.Name);
-					}
-				}));
-*/
     }
 
     void LinksFolderWarcher_Deleted(object sender, FileSystemEventArgs e) {
@@ -547,6 +534,9 @@ Dispatcher.BeginInvoke(DispatcherPriority.Normal,
       lib.Close();
     }
 
+	/// <summary>
+	/// Does setup required for the UI when navigation occurs to a new folder
+	/// </summary>
     private void SetupUIOnSelectOrNavigate() {
       Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
         btnDefSave.Items.Clear();
@@ -3139,19 +3129,13 @@ item.IsChecked = false;
     BackgroundWorker rb = new BackgroundWorker();
 
     public void UpdateRecycleBinInfos() {
-      //TODO: Remove Comments
-
-      //return;
-      //rb.DoWork += rb_DoWork;
-      //if (!rb.IsBusy) rb.RunWorkerAsync();
       var allDrives = Directory.GetLogicalDrives();
       int count = 0;// (int)sqrbi.i64NumItems;
       long size = 0;// sqrbi.i64Size;
                     //Task.Run(() => {
       foreach (var drive in allDrives) {
-        BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO sqrbi = new BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO();
-        sqrbi.cbSize = 24;// Marshal.SizeOf(typeof(BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO));
-        char[] charsToTrim = { Char.Parse(@"\") };
+        var sqrbi = new BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO() { cbSize = 24 };
+        //char[] charsToTrim = { Char.Parse(@"\") };
         int hresult = BExplorer.Shell.Interop.Shell32.SHQueryRecycleBin(drive, ref sqrbi);
         count += (int)sqrbi.i64NumItems;
         size += (long)sqrbi.i64Size;
@@ -3539,10 +3523,12 @@ item.IsChecked = false;
         oldCurrentItem.Dispose();
         curentFolder.Dispose();
       }));
+
       ////This initially setup the statusbar after program opens
       Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
         this.SetUpStatusBarOnSelectOrNavigate(_ShellListView.SelectedItems == null ? 0 : _ShellListView.GetSelectedCount());
       }));
+
       //Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart) (() => {
       //    Thread.Sleep(1500);
       if (this.bcbc.ProgressValue > 2)
@@ -3556,22 +3542,18 @@ item.IsChecked = false;
 
     }
 
+	/// <summary>
+	/// Sets up the UI after the ShellListView has navigated
+	/// </summary>
+	/// <param name="e"></param>
     private void SetupUIonNavComplete(NavigatedEventArgs e) {
       btnSizeChart.IsEnabled = e.Folder.IsFileSystem;
       btnAutosizeColls.IsEnabled = _ShellListView.View == ShellViewStyle.Details;
-
-      if (e.Folder.ParsingName != KnownFolders.RecycleBin.ParsingName)
+		
+	  if (e.Folder.ParsingName != KnownFolders.RecycleBin.ParsingName)
         miRestoreALLRB.Visibility = Visibility.Collapsed;
       else if (_ShellListView.Items.Any())
         miRestoreALLRB.Visibility = Visibility.Visible;
-
-      /*
-if (e.Folder.ParsingName == KnownFolders.RecycleBin.ParsingName) {
-	if (_ShellListView.Items.Any()) miRestoreALLRB.Visibility = Visibility.Visible;
-} else {
-	miRestoreALLRB.Visibility = Visibility.Collapsed;
-}
-*/
 
       bool isFuncAvail;
       int selectedItemsCount = _ShellListView.GetSelectedCount();
@@ -3597,6 +3579,9 @@ if (e.Folder.ParsingName == KnownFolders.RecycleBin.ParsingName) {
       btnUpLevel.IsEnabled = _ShellListView.CanNavigateParent;
     }
 
+	/// <summary>
+	/// Adds the current folder to the recent category of the Better Exlorer's <see cref="JumpList">JumpList</see>
+	/// </summary>
     private void SetUpJumpListOnNavComplete() {
       var pidl = IntPtr.Zero;
 
@@ -3604,9 +3589,7 @@ if (e.Folder.ParsingName == KnownFolders.RecycleBin.ParsingName) {
         pidl = this._ShellListView.CurrentFolder.AbsolutePidl;
         var sfi = new SHFILEINFO();
 
-        //TODO: Why do we even have this if(...)
         if (pidl != IntPtr.Zero && !_ShellListView.CurrentFolder.IsFileSystem) {
-          //if (!ShellListView.CurrentFolder.IsFileSystem) {
           var res = BExplorer.Shell.Interop.Shell32.SHGetFileInfo(pidl, 0, out sfi, Marshal.SizeOf(sfi), SHGFI.IconLocation | SHGFI.SmallIcon | SHGFI.PIDL);
         }
 
@@ -3614,11 +3597,9 @@ if (e.Folder.ParsingName == KnownFolders.RecycleBin.ParsingName) {
           BExplorer.Shell.Interop.Shell32.SHGetFileInfo(Marshal.StringToHGlobalAuto(_ShellListView.CurrentFolder.ParsingName), 0, out sfi, Marshal.SizeOf(sfi), SHGFI.IconLocation | SHGFI.SmallIcon);
         }
 
-
         JumpList.AddToRecentCategory(new JumpTask() {
           ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
           Arguments = "\"" + _ShellListView.CurrentFolder.ParsingName + "\"",
-          //Arguments = "t",
           Title = _ShellListView.CurrentFolder.DisplayName,
           IconResourcePath = sfi.szDisplayName,
           IconResourceIndex = sfi.iIcon
@@ -3681,20 +3662,26 @@ if (e.Folder.ParsingName == KnownFolders.RecycleBin.ParsingName) {
       }
     }
 
+	/// <summary>
+	/// Navigates to the <paramref name="Destination"/> When Destination != Current Folder
+	/// </summary>
+	/// <param name="Destination">The folder you want to navigate to</param>
     private void NavigationController(IListItemEx Destination) {
       if (!Destination.Equals(this._ShellListView.CurrentFolder)) this._ShellListView.Navigate_Full(Destination, true);
     }
-
+			
     private void OnBreadcrumbbarNavigate(IListItemEx Destination) {
       this.IsNeedEnsureVisible = true;
       this.NavigationController(Destination);
     }
 
+	/*
     private string RemoveLastEmptySeparator(string path) {
       path = path.Trim();
       if (path.EndsWith(@"\")) path = path.Remove(path.Length - 1, 1);
       return path;
     }
+	*/
 
     #endregion
 
@@ -4041,9 +4028,7 @@ We could easily move this to another project and send that method
       //this._ShellListView.Focus();
       //this._CurrentlySelectedItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
     }
-
-
-
+		
     private void newt_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
       e.Handled = true;
       e.UseDefaultCursors = true;
@@ -4157,7 +4142,6 @@ We could easily move this to another project and send that method
       this.btnGoNavigation.Visibility = Visibility.Visible;
     }
 
-
     private void btnRefresh_Click(object sender, RoutedEventArgs e) {
       _ShellListView.RefreshContents();
       SetSortingAndGroupingButtons();
@@ -4229,9 +4213,9 @@ We could easily move this to another project and send that method
     }
 
     /*
-private void GrdItemTextColor_OnRowEditEnding(object sender, DataGridRowEditEndingEventArgs e) {
-	//this.save
-}
-*/
+	private void GrdItemTextColor_OnRowEditEnding(object sender, DataGridRowEditEndingEventArgs e) {
+		//this.save
+	}
+	*/
   }
 }
