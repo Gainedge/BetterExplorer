@@ -173,9 +173,9 @@ namespace BExplorer.Shell {
 						height = height + 7;
 					}
 					sho.IsNeedRefreshing = ((width > height && width != this._CurrentSize) ||
-																	(width < height && height != this._CurrentSize) ||
-																	(width == height && width != this._CurrentSize)) &&
-																 !sho.IsOnlyLowQuality;
+										   (width < height && height != this._CurrentSize) ||
+										   (width == height && width != this._CurrentSize)) &&
+										   !sho.IsOnlyLowQuality;
 					if (sho.IsNeedRefreshing) {
 						sho.IsThumbnailLoaded = false;
 						Task.Run(() => {

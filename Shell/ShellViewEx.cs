@@ -2276,11 +2276,17 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				Navigate_Full(this.CurrentFolder.Parent, true, true);
 		}
 
+		/// <summary>Refreshes the contact (by navigating to the current folder If and only If the current folder is not null)</summary>
 		public void RefreshContents() {
 			if (this.CurrentFolder != null)
 				Navigate_Full(this.CurrentFolder, true, refresh: true);
 		}
 
+		/// <summary>
+		/// Refreshes a single item
+		/// </summary>
+		/// <param name="index">The index of the item you want to refresh</param>
+		/// <param name="isForceRedraw">If <c>True</c> Resets everything in the Item to indicate that it needs to be refreshed/reloaded</param>
 		public void RefreshItem(Int32 index, Boolean isForceRedraw = false) {
 			if (isForceRedraw) {
 				try {
@@ -2318,8 +2324,13 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			}));
 		}
 
+		/// <summary>Renames the first selected item</summary>
 		public void RenameSelectedItem() => this.RenameItem(this.GetFirstSelectedItemIndex());
 
+		/// <summary>
+		/// Renames the item at the specified index
+		/// </summary>
+		/// <param name="index">The index of the item you want to rename</param>
 		public void RenameSelectedItem(Int32 index) => this.RenameItem(index);
 
 		public void CutSelectedFiles() {
@@ -2444,6 +2455,10 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			thread.Start();
 		}
 
+		/// <summary>
+		/// Resizes the icons
+		/// </summary>
+		/// <param name="value">The icon size you want</param>
 		public void ResizeIcons(Int32 value) {
 			try {
 				IconSize = value;
@@ -2451,6 +2466,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 					obj.IsIconLoaded = false;
 					obj.IsNeedRefreshing = true;
 				}
+
 				this.LargeImageList.ResizeImages(value);
 				this.LargeImageList.AttachToListView(this, 0);
 				this.SmallImageList.AttachToListView(this, 1);
@@ -2462,19 +2478,23 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			}
 		}
 
+		/// <summary>Selects all items and sets this to focus</summary>
 		public void SelectAll() {
 			this._IIListView.SetItemState(-1, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, LVIS.LVIS_SELECTED);
 			this.Focus();
 		}
 
+		/// <summary>
+		/// Selects only the specified items. First runs <see cref="DeSelectAllItems">DeSelectAllItems</see> Then selects all items on a separate thread.
+		/// </summary>
+		/// <param name="shellObjectArray"></param>
 		public void SelectItems(IListItemEx[] shellObjectArray) {
 			this.DeSelectAllItems();
 			var selectionThread = new Thread(() => {
 				foreach (var item in shellObjectArray) {
 					try {
-						var itemIndex = 0;
 						var exestingItem = this.Items.FirstOrDefault(s => s.Equals(item));
-						itemIndex = exestingItem?.ItemIndex ?? -1;
+						var itemIndex = exestingItem?.ItemIndex ?? -1;
 						var lvii = new LVITEMINDEX() { iItem = itemIndex, iGroup = this.GetGroupIndex(itemIndex) };
 						var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
 						User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
@@ -2484,6 +2504,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				}
 				this.Focus();
 			});
+
 			selectionThread.SetApartmentState(ApartmentState.STA);
 			selectionThread.Start();
 		}
