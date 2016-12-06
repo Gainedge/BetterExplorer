@@ -177,7 +177,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			this._Item = item;
 			this._IconType = item.GetIconType();
 			//item.Dispose();
-		}
+		} //TODO: Find out why this does nothing with the ShellViewItem that it creates
 
 		public void Initialize(IntPtr lvHandle, string path) {
 			throw new NotImplementedException();
@@ -298,7 +298,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		public System.Drawing.Bitmap Thumbnail(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) =>
 				this._Item.GetShellThumbnail(size, format, source);
 
-		public System.Windows.Media.Imaging.BitmapSource ThumbnailSource(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) {
+		public BitmapSource ThumbnailSource(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) {
 			//if (this.IsSearchFolder)
 			//	this._Item.ComInterface = this.searchFolder.m_SearchComInterface;
 
