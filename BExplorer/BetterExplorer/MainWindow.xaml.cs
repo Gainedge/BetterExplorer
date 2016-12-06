@@ -477,7 +477,11 @@ namespace BetterExplorer {
       #endregion
 
     }
-
+	
+	/// <summary>
+	/// Sets up the status bar
+	/// </summary>
+	/// <param name="selectedItemsCount">The number of items currently selected</param>
     private void SetUpStatusBarOnSelectOrNavigate(int selectedItemsCount) {
       spSelItems.Visibility = BooleanToVisibiliy(selectedItemsCount > 0);
       sbiSelItemsCount.Visibility = BooleanToVisibiliy(selectedItemsCount > 0);
@@ -527,7 +531,7 @@ namespace BetterExplorer {
         item.Thumbnail.CurrentSize = new WIN.Size(16, 16);
 
         btnDefSave.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.Thumbnail.BitmapSource, GroupName: "GRDS1", checkable: true,
-                                                                                                        isChecked: item.ParsingName == lib.DefaultSaveFolder, onClick: miItem_Click));
+                                                      isChecked: item.ParsingName == lib.DefaultSaveFolder, onClick: miItem_Click));
       }
 
       btnDefSave.IsEnabled = lib.Count != 0;
