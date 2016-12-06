@@ -240,7 +240,6 @@ namespace BExplorer.Shell {
 		#endregion Event Handler
 
 		#region Public Members
-
 		public ToolTip ToolTip;
 		public Dictionary<PROPERTYKEY, Collumns> AllAvailableColumns;
 		public List<Collumns> Collumns = new List<Collumns>();
@@ -2081,6 +2080,11 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			if (this.ItemMiddleClick != null)
 				this.ItemMiddleClick.Invoke(this, new NavigatedEventArgs(item, item));
 		}
+
+		/// <summary>
+		/// Saves the current <paramref name="destination">destination</paramref> settings to the SQLite database
+		/// </summary>
+		/// <param name="destination">The destination whos settings you want to save</param>
 		public void SaveSettingsToDatabase(IListItemEx destination) {
 			if (CurrentFolder == null || !CurrentFolder.IsFolder) return;
 
@@ -2113,15 +2117,15 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			}
 
 			var Values = new Dictionary<String, String>() {
-																																{ "Path", destination.ParsingName },
-																																{ "LastSortOrder", LastSortOrder.ToString() },
-																																{ "LastGroupOrder", LastGroupOrder.ToString() },
-																																{ "LastGroupCollumn", LastGroupCollumn == null ? null : LastGroupCollumn.ID },
-																																{ "View", View.ToString() },
-																																{ "LastSortedColumn", LastSortedColumnId.ToString() },
-																																{ "Columns", Columns_XML.ToString()},
-																																{ "IconSize", this.IconSize.ToString() }
-																								};
+				{ "Path", destination.ParsingName },
+				{ "LastSortOrder", LastSortOrder.ToString() },
+				{ "LastGroupOrder", LastGroupOrder.ToString() },
+				{ "LastGroupCollumn", LastGroupCollumn == null ? null : LastGroupCollumn.ID },
+				{ "View", View.ToString() },
+				{ "LastSortedColumn", LastSortedColumnId.ToString() },
+				{ "Columns", Columns_XML.ToString()},
+				{ "IconSize", this.IconSize.ToString() }
+			};
 
 			var command2 = new SQLite.SQLiteCommand(sql, m_dbConnection);
 			foreach (var item in Values) {
@@ -2132,6 +2136,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			m_dbConnection.Close();
 		}
 
+		/// <summary>Resets the current folder's settings by deting it from the SQLIte database</summary>
 		public void ResetFolderSettings() {
 			var m_dbConnection = new SQLite.SQLiteConnection("Data Source=" + this._DBPath + ";Version=3;");
 			m_dbConnection.Open();
@@ -2170,6 +2175,11 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			return new IntPtr(p);
 		}
 
+		/// <summary>
+		/// Inserts a new item into the control If and only If it is new. Returns the item's index OR -1 if already existing
+		/// </summary>
+		/// <param name="obj">The item you want to insert</param>
+		/// <returns>If item is new Then returns <see cref="IListItemEx.ItemIndex">obj.ItemIndex</see> Else returns -1</returns>
 		public Int32 InsertNewItem(IListItemEx obj) {
 			if (!this._AddedItems.Contains(obj.PIDL) && !String.IsNullOrEmpty(obj.ParsingName) && obj.Parent.Equals(this.CurrentFolder)) {
 				Items.Add(obj);
@@ -2187,17 +2197,16 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			if (obj2.Parent?.Equals(this.CurrentFolder) == false || obj2.Equals(obj1)) return;
 			var items = this.Items.ToArray();
 			var oldItem =
-							items.SingleOrDefault(
-											s =>
-															s.Equals(obj1) ||
-															(obj1.Extension.Equals(".library-ms") &&
-															 s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj1.ParsingName)))));
+				items.SingleOrDefault(s =>
+					s.Equals(obj1) ||
+					(obj1.Extension.Equals(".library-ms") &&
+					s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj1.ParsingName)))));
+
 			var theItem =
-							items.FirstOrDefault(
-											s =>
-															s.ParsingName == obj2.ParsingName ||
-															(obj2.Extension.Equals(".library-ms") &&
-															 s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
+				items.FirstOrDefault(s =>
+				s.ParsingName == obj2.ParsingName ||
+				(obj2.Extension.Equals(".library-ms") && s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
+
 			if (theItem == null) {
 				if (oldItem != null) {
 					this.Items.Remove(oldItem);
@@ -2211,21 +2220,19 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				this.SetSortCollumn(true, col, this.LastSortOrder, false);
 				if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 				var obj2Real =
-						this.Items.FirstOrDefault(
-								s =>
-										s.ParsingName == obj2.ParsingName ||
-										(obj2.Extension.Equals(".library-ms") &&
-										 s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
+						this.Items.FirstOrDefault(s =>
+						s.ParsingName == obj2.ParsingName ||
+						(obj2.Extension.Equals(".library-ms") && s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
+
 				if (obj2Real != null) {
 					this.SelectItemByIndex(obj2Real.ItemIndex, true, true);
 					this.RefreshItem(obj2Real.ItemIndex, true);
 				}
-			} else {
-				if (oldItem == null && obj2.Extension == String.Empty) {
-					//probably a temporary file
-					this._TemporaryFiles.Add(obj2.ParsingName);
-				}
+			} else if (oldItem == null && obj2.Extension == String.Empty) {
+				//probably a temporary file
+				this._TemporaryFiles.Add(obj2.ParsingName);				
 			}
+
 			this.IsFocusAllowed = true;
 			this.Focus();
 		}
@@ -2246,6 +2253,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 			return false;
 		}
 
+		/// <summary>If the <see cref="GetFirstSelectedItem">Current</see> item <see cref="IListItemEx.IsFolder">IsFolder</see> Then navigate to it Else open item</summary>
 		public void OpenOrNavigateItem() {
 			var selectedItem = this.GetFirstSelectedItem();
 			if (selectedItem.IsFolder)
@@ -2254,11 +2262,14 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				Process.Start(selectedItem.ParsingName);
 		}
 
+
 		public Int32 GetGroupIndex(Int32 itemIndex) {
 			if (itemIndex == -1 || itemIndex >= this.Items.Count) return -1;
-			var item = this.Items[itemIndex];
-			return item.GroupIndex;
+			return this.Items[itemIndex].GroupIndex;
 		}
+
+		public Int32 GetGroupIndex(Int32 itemIndex) => itemIndex == -1 || itemIndex >= this.Items.Count ? -1 : this.Items[itemIndex].GroupIndex;
+
 
 		public void OpenShareUI() => Shell32.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(this.GetFirstSelectedItem().ParsingName.Replace(@"\\", @"\")));
 
