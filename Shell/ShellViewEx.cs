@@ -2262,14 +2262,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				Process.Start(selectedItem.ParsingName);
 		}
 
-
-		public Int32 GetGroupIndex(Int32 itemIndex) {
-			if (itemIndex == -1 || itemIndex >= this.Items.Count) return -1;
-			return this.Items[itemIndex].GroupIndex;
-		}
-
 		public Int32 GetGroupIndex(Int32 itemIndex) => itemIndex == -1 || itemIndex >= this.Items.Count ? -1 : this.Items[itemIndex].GroupIndex;
-
 
 		public void OpenShareUI() => Shell32.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(this.GetFirstSelectedItem().ParsingName.Replace(@"\\", @"\")));
 
