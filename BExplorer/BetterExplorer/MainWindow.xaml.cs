@@ -412,8 +412,8 @@ namespace BetterExplorer {
       #endregion
 
       #region Drive Contextual Tab
-      ctgDrive.Visibility = BooleanToVisibiliy(_ShellListView.CurrentFolder.IsDrive || (selectedItemsCount == 1 && selectedItem != null && (selectedItem.IsDrive || (selectedItem.Parent != null && selectedItem.Parent.IsDrive))));
-      if (asDrive && ctgDrive.Visibility == Visibility.Visible && selectedItem != null && selectedItem.IsDrive) {
+      ctgDrive.Visibility = BooleanToVisibiliy(_ShellListView.CurrentFolder.IsDrive || (selectedItemsCount == 1 && (selectedItem.IsDrive || (selectedItem.Parent != null && selectedItem.Parent.IsDrive))));
+      if (asDrive && ctgDrive.Visibility == Visibility.Visible && selectedItemsCount == 1 && selectedItem.IsDrive) {
         TheRibbon.SelectedTabItem = ctgDrive.Items[0];
       }
       #endregion
@@ -425,6 +425,7 @@ namespace BetterExplorer {
         TheRibbon.SelectedTabItem = ctgLibraries.Items[0];
       }
 
+	  /*
       if (ctgLibraries.Visibility == Visibility.Visible && _ShellListView.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName)) {
         if (selectedItem != null && selectedItemsCount == 1)
           SetupLibrariesTab(ShellLibrary.Load(Path.GetFileNameWithoutExtension(selectedItem.ParsingName), false));
@@ -435,6 +436,15 @@ namespace BetterExplorer {
       if (selectedItemsCount == 0) {
         ctgLibraries.Visibility = Visibility.Collapsed;
       }
+	  */
+	  if (selectedItemsCount == 0) 
+        ctgLibraries.Visibility = Visibility.Collapsed;
+	  else if (selectedItemsCount > 1) { }
+      else if (ctgLibraries.Visibility == Visibility.Visible && _ShellListView.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName)) 
+        SetupLibrariesTab(ShellLibrary.Load(Path.GetFileNameWithoutExtension(selectedItem.ParsingName), false));
+      else if (ctgLibraries.Visibility == Visibility.Visible && _ShellListView.CurrentFolder.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName))
+        SetupLibrariesTab(ShellLibrary.Load(Path.GetFileNameWithoutExtension(_ShellListView.CurrentFolder.ParsingName), false));     
+      
       #endregion
 
       #region Archive Contextual Tab
@@ -445,14 +455,14 @@ namespace BetterExplorer {
       #endregion
 
       #region Application Context Tab
-      ctgExe.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && selectedItem != null && !selectedItem.IsFolder && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".exe" || Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".msi"));
+      ctgExe.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".exe" || Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".msi"));
       if (asApplication && ctgExe.Visibility == Visibility.Visible) {
         TheRibbon.SelectedTabItem = ctgExe.Items[0];
       }
       #endregion
 
       #region Image Context Tab
-      ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && selectedItem != null && !selectedItem.IsFolder && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
+      ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
       if (ctgImage.Visibility == Visibility.Visible) {
         try {
           if (new FileInfo(selectedItem.ParsingName).Length != 0) {
@@ -470,7 +480,7 @@ namespace BetterExplorer {
       #endregion
 
       #region Virtual Disk Context Tab
-      ctgVirtualDisk.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && selectedItem != null && !selectedItem.IsFolder && Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".iso");
+      ctgVirtualDisk.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".iso");
       if (asVirtualDrive && ctgVirtualDisk.Visibility == Visibility.Visible) {
         TheRibbon.SelectedTabItem = ctgVirtualDisk.Items[0];
       }
