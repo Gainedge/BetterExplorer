@@ -3798,7 +3798,7 @@ item.IsChecked = false;
       this.SearchBarColumn.Width = new GridLength(sbw);
 
       // prepares RTL mode
-      FlowDirection = rtlset == "true" ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+      FlowDirection = rtlset ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 
       // sets tab bar alignment
       if (tabba == "top")
