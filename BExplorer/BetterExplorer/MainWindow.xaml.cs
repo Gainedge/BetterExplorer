@@ -3296,13 +3296,15 @@ item.IsChecked = false;
 
     #region ShellListView
 
+	[Obsolete("Empty and I would like to remove")]
     void ShellListView_EndItemLabelEdit(object sender, bool e) {
       //_ShellListView.FileNameChangeAttempt(this.txtEditor.Text, e);
       //this.Editor.Visibility = WIN.Visibility.Collapsed;
       //this.Editor.IsOpen = false;
     }
 
-    void ShellListView_BeginItemLabelEdit(object sender, RenameEventArgs e) {
+	[Obsolete("Empty and I would like to remove")]
+	void ShellListView_BeginItemLabelEdit(object sender, RenameEventArgs e) {
       //if (this.Editor.IsOpen) return;
       //var isSmall = this._ShellListView.IconSize == 16;
       //if (isSmall) {
