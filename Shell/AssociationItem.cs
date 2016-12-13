@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 
 namespace BExplorer.Shell {
-	//TODO: Document this!
+	//TODO: Document this or find out if we need it at all
 
 	public class AssociationItem {
 		public ShellItem Owner { get; private set; }
