@@ -125,7 +125,7 @@ namespace BExplorer.Shell
             }
         }
 
-        void AutoComplete()
+        private void AutoComplete()
         {
             string path;
             string pattern;
@@ -163,10 +163,10 @@ namespace BExplorer.Shell
             }
         }
 
-        bool Open(string path)
+        private bool Open(string path)
         {
-            //TODO: Someone clean this!
-            bool result = false;
+			//TODO: Find out if we can replace [result] with a returns
+			bool result = false;
 
             if (File.Exists(path))
             {
@@ -183,7 +183,6 @@ namespace BExplorer.Shell
             }
             else
             {
-                //OpenParentOf(path);
                 Text = Path.GetFileName(path);
             }
 

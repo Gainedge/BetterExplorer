@@ -541,7 +541,6 @@ namespace BExplorer.Shell {
 
 
 		public PropVariant GetPropertyValue(PROPERTYKEY pkey) {
-			//TODO: Remove Parameter Type
 			var pvar = new PropVariant();
 			var isi2 = (IShellItem2)ComInterface;
 			isi2.GetProperty(ref pkey, pvar);
@@ -804,7 +803,6 @@ namespace BExplorer.Shell {
 		/// <returns>Equality result.</returns>
 		public override bool Equals(object obj) => this.Equals(obj as ShellItem);
 
-
 		#endregion Comparisons
 
 		#region Static Stuff
@@ -836,11 +834,7 @@ namespace BExplorer.Shell {
 		}
 
 		private static IShellItem CreateItemFromIDList(IntPtr pidl) {
-			//TODO: Consider moving the Try Finally to here
-			if (RunningVista)
-				return Shell32.SHCreateItemFromIDList(pidl, typeof(IShellItem).GUID);
-			else
-				return new Interop.VistaBridge.ShellItemImpl(pidl, false);
+			return RunningVista ? Shell32.SHCreateItemFromIDList(pidl, typeof(IShellItem).GUID) : new Interop.VistaBridge.ShellItemImpl(pidl, false);
 		}
 
 		private static IShellItem CreateItemFromParsingName(string path) {
@@ -1067,7 +1061,7 @@ namespace BExplorer.Shell {
 			}
 			else
 				return new ShellItem(path);
-		} //TODO: Consider making this a constructor!
+		} 
 
 		/// <summary>
 		/// Tries to create a new <see cref="ShellItem"/> using Path/Uri (As String)

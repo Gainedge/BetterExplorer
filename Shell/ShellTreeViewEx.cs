@@ -484,7 +484,6 @@ namespace BExplorer.Shell {
 					if (childItem != null) {
 						var nodeHandle = childItem.Handle;
 
-						//TODO: Try to remove this Try Catch! It's slowing this down!!
 						try {
 							var sho = (node.Tag as IListItemEx);
 							if (!sho.HasSubFolders) User32.SendMessage(treeHandle, MSG.TVM_DELETEITEM, 0, nodeHandle);
@@ -762,10 +761,10 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 		}
 		
 		private void ShellTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
+			//TODO: Finish code or remove
 			IntPtr dataObjPtr = IntPtr.Zero;
 			var shellItem = ((e.Item as TreeNode).Tag as IListItemEx);
 			if (shellItem != null) {
-				//TODO: Fix the dead code here
 				//System.Runtime.InteropServices.ComTypes.IDataObject dataObject = shellItem.GetIDataObject(out dataObjPtr);
 
 				//uint ef = 0;

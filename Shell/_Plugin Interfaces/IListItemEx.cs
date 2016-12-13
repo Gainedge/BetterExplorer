@@ -130,7 +130,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         /// </summary>
         /// <param name="isEnumHidden">Should we include the hidden items?</param>
         /// <returns></returns>
-        IListItemEx[] GetSubItems(Boolean isEnumHidden); //TODO: Use or Delete
+        IListItemEx[] GetSubItems(Boolean isEnumHidden);
 
         IShellFolder GetIShellFolder();
 
@@ -141,9 +141,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         /// <summary>Returns drive information</summary>
         DriveInfo GetDriveInfo();
 
-        Boolean IsRCWSet { get; set; } //TODO: Use or Delete
+        Boolean IsRCWSet { get; set; }
 
-        Int32 RCWThread { get; set; } //TODO: Use or Delete
+        Int32 RCWThread { get; set; } 
 
         HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false); //TODO: Use or Delete
 
@@ -151,7 +151,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
         IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false);
 
-        Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags); //TODO: Use or Delete
+        Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags);
 
         String GetDisplayName(SIGDN type);
 
@@ -160,7 +160,6 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags);
 
         int GetUniqueID();
-        //Work On This and the TODOList
 
     }
 }

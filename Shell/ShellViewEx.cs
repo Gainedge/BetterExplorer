@@ -691,11 +691,11 @@ namespace BExplorer.Shell {
 					this.EndLabelEdit(true);
 				else if (e == Keys.F2) {
 					//TODO: implement a conditional selection inside rename textbox!
+				
 				} else if (e == Keys.Enter)
 					this.EndLabelEdit();
 			}
-			if ((Control.ModifierKeys & Keys.Control) == Keys.Control &&
-											!(System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.TextBox)) {
+			if ((Control.ModifierKeys & Keys.Control) == Keys.Control && !(System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.TextBox)) {
 				switch (e) {
 					case Keys.A:
 						SelectAll();
@@ -1456,9 +1456,9 @@ namespace BExplorer.Shell {
 						if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
 					/*
-else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
-if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
-*/
+					else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
+					if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
+					*/
 
 					#endregion Starting
 
@@ -1854,14 +1854,9 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
 						#endregion Case
 
-						case WNM.LVN_GROUPINFO: //TODO: Deal with this useless code
-
-							#region Case
-
-							//RedrawWindow();
-							break;
-
-						#endregion Case
+						
+						case WNM.LVN_GROUPINFO: 					
+							break;					
 
 						case WNM.LVN_HOTTRACK:
 
@@ -2778,7 +2773,6 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				}
 			} else if (col.CollumnType == typeof(Int64)) {
 				var j = reversed ? 7 : 0;
-				//TODO: Upgrade next to use an Action<>
 
 				var uspec = new ListViewGroupEx();
 				uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
@@ -2787,16 +2781,13 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				this.Groups.Add(uspec);
 
 				var testgrn = new ListViewGroupEx();
-				testgrn.Items =
-								this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) == 0 && !w.IsFolder)
-												.ToArray();
+				testgrn.Items =this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) == 0 && !w.IsFolder).ToArray();
 				testgrn.Header = $"Empty ({testgrn.Items.Count()})";
 				testgrn.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgrn);
 
 				var testgr = new ListViewGroupEx();
-				testgr.Items =
-								this.Items.Where(
+				testgr.Items = this.Items.Where(
 												w =>
 																Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 0 &&
 																Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 10 * 1024).ToArray();
@@ -2805,8 +2796,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				this.Groups.Add(testgr);
 
 				var testgr2 = new ListViewGroupEx();
-				testgr2.Items =
-								this.Items.Where(
+				testgr2.Items = this.Items.Where(
 												w =>
 																Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 10 * 1024 &&
 																Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 100 * 1024).ToArray();
@@ -2825,8 +2815,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				this.Groups.Add(testgr3);
 
 				var testgr4 = new ListViewGroupEx();
-				testgr4.Items =
-								this.Items.Where(
+				testgr4.Items = this.Items.Where(
 												w =>
 																Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 1 * 1024 * 1024 &&
 																Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 16 * 1024 * 1024).ToArray();
@@ -2845,8 +2834,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				this.Groups.Add(testgr5);
 
 				var testgr6 = new ListViewGroupEx();
-				testgr6.Items =
-								this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 128 * 1024 * 1024)
+				testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 128 * 1024 * 1024)
 												.ToArray();
 				testgr6.Header = $"Gigantic ({testgr6.Items.Count()})";
 				testgr6.Index = reversed ? j-- : j++;
