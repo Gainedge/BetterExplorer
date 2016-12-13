@@ -690,8 +690,16 @@ namespace BExplorer.Shell {
 				if (e == Keys.Escape)
 					this.EndLabelEdit(true);
 				else if (e == Keys.F2) {
-					//TODO: implement a conditional selection inside rename textbox!
-				
+					if (this.ToolTip != null && this.ToolTip.IsVisible)
+						this.ToolTip.HideTooltip();
+
+					this.IsFocusAllowed = false;
+					this._IsCanceledOperation = false;
+					this._ItemForRename = this.GetFirstSelectedItemIndex();
+					this.BeginItemLabelEdit?.Invoke(this, new RenameEventArgs(this._ItemForRename));
+					var editControl = User32.SendMessage(this.LVHandle, 0x1018, 0, 0);
+					var indexLastDot = this.Items[this._ItemForRename].DisplayName.LastIndexOf(".", StringComparison.Ordinal);
+					User32.SendMessage(editControl, 0x00B1, 0, indexLastDot); //TODO: Find out if I need this line
 				} else if (e == Keys.Enter)
 					this.EndLabelEdit();
 			}
