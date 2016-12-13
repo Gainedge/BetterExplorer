@@ -197,7 +197,6 @@ namespace Xceed.Wpf.Toolkit.Chromes
 
     protected virtual void OnRenderMouseOverChanged( bool oldValue, bool newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
     }
 
     #endregion //RenderMouseOver
@@ -226,7 +225,6 @@ namespace Xceed.Wpf.Toolkit.Chromes
 
     protected virtual void OnRenderNormalChanged( bool oldValue, bool newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
     }
 
     #endregion //RenderNormal
@@ -255,7 +253,6 @@ namespace Xceed.Wpf.Toolkit.Chromes
 
     protected virtual void OnRenderPressedChanged( bool oldValue, bool newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
     }
 
     #endregion //RenderPressed
