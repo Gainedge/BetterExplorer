@@ -3718,27 +3718,27 @@ item.IsChecked = false;
       this.LVItemsColorCol = new ObservableCollectionEx<LVItemColor>();
       this.CommandBindings.AddRange(new[]
       {
-                new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click),
-                new CommandBinding(AppCommands.RoutedNavigateFF, rightNavBut_Click),
-                new CommandBinding(AppCommands.RoutedNavigateUp, btnUpLevel_Click),
-                new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox),
-                new CommandBinding(AppCommands.RoutedNewTab, (sender, e) => tcMain.NewTab()),
-                new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this._ShellListView.IsFocusAllowed = false; this.bcbc.SetInputState(); }),
-                new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {
-                    int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
-                    tcMain.SelectedItem = tcMain.Items[selIndex];
-                }),
-                new CommandBinding(AppCommands.RoutedCloseTab, (sender, e) => {
-                    if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-                        Close();
-                        return;
-                    }
+            new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click),
+            new CommandBinding(AppCommands.RoutedNavigateFF, rightNavBut_Click),
+            new CommandBinding(AppCommands.RoutedNavigateUp, btnUpLevel_Click),
+            new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox),
+            new CommandBinding(AppCommands.RoutedNewTab, (sender, e) => tcMain.NewTab()),
+            new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this._ShellListView.IsFocusAllowed = false; this.bcbc.SetInputState(); }),
+            new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {
+                int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
+                tcMain.SelectedItem = tcMain.Items[selIndex];
+            }),
+            new CommandBinding(AppCommands.RoutedCloseTab, (sender, e) => {
+                if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
+                    Close();
+                    return;
+                }
 
-                    int CurSelIndex = tcMain.SelectedIndex;
-                    tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
-                    tcMain.Items.RemoveAt(CurSelIndex);
-                })
-            });
+                int CurSelIndex = tcMain.SelectedIndex;
+                tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
+                tcMain.Items.RemoveAt(CurSelIndex);
+            })
+        });
 
       RegistryKey rk = Registry.CurrentUser;
       RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
@@ -3777,7 +3777,6 @@ item.IsChecked = false;
       // gets values from registry to be applied after initialization
       string lohc = Convert.ToString(rks.GetValue("Locale", ":null:"));
       double sbw = Convert.ToDouble(rks.GetValue("SearchBarWidth", "220"));
-      string rtlused = Convert.ToString(rks.GetValue("RTLMode", "notset"));
       string tabba = Convert.ToString(rks.GetValue("TabBarAlignment", "top"));
 
       rks.Close();
@@ -3788,31 +3787,18 @@ item.IsChecked = false;
       InitializeComponent();
 
       // sets up ComboBox to select the current UI language
-
       this.TranslationComboBox.SelectedItem = this.TranslationComboBox.Items.OfType<TranslationComboBoxItem>().FirstOrDefault(x => x.LocaleCode == lohc);
 
-      /*
-foreach (TranslationComboBoxItem item in this.TranslationComboBox.Items) {
-	if (item.LocaleCode == lohc) {
-		this.TranslationComboBox.SelectedItem = item;
-	}
-}
-*/
-      bool rtlset = rtlused != "notset";
+      bool rtlset = Convert.ToString(rks.GetValue("RTLMode", "notset")) != "notset";
 
       if (!rtlset) {
-        rtlused = (this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL ? "true" : "false";
+	    rtlset = (this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL;
       }
 
       this.SearchBarColumn.Width = new GridLength(sbw);
 
       // prepares RTL mode
-      FlowDirection = rtlused == "true" ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
-
-      if (rtlset) {
-        //TODO: Find out if we can merge this with [if (!rtlset)]
-        rtlused = "notset";
-      }
+      FlowDirection = rtlset == "true" ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 
       // sets tab bar alignment
       if (tabba == "top")
