@@ -5,8 +5,6 @@ using System.Windows.Threading;
 using Microsoft.Win32;
 
 namespace BetterExplorer {
-
-	//TODO: Make all updating private and handled in [Updater]
 	partial class MainWindow {
 		private BackgroundWorker UpdaterWorker;
 		private int UpdateCheckType;
