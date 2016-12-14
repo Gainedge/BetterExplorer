@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Windows;
 using System.Runtime.InteropServices;
@@ -80,3 +81,4 @@ namespace BetterExplorer
 		}
 	}
 }
+*/
