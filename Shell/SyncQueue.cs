@@ -24,19 +24,17 @@ namespace BExplorer.Shell {
 		/// Adds an object to the end of the System.Collections.Generic.Queue[T] then runs System.Threading.Monitor.PulseAll(queue) when queue.Count == 1;
 		/// </summary>
 		/// <param name="item">The object to add to the System.Collections.Generic.Queue[T]. The value can be null for reference types.</param>
+		/// <param name="force">Force the item to update even if it has queue already contains it</param>
 		public void Enqueue(T item, Boolean force = false) {
-            lock (queue) {
-                //Task.Run(() => {
-				
-					if (force || !queue.Contains(item)) {
-						queue.Enqueue(item);
+            lock (queue) {			
+				if (force || !queue.Contains(item)) {
+					queue.Enqueue(item);
 
-						if (queue.Count == 1) {
-							// wake up any blocked dequeue
-							System.Threading.Monitor.PulseAll(queue);
-						}
-                    } 
-               // });
+					if (queue.Count == 1) {
+						// wake up any blocked dequeue
+						System.Threading.Monitor.PulseAll(queue);
+					}
+                } 
             }
 			
 		}
@@ -64,7 +62,6 @@ namespace BExplorer.Shell {
 
 	public class QueueEx<T> {
 		public readonly Queue<T> queue = new Queue<T>();
-
 		public void Clear() => this.queue.Clear();
 		public int Count() => this.queue.Count;
 
@@ -77,6 +74,7 @@ namespace BExplorer.Shell {
 		/// Adds an object to the end of the System.Collections.Generic.Queue[T] then runs System.Threading.Monitor.PulseAll(queue) when queue.Count == 1;
 		/// </summary>
 		/// <param name="item">The object to add to the System.Collections.Generic.Queue[T]. The value can be null for reference types.</param>
+		/// <param name="force">Force the item to update even if it has queue already contains it</param>
 		public Boolean Enqueue(T item, Boolean force = false) {
 			if (!queue.Contains(item) || force) {
 				queue.Enqueue(item);
@@ -95,9 +93,7 @@ namespace BExplorer.Shell {
 		/// <Exceptions>
 		/// System.InvalidOperationException: The System.Collections.Generic.Queue(Of T) is empty.
 		/// </Exceptions>
-		public T Dequeue() {
-			return queue.Dequeue();
-		}
+		public T Dequeue() => queue.Dequeue();
 	}
 
 	public class ConQueue<T> {

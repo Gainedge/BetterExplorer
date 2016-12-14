@@ -44,7 +44,6 @@ namespace Xceed.Wpf.Toolkit.Core.Utilities
           }
         };
       }
-      //TODO: remove handler when set to false
     }
   }
 }

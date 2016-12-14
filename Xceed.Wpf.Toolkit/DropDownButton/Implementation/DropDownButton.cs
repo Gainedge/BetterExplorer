@@ -102,7 +102,6 @@ namespace Xceed.Wpf.Toolkit
 
     protected virtual void OnDropDownContentChanged( object oldValue, object newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
     }
 
     #endregion //DropDownContent

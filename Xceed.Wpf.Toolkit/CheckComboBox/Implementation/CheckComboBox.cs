@@ -109,8 +109,6 @@ namespace Xceed.Wpf.Toolkit
       {
         _initialValue.Clear();
       }
-
-      // TODO: Add your property changed side-effects. Descendants can override as well.
     }
 
     #endregion //IsDropDownOpen

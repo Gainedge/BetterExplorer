@@ -5,13 +5,11 @@ using System.Windows.Threading;
 using Microsoft.Win32;
 
 namespace BetterExplorer {
-
-	//TODO: Make all updating private and handled in [Updater]
 	partial class MainWindow {
 		private BackgroundWorker UpdaterWorker;
 		private int UpdateCheckType;
-	  private Boolean _IsCheckUpdateFromTimer = false;
-	  private Boolean _IsUpdateNotificationMessageBoxShown = false;
+		private Boolean _IsCheckUpdateFromTimer = false;
+		private Boolean _IsUpdateNotificationMessageBoxShown = false;
 		private void CheckForUpdate(bool ShowUpdateUI = true) {
 			this.UpdaterWorker = new BackgroundWorker();
 			this.UpdaterWorker.WorkerSupportsCancellation = true;
@@ -25,11 +23,11 @@ namespace BetterExplorer {
 		}
 
 		private void UpdaterWorker_DoWork(object sender, DoWorkEventArgs e) {
-		  this._IsCheckUpdateFromTimer = true;
-		  Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-		    (Action) (() => {
-		      autoUpdater.ForceCheckForUpdate(true);
-		    }));
+			this._IsCheckUpdateFromTimer = true;
+			Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+			  (Action)(() => {
+				  autoUpdater.ForceCheckForUpdate(true);
+			  }));
 			Utilities.SetRegistryValue("LastUpdateCheck", DateTime.Now.ToBinary(), RegistryValueKind.QWord);
 			LastUpdateCheck = DateTime.Now;
 		}

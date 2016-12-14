@@ -124,8 +124,7 @@ namespace BExplorer.Shell {
 				this._ItemsForSubitemsUpdate.Enqueue(item);
 			});
 		}
-
-
+		
 		public void ResizeImages(Int32 newSize) {
 			this.ReInitQueues();
 			this._CurrentSize = newSize;
@@ -150,7 +149,7 @@ namespace BExplorer.Shell {
 			if (sho.OverlayIconIndex == -1) {
 				this._OverlayQueue.Enqueue(index, true);
 			}
-			//TODO: Check why the same code is called 2 times here. It can be fixed by if (!this._RedrawQueue) {
+
 			if (this._CurrentSize != 16) {
 				var addornerType = this.GetAddornerType(sho);
 				IntPtr hThumbnail = IntPtr.Zero;
@@ -159,8 +158,6 @@ namespace BExplorer.Shell {
 				Int32 height = 0;
 				if (hThumbnail != IntPtr.Zero) {
 					Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
-					Int32 width2 = 0;
-					Int32 height2 = 0;
 					if (addornerType > 0) {
 						this.DrawWithAddorner(hdc, iconBounds, isGhosted, width, height, hThumbnail, addornerType);
 					} else {
@@ -176,16 +173,13 @@ namespace BExplorer.Shell {
 										   (width < height && height != this._CurrentSize) ||
 										   (width == height && width != this._CurrentSize)) &&
 										   !sho.IsOnlyLowQuality;
+
+					sho.IsThumbnailLoaded = false;
 					if (sho.IsNeedRefreshing) {
-						sho.IsThumbnailLoaded = false;
 						Task.Run(() => {
 							this._ThumbnailsForCacheLoad.Enqueue(index);
 						});
-					} else {
-						sho.IsThumbnailLoaded = true;
-						sho.IsNeedRefreshing = false;
 					}
-
 				} else {
 					if (sho.IsIconLoaded ||
 							(((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS ||
@@ -245,22 +239,24 @@ namespace BExplorer.Shell {
 					}
 				}
 				using (var g = Graphics.FromHdc(hdc)) {
-					if (this._ShellViewEx.ShowCheckboxes && this._ShellViewEx.View != ShellViewStyle.Details &&
-							this._ShellViewEx.View != ShellViewStyle.List) {
+					if (this._ShellViewEx.ShowCheckboxes && this._ShellViewEx.View != ShellViewStyle.Details && this._ShellViewEx.View != ShellViewStyle.List) {
+						/*						
 						var lvi = new LVITEMINDEX();
 						lvi.iItem = index;
 						lvi.iGroup = this._ShellViewEx.GetGroupIndex(index);
+						*/
+						var iGroup = this._ShellViewEx.GetGroupIndex(index);
 						var lvItem = new LVITEM() {
 							iItem = index,
-							iGroupId = lvi.iGroup,
-							iGroup = lvi.iGroup,
+							iGroupId = iGroup,
+							iGroup = iGroup,
 							mask = LVIF.LVIF_STATE,
 							stateMask = LVIS.LVIS_SELECTED
 						};
 						var lvItemImageMask = new LVITEM() {
 							iItem = index,
-							iGroupId = lvi.iGroup,
-							iGroup = lvi.iGroup,
+							iGroupId = iGroup,
+							iGroup = iGroup,
 							mask = LVIF.LVIF_STATE,
 							stateMask = LVIS.LVIS_STATEIMAGEMASK
 						};
@@ -287,8 +283,7 @@ namespace BExplorer.Shell {
 				if (sho.OverlayIconIndex > 0) {
 					if (this._CurrentSize > 180)
 						this._Jumbo.DrawOverlay(hdc, sho.OverlayIconIndex,
-							new Point(iconBounds.Left,
-								iconBounds.Bottom - (this._ShellViewEx.View == ShellViewStyle.Tile ? 5 : 0) - this._CurrentSize / 3),
+							new Point(iconBounds.Left, iconBounds.Bottom - (this._ShellViewEx.View == ShellViewStyle.Tile ? 5 : 0) - this._CurrentSize / 3),
 							this._CurrentSize / 3);
 					else if (this._CurrentSize > 64)
 						this._Extra.DrawOverlay(hdc, sho.OverlayIconIndex,
@@ -308,8 +303,7 @@ namespace BExplorer.Shell {
 				}
 				if (sho.IsShared) {
 					if (this._CurrentSize > 180)
-						this._Jumbo.DrawIcon(hdc, this._SharedIconIndex,
-							new Point(iconBounds.Right - this._CurrentSize / 3, iconBounds.Bottom - this._CurrentSize / 3), this._CurrentSize / 3);
+						this._Jumbo.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - this._CurrentSize / 3, iconBounds.Bottom - this._CurrentSize / 3), this._CurrentSize / 3);
 					else if (this._CurrentSize > 64)
 						this._Extra.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - 40, iconBounds.Bottom - 50));
 					else
@@ -319,8 +313,7 @@ namespace BExplorer.Shell {
 				if (badge != null) {
 					var badgeIco = badge.GetHBitmap(this._CurrentSize, false);
 					Gdi32.ConvertPixelByPixel(badgeIco, out width, out height);
-					Gdi32.NativeDraw(hdc, badgeIco, iconBounds.Left + (iconBounds.Right - iconBounds.Left - _CurrentSize) / 2,
-						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - _CurrentSize) / 2, _CurrentSize, isGhosted);
+					Gdi32.NativeDraw(hdc, badgeIco, iconBounds.Left + (iconBounds.Right - iconBounds.Left - _CurrentSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - _CurrentSize) / 2, _CurrentSize, isGhosted);
 					Gdi32.DeleteObject(badgeIco);
 				}
 
@@ -330,24 +323,23 @@ namespace BExplorer.Shell {
 					lvi.iGroup = this._ShellViewEx.GetGroupIndex(index);
 					var lableBounds = new User32.RECT() { Left = 2 };
 					User32.SendMessage(this._ShellViewEx.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
-					using (var g = Graphics.FromHdc(hdc)) {
-						var fmt = new StringFormat();
-						fmt.Trimming = StringTrimming.EllipsisCharacter;
-						fmt.Alignment = StringAlignment.Center;
-						fmt.Alignment = StringAlignment.Near;
-						fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
-						fmt.LineAlignment = StringAlignment.Center;
-
+					using (var g = Graphics.FromHdc(hdc)) {		
 						var lblrectTiles = new RectangleF(lableBounds.Left, iconBounds.Top + 6, lableBounds.Right - lableBounds.Left, 15);
-						if (this._ShellViewEx.RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) &&
-								(sho.IsDrive || sho.IsNetworkPath))
+						if (this._ShellViewEx.RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) && (sho.IsDrive || sho.IsNetworkPath)) {
+							var fmt = new StringFormat();
+							fmt.Trimming = StringTrimming.EllipsisCharacter;
+							fmt.Alignment = StringAlignment.Center;
+							fmt.Alignment = StringAlignment.Near;
+							fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
+							fmt.LineAlignment = StringAlignment.Center;
+
 							this.DrawComputerTiledModeView(sho, g, lblrectTiles, fmt);
+						}
 					}
 				}
 			} else {
 				sho.IsThumbnailLoaded = true;
-				Int32 width = 0;
-				Int32 height = 0;
+				Int32 width = 0, height = 0;
 				if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
 					var hIconExe = sho.GetHBitmap(this._CurrentSize, false);
 					if (hIconExe != IntPtr.Zero) {
@@ -358,6 +350,7 @@ namespace BExplorer.Shell {
 					}
 				} else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
 					if (!sho.IsIconLoaded) {
+						/*
 						if (sho.IsNetworkPath || this._ShellViewEx.IsSearchNavigating) {
 							Task.Run(() => {
 								this._IconsForRetreval.Enqueue(index);
@@ -367,9 +360,13 @@ namespace BExplorer.Shell {
 								this._IconsForRetreval.Enqueue(index);
 							});
 						}
+						*/
+						Task.Run(() => {
+							this._IconsForRetreval.Enqueue(index);
+						});
+
 						this._Small.DrawIcon(hdc, this._ExeFallBackIndex,
-							new Point(iconBounds.Left + (iconBounds.Right - iconBounds.Left - this._CurrentSize) / 2,
-								iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - this._CurrentSize) / 2));
+							new Point(iconBounds.Left + (iconBounds.Right - iconBounds.Left - this._CurrentSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - this._CurrentSize) / 2));
 					} else {
 						var hIconExe = sho.GetHBitmap(this._CurrentSize, false);
 						if (hIconExe != IntPtr.Zero) {
@@ -401,8 +398,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void DrawWithAddorner(IntPtr hdc, User32.RECT iconBounds, Boolean isGhosted, Int32 width, Int32 height, IntPtr hThumbnail, Int32 addornerType) {
-			Int32 width2;
-			Int32 height2;
+			Int32 width2, height2;
 			if (addornerType == 2) {
 				var addorner = new Bitmap(width + 7, height + 7, PixelFormat.Format32bppPArgb);
 				LinearGradientBrush gb = new LinearGradientBrush(new System.Drawing.Point(0, 0),
@@ -444,8 +440,8 @@ namespace BExplorer.Shell {
 					Gdi32.NativeDraw(hdc, hAddorner, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2,
 						iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width2, height2, width2, height + (Int32)(this._CurrentSize * 0.06) - (Int32)(this._CurrentSize * 0.07), isGhosted);
 				}
-				Gdi32.DeleteObject(hAddorner);
 
+				Gdi32.DeleteObject(hAddorner);
 			}
 		}
 
@@ -580,7 +576,7 @@ namespace BExplorer.Shell {
 		private Boolean ThreadRun_Helper(SyncQueue<Int32> queue, Boolean useComplexCheck, ref Int32 index) {
 			try {
 				index = queue.Dequeue();
-				if (index == null) {
+				if (index == null) { //TODO: Fix this because an integer cannot ever be null
 					return false;
 				} else {
 					var result = User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index, 0) != IntPtr.Zero;
@@ -615,8 +611,8 @@ namespace BExplorer.Shell {
 				g.FillRectangle(brush, rec);
 				brush.Dispose();
 				var lblrectSubiTem3 = new RectangleF(lblrectTiles.Left, lblrectTiles.Bottom + 16, lblrectTiles.Width, 15);
-				Font subItemFont = System.Drawing.SystemFonts.IconTitleFont;
-				var subItemTextBrush = new SolidBrush(System.Drawing.SystemColors.ControlDarkDark);
+				Font subItemFont = SystemFonts.IconTitleFont;
+				var subItemTextBrush = new SolidBrush(SystemColors.ControlDarkDark);
 				g.DrawString($"{ShlWapi.StrFormatByteSize(driveInfo.AvailableFreeSpace)} free of {ShlWapi.StrFormatByteSize(driveInfo.TotalSize)}",
 												subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
 
@@ -637,8 +633,7 @@ namespace BExplorer.Shell {
 
 		private Int32 GetAddornerType(IListItemEx sho) {
 			var result = 0;
-			var extension = sho.Extension;
-			var extensionRootKey = Registry.ClassesRoot.OpenSubKey(extension);
+			var extensionRootKey = Registry.ClassesRoot.OpenSubKey(sho.Extension);
 			if (extensionRootKey != null) {
 				var perceivedType = extensionRootKey.GetValue("PerceivedType");
 				extensionRootKey.Close();
@@ -662,8 +657,8 @@ namespace BExplorer.Shell {
 					}
 				}
 			}
+
 			return result;
 		}
-
 	}
 }
