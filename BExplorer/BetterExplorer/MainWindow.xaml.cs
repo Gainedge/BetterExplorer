@@ -1799,7 +1799,7 @@ namespace BetterExplorer {
 
       rks.SetValue("IsRibonMinimized", TheRibbon.IsMinimized);
       rks.SetValue("OpenedTabs", openedTabs);
-      rks.SetValue("RTLMode", FlowDirection == WIN.FlowDirection.RightToLeft ? "true" : "false");
+      rks.SetValue("RTLMode", FlowDirection == FlowDirection.RightToLeft ? "true" : "false");
       rks.SetValue("AutoSwitchFolderTools", Convert.ToInt32(_AsFolder));
       rks.SetValue("AutoSwitchArchiveTools", Convert.ToInt32(asArchive));
       rks.SetValue("AutoSwitchImageTools", Convert.ToInt32(asImage));
@@ -3775,7 +3775,9 @@ item.IsChecked = false;
       string lohc = Convert.ToString(rks.GetValue("Locale", ":null:"));
       double sbw = Convert.ToDouble(rks.GetValue("SearchBarWidth", "220"));
       string tabba = Convert.ToString(rks.GetValue("TabBarAlignment", "top"));
-	  bool rtlset = Convert.ToString(rks.GetValue("RTLMode", "notset")) != "notset";
+	  //bool rtlset = Convert.ToString(rks.GetValue("RTLMode", "notset")) != "notset";
+	  string RTLMode = Convert.ToString(rks.GetValue("RTLMode", "notset"));
+	  
 	  rks.Close();
       rk.Close();
 
@@ -3786,14 +3788,14 @@ item.IsChecked = false;
       // sets up ComboBox to select the current UI language
       this.TranslationComboBox.SelectedItem = this.TranslationComboBox.Items.OfType<TranslationComboBoxItem>().FirstOrDefault(x => x.LocaleCode == lohc);
 
-      if (!rtlset) {
-	    rtlset = (this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL;
+      if (RTLMode == "notset") {
+		RTLMode = (this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL.ToString();
       }
 
       this.SearchBarColumn.Width = new GridLength(sbw);
 
       // prepares RTL mode
-      FlowDirection = rtlset ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+      FlowDirection = RTLMode == "true" ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 
       // sets tab bar alignment
       if (tabba == "top")
