@@ -9,18 +9,31 @@ using System.Windows.Media.Imaging;
 namespace BExplorer.Shell {
 	//TODO: Document this or find out if we need it at all
 
+	/// <summary>
+	/// Represents an application that this <see cref="ShellItem"/> is associated with.
+	/// </summary>
 	public class AssociationItem {
+		/// <summary>The <see cref="ShellItem"/> that this item is for</summary>
 		public ShellItem Owner { get; private set; }
-		public String DisplayName { get; set; }
-		public String ApplicationPath { get; set; }
+
+		/// <summary>The display name for the item to be displayed to the user</summary>
+		[Obsolete("Not used at all")]
+		public string DisplayName { get; set; }
+
+		/// <summary>The path of the application this item represents</summary>
+		public string ApplicationPath { get; set; }
 		public BitmapSource Icon => new ShellItem(this.ApplicationPath.ToShellParsingName()).Thumbnail.SmallBitmapSource;
 
 
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		/// <param name="item">The <see cref="ShellItem"/> that this item is for (sets the <see cref="Owner"/> property</param>
 		public AssociationItem(ShellItem item) {
 			this.Owner = item;
 		}
 
-
+		/// <summary>Invokes/Runs the application this item represents and supplies it with the owner</summary>
 		public void Invoke() {
 			RegistryKey root = Registry.ClassesRoot;
 			var applications = root.OpenSubKey("Applications", RegistryKeyPermissionCheck.ReadSubTree);
