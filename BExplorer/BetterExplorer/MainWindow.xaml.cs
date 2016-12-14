@@ -3199,8 +3199,6 @@ item.IsChecked = false;
     }
 
     private void miRestoreRBItems_Click(object sender, RoutedEventArgs e) {
-      //TODO: Check these changes
-
       foreach (var item in _ShellListView.SelectedItems.ToArray()) {
         Folder Recycler = new Shell().NameSpace(10);
         for (int i = 0; i < Recycler.Items().Count; i++) {
@@ -3947,8 +3945,8 @@ item.IsChecked = false;
 
     private void btnTest_Click(object sender, RoutedEventArgs e) {
       /*
-We could easily move this to another project and send that method			 
-*/
+		We could easily move this to another project and send that method			 
+		*/
 
       //Following could be an example of what the most basic plugin could look like
       //We could also separate plugins so they could be enabled WHEN
