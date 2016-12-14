@@ -168,7 +168,6 @@ namespace Xceed.Wpf.Toolkit.Chromes
 
     protected virtual void OnRenderFocusedChanged( bool oldValue, bool newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
     }
 
     #endregion //RenderFocused

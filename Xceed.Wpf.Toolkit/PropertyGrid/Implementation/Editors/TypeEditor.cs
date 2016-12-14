@@ -74,7 +74,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid.Editors
 
     protected virtual void SetControlProperties()
     {
-      //TODO: implement in derived class
     }
 
     protected abstract void SetValueDependencyProperty();

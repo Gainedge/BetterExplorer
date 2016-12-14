@@ -81,17 +81,17 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         Boolean IsSearchFolder { get; set; }
 
         /// <summary>Implemented but never used</summary>
-        Bitmap Thumbnail(Int32 size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source); //TODO: Use or Delete
+        Bitmap Thumbnail(Int32 size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source);
 
         /// <summary>Gets the item's BitmapSource</summary>
         BitmapSource ThumbnailSource(Int32 size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source);
 
         /// <summary>Implemented but never used</summary>
-        BitmapSource BitmapSource { get; } //TODO: Use or Delete
+        BitmapSource BitmapSource { get; }
 
         String ParsingName { get; set; }
 
-        Boolean IsBrowsable { get; set; } //TODO: Use or Delete
+        Boolean IsBrowsable { get; set; }
 
         /// <summary>Is this a folder?</summary>
         Boolean IsFolder { get; set; }
