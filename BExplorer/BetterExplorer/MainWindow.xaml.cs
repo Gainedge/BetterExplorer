@@ -171,7 +171,7 @@ namespace BetterExplorer {
       var location = new System.Drawing.Point();
       try {
         location = new System.Drawing.Point(Convert.ToInt32(rks.GetValue("LastWindowPosLeft", "0")), Convert.ToInt32(rks.GetValue("LastWindowPosTop", "0")));
-      } catch {}
+      } catch { }
 
       if (location != null) {
         this.Left = location.X;
@@ -248,9 +248,9 @@ namespace BetterExplorer {
 
     #region ViewEnumerationComplete
 
-	/// <summary>
-	/// Sets up btnSort and btnGroup so they have the correct items after navigating 
-	/// </summary>
+    /// <summary>
+    /// Sets up btnSort and btnGroup so they have the correct items after navigating 
+    /// </summary>
     private void SetSortingAndGroupingButtons() {
       btnSort.Items.Clear();
       btnGroup.Items.Clear();
@@ -393,15 +393,15 @@ namespace BetterExplorer {
                         }
                       }));
     }
-	
-	/// <summary>
-	/// Sets up each ribbon tab after select or navigate in ShellListView
-	/// </summary>
-	/// <param name="selectedItemsCount">The number of items selected</param>
-	/// <param name="selectedItem">The last selected item</param>
-	/// <remarks>
-	/// Only used in SetupUIOnSelectOrNavigate
-	/// </remarks>
+
+    /// <summary>
+    /// Sets up each ribbon tab after select or navigate in ShellListView
+    /// </summary>
+    /// <param name="selectedItemsCount">The number of items selected</param>
+    /// <param name="selectedItem">The last selected item</param>
+    /// <remarks>
+    /// Only used in SetupUIOnSelectOrNavigate
+    /// </remarks>
     private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, IListItemEx selectedItem) {
       #region Search Contextual Tab
       ctgSearch.Visibility = BooleanToVisibiliy(_ShellListView.CurrentFolder.IsSearchFolder);
@@ -433,26 +433,25 @@ namespace BetterExplorer {
         TheRibbon.SelectedTabItem = ctgLibraries.Items[0];
       }
 
-	  /*
-      if (ctgLibraries.Visibility == Visibility.Visible && _ShellListView.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName)) {
-        if (selectedItem != null && selectedItemsCount == 1)
-          SetupLibrariesTab(ShellLibrary.Load(Path.GetFileNameWithoutExtension(selectedItem.ParsingName), false));
-      } else if (ctgLibraries.Visibility == Visibility.Visible && _ShellListView.CurrentFolder.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName)) {
-        if (selectedItemsCount == 1)
-          SetupLibrariesTab(ShellLibrary.Load(Path.GetFileNameWithoutExtension(_ShellListView.CurrentFolder.ParsingName), false));
-      }
-      if (selectedItemsCount == 0) {
+      /*
+        if (ctgLibraries.Visibility == Visibility.Visible && _ShellListView.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName)) {
+          if (selectedItem != null && selectedItemsCount == 1)
+            SetupLibrariesTab(ShellLibrary.Load(Path.GetFileNameWithoutExtension(selectedItem.ParsingName), false));
+        } else if (ctgLibraries.Visibility == Visibility.Visible && _ShellListView.CurrentFolder.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName)) {
+          if (selectedItemsCount == 1)
+            SetupLibrariesTab(ShellLibrary.Load(Path.GetFileNameWithoutExtension(_ShellListView.CurrentFolder.ParsingName), false));
+        }
+        if (selectedItemsCount == 0) {
+          ctgLibraries.Visibility = Visibility.Collapsed;
+        }
+      */
+      if (selectedItemsCount == 0)
         ctgLibraries.Visibility = Visibility.Collapsed;
-      }
-	  */
-	  if (selectedItemsCount == 0) 
-        ctgLibraries.Visibility = Visibility.Collapsed;
-	  else if (selectedItemsCount > 1) { }
-      else if (ctgLibraries.Visibility == Visibility.Visible && _ShellListView.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName)) 
+      else if (selectedItemsCount > 1) { } else if (ctgLibraries.Visibility == Visibility.Visible && _ShellListView.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName))
         SetupLibrariesTab(ShellLibrary.Load(Path.GetFileNameWithoutExtension(selectedItem.ParsingName), false));
       else if (ctgLibraries.Visibility == Visibility.Visible && _ShellListView.CurrentFolder.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName))
-        SetupLibrariesTab(ShellLibrary.Load(Path.GetFileNameWithoutExtension(_ShellListView.CurrentFolder.ParsingName), false));     
-      
+        SetupLibrariesTab(ShellLibrary.Load(Path.GetFileNameWithoutExtension(_ShellListView.CurrentFolder.ParsingName), false));
+
       #endregion
 
       #region Archive Contextual Tab
@@ -495,11 +494,11 @@ namespace BetterExplorer {
       #endregion
 
     }
-	
-	/// <summary>
-	/// Sets up the status bar
-	/// </summary>
-	/// <param name="selectedItemsCount">The number of items currently selected</param>
+
+    /// <summary>
+    /// Sets up the status bar
+    /// </summary>
+    /// <param name="selectedItemsCount">The number of items currently selected</param>
     private void SetUpStatusBarOnSelectOrNavigate(int selectedItemsCount) {
       spSelItems.Visibility = BooleanToVisibiliy(selectedItemsCount > 0);
       sbiSelItemsCount.Visibility = BooleanToVisibiliy(selectedItemsCount > 0);
@@ -556,9 +555,9 @@ namespace BetterExplorer {
       lib.Close();
     }
 
-	/// <summary>
-	/// Does setup required for the UI when navigation occurs to a new folder
-	/// </summary>
+    /// <summary>
+    /// Does setup required for the UI when navigation occurs to a new folder
+    /// </summary>
     private void SetupUIOnSelectOrNavigate() {
       Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
         btnDefSave.Items.Clear();
@@ -3564,15 +3563,15 @@ item.IsChecked = false;
 
     }
 
-	/// <summary>
-	/// Sets up the UI after the ShellListView has navigated
-	/// </summary>
-	/// <param name="e"></param>
+    /// <summary>
+    /// Sets up the UI after the ShellListView has navigated
+    /// </summary>
+    /// <param name="e"></param>
     private void SetupUIonNavComplete(NavigatedEventArgs e) {
       btnSizeChart.IsEnabled = e.Folder.IsFileSystem;
       btnAutosizeColls.IsEnabled = _ShellListView.View == ShellViewStyle.Details;
-		
-	  if (e.Folder.ParsingName != KnownFolders.RecycleBin.ParsingName)
+
+      if (e.Folder.ParsingName != KnownFolders.RecycleBin.ParsingName)
         miRestoreALLRB.Visibility = Visibility.Collapsed;
       else if (_ShellListView.Items.Any())
         miRestoreALLRB.Visibility = Visibility.Visible;
@@ -3601,9 +3600,9 @@ item.IsChecked = false;
       btnUpLevel.IsEnabled = _ShellListView.CanNavigateParent;
     }
 
-	/// <summary>
-	/// Adds the current folder to the recent category of the Better Exlorer's <see cref="JumpList">JumpList</see>
-	/// </summary>
+    /// <summary>
+    /// Adds the current folder to the recent category of the Better Exlorer's <see cref="JumpList">JumpList</see>
+    /// </summary>
     private void SetUpJumpListOnNavComplete() {
       var pidl = IntPtr.Zero;
 
@@ -3684,26 +3683,26 @@ item.IsChecked = false;
       }
     }
 
-	/// <summary>
-	/// Navigates to the <paramref name="Destination"/> When Destination != Current Folder
-	/// </summary>
-	/// <param name="Destination">The folder you want to navigate to</param>
+    /// <summary>
+    /// Navigates to the <paramref name="Destination"/> When Destination != Current Folder
+    /// </summary>
+    /// <param name="Destination">The folder you want to navigate to</param>
     private void NavigationController(IListItemEx Destination) {
       if (!Destination.Equals(this._ShellListView.CurrentFolder)) this._ShellListView.Navigate_Full(Destination, true);
     }
-			
+
     private void OnBreadcrumbbarNavigate(IListItemEx Destination) {
       this.IsNeedEnsureVisible = true;
       this.NavigationController(Destination);
     }
 
-	/*
-    private string RemoveLastEmptySeparator(string path) {
-      path = path.Trim();
-      if (path.EndsWith(@"\")) path = path.Remove(path.Length - 1, 1);
-      return path;
-    }
-	*/
+    /*
+      private string RemoveLastEmptySeparator(string path) {
+        path = path.Trim();
+        if (path.EndsWith(@"\")) path = path.Remove(path.Length - 1, 1);
+        return path;
+      }
+    */
 
     #endregion
 
@@ -4050,7 +4049,7 @@ We could easily move this to another project and send that method
       //this._ShellListView.Focus();
       //this._CurrentlySelectedItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
     }
-		
+
     private void newt_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
       e.Handled = true;
       e.UseDefaultCursors = true;

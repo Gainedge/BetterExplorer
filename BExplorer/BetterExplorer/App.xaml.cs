@@ -156,6 +156,10 @@ namespace BetterExplorer {
       System.Windows.Forms.Application.ThreadException += this.Application_ThreadException;
 
       if (!File.Exists(Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite"))) {
+        var beAppDataPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer");
+        if (!Directory.Exists(beAppDataPath)) {
+          Directory.CreateDirectory(beAppDataPath);
+        }
         File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.sqlite"), Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite"));
       }
 
