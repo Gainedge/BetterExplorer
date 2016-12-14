@@ -3775,8 +3775,8 @@ item.IsChecked = false;
       string lohc = Convert.ToString(rks.GetValue("Locale", ":null:"));
       double sbw = Convert.ToDouble(rks.GetValue("SearchBarWidth", "220"));
       string tabba = Convert.ToString(rks.GetValue("TabBarAlignment", "top"));
-
-      rks.Close();
+	  bool rtlset = Convert.ToString(rks.GetValue("RTLMode", "notset")) != "notset";
+	  rks.Close();
       rk.Close();
 
 
@@ -3785,8 +3785,6 @@ item.IsChecked = false;
 
       // sets up ComboBox to select the current UI language
       this.TranslationComboBox.SelectedItem = this.TranslationComboBox.Items.OfType<TranslationComboBoxItem>().FirstOrDefault(x => x.LocaleCode == lohc);
-
-      bool rtlset = Convert.ToString(rks.GetValue("RTLMode", "notset")) != "notset";
 
       if (!rtlset) {
 	    rtlset = (this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL;
