@@ -36,22 +36,26 @@ namespace Wpf.Controls {
 
 		/// <summary>List of tabs that can be reopened by the user</summary>
 		public List<NavigationLog> ReopenableTabs = new List<NavigationLog>();
-		//public static List<NavigationLog> ReopenableTabs = new List<NavigationLog>();
 
 		#region Properties
-    public event PreviewSelectionChangedEventHandler PreviewSelectionChanged;
-    private int? m_lLastSelectedIndex;
+
+		public event PreviewSelectionChangedEventHandler PreviewSelectionChanged;
+		private int? m_lLastSelectedIndex;
 		public string StartUpLocation = KnownFolders.Libraries.ParsingName;
 		public DragEventHandler newt_DragEnter, newt_DragOver, newt_Drop, newt_Leave;
 		public GiveFeedbackEventHandler newt_GiveFeedback;
 		public MouseEventHandler newt_PreviewMouseMove;
-    public MouseButtonEventHandler newt_PreviewMouseDown;
+		public MouseButtonEventHandler newt_PreviewMouseDown;
 
 		/// <summary>An <see cref="Action">Action</see> that is fired after a new tab is created</summary> 
 		public Action ConstructMoveToCopyToMenu;
 
 		public bool isGoingBackOrForward;
+		
+		[Obsolete("Assigned but not used")]
 		public bool IsSelectionHandled = false;
+
+
 		//public Wpf.Controls.TabItem CurrentTabItem;
 
 		// TemplatePart controls
@@ -126,7 +130,7 @@ namespace Wpf.Controls {
 		public bool SelectNewTabOnCreate {
 			get { return (bool)GetValue(SelectNewTabOnCreateProperty); }
 			set { SetValue(SelectNewTabOnCreateProperty, value); }
-		}
+		} //TODO: Find out if we really need this
 
 		/// <summary>
 		/// Determines where new TabItems are added to the TabControl
@@ -209,8 +213,8 @@ namespace Wpf.Controls {
 
 
 		private static void OnAllowAddNewChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) { ((TabControl)d).SetAddNewButtonVisibility(); }
-		private static object OnCoerceAllowAddNewCallback(DependencyObject d, object basevalue) { return ((TabControl)d).OnCoerceAllowAddNewCallback(basevalue); }
-		private static object OnCoerceAllowDeleteNewCallback(DependencyObject d, object basevalue) { return ((TabControl)d).OnCoerceAllowDeleteCallback(basevalue); }
+		private static object OnCoerceAllowAddNewCallback(DependencyObject d, object basevalue)  =>  ((TabControl)d).OnCoerceAllowAddNewCallback(basevalue); 
+		private static object OnCoerceAllowDeleteNewCallback(DependencyObject d, object basevalue) => ((TabControl)d).OnCoerceAllowDeleteCallback(basevalue); 
 
 
 		private static void OnAllowDeleteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -283,7 +287,7 @@ namespace Wpf.Controls {
 
 		#endregion Dependency properties
 
-		#region Events
+		#region Event Stuff
 
 		//public event EventHandler<CancelEventArgs> TabItemAdding;
 		//public event EventHandler<TabItemEventArgs> TabItemAdded;
@@ -293,24 +297,43 @@ namespace Wpf.Controls {
 		private event EventHandler<TabItemCancelEventArgs> TabItemClosing;
 		private event EventHandler<TabItemEventArgs> TabItemClosed;
 		*/
-		#endregion Events
+
+		/// <summary>
+		/// Raises the <see cref="OnTabClicked"/> event if and only if <paramref name="tab"/> is not nothing
+		/// </summary>
+		/// <param name="tab">The tab you want to raise the event on</param>
+		public void RaiseTabClick(TabItem tab) {
+			this.IsInTabDragDrop = false;
+			this.OnTabClicked?.Invoke(this, new TabClickEventArgs(tab));
+		}
+
+		#endregion Event Stuff
 
 		#region Tab Stuff
 
-		public Wpf.Controls.TabItem NewTab(IListItemEx DefPath, bool IsNavigate) {
-      this.IsInTabDragDrop = false;
+		[Obsolete("Assigned values but not used")]
+		public bool IsInTabDragDrop = true;
+
+		/// <summary>
+		/// Creates a new tab, optionally selects it then erturns it
+		/// </summary>
+		/// <param name="DefPath">The <see cref="IListItemEx"/> that represents the location of this tab</param>
+		/// <param name="IsNavigate">Do you want the new tab to be selected?</param>
+		/// <returns></returns>
+		public TabItem NewTab(IListItemEx DefPath, bool IsNavigate) {
+			this.IsInTabDragDrop = false;
 			SelectNewTabOnCreate = false;
-			var newt = new Wpf.Controls.TabItem(DefPath) {
+			var newt = new TabItem(DefPath) {
 				Header = DefPath.DisplayName,
 				Icon = DefPath.ThumbnailSource(16, BExplorer.Shell.Interop.ShellThumbnailFormatOption.IconOnly, BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default),
-        ToolTip = DefPath.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\"),
+				ToolTip = DefPath.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\"),
 				AllowDrop = true
 			};
 
 			newt.DragEnter += new DragEventHandler(newt_DragEnter);
 			newt.DragOver += new DragEventHandler(newt_DragOver);
 			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
-      newt.PreviewMouseUp += newt_PreviewMouseDown;
+			newt.PreviewMouseUp += newt_PreviewMouseDown;
 			newt.Drop += new DragEventHandler(newt_Drop);
 			newt.DragLeave += newt_Leave;
 			newt.GiveFeedback += newt_GiveFeedback;
@@ -319,31 +342,36 @@ namespace Wpf.Controls {
 			try {
 				Items.Add(newt);
 				//IsSelectionHandled = false;
-        if (IsNavigate) {
-          SelectNewTabOnCreate = true;
-          this.SelectedItem = newt;
-        }
+				if (IsNavigate) {
+					SelectNewTabOnCreate = true;
+					this.SelectedItem = newt;
+				}
 			}
 			catch (Exception) {
 
 			}
 
 			ConstructMoveToCopyToMenu();
-      this.IsInTabDragDrop = true;
+			this.IsInTabDragDrop = true;
 			return newt;
 		}
-    public Boolean IsInTabDragDrop = true;
-		public Wpf.Controls.TabItem NewTab(string Location, bool IsNavigate = false) {
-			return NewTab(FileSystemListItem.ToFileSystemItem(IntPtr.Zero, Location.ToShellParsingName()), IsNavigate);
-		}
+
+		/// <summary>
+		/// Creates a new tab, optionally selects it then erturns it
+		/// </summary>
+		/// <param name="Location">The file path of the new Tab</param>
+		/// <param name="IsNavigate">Do you want the new tab to be selected?</param>
+		/// <returns></returns>
+		public TabItem NewTab(string Location, bool IsNavigate = false) => NewTab(FileSystemListItem.ToFileSystemItem(IntPtr.Zero, Location.ToShellParsingName()), IsNavigate);
+		
 
 		public void NewTab() {
 			IListItemEx DefPath;
 			if (StartUpLocation.StartsWith("::") && !StartUpLocation.Contains(@"\"))
-        DefPath = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, "shell:" + StartUpLocation);
+				DefPath = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, "shell:" + StartUpLocation);
 			else
 				try {
-          DefPath = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, StartUpLocation);
+					DefPath = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, StartUpLocation);
 				}
 				catch {
 					DefPath = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Libraries).ParsingName.ToShellParsingName());
@@ -365,7 +393,7 @@ namespace Wpf.Controls {
 		/// </summary>
 		/// <param name="tabItem"></param>
 		public void RemoveTabItem(TabItem tabItem, Boolean allowReopening = true, Boolean isCloseLastTab = false) {
-      this.IsInTabDragDrop = false;
+			this.IsInTabDragDrop = false;
 			if (IsFixedSize)
 				throw new InvalidOperationException("ItemsSource is Fixed Size");
 
@@ -382,32 +410,33 @@ namespace Wpf.Controls {
 				if (listItem != null && list != null)
 					list.Remove(listItem);
 			}
+
 			if (this.SelectedItem == null && !isCloseLastTab)
 				this.SelectedItem = this.Items.OfType<TabItem>().ToArray()[this.Items.OfType<TabItem>().Count() - 1];
 		}
 
 		public void CloneTabItem(TabItem theTab) {
-      int i = this.SelectedIndex;
-      var newt = new TabItem(theTab.ShellObject) {
-        Header = theTab.Header,
-        Icon = theTab.Icon,
-        ToolTip = theTab.ShellObject.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\"),
-        AllowDrop = true,
-        SelectedItems = theTab.SelectedItems
-      };
-      newt.log.CurrentLocation = theTab.ShellObject;
-      newt.log.ImportData(theTab.log);
-      if (i == -1 || i == this.Items.Count - 1 || AddNewTabToEnd)
-        this.Items.Add(newt);
-      else
-        this.Items.Insert(++i, newt);
+		  int i = this.SelectedIndex;
+		  var newt = new TabItem(theTab.ShellObject) {
+			Header = theTab.Header,
+			Icon = theTab.Icon,
+			ToolTip = theTab.ShellObject.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\"),
+			AllowDrop = true,
+			SelectedItems = theTab.SelectedItems
+		  };
+		  newt.log.CurrentLocation = theTab.ShellObject;
+		  newt.log.ImportData(theTab.log);
+		  if (i == -1 || i == this.Items.Count - 1 || AddNewTabToEnd)
+			this.Items.Add(newt);
+		  else
+			this.Items.Insert(++i, newt);
 
-      ConstructMoveToCopyToMenu();
+		  ConstructMoveToCopyToMenu();
 		}
 
 		public void CloseAllTabsButThis(TabItem tabItem) {
-			foreach (TabItem tab in this.Items.OfType<TabItem>().ToArray()) {
-				if (tab != tabItem) this.RemoveTabItem(tab);
+			foreach (TabItem tab in this.Items.OfType<TabItem>().Where(x => x != tabItem)) {
+				this.RemoveTabItem(tab);
 			}
 		}
 
@@ -546,17 +575,17 @@ namespace Wpf.Controls {
 			//}
 		}
 
-    protected override void OnSelectionChanged(SelectionChangedEventArgs e) {
-      base.OnSelectionChanged(e);
-      PreviewSelectionChangedEventArgs eEventArgs = new PreviewSelectionChangedEventArgs(e.AddedItems, e.RemovedItems);
-      if (m_lLastSelectedIndex.HasValue)
-        if (PreviewSelectionChanged != null)
-          PreviewSelectionChanged(this, eEventArgs);
-      if (eEventArgs.Cancel)
-        this.SelectedIndex = m_lLastSelectedIndex.Value;
-      else
-        m_lLastSelectedIndex = this.SelectedIndex;
-    }
+		protected override void OnSelectionChanged(SelectionChangedEventArgs e) {
+			base.OnSelectionChanged(e);
+			var eEventArgs = new PreviewSelectionChangedEventArgs(e.AddedItems, e.RemovedItems);
+			if (m_lLastSelectedIndex.HasValue)
+				PreviewSelectionChanged?.Invoke(this, eEventArgs);
+
+			if (eEventArgs.Cancel)
+				this.SelectedIndex = m_lLastSelectedIndex.Value;
+			else
+				m_lLastSelectedIndex = this.SelectedIndex;
+		}
 
 		protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue) {
 			base.OnItemsSourceChanged(oldValue, newValue);
@@ -592,7 +621,24 @@ namespace Wpf.Controls {
 		}
 
 		#endregion Constructors
+		
+		#region IEnumerable     
 
+		internal IEnumerable GetItems()  => IsUsingItemsSource ? ItemsSource : Items;		
+
+		private IEnumerable InternalChildren() {
+			IEnumerator enumerator = GetItems().GetEnumerator();
+			while (enumerator.MoveNext()) {
+				if (enumerator.Current is TabItem)
+					yield return enumerator.Current;
+				else
+					yield return this.ItemContainerGenerator.ContainerFromItem(enumerator.Current) as TabItem;
+			}
+		}
+
+		#endregion
+
+		#region Private/Internal      
 
 		[Obsolete("Exactly the same as OnCoerceAllowDeleteCallback(...)")]
 		private object OnCoerceAllowAddNewCallback(object basevalue) {
@@ -613,7 +659,6 @@ namespace Wpf.Controls {
 			else
 				return false;
 		}
-
 
 		private void TabControl_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
 			this.NewTab();
@@ -690,14 +735,6 @@ namespace Wpf.Controls {
 			}
 		}
 
-		internal IEnumerable GetItems() {
-			return IsUsingItemsSource ? ItemsSource : Items;
-		}
-		public void RaiseTabClick(TabItem tab) {
-      this.IsInTabDragDrop = false;
-			if (this.OnTabClicked != null)
-				this.OnTabClicked.Invoke(this, new TabClickEventArgs(tab));
-		}
 		internal int GetTabsCount() {
 			if (BindingOperations.IsDataBound(this, ItemsSourceProperty)) {
 				if (ItemsSource is IList)
@@ -732,16 +769,10 @@ namespace Wpf.Controls {
 			return Items[index] as TabItem;
 		}
 
-		private IEnumerable InternalChildren() {
-			IEnumerator enumerator = GetItems().GetEnumerator();
-			while (enumerator.MoveNext()) {
-				if (enumerator.Current is TabItem)
-					yield return enumerator.Current;
-				else
-					yield return this.ItemContainerGenerator.ContainerFromItem(enumerator.Current) as TabItem;
-			}
-		}
+		#endregion
+
 	}
+
 	public class TabClickEventArgs : EventArgs {
 		public TabItem ClickedItem { get; private set; }
 		public TabClickEventArgs(TabItem tab) {
