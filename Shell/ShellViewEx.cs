@@ -440,12 +440,18 @@ namespace BExplorer.Shell {
         Int32 iStart = -1;
         var lvi = new LVITEMINDEX();
         while (lvi.iItem != -1) {
-          lvi.iItem = iStart;
-          lvi.iGroup = this.GetGroupIndex(iStart);
-          User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
-          iStart = lvi.iItem;
+          try {
+            lvi = this.ToLvItemIndex(iStart);
+            User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
+            iStart = lvi.iItem;
+          } catch { }
 
-          if (lvi.iItem != -1) selItems.Add(lvi.iItem);
+          if (lvi.iItem != -1) {
+            if (!selItems.Contains(lvi.iItem))
+              selItems.Add(lvi.iItem);
+            else
+              break;
+          }
         }
 
         return selItems;
@@ -561,19 +567,19 @@ namespace BExplorer.Shell {
             //worker.SetApartmentState(ApartmentState.STA);
             //worker.Start();
           } else if (obj.Item1 == ItemUpdateType.Created) {
-            if (obj.Item2.ParsingName.StartsWith(this.CurrentFolder.ParsingName) && !this.Items.Contains(obj.Item2, new ShellItemEqualityComparer())) {
+            if (obj.Item2.IsInCurrentFolder(this.CurrentFolder) && !this.Items.Contains(obj.Item2, new ShellItemEqualityComparer())) {
               obj.Item2.ItemIndex = this.Items.Count;
-              Items.Add(obj.Item2);
+              this.Items.Add(obj.Item2);
               this._AddedItems.Add(obj.Item2.PIDL);
             }
           } else if (obj.Item1 != ItemUpdateType.RecycleBin) {
             var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj.Item2));
             if (existingItem == null) {
               if (obj.Item2.ParsingName.StartsWith(this.CurrentFolder.ParsingName)) {
-                if (!Items.Contains(obj.Item2, new ShellItemEqualityComparer()) &&
+                if (!this.Items.Contains(obj.Item2, new ShellItemEqualityComparer()) &&
                         !String.IsNullOrEmpty(obj.Item2.ParsingName)) {
                   obj.Item2.ItemIndex = this.Items.Count;
-                  Items.Add(obj.Item2);
+                  this.Items.Add(obj.Item2);
                   this._AddedItems.Add(obj.Item2.PIDL);
                 }
               } else {
@@ -2178,12 +2184,12 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
     /// <param name="obj">The item you want to insert</param>
     /// <returns>If item is new Then returns <see cref="IListItemEx.ItemIndex">obj.ItemIndex</see> Else returns -1</returns>
     public Int32 InsertNewItem(IListItemEx obj) {
-      if (!this._AddedItems.Contains(obj.PIDL) && !String.IsNullOrEmpty(obj.ParsingName) && obj.Parent.Equals(this.CurrentFolder)) {
-        Items.Add(obj);
+      if (!this._AddedItems.Contains(obj.PIDL) && !String.IsNullOrEmpty(obj.ParsingName) && obj.IsInCurrentFolder(this.CurrentFolder)) {
+        this.Items.Add(obj);
         this._AddedItems.Add(obj.PIDL);
         var col = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == this.LastSortedColumnId).Value;
         this.SetSortCollumn(true, col, this.LastSortOrder, false);
-        if (this.IsGroupsEnabled) SetGroupOrder(false);
+        if (this.IsGroupsEnabled) this.SetGroupOrder(false);
         var itemIndex = obj.ItemIndex;
         return itemIndex;
       }
@@ -2191,7 +2197,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
     }
 
     public void UpdateItem(IListItemEx obj1, IListItemEx obj2) {
-      if (obj2.Parent?.Equals(this.CurrentFolder) == false || obj2.Equals(obj1)) return;
+      if (!obj2.IsInCurrentFolder(this.CurrentFolder) || obj2.Equals(obj1)) return;
       var items = this.Items.ToArray();
       var oldItem =
         items.SingleOrDefault(s =>
@@ -2440,12 +2446,12 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
     public void RenameShellItem(IShellItem item, String newName, Boolean isAddFileExtension, String extension = "") {
       var handle = this.Handle;
       var sink = new FOperationProgressSink(this);
-        var fo = new IIFileOperation(sink, handle, false);
-        fo.RenameItem(item, isAddFileExtension ? newName + extension : newName);
-        fo.PerformOperations();
-        if (fo.GetAnyOperationAborted()) {
-          this._IsCanceledOperation = true;
-        }
+      var fo = new IIFileOperation(sink, handle, false);
+      fo.RenameItem(item, isAddFileExtension ? newName + extension : newName);
+      fo.PerformOperations();
+      if (fo.GetAnyOperationAborted()) {
+        this._IsCanceledOperation = true;
+      }
     }
 
     /// <summary>
@@ -3238,7 +3244,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
             this._FsWatcher.Changed += (sender, args) => {
               try {
                 var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
-                if (this.CurrentFolder != null && objUpdateItem.Parent != null && objUpdateItem.Parent.Equals(this.CurrentFolder)) {
+                if (objUpdateItem.IsInCurrentFolder(this.CurrentFolder)) {
                   var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
                   if (exisitingUItem != null)
                     this.RefreshItem(exisitingUItem.ItemIndex, true);
@@ -3265,7 +3271,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                     this._TemporaryFiles.Add(args.FullPath);
                 }
                 var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
-                if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
+                if (obj.IsInCurrentFolder(this.CurrentFolder)) {
                   if (this.IsRenameNeeded) {
                     var existingItem = this.Items.ToArray().FirstOrDefault(s => s.Equals(obj));
                     if (existingItem == null) {
@@ -3861,11 +3867,11 @@ navigationThread.Start();
               case ShellNotifications.SHCNE.SHCNE_CREATE:
                 try {
                   var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-                  if (this.CurrentFolder != null && (obj.Parent != null && (obj.Parent.Equals(this.CurrentFolder) || (obj.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName))))) {
+                  if (obj.IsInCurrentFolder(this.CurrentFolder)) {
                     if (this.IsRenameNeeded) {
                       var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
                       if (existingItem == null) {
-                        var itemIndex = this.InsertNewItem(obj.Clone(true));
+                        var itemIndex = this.InsertNewItem(obj);
                         this.SelectItemByIndex(itemIndex, true, true);
                         this.RenameSelectedItem(itemIndex);
                         this.IsRenameNeeded = false;
@@ -3885,8 +3891,7 @@ navigationThread.Start();
                 if (this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.RecycleBin, FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, ((ShellItem)KnownFolders.RecycleBin).ComInterface)))) {
                   this.UnvalidateDirectory();
                 }
-                if ((this.CurrentFolder != null && (objDelete.ParsingName.StartsWith(this.CurrentFolder.ParsingName) || (objDelete.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName))))
-                                && this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, objDelete.Clone()), true)) {
+                if (objDelete.IsInCurrentFolder(this.CurrentFolder) && this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, objDelete.Clone()), true)) {
                   this.UnvalidateDirectory();
                   this.RaiseItemUpdated(ItemUpdateType.Deleted, null, objDelete, -1);
                   objDelete.Dispose();
@@ -3899,14 +3904,14 @@ navigationThread.Start();
                 try {
                   objUpdate = FileSystemListItem.ToFileSystemItem(this.LVHandle, Shell32.ILFindLastID(info.Item1));
                 } catch { }
-                if (objUpdate != null && this.CurrentFolder != null && objUpdate.Equals(this.CurrentFolder)) {
+                if (objUpdate.IsInCurrentFolder(this.CurrentFolder)) {
                   this.UnvalidateDirectory();
                 }
                 break;
 
               case ShellNotifications.SHCNE.SHCNE_UPDATEITEM:
                 var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-                if (this.CurrentFolder != null && objUpdateItem.Parent != null && objUpdateItem.Parent.Equals(this.CurrentFolder)) {
+                if (objUpdateItem.IsInCurrentFolder(this.CurrentFolder)) {
                   var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
                   if (exisitingUItem != null) {
                     if (this.View == ShellViewStyle.Details) {

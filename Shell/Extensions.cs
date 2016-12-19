@@ -644,5 +644,23 @@ namespace BExplorer.Shell {
 			// stream now contains the CIDL
 			return memStream;
 		}
+
+	  public static Boolean IsInCurrentFolder(this IListItemEx checkedItem, IListItemEx currentFolder) {
+	    var isLibraryContainer = currentFolder?.Extension == ".library-ms";
+	    if (isLibraryContainer) {
+	      var library = ShellLibrary.Load(currentFolder.DisplayName, true);
+	      var libraryFolders = library.Select(w => w).ToArray();
+	      if (libraryFolders.Count(
+	          c => c.ParsingName.Equals(checkedItem.Parent?.ParsingName, StringComparison.InvariantCultureIgnoreCase)) > 0) {
+          library.Close();
+	        return true;
+	      }
+        library.Close();
+        return false;
+	    }
+	    else {
+	      return checkedItem?.Parent?.Equals(currentFolder) == true;
+	    }
+	  }
 	}
 }
