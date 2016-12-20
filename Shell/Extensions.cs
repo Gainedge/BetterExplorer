@@ -90,6 +90,7 @@ namespace BExplorer.Shell {
 		LVCF_MINWIDTH = 0x0040
 	}
 
+	/// <summary>Native Listview column</summary>
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 	public struct LVCOLUMN {
 		public LVCF mask;
