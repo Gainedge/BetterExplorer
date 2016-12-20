@@ -2,39 +2,52 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace BetterExplorer
-{
+namespace BetterExplorer {
 
-    /// <summary>
-    /// Adds a new string to the tab collection. If a value already exists in the list, though, an
-    /// ArgumentOutOfRangeException will be thrown.
-    /// </summary>
-    public class SavedTabsList : List<string>
-    {
-        public static SavedTabsList CreateFromString(string values)
-        {
-            var o = new SavedTabsList();
-            o.AddRange(values.Split('|'));
-            return o;
-        }
+	/// <summary>
+	/// Adds a new string to the tab collection. If a value already exists in the list, though, an
+	/// ArgumentOutOfRangeException will be thrown.
+	/// </summary>
+	public class SavedTabsList : List<string> {
+		/// <summary>
+		/// Creates a new <see cref="SavedTabsList"/> and adds each item in <paramref name="values"/> after splitting it on |
+		/// </summary>
+		/// <param name="values">The items you want added to the list which will be split on |</param>
+		/// <returns></returns>
+		public static SavedTabsList CreateFromString(string values) {
+			var o = new SavedTabsList();
+			o.AddRange(values.Split('|'));
+			return o;
+		}
 
-        public static SavedTabsList LoadTabList(string file)
-        {
-            using (var sr = new StreamReader(file))
-            {
-                return CreateFromString(sr.ReadLine());
-            }
-        }
+		/// <summary>
+		/// Loads a list of tabs from a file
+		/// </summary>
+		/// <param name="file">The full name of the file you want to load from</param>
+		/// <returns></returns>
+		public static SavedTabsList LoadTabList(string file) {
+			using (var sr = new StreamReader(file)) {
+				return CreateFromString(sr.ReadLine());
+			}
+		}
 
-        public static void SaveTabList(SavedTabsList locs, string file)
-        {
-            using (var sw = new StreamWriter(file, false))
-            {
+		/// <summary>
+		/// Saves the list to a file
+		/// </summary>
+		/// <param name="locs">The list of tabs</param>
+		/// <param name="file">The file you want to save to</param>
+		public static void SaveTabList(SavedTabsList locs, string file) {
+			using (var sw = new StreamWriter(file, false)) {
 				sw.WriteLine(string.Join("|", locs));
 			}
-        }
+		}
 
-        public new void Add(string loc)
+		/*
+		/// <summary>
+		/// Adds items to the list but throws an ArgumentOutOfRangeException if a duplicate is detected
+		/// </summary>
+		/// <param name="loc"></param>
+		public new void Add(string loc)
         {
             if (!this.Contains(loc))
                 base.Add(loc);
@@ -49,5 +62,6 @@ namespace BetterExplorer
             else
                 throw new ArgumentOutOfRangeException("loc", "This location does not exist in this list and cannot be removed.");
         }
-    }
+		*/
+	}
 }
