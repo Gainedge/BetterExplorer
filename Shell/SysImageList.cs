@@ -1,14 +1,7 @@
 ﻿using BExplorer.Shell.Interop;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using System.Windows.Media.Effects;
-using Size = System.Drawing.Size;
 
 namespace BExplorer.Shell {
 
@@ -163,48 +156,48 @@ namespace BExplorer.Shell {
 		//[DllImport("gdi32.dll", EntryPoint = "BitBlt", CharSet = CharSet.Auto)]
 		//public static extern bool BitBlt(IntPtr hdcDst, int xDst, int yDsk, int width, int height, IntPtr hdcSrc, int xSrc, int ySrc, int rasterOp);
 		/*
-public static System.Drawing.Rectangle GetTotalBound(){
-		int x, y, w, h;
-		int minX = 0, maxX = 0, minY = 0, maxY = 0;
-		foreach(Screen s in Screen.AllScreens){
-				x = s.Bounds.X;
-				y = s.Bounds.Y;
-				w = s.Bounds.X + s.Bounds.Width;
-				h = s.Bounds.Y + s.Bounds.Height;
-				if(x < minX)
-						minX = x;
-				if(y < minY)
-						minY = y;
-				if(maxX < w)
-						maxX = w;
-				if(maxY < h)
-						maxY = h;
+		public static System.Drawing.Rectangle GetTotalBound(){
+			int x, y, w, h;
+			int minX = 0, maxX = 0, minY = 0, maxY = 0;
+			foreach(Screen s in Screen.AllScreens){
+					x = s.Bounds.X;
+					y = s.Bounds.Y;
+					w = s.Bounds.X + s.Bounds.Width;
+					h = s.Bounds.Y + s.Bounds.Height;
+					if(x < minX)
+							minX = x;
+					if(y < minY)
+							minY = y;
+					if(maxX < w)
+							maxX = w;
+					if(maxY < h)
+							maxY = h;
+			}
+			System.Drawing.Rectangle r = new System.Drawing.Rectangle(minX, minY, maxX - minX, maxY - minY);
+			return r;
 		}
-		System.Drawing.Rectangle r = new System.Drawing.Rectangle(minX, minY, maxX - minX, maxY - minY);
-		return r;
-}
 
-public static Bitmap GetDesktopBitmap(){
-		System.Drawing.Rectangle rect = GetTotalBound();
-		Bitmap bitmap = new Bitmap(rect.Width, rect.Height);
-		Graphics g = Graphics.FromImage(bitmap);
-		IntPtr desktopHandle = IntPtr.Zero;
-		IntPtr desktopDeviceContext = IntPtr.Zero;
-		IntPtr imageDeviceContext = IntPtr.Zero;
-		try{
-				desktopHandle = GetDesktopWindow();
-				desktopDeviceContext = GetDeviceContext(desktopHandle);
-				imageDeviceContext = g.GetHdc();
-				BitBlt(imageDeviceContext, 0, 0, rect.Width, rect.Height, desktopDeviceContext, rect.X, rect.Y, 0xCC0020);
-		}finally{
-				ReleaseDeviceContext(desktopHandle, desktopDeviceContext);
-				if(imageDeviceContext != IntPtr.Zero){
-						g.ReleaseHdc(imageDeviceContext);
-				}
+		public static Bitmap GetDesktopBitmap(){
+			System.Drawing.Rectangle rect = GetTotalBound();
+			Bitmap bitmap = new Bitmap(rect.Width, rect.Height);
+			Graphics g = Graphics.FromImage(bitmap);
+			IntPtr desktopHandle = IntPtr.Zero;
+			IntPtr desktopDeviceContext = IntPtr.Zero;
+			IntPtr imageDeviceContext = IntPtr.Zero;
+			try{
+					desktopHandle = GetDesktopWindow();
+					desktopDeviceContext = GetDeviceContext(desktopHandle);
+					imageDeviceContext = g.GetHdc();
+					BitBlt(imageDeviceContext, 0, 0, rect.Width, rect.Height, desktopDeviceContext, rect.X, rect.Y, 0xCC0020);
+			}finally{
+					ReleaseDeviceContext(desktopHandle, desktopDeviceContext);
+					if(imageDeviceContext != IntPtr.Zero){
+							g.ReleaseHdc(imageDeviceContext);
+					}
+			}
+			return bitmap;
 		}
-		return bitmap;
-}
-*/
+		*/
 
 		[DllImport("USER32.DLL", EntryPoint = "DestroyIcon", CharSet = CharSet.Auto)]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -280,19 +273,19 @@ public enum IconSize {
 	public class ImageList : IDisposable {
 
 		/*
-#region SHFileInfo
-//[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-//public struct SHFileInfo {
-//	public IntPtr hIcon;
-//	public int iIcon;
-//	public uint dwAttributes;
-//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-//	public string szDisplayName;
-//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-//	public string szTypeName;
-//}
-#endregion
-*/
+		#region SHFileInfo
+		//[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		//public struct SHFileInfo {
+		//	public IntPtr hIcon;
+		//	public int iIcon;
+		//	public uint dwAttributes;
+		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+		//	public string szDisplayName;
+		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+		//	public string szTypeName;
+		//}
+		#endregion
+		*/
 
 		#region Locals
 
@@ -363,24 +356,24 @@ public static ImageListSize MaxSize {
 
 
 		/*
-[Obsolete("Consider Inlining")]
-private int GetIconIndex(IntPtr path) {
-	var options = SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.Pidl;
-	var shfi = new SHFILEINFO();
-	var shfiSize = Marshal.SizeOf(shfi.GetType());
-	IntPtr retVal = Win32Api.SHGetFileInfo(path, FileAttributes.None, ref shfi, shfiSize, options);
-	if (shfi.hIcon != IntPtr.Zero) {
-		Win32Api.DestroyIcon(shfi.hIcon);
-	}
+		[Obsolete("Consider Inlining")]
+		private int GetIconIndex(IntPtr path) {
+			var options = SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.Pidl;
+			var shfi = new SHFILEINFO();
+			var shfiSize = Marshal.SizeOf(shfi.GetType());
+			IntPtr retVal = Win32Api.SHGetFileInfo(path, FileAttributes.None, ref shfi, shfiSize, options);
+			if (shfi.hIcon != IntPtr.Zero) {
+				Win32Api.DestroyIcon(shfi.hIcon);
+			}
 
-	if (retVal.Equals(IntPtr.Zero)) {
-		throw new Win32Exception(Marshal.GetLastWin32Error());
-	}
-	else {
-		return shfi.iIcon;
-	}
-}
-*/
+			if (retVal.Equals(IntPtr.Zero)) {
+				throw new Win32Exception(Marshal.GetLastWin32Error());
+			}
+			else {
+				return shfi.iIcon;
+			}
+		}
+		*/
 
 
 		/// <summary>
@@ -405,16 +398,17 @@ private int GetIconIndex(IntPtr path) {
 			}
 			else {
 				/* brakes stack on optimized build
-int idx = shfi.iIcon & 0xFFFFFF;
-int iOverlay = shfi.iIcon >> 24;
-overlayIndex = iOverlay;
-return idx;
-*/
+				int idx = shfi.iIcon & 0xFFFFFF;
+				int iOverlay = shfi.iIcon >> 24;
+				overlayIndex = iOverlay;
+				return idx;
+				*/
 				overlayIndex = shfi.iIcon >> 24;
 				return shfi.iIcon & 0xFFFFFF;
 			}
 		}
 
+		/*
 		public int GetIconIndex(IntPtr path) {
 			var options = SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.Icon | SHGetFileInfoOptions.Pidl;
 			var shfi = new SHFILEINFO();
@@ -430,37 +424,45 @@ return idx;
 				return 0;
 			}
 			else {
-				/* brakes stack on optimized build
-int idx = shfi.iIcon & 0xFFFFFF;
-int iOverlay = shfi.iIcon >> 24;
-overlayIndex = iOverlay;
-return idx;
-*/
+				//brakes stack on optimized build
+				//int idx = shfi.iIcon & 0xFFFFFF;
+				//int iOverlay = shfi.iIcon >> 24;
+				//overlayIndex = iOverlay;
+				//return idx;
+				
 
 				return shfi.iIcon & 0xFFFFFF;
 			}
 		}
+		*/
 
 		/*
-public IntPtr GetHIcon(int index) {
-	IntPtr hIcon;
-	var hresult = this._ImageList.GetIcon(index, ImageListDrawOptions.PreserveAlpha, out hIcon);
-	Marshal.ThrowExceptionForHR(hresult);
-	if (hIcon != IntPtr.Zero) {
-		return hIcon;
-	}
-	else {
-		throw new Win32Exception();
-	}
-}
-*/
+		public IntPtr GetHIcon(int index) {
+			IntPtr hIcon;
+			var hresult = this._ImageList.GetIcon(index, ImageListDrawOptions.PreserveAlpha, out hIcon);
+			Marshal.ThrowExceptionForHR(hresult);
+			if (hIcon != IntPtr.Zero) {
+				return hIcon;
+			}
+			else {
+				throw new Win32Exception();
+			}
+		}
+		*/
 
 		/*
-public Icon GetIcon(int index) {
-	return this.GetIcon(index, ImageListDrawOptions.Async);
-}
-*/
+		public Icon GetIcon(int index) {
+			return this.GetIcon(index, ImageListDrawOptions.Async);
+		}
+		*/
 
+		/*
+		/// <summary>
+		/// Creates an icon from an image and a mask in an image list.
+		/// </summary>
+		/// <param name="index">A value of type int that contains the index of the image. </param>
+		/// <param name="options">A combination of flags that specify the drawing style.</param>
+		/// <returns>The created icon</returns>
 		public Icon GetIcon(int index, ImageListDrawOptions options = ImageListDrawOptions.Async) {
 			IntPtr hIcon;
 			var hresult = this._ImageList.GetIcon(index, options, out hIcon);
@@ -471,53 +473,69 @@ public Icon GetIcon(int index) {
 			else
 				return Icon.FromHandle(hIcon);
 		}
+		*/
 
 		/*
-public Icon GetIcon(IntPtr path) {
-	return this.GetIcon(path, ImageListDrawOptions.Normal);
-}
-*/
+		public Icon GetIcon(IntPtr path) {
+			return this.GetIcon(path, ImageListDrawOptions.Normal);
+		}
+		*/
 
 		/*
-[Obsolete("Not Used", true)]
-public Icon GetIcon(IntPtr path, ImageListDrawOptions options = ImageListDrawOptions.Normal) {
-	return this.GetIcon(this.GetIconIndex(path), options);
-}
-*/
+		[Obsolete("Not Used", true)]
+		public Icon GetIcon(IntPtr path, ImageListDrawOptions options = ImageListDrawOptions.Normal) {
+			return this.GetIcon(this.GetIconIndex(path), options);
+		}
+		*/
 
 		/*
-[Obsolete("Not Used", true)]
-public struct Int32Size {
-	public static Int32Size Empty {
-		get { return new Int32Size(); }
-	}
+		[Obsolete("Not Used", true)]
+		public struct Int32Size {
+			public static Int32Size Empty {
+				get { return new Int32Size(); }
+			}
 
-	public int Width { get; set; }
-	public int Height { get; set; }
+			public int Width { get; set; }
+			public int Height { get; set; }
 
-	public Int32Size(int width, int height)
-		: this() {
-		Width = width;
-		Height = height;
-	}
-}
-*/
+			public Int32Size(int width, int height)
+				: this() {
+				Width = width;
+				Height = height;
+			}
+		}
+		*/
 
 		/*
-[Obsolete("Not Used, Try to Delete!!!", true)]
-private Int32Size GetSizePixels() {
-	int x;
-	int y;
-	var hresult = this._ImageList.GetIconSize(out x, out y);
-	Marshal.ThrowExceptionForHR(hresult);
-	return new Int32Size(x, y);
-}
-*/
+		[Obsolete("Not Used, Try to Delete!!!", true)]
+		private Int32Size GetSizePixels() {
+			int x;
+			int y;
+			var hresult = this._ImageList.GetIconSize(out x, out y);
+			Marshal.ThrowExceptionForHR(hresult);
+			return new Int32Size(x, y);
+		}
+		*/
 
+		/// <summary>
+		/// Draws the icon
+		/// </summary>
+		/// <param name="hdc">A handle to the destination device context.</param>
+		/// <param name="overlayIndex">The index of the overlay</param>
+		/// <param name="location">The x and y coordinates that specifies where the image is drawn.</param>
+		/// <param name="newSize">The new size of the image (Double Check)</param>
 		public void DrawOverlay(IntPtr hdc, int overlayIndex, Point location, int newSize = -1) {
 			DrawInternal(hdc, GetIndexOfOverlay(overlayIndex), 0, ImageListDrawOptions.Normal | ImageListDrawOptions.Transparent, ImageListDrawStates.Normal, 0, location, newSize);
 		}
 
+		/// <summary>
+		/// Draws the icon
+		/// </summary>
+		/// <param name="hdc">A handle to the destination device context.</param>
+		/// <param name="index">The zero-based index of the image to be drawn.</param>
+		/// <param name="location">The x and y coordinates that specifies where the image is drawn.</param>
+		/// <param name="newSize">The new size of the image (Double Check)</param>
+		/// <param name="hidden"></param>
 		public void DrawIcon(IntPtr hdc, int index, Point location, int newSize = -1, Boolean hidden = false) {
 			DrawInternal(hdc, index, 0, hidden ? ImageListDrawOptions.Selected | ImageListDrawOptions.Transparent : ImageListDrawOptions.Image | ImageListDrawOptions.Transparent, ImageListDrawStates.Alpha, hidden ? 192 : 255, location, newSize);
 		}
@@ -529,6 +547,17 @@ public void Draw(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions o
 }
 */
 
+		/// <summary>
+		/// Draws the icon
+		/// </summary>
+		/// <param name="hdc">A handle to the destination device context.</param>
+		/// <param name="index">The zero-based index of the image to be drawn.</param>
+		/// <param name="overlayIndex">The index of the overlay</param>
+		/// <param name="options"></param>
+		/// <param name="state">A flag that specifies the drawing state. This member can contain one or more image list state flags. You must use comctl32.dll version 6 to use this member. See the Remarks.</param>
+		/// <param name="alpha">Used with the alpha blending effect.</param>
+		/// <param name="location">The x and y coordinates that specifies where the image is drawn.</param>
+		/// <param name="newSize">The new size of the image (Double Check)</param>
 		private void DrawInternal(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions options, ImageListDrawStates state, int alpha, Point location, int newSize) {
 			var param = new IMAGELISTDRAWPARAMS() {
 				//himl = this.Handle;
@@ -550,6 +579,11 @@ public void Draw(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions o
 			Marshal.ThrowExceptionForHR(hresult);
 		}
 
+		/// <summary>
+		/// Retrieves a specified image from the list of images used as overlay masks.
+		/// </summary>
+		/// <param name="overlayIndex">A value of type int that contains the one-based index of the overlay mask. </param>
+		/// <returns>A pointer to an int that receives the zero-based index of an image in the image list. This index identifies the image that is used as an overlay mask. </returns>
 		public int GetIndexOfOverlay(int overlayIndex) {
 			int idx;
 			var hresult = this._ImageList.GetOverlayImage(overlayIndex, out idx);
@@ -558,14 +592,14 @@ public void Draw(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions o
 		}
 
 		/*
-[Obsolete("Not Used, Try to Delete!!!", true)]
-[DllImport("comctl32.dll", SetLastError = true)]
-static extern IntPtr ImageList_Create(int cx, int cy, uint flags, int cInitial, int cGrow);
+		[Obsolete("Not Used, Try to Delete!!!", true)]
+		[DllImport("comctl32.dll", SetLastError = true)]
+		static extern IntPtr ImageList_Create(int cx, int cy, uint flags, int cInitial, int cGrow);
 
-[Obsolete("Not Used, Try to Delete!!!", true)]
-[DllImport("Comctl32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-public static extern bool ImageList_Destroy(IntPtr himl);
-*/
+		[Obsolete("Not Used, Try to Delete!!!", true)]
+		[DllImport("Comctl32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern bool ImageList_Destroy(IntPtr himl);
+		*/
 		public IntPtr Handle { get; set; }
 		#endregion
 
@@ -604,6 +638,7 @@ public static extern bool ImageList_Destroy(IntPtr himl);
 			Marshal.ThrowExceptionForHR(hresult);
 		}
 
+		/*
 		public ImageList(Int32 size) {
 			var CLSID_ImageList = Guid.Parse("7C476BA2-02B1-48f4-8048-B24619DDC058");
 			var refIImageList2 = typeof(IImageList).GUID;
@@ -614,11 +649,15 @@ public static extern bool ImageList_Destroy(IntPtr himl);
 			this._ImageList = (IImageList2)Marshal.GetObjectForIUnknown(ptr);
 			this.Handle = ptr;
 		}
+		*/
 
+		/*
 		public void ExpandImageList(Int32 count) {
 			this._ImageList.SetImageCount(count);
 		}
+		*/
 
+		/*
 		public Int32 AddImage(IntPtr hBitmap) {
 			var index = this.GetCount();
 
@@ -626,37 +665,49 @@ public static extern bool ImageList_Destroy(IntPtr himl);
 			this._ImageList.Replace2(index, hBitmap, IntPtr.Zero, IntPtr.Zero, 0x0001 | 0x0010);
 			return index;
 		}
-
+		*/
+		
+		/*
 		public void SetSize(Int32 size) {
 			this._ImageList.SetIconSize(size, size);
 		}
+		*/
 
+		/*
 		public void ReplaceImage(Int32 index, IntPtr hBitmap) {
 			if (index > this.GetCount()) return;
 			this._ImageList.Replace2(index, hBitmap, IntPtr.Zero, IntPtr.Zero, 0x0001 | 0x0010);
 		}
+		*/
 
+		/*
 		public void SetOverlayImage(Int32 index, Int32 overlay) {
 			this._ImageList.SetOverlayImage(index, overlay);
 		}
+		*/
 
+		/*
 		public Int32 GetCount() {
 			var count = -1;
 			this._ImageList.GetImageCount(ref count);
 			return count;
 		}
+		*/
 
+		/*
 		public Size GetOriginalImageSize(Int32 index) {
 			Int32 width = 0;
 			Int32 height = 0;
 			this._ImageList.GetOriginalSize(index, 0x00000000, out width, out height);
 			return new Size(width, height);
 		}
+		*/
 
+		/*
 		public void SetOriginalImageSize(Int32 index, Int32 width, Int32 height) {
 			this._ImageList.SetOriginalSize(index, width, height);
 		}
-
+		*/
 	}
 
 	#region enum
@@ -961,11 +1012,20 @@ public static extern bool ImageList_Destroy(IntPtr himl);
 		int Remove(
 			int i);
 
+		
+		/// <summary>
+		/// Creates an icon from an image and a mask in an image list. 
+		/// </summary>
+		/// <param name="i">A value of type int that contains the index of the image.</param>
+		/// <param name="flags">A combination of flags that specify the drawing style. For a list of values, see IImageList::Draw. </param>
+		/// <param name="picon">A pointer to an int that contains the handle to the icon if successful, or NULL if otherwise.</param>
+		/// <returns></returns>
 		[PreserveSig]
 		int GetIcon(
 			int i,
 			ImageListDrawOptions flags,
 			out IntPtr picon);
+		
 
 		[PreserveSig]
 		int GetImageInfo(
@@ -1073,6 +1133,12 @@ public static extern bool ImageList_Destroy(IntPtr himl);
 			int i,
 			ref int dwFlags);
 
+		/// <summary>
+		/// Retrieves a specified image from the list of images used as overlay masks.	
+		/// </summary>
+		/// <param name="iOverlay">A value of type int that contains the one-based index of the overlay mask.</param>
+		/// <param name="piIndex">A pointer to an int that receives the zero-based index of an image in the image list. This index identifies the image that is used as an overlay mask. </param>
+		/// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
 		[PreserveSig]
 		int GetOverlayImage(
 			int iOverlay,
@@ -1154,22 +1220,39 @@ public static extern bool ImageList_Destroy(IntPtr himl);
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct IMAGELISTDRAWPARAMS {
+		/// <summary>The size of this structure, in bytes. </summary>
 		public int cbSize;
+		/// <summary>A handle to the image list that contains the image to be drawn. </summary>
 		public IntPtr himl;
+		/// <summary>The zero-based index of the image to be drawn. </summary>
 		public int i;
+		/// <summary>A handle to the destination device context. </summary>
 		public IntPtr hdcDst;
+		/// <summary>The x-coordinate that specifies where the image is drawn. </summary>
 		public int x;
+		/// <summary>The y-coordinate that specifies where the image is drawn. </summary>
 		public int y;
+		/// <summary>A value that specifies the number of pixels to draw, relative to the upper-left corner of the drawing operation as specified by xBitmap and yBitmap. If cx and cy are zero, then Draw draws the entire valid section. The method does not ensure that the parameters are valid.</summary>
 		public int cx;
+		/// <summary>A value that specifies the number of pixels to draw, relative to the upper-left corner of the drawing operation as specified by xBitmap and yBitmap. If cx and cy are zero, then Draw draws the entire valid section. The method does not ensure that the parameters are valid.</summary>
 		public int cy;
+		/// <summary>The x-coordinate that specifies the upper-left corner of the drawing operation in reference to the image itself. Pixels of the image that are to the left of xBitmap and above yBitmap do not appear. </summary>
 		public int xBitmap;        // x offest from the upperleft of bitmap
+		/// <summary>The y-coordinate that specifies the upper-left corner of the drawing operation in reference to the image itself. Pixels of the image that are to the left of xBitmap and above yBitmap do not appear. </summary>
 		public int yBitmap;        // y offset from the upperleft of bitmap
+		/// <summary>The image background color. This parameter can be an application-defined RGB value or one of the following values. </summary>
 		public int rgbBk;
+		/// <summary>The image foreground color. This member is used only if fStyle includes the ILD_BLEND25 or ILD_BLEND50 flag. This parameter can be an application-defined RGB value or one of the following values: </summary>
 		public int rgbFg;
+		/// <summary>A flag specifying the drawing style and, optionally, the overlay image. See the comments section at the end of this topic for information on the overlay image. This member can contain one or more image list drawing flags. </summary>
 		public int fStyle;
+		/// <summary>A value specifying a raster operation code. These codes define how the color data for the source rectangle will be combined with the color data for the destination rectangle to achieve the final color. This member is ignored if fStyle does not include the ILD_ROP flag. Some common raster operation codes include: </summary>
 		public int dwRop;
+		/// <summary>A flag that specifies the drawing state. This member can contain one or more image list state flags. You must use comctl32.dll version 6 to use this member. See the Remarks.</summary>
 		public ImageListDrawStates fState;
+		/// <summary>Used with the alpha blending effect.</summary>
 		public int Frame;
+		/// <summary>A color used for the glow and shadow effects. You must use comctl32.dll version 6 to use this member. See the Remarks. </summary>
 		public int crEffect;
 	}
 
