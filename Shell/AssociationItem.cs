@@ -17,11 +17,12 @@ namespace BExplorer.Shell {
 		public ShellItem Owner { get; private set; }
 
 		/// <summary>The display name for the item to be displayed to the user</summary>
-		[Obsolete("Not used at all")]
 		public string DisplayName { get; set; }
 
 		/// <summary>The path of the application this item represents</summary>
 		public string ApplicationPath { get; set; }
+
+		/// <summary>Gets the icon/bitmap associated with this item</summary>
 		public BitmapSource Icon => new ShellItem(this.ApplicationPath.ToShellParsingName()).Thumbnail.SmallBitmapSource;
 
 
