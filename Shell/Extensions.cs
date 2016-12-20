@@ -32,26 +32,26 @@ namespace BExplorer.Shell {
 		public int iGroup;
 	}
 
-  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-  public struct LVITEM2 {
-    public uint mask;
-    public int iItem;
-    public int iSubItem;
-    public uint state;
-    public uint stateMask;
-    public IntPtr pszText;
-    public int cchTextMax;
-    public int iImage;
-    public IntPtr lParam;
-    public int iIndent;
-    public int iGroupId;
-    public int cColumns;
-    public IntPtr puColumns;
-    public int piColFmt;
-    public int iGroup;
-  }
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+	public struct LVITEM2 {
+		public uint mask;
+		public int iItem;
+		public int iSubItem;
+		public uint state;
+		public uint stateMask;
+		public IntPtr pszText;
+		public int cchTextMax;
+		public int iImage;
+		public IntPtr lParam;
+		public int iIndent;
+		public int iGroupId;
+		public int cColumns;
+		public IntPtr puColumns;
+		public int piColFmt;
+		public int iGroup;
+	}
 
-  [StructLayout(LayoutKind.Sequential)]
+	[StructLayout(LayoutKind.Sequential)]
 	public struct NMHDR {
 		// 12/24
 		public IntPtr hwndFrom;
@@ -74,13 +74,13 @@ namespace BExplorer.Shell {
 		public LVITEM item;
 	}
 
-  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-  public struct NMLVDISPINFO2 {
-    public NMHDR hdr;
-    public LVITEM2 item;
-  }
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+	public struct NMLVDISPINFO2 {
+		public NMHDR hdr;
+		public LVITEM2 item;
+	}
 
-  public enum LVCF {
+	public enum LVCF {
 		LVCF_FMT = 0x1,
 		LVCF_WIDTH = 0x2,
 		LVCF_TEXT = 0x4,
@@ -171,7 +171,7 @@ namespace BExplorer.Shell {
 		public int ptY;
 		public int vkDirection;
 	}
-	
+
 	public enum LVFI {
 		LVFI_PARAM = 0x0001,
 		LVFI_STRING = 0x0002,
@@ -180,7 +180,7 @@ namespace BExplorer.Shell {
 		LVFI_WRAP = 0x0020,
 		LVFI_NEARESTXY = 0x0040,
 	}
-	
+
 	public enum LVTVIM {
 		LVTVIM_COLUMNS = 2,
 		LVTVIM_TILESIZE = 1,
@@ -371,8 +371,8 @@ namespace BExplorer.Shell {
 	public static class Extensions {
 		public static LVGROUP2 ToNativeListViewGroup(this ListViewGroupEx group) {
 			var nativeGroup = new LVGROUP2 {
-				cbSize = (UInt32) Marshal.SizeOf(typeof (LVGROUP2)),
-				mask = (UInt32) (GroupMask.LVGF_HEADER ^ GroupMask.LVGF_STATE ^ GroupMask.LVGF_GROUPID),
+				cbSize = (UInt32)Marshal.SizeOf(typeof(LVGROUP2)),
+				mask = (UInt32)(GroupMask.LVGF_HEADER ^ GroupMask.LVGF_STATE ^ GroupMask.LVGF_GROUPID),
 				stateMask = (UInt32)GroupState.LVGS_COLLAPSIBLE,
 				state = (UInt32)GroupState.LVGS_COLLAPSIBLE,
 				pszHeader = group.Header,
@@ -425,15 +425,18 @@ namespace BExplorer.Shell {
 			else if (!path.StartsWith(@"\\")) {
 				if (path.Contains(":")) {
 					return $"{path}{(path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString())}";
-				} else {
+				}
+				else {
 					try {
 						return $"{path}{Path.DirectorySeparatorChar}";
-					} catch (Exception) {
+					}
+					catch (Exception) {
 						return @"\\" + $"{path}{Path.DirectorySeparatorChar}";
 						throw;
 					}
 				}
-			} else
+			}
+			else
 				return path;
 		}
 
@@ -504,7 +507,8 @@ namespace BExplorer.Shell {
 					column = lvHitTestInfo.iSubItem;
 					hitLocationFound = true;
 				}
-			} else if (User32.SendMessage(shellView.LVHandle, LVM_FIRST, 0, ref lvHitTestInfo) != 0) {
+			}
+			else if (User32.SendMessage(shellView.LVHandle, LVM_FIRST, 0, ref lvHitTestInfo) != 0) {
 				row = 0;
 				hitLocationFound = true;
 			}
@@ -590,7 +594,8 @@ namespace BExplorer.Shell {
 
 					if ((value & 2) == 2) {
 						dragDropEffect = System.Windows.DragDropEffects.Move;
-					} else {
+					}
+					else {
 						dragDropEffect = dragDropEffect = System.Windows.DragDropEffects.Copy;
 					}
 				}
@@ -645,22 +650,22 @@ namespace BExplorer.Shell {
 			return memStream;
 		}
 
-	  public static Boolean IsInCurrentFolder(this IListItemEx checkedItem, IListItemEx currentFolder) {
-	    var isLibraryContainer = currentFolder?.Extension == ".library-ms";
-	    if (isLibraryContainer) {
-	      var library = ShellLibrary.Load(currentFolder.DisplayName, true);
-	      var libraryFolders = library.Select(w => w).ToArray();
-	      if (libraryFolders.Count(
-	          c => c.ParsingName.Equals(checkedItem.Parent?.ParsingName, StringComparison.InvariantCultureIgnoreCase)) > 0) {
-          library.Close();
-	        return true;
-	      }
-        library.Close();
-        return false;
-	    }
-	    else {
-	      return checkedItem?.Parent?.Equals(currentFolder) == true;
-	    }
-	  }
+		public static Boolean IsInCurrentFolder(this IListItemEx checkedItem, IListItemEx currentFolder) {
+			var isLibraryContainer = currentFolder?.Extension == ".library-ms";
+			if (isLibraryContainer) {
+				var library = ShellLibrary.Load(currentFolder.DisplayName, true);
+				var libraryFolders = library.Select(w => w).ToArray();
+				if (libraryFolders.Count(
+					c => c.ParsingName.Equals(checkedItem.Parent?.ParsingName, StringComparison.InvariantCultureIgnoreCase)) > 0) {
+					library.Close();
+					return true;
+				}
+				library.Close();
+				return false;
+			}
+			else {
+				return checkedItem?.Parent?.Equals(currentFolder) == true;
+			}
+		}
 	}
 }
