@@ -78,10 +78,15 @@ namespace BExplorer.Shell {
 			if (owner != IntPtr.Zero) _FileOperation.SetOwnerWindow((uint)owner);
 		}
 
+		/// <summary>
+		/// Declares a new item that is to be created in a specified location. Does this silently and automatically renames items if needed.
+		/// </summary>
+		/// <param name="destinationFolder">The destination folder that will contain the new item.</param>
+		/// <param name="name">The new item name</param>
+		/// <param name="attributes">A bitwise value that specifies the file system attributes for the file or folder. See GetFileAttributes for possible values</param>
 		public void NewItem(IListItemEx destinationFolder, String name, FileAttributes attributes) {
 			this._FileOperation.SetOperationFlags(FileOperationFlags.FOF_RENAMEONCOLLISION | FileOperationFlags.FOF_SILENT);
-			this._FileOperation.NewItem(destinationFolder.ComInterface, attributes, name,
-				null, null);
+			this._FileOperation.NewItem(destinationFolder.ComInterface, attributes, name, null, null);
 		}
 
 		/// <summary>
@@ -97,6 +102,11 @@ namespace BExplorer.Shell {
 			this._FileOperation.CopyItem(source, destination.ComInterface, null, null);
 		}
 
+		/// <summary>
+		/// Copies items to a destination
+		/// </summary>
+		/// <param name="source">The items you want to copy</param>
+		/// <param name="destination">The destination you want to copy the <paramref name="source"/> items</param>
 		public void CopyItems(IShellItemArray source, IListItemEx destination) {
 			this.ThrowIfDisposed();
 			if (this._IsCopyInSameFolder) {
@@ -116,6 +126,11 @@ namespace BExplorer.Shell {
 			this._FileOperation.MoveItem(source, destination.ComInterface, newName, null);
 		}
 
+		/// <summary>
+		/// Moves items to a destination
+		/// </summary>
+		/// <param name="source">The item being moved</param>
+		/// <param name="destination">The location to be moved to</param>
 		public void MoveItems(IShellItemArray source, IListItemEx destination) {
 			this.ThrowIfDisposed();
 			this._FileOperation.MoveItems(source, destination.ComInterface);
@@ -132,14 +147,20 @@ namespace BExplorer.Shell {
 		}
 
 		/// <summary>
-		/// Deletes the source item
+		/// Declares a single item that is to be deleted. (Exception when <see cref="_Disposed"/> is <c>True</c>) 
 		/// </summary>
-		/// <param name="source">The item to delete</param>
+		/// <param name="source">The item to be deleted</param>
+		/// <exception cref="ObjectDisposedException">When <see cref="_Disposed"/> is <c>True</c></exception>
 		public void DeleteItem(IListItemEx source) {
 			this.ThrowIfDisposed();
 			this._FileOperation.DeleteItem(source.ComInterface, null);
 		}
 
+		/// <summary>
+		/// Declares a set of items that are to be deleted. (Exception when <see cref="_Disposed"/> is <c>True</c>) 
+		/// </summary>
+		/// <param name="source">The items to be deleted</param>
+		/// <exception cref="ObjectDisposedException">When <see cref="_Disposed"/> is <c>True</c></exception>
 		public void DeleteItems(IShellItemArray source) {
 			this.ThrowIfDisposed();
 			this._FileOperation.DeleteItems(source);
@@ -152,7 +173,8 @@ namespace BExplorer.Shell {
 			this.ThrowIfDisposed();
 			try {
 				this._FileOperation.PerformOperations();
-			} catch {
+			}
+			catch {
 			}
 		}
 
@@ -165,6 +187,7 @@ namespace BExplorer.Shell {
 			return this._FileOperation.GetAnyOperationsAborted();
 		}
 
+		/// <summary>Is the item <see cref="_Disposed">Disposed</see>?</summary>
 		private void ThrowIfDisposed() {
 			if (this._Disposed) throw new ObjectDisposedException(GetType().Name);
 		}
