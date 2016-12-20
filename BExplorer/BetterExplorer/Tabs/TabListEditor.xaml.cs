@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,11 +14,11 @@ namespace BetterExplorer {
 			InitializeComponent();
 		}
 
-		public void ImportSavedTabList(SavedTabsList list) {
+		public void ImportSavedTabList(List<string> list) {
 			stackPanel1.Children.Clear();
 			foreach (string item in list) {
 				//MessageBox.Show(item);
-				TabListEditorItem g = new TabListEditorItem(item);
+				var g = new TabListEditorItem(item);
 				g.TitleColumnWidth = NameCol.Width;
 				g.Width = this.Width;
 				g.VerticalAlignment = System.Windows.VerticalAlignment.Top;
@@ -28,7 +29,7 @@ namespace BetterExplorer {
 		}
 
 		public void AddTab(string loc) {
-			TabListEditorItem g = new TabListEditorItem(loc);
+			var g = new TabListEditorItem(loc);
 			g.TitleColumnWidth = NameCol.Width;
 			g.Width = this.Width;
 			g.VerticalAlignment = System.Windows.VerticalAlignment.Top;
@@ -37,8 +38,8 @@ namespace BetterExplorer {
 			stackPanel1.Children.Add(g);
 		}
 
-		public SavedTabsList ExportSavedTabList() {
-			var o = new SavedTabsList();
+		public List<string> ExportSavedTabList() {
+			var o = new List<string>();
 			o.AddRange(stackPanel1.Children.OfType<TabListEditorItem>().Select(x => x.Path));
 			return o;
 			//foreach (TabListEditorItem g in stackPanel1.Children) {

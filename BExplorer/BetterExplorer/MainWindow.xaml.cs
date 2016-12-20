@@ -2887,7 +2887,7 @@ item.IsChecked = false;
     }
 
     void gli_Click(object sender, Tuple<string> e) {
-      var list = SavedTabsList.LoadTabList($"{sstdir}{e.Item1}.txt");
+      var list = SaveTabs.LoadTabList($"{sstdir}{e.Item1}.txt");
       if (list.Count > 0) {
         foreach (var tabItem in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray()) {
           tcMain.RemoveTabItem(tabItem, true, true);
@@ -3060,14 +3060,15 @@ item.IsChecked = false;
     private void miSaveCurTabs_Click(object sender, RoutedEventArgs e) {
       var objs = new List<IListItemEx>(from Wpf.Controls.TabItem x in tcMain.Items select x.ShellObject);
       String str = Utilities.CombinePaths(objs, "|");
-      var list = SavedTabsList.CreateFromString(str);
+      var list = SaveTabs.CreateFromString(str);
 
       var Name = BetterExplorer.Tabs.NameTabList.Open(this);
       if (Name == null) return;
 
-      if (!Directory.Exists(sstdir)) Directory.CreateDirectory(sstdir);
+      if (!Directory.Exists(sstdir))
+		Directory.CreateDirectory(sstdir);
 
-      SavedTabsList.SaveTabList(list, $"{sstdir}{Name}.txt");
+	  SaveTabs.SaveTabList(list, $"{sstdir}{Name}.txt");
       miTabManager.IsEnabled = true;
     }
 

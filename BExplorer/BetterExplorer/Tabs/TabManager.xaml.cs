@@ -71,13 +71,13 @@ namespace BetterExplorer.Tabs {
 			}
 
 			(sender as SavedTabsListGalleryItem).SetSelected();
-			tabListEditor1.ImportSavedTabList(SavedTabsList.LoadTabList(GetSavedTabsLocation() + e.Item1 + ".txt"));
+			tabListEditor1.ImportSavedTabList(SaveTabs.LoadTabList(GetSavedTabsLocation() + e.Item1 + ".txt"));
 			selfile = GetSavedTabsLocation() + e.Item1 + ".txt";
 		}
 
 		private void button3_Click(object sender, RoutedEventArgs e) {
-			SavedTabsList.SaveTabList(tabListEditor1.ExportSavedTabList(), selfile);
-			tabListEditor1.ImportSavedTabList(SavedTabsList.LoadTabList(selfile));
+			SaveTabs.SaveTabList(tabListEditor1.ExportSavedTabList(), selfile);
+			tabListEditor1.ImportSavedTabList(SaveTabs.LoadTabList(selfile));
 		}
 
 		private void button5_Click(object sender, RoutedEventArgs e) {
@@ -87,7 +87,7 @@ namespace BetterExplorer.Tabs {
 		private void button4_Click(object sender, RoutedEventArgs e) {
 			var Entered_Name = NameTabList.Open(this);
 			if (Entered_Name != null) {
-				SavedTabsList.SaveTabList(SavedTabsList.CreateFromString(GetDefaultLocation()), GetSavedTabsLocation() + Entered_Name + ".txt");
+				SaveTabs.SaveTabList(SaveTabs.CreateFromString(GetDefaultLocation()), GetSavedTabsLocation() + Entered_Name + ".txt");
 				RefreshListAndLoad(sstdir + Entered_Name + ".txt");
 			}
 		}
@@ -95,7 +95,7 @@ namespace BetterExplorer.Tabs {
 		private void button7_Click(object sender, RoutedEventArgs e) {
 			var Entered_Name = NameTabList.Open(this);
 			if (Entered_Name != null) {
-				SavedTabsList.SaveTabList(tabListEditor1.ExportSavedTabList(), GetSavedTabsLocation() + Entered_Name + ".txt");
+				SaveTabs.SaveTabList(tabListEditor1.ExportSavedTabList(), GetSavedTabsLocation() + Entered_Name + ".txt");
 				RefreshListAndLoad(sstdir + Entered_Name + ".txt");
 			}
 		}

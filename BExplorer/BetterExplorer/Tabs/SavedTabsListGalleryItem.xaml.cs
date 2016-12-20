@@ -13,7 +13,7 @@ namespace BetterExplorer
     /// </summary>
     public partial class SavedTabsListGalleryItem : UserControl
     {
-        private SavedTabsList lst;
+        private List<string> lst;
         public string Directory { get; set; }
 
         public delegate void PathStringEventHandler(object sender, Tuple<string> e);
@@ -48,7 +48,7 @@ namespace BetterExplorer
 
         public void SetUpTooltip(string tabs)
         {
-            lst = SavedTabsList.LoadTabList($"{Directory}{Location}.txt");
+            lst = SaveTabs.LoadTabList($"{Directory}{Location}.txt");
             var blah = new StringBuilder(lst.Count);
             foreach (string item in lst)
             {
