@@ -121,7 +121,7 @@ namespace BExplorer.Shell.Interop {
 
 		public static void GetBitmapDimentions(IntPtr ipd, out int width, out int height) {
 			// get the info about the HBITMAP inside the IPictureDisp
-			DIBSECTION dibsection = new DIBSECTION();
+			var dibsection = new DIBSECTION();
 			var res = GetObjectDIBSection(ipd, Marshal.SizeOf(dibsection), ref dibsection);
 			width = dibsection.dsBm.bmWidth;
 			height = dibsection.dsBm.bmHeight;
@@ -189,8 +189,7 @@ namespace BExplorer.Shell.Interop {
 			DeleteObject(oldSource);
 			DeleteObject(hBitmap);
 		}
-
-
+		
 		public static void NativeDraw(IntPtr destDC, IntPtr hBitmap, int x, int y, int iconSizeWidth, int iconSizeHeight, int iconSizeWidthDest, int iconSizeHeightDest, Boolean isHidden = false) {
 			IntPtr destCDC = CreateCompatibleDC(destDC);
 			IntPtr oldSource = SelectObject(destCDC, hBitmap);
