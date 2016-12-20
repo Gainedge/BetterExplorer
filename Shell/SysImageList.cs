@@ -245,7 +245,7 @@ public enum IconSize {
 		SysIconIndex = 0x000004000,         // get system icon index
 		LinkOverlay = 0x000008000,          // put a link overlay on icon
 		Selected = 0x000010000,             // show icon in selected state
-																				// (NTDDI_VERSION >= NTDDI_WIN2K)
+											// (NTDDI_VERSION >= NTDDI_WIN2K)
 		SpecifiedAttributes = 0x000020000,  // get only specified attributes
 		LargeIcon = 0x000000000,            // get large icon
 		SmallIcon = 0x000000001,            // get small icon
@@ -253,7 +253,7 @@ public enum IconSize {
 		ShellIconSize = 0x000000004,        // get shell size icon
 		Pidl = 0x000000008,                 // pszPath is a pidl
 		UseFileAttributes = 0x000000010,    // use passed dwFileAttribute
-																				// (_WIN32_IE >= 0x0500)
+											// (_WIN32_IE >= 0x0500)
 		AddOverlays = 0x000000020,          // apply the appropriate overlays
 		OverlayIndex = 0x000000040,         // Get the index of the overlay
 	}
@@ -402,7 +402,8 @@ private int GetIconIndex(IntPtr path) {
 				//throw new Win32Exception(Marshal.GetLastWin32Error());
 				overlayIndex = 0;
 				return 0;
-			} else {
+			}
+			else {
 				/* brakes stack on optimized build
 int idx = shfi.iIcon & 0xFFFFFF;
 int iOverlay = shfi.iIcon >> 24;
@@ -415,7 +416,7 @@ return idx;
 		}
 
 		public int GetIconIndex(IntPtr path) {
-			var options = SHGetFileInfoOptions.SysIconIndex  | SHGetFileInfoOptions.Icon  | SHGetFileInfoOptions.Pidl;
+			var options = SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.Icon | SHGetFileInfoOptions.Pidl;
 			var shfi = new SHFILEINFO();
 			var shfiSize = Marshal.SizeOf(shfi.GetType());
 			IntPtr retVal = Win32Api.SHGetFileInfo(path, FileAttributes.None, ref shfi, shfiSize, options);
@@ -425,16 +426,17 @@ return idx;
 
 			if (retVal.Equals(IntPtr.Zero)) {
 				//throw new Win32Exception(Marshal.GetLastWin32Error());
-			
+
 				return 0;
-			} else {
+			}
+			else {
 				/* brakes stack on optimized build
 int idx = shfi.iIcon & 0xFFFFFF;
 int iOverlay = shfi.iIcon >> 24;
 overlayIndex = iOverlay;
 return idx;
 */
-				
+
 				return shfi.iIcon & 0xFFFFFF;
 			}
 		}
@@ -619,10 +621,10 @@ public static extern bool ImageList_Destroy(IntPtr himl);
 
 		public Int32 AddImage(IntPtr hBitmap) {
 			var index = this.GetCount();
-		  
-      this._ImageList.SetImageCount(index + 1);
-      this._ImageList.Replace2(index, hBitmap, IntPtr.Zero, IntPtr.Zero, 0x0001 | 0x0010);
-      return index;
+
+			this._ImageList.SetImageCount(index + 1);
+			this._ImageList.Replace2(index, hBitmap, IntPtr.Zero, IntPtr.Zero, 0x0001 | 0x0010);
+			return index;
 		}
 
 		public void SetSize(Int32 size) {
@@ -630,15 +632,15 @@ public static extern bool ImageList_Destroy(IntPtr himl);
 		}
 
 		public void ReplaceImage(Int32 index, IntPtr hBitmap) {
-		  if (index > this.GetCount()) return;
+			if (index > this.GetCount()) return;
 			this._ImageList.Replace2(index, hBitmap, IntPtr.Zero, IntPtr.Zero, 0x0001 | 0x0010);
 		}
 
-    public void SetOverlayImage(Int32 index, Int32 overlay) {
-      this._ImageList.SetOverlayImage(index, overlay);
-    }
+		public void SetOverlayImage(Int32 index, Int32 overlay) {
+			this._ImageList.SetOverlayImage(index, overlay);
+		}
 
-    public Int32 GetCount() {
+		public Int32 GetCount() {
 			var count = -1;
 			this._ImageList.GetImageCount(ref count);
 			return count;
@@ -921,229 +923,229 @@ public static extern bool ImageList_Destroy(IntPtr himl);
 	[ComImportAttribute()]
 	[GuidAttribute("192B9D83-50FC-457B-90A0-2B82A8B5DAE1")]
 	[InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IImageList2  {
-    [PreserveSig]
-    int Add(
-        IntPtr hbmImage,
-        IntPtr hbmMask,
-        ref int pi);
+	public interface IImageList2 {
+		[PreserveSig]
+		int Add(
+			IntPtr hbmImage,
+			IntPtr hbmMask,
+			ref int pi);
 
-    [PreserveSig]
-    int ReplaceIcon(
-        int i,
-        IntPtr hicon,
-        ref int pi);
+		[PreserveSig]
+		int ReplaceIcon(
+			int i,
+			IntPtr hicon,
+			ref int pi);
 
-    [PreserveSig]
-    int SetOverlayImage(
-        int iImage,
-        int iOverlay);
+		[PreserveSig]
+		int SetOverlayImage(
+			int iImage,
+			int iOverlay);
 
-    [PreserveSig]
-    int Replace(
-        int i,
-        IntPtr hbmImage,
-        IntPtr hbmMask);
+		[PreserveSig]
+		int Replace(
+			int i,
+			IntPtr hbmImage,
+			IntPtr hbmMask);
 
-    [PreserveSig]
-    int AddMasked(
-        IntPtr hbmImage,
-        int crMask,
-        ref int pi);
+		[PreserveSig]
+		int AddMasked(
+			IntPtr hbmImage,
+			int crMask,
+			ref int pi);
 
-    [PreserveSig]
-    int Draw(
-        ref IMAGELISTDRAWPARAMS pimldp);
+		[PreserveSig]
+		int Draw(
+			ref IMAGELISTDRAWPARAMS pimldp);
 
-    [PreserveSig]
-    int Remove(
-        int i);
+		[PreserveSig]
+		int Remove(
+			int i);
 
-    [PreserveSig]
-    int GetIcon(
-        int i,
-        ImageListDrawOptions flags,
-        out IntPtr picon);
+		[PreserveSig]
+		int GetIcon(
+			int i,
+			ImageListDrawOptions flags,
+			out IntPtr picon);
 
-    [PreserveSig]
-    int GetImageInfo(
-        int i,
-        ref IMAGEINFO pImageInfo);
+		[PreserveSig]
+		int GetImageInfo(
+			int i,
+			ref IMAGEINFO pImageInfo);
 
-    [PreserveSig]
-    int Copy(
-        int iDst,
-        IImageList punkSrc,
-        int iSrc,
-        int uFlags);
+		[PreserveSig]
+		int Copy(
+			int iDst,
+			IImageList punkSrc,
+			int iSrc,
+			int uFlags);
 
-    [PreserveSig]
-    int Merge(
-        int i1,
-        IImageList punk2,
-        int i2,
-        int dx,
-        int dy,
-        ref Guid riid,
-        ref IntPtr ppv);
+		[PreserveSig]
+		int Merge(
+			int i1,
+			IImageList punk2,
+			int i2,
+			int dx,
+			int dy,
+			ref Guid riid,
+			ref IntPtr ppv);
 
-    [PreserveSig]
-    int Clone(
-        ref Guid riid,
-        ref IntPtr ppv);
+		[PreserveSig]
+		int Clone(
+			ref Guid riid,
+			ref IntPtr ppv);
 
-    [PreserveSig]
-    int GetImageRect(
-        int i,
-        ref Rectangle prc);
+		[PreserveSig]
+		int GetImageRect(
+			int i,
+			ref Rectangle prc);
 
-    [PreserveSig]
-    int GetIconSize(
-        out int cx,
-        out int cy);
+		[PreserveSig]
+		int GetIconSize(
+			out int cx,
+			out int cy);
 
-    [PreserveSig]
-    int SetIconSize(
-        int cx,
-        int cy);
+		[PreserveSig]
+		int SetIconSize(
+			int cx,
+			int cy);
 
-    [PreserveSig]
-    int GetImageCount(
-        ref int pi);
+		[PreserveSig]
+		int GetImageCount(
+			ref int pi);
 
-    [PreserveSig]
-    int SetImageCount(
-        int uNewCount);
+		[PreserveSig]
+		int SetImageCount(
+			int uNewCount);
 
-    [PreserveSig]
-    int SetBkColor(
-        int clrBk,
-        ref int pclr);
+		[PreserveSig]
+		int SetBkColor(
+			int clrBk,
+			ref int pclr);
 
-    [PreserveSig]
-    int GetBkColor(
-        ref int pclr);
+		[PreserveSig]
+		int GetBkColor(
+			ref int pclr);
 
-    [PreserveSig]
-    int BeginDrag(
-        int iTrack,
-        int dxHotspot,
-        int dyHotspot);
+		[PreserveSig]
+		int BeginDrag(
+			int iTrack,
+			int dxHotspot,
+			int dyHotspot);
 
-    [PreserveSig]
-    int EndDrag();
+		[PreserveSig]
+		int EndDrag();
 
-    [PreserveSig]
-    int DragEnter(
-        IntPtr hwndLock,
-        int x,
-        int y);
+		[PreserveSig]
+		int DragEnter(
+			IntPtr hwndLock,
+			int x,
+			int y);
 
-    [PreserveSig]
-    int DragLeave(
-        IntPtr hwndLock);
+		[PreserveSig]
+		int DragLeave(
+			IntPtr hwndLock);
 
-    [PreserveSig]
-    int DragMove(
-        int x,
-        int y);
+		[PreserveSig]
+		int DragMove(
+			int x,
+			int y);
 
-    [PreserveSig]
-    int SetDragCursorImage(
-        ref IImageList punk,
-        int iDrag,
-        int dxHotspot,
-        int dyHotspot);
+		[PreserveSig]
+		int SetDragCursorImage(
+			ref IImageList punk,
+			int iDrag,
+			int dxHotspot,
+			int dyHotspot);
 
-    [PreserveSig]
-    int DragShowNolock(
-        int fShow);
+		[PreserveSig]
+		int DragShowNolock(
+			int fShow);
 
-    [PreserveSig]
-    int GetDragImage(
-        ref Point ppt,
-        ref Point pptHotspot,
-        ref Guid riid,
-        ref IntPtr ppv);
+		[PreserveSig]
+		int GetDragImage(
+			ref Point ppt,
+			ref Point pptHotspot,
+			ref Guid riid,
+			ref IntPtr ppv);
 
-    [PreserveSig]
-    int GetItemFlags(
-        int i,
-        ref int dwFlags);
+		[PreserveSig]
+		int GetItemFlags(
+			int i,
+			ref int dwFlags);
 
-    [PreserveSig]
-    int GetOverlayImage(
-        int iOverlay,
-        out int piIndex);
+		[PreserveSig]
+		int GetOverlayImage(
+			int iOverlay,
+			out int piIndex);
 
-    HResult  Resize(
-            int cxNewIconSize,
-            int cyNewIconSize);
+		HResult Resize(
+				int cxNewIconSize,
+				int cyNewIconSize);
 
-    HResult GetOriginalSize(
-            /* [in] */ int iImage,
-            /* [in] */ uint dwFlags,
-            /* [annotation][out] */
-            out  int pcx,
-            /* [annotation][out] */
-            out  int pcy);
-        
-        HResult SetOriginalSize(
-            /* [in] */ int iImage,
-            /* [in] */ int cx,
-            /* [in] */ int cy);
-        
-        HResult SetCallback(
-            /* [annotation][unique][in] */
-            IntPtr punk);
-        
-        HResult GetCallback(
-            /* [in] */ ref Guid riid,
-            /* [annotation][iid_is][out] */
-            out  IntPtr ppv);
-        
-        HResult ForceImagePresent(
-            /* [in] */ int iImage,
-            uint dwFlags);
-        
-        HResult DiscardImages(
-            /* [in] */ int iFirstImage,
-            /* [in] */ int iLastImage,
-            /* [in] */ uint dwFlags);
-        
-        HResult PreloadImages(
-            /* [annotation][in] */
-            ref IMAGELISTDRAWPARAMS pimldp);
-        
-        HResult GetStatistics(
-            /* [annotation][out][in] */
-            out IntPtr pils);
-        
-        HResult Initialize(
-            /* [in] */ int cx,
-            /* [in] */ int cy,
-            /* [in] */ uint flags,
-            /* [in] */ int cInitial,
-            /* [in] */ int cGrow);
-        [PreserveSig]
-        HResult Replace2(
-            /* [in] */ int i,
-            /* [annotation][in] */
-            IntPtr hbmImage,
-            /* [annotation][unique][in] */
-            IntPtr hbmMask,
-            /* [annotation][unique][in] */
-            IntPtr punk,
-            /* [in] */ uint dwFlags);
-        
-        HResult ReplaceFromImageList(
-            /* [in] */ int i,
-            /* [annotation][in] */
-            IImageList pil,
-            /* [in] */ int iSrc,
-            /* [annotation][unique][in] */
-            IntPtr punk,
-            /* [in] */ uint dwFlags);
+		HResult GetOriginalSize(
+				/* [in] */ int iImage,
+				/* [in] */ uint dwFlags,
+				/* [annotation][out] */
+				out int pcx,
+				/* [annotation][out] */
+				out int pcy);
+
+		HResult SetOriginalSize(
+			/* [in] */ int iImage,
+			/* [in] */ int cx,
+			/* [in] */ int cy);
+
+		HResult SetCallback(
+			/* [annotation][unique][in] */
+			IntPtr punk);
+
+		HResult GetCallback(
+			/* [in] */ ref Guid riid,
+			/* [annotation][iid_is][out] */
+			out IntPtr ppv);
+
+		HResult ForceImagePresent(
+			/* [in] */ int iImage,
+			uint dwFlags);
+
+		HResult DiscardImages(
+			/* [in] */ int iFirstImage,
+			/* [in] */ int iLastImage,
+			/* [in] */ uint dwFlags);
+
+		HResult PreloadImages(
+			/* [annotation][in] */
+			ref IMAGELISTDRAWPARAMS pimldp);
+
+		HResult GetStatistics(
+			/* [annotation][out][in] */
+			out IntPtr pils);
+
+		HResult Initialize(
+			/* [in] */ int cx,
+			/* [in] */ int cy,
+			/* [in] */ uint flags,
+			/* [in] */ int cInitial,
+			/* [in] */ int cGrow);
+		[PreserveSig]
+		HResult Replace2(
+			/* [in] */ int i,
+			/* [annotation][in] */
+			IntPtr hbmImage,
+			/* [annotation][unique][in] */
+			IntPtr hbmMask,
+			/* [annotation][unique][in] */
+			IntPtr punk,
+			/* [in] */ uint dwFlags);
+
+		HResult ReplaceFromImageList(
+			/* [in] */ int i,
+			/* [annotation][in] */
+			IImageList pil,
+			/* [in] */ int iSrc,
+			/* [annotation][unique][in] */
+			IntPtr punk,
+			/* [in] */ uint dwFlags);
 	}
 
 	#endregion
