@@ -45,7 +45,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         /// <summary>Set but never used</summary>
         Boolean IsInitialised { get; set; } //TODO: Use this property or delete it
 
-        Int32 OverlayIconIndex { get; set; }
+		/// <summary>The Index of the Icon (Double Check)</summary>
+		Int32 OverlayIconIndex { get; set; }
 
         Int32 GroupIndex { get; set; }
 
@@ -56,8 +57,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
         IExtractIconPWFlags IconType { get; set; }
 
-        /// <summary>Set but never used</summary>
-        IntPtr ILPidl { get; } //TODO: Use this property or delete it
+        IntPtr ILPidl { get; } 
 
         IntPtr PIDL { get; set; }
 
