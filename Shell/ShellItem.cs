@@ -108,7 +108,7 @@ namespace BExplorer.Shell {
     protected IShellItem m_ComInterface;
     //internal bool IsInvalid { get; set; }
     //internal int OverlayIconIndex { get; set; }
-    internal IExtractIconPWFlags IconType { get; private set; }
+    //internal IExtractIconPWFlags IconType { get; private set; }
     internal IntPtr ILPidl => Shell32.ILFindLastID(Pidl);
 
     public static IntPtr MessageHandle = IntPtr.Zero;
