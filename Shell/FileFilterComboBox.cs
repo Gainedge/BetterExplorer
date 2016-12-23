@@ -80,8 +80,7 @@ namespace BExplorer.Shell {
 						try {
 							m_IgnoreSelectionChange = true;
 							SelectedItem = item;
-						}
-						finally {
+						} finally {
 							m_IgnoreSelectionChange = false;
 						}
 					}
@@ -147,8 +146,7 @@ namespace BExplorer.Shell {
 					try {
 						m_IgnoreSelectionChange = true;
 						SelectedIndex = Items.Count - 1;
-					}
-					finally {
+					} finally {
 						m_IgnoreSelectionChange = false;
 					}
 				}
@@ -165,7 +163,7 @@ namespace BExplorer.Shell {
 		public new ComboBox.ObjectCollection Items {
 			get { return base.Items; }
 		}
-		
+
 		//ShellView m_ShellView;
 
 		/// <summary>
@@ -249,7 +247,7 @@ namespace BExplorer.Shell {
 		//}
 
 		string m_Filter = "*.*";
-		string m_FilterItems = "";		
+		string m_FilterItems = "";
 		bool m_IgnoreSelectionChange;
 	}
 }
