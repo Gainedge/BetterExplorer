@@ -10,6 +10,9 @@ namespace BetterExplorer
 
     #region Update & UpdateTypes
 
+	/// <summary>
+	/// Models the data associated with an update
+	/// </summary>
     public class Update
     {
         public String Name { get; set; }

@@ -8,9 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BExplorer.Shell {
+
 	[System.Diagnostics.DebuggerStepThrough]
 	public class SyncQueue<T> {
-		public readonly Queue<T> queue = new Queue<T>();
+		private readonly Queue<T> queue = new Queue<T>();
 
 		public void Clear() => this.queue.Clear();
 		public int Count() => this.queue.Count;
@@ -26,7 +27,7 @@ namespace BExplorer.Shell {
 		/// <param name="item">The object to add to the System.Collections.Generic.Queue[T]. The value can be null for reference types.</param>
 		/// <param name="force">Force the item to update even if it has queue already contains it</param>
 		public void Enqueue(T item, Boolean force = false) {
-            lock (queue) {			
+			lock (queue) {
 				if (force || !queue.Contains(item)) {
 					queue.Enqueue(item);
 
@@ -34,9 +35,9 @@ namespace BExplorer.Shell {
 						// wake up any blocked dequeue
 						System.Threading.Monitor.PulseAll(queue);
 					}
-                } 
-            }
-			
+				}
+			}
+
 		}
 
 		/// <summary>
@@ -61,7 +62,7 @@ namespace BExplorer.Shell {
 	}
 
 	public class QueueEx<T> {
-		public readonly Queue<T> queue = new Queue<T>();
+		private readonly Queue<T> queue = new Queue<T>();
 		public void Clear() => this.queue.Clear();
 		public int Count() => this.queue.Count;
 
@@ -79,7 +80,8 @@ namespace BExplorer.Shell {
 			if (!queue.Contains(item) || force) {
 				queue.Enqueue(item);
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 		}
@@ -99,7 +101,7 @@ namespace BExplorer.Shell {
 	public class ConQueue<T> {
 #if ConcurrentQueue
 
-		public readonly ConcurrentQueue<T> queue = new ConcurrentQueue<T>();
+		private readonly ConcurrentQueue<T> queue = new ConcurrentQueue<T>();
 
 		public void Clear() {
 			T Item;
