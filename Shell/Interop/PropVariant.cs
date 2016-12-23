@@ -782,9 +782,9 @@ namespace BExplorer.Shell.Interop
 			GC.SuppressFinalize(this);
 		}
 
-		/// <summary>
-		/// Finalizer
-		/// </summary>
+		///// <summary>
+		///// Finalizer
+		///// </summary>
 		//~PropVariant()
 		//{
 		//	Dispose();

@@ -3002,12 +3002,12 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
     public Boolean IsFocusAllowed = true;
 
-    /// <summary>
-    /// Gives the ShellListView focus
-    /// </summary>
-    /// <param name="isActiveCheck">Require this <see cref=".Windows.Application.Current.MainWindow.IsActive">application's MainWindow</see> to be activate the control</param>
-    /// <param name="isForce">Force this to make the control active no matter what</param>
-    public void Focus(Boolean isActiveCheck = true, Boolean isForce = false) {
+	/// <summary>
+	/// Gives the ShellListView focus
+	/// </summary>
+	/// <param name="isActiveCheck">Require this application's MainWindow to be activate the control</param>
+	/// <param name="isForce">Force this to make the control active no matter what</param>
+	public void Focus(Boolean isActiveCheck = true, Boolean isForce = false) {
       if (System.Windows.Application.Current == null) return;
       if (User32.GetForegroundWindow() != this.LVHandle) {
         this.Invoke(new MethodInvoker(() => {

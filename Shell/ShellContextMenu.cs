@@ -108,15 +108,16 @@ namespace BExplorer.Shell {
       m_MessageWindow = new MessageWindow(this);
     }
 
-    /// <summary>
-    /// Initialises a new instance of the <see cref="ShellContextMenu"/> 
-    /// class.
-    /// </summary>
-    /// 
-    /// <param name="item">
-    /// The item to which the context menu should refer.
-    /// </param>
-    public ShellContextMenu(ShellView shellView, IListItemEx item) {
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ShellContextMenu"/> 
+	/// class.
+	/// </summary>
+	/// 
+	/// <param name="shellView">The <see cref="ShellView">ShellView</see> for this context menu</param>
+	/// <param name="item">
+	/// The item to which the context menu should refer.
+	/// </param>
+	public ShellContextMenu(ShellView shellView, IListItemEx item) {
       this._ShellView = shellView;
       Initialize(new IListItemEx[] { item });
     }
