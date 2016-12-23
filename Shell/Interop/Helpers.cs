@@ -87,7 +87,7 @@ namespace BExplorer.Shell.Interop {
 		*/
 
 		internal static string GetParsingName(IShellItem shellItem) {
-			if (shellItem == null) { return null; }
+			if (shellItem == null) return null; 
 
 			string path = null;
 
@@ -100,7 +100,6 @@ namespace BExplorer.Shell.Interop {
 			}
 
 			return path;
-
 		}
 
 		/*
@@ -129,11 +128,11 @@ namespace BExplorer.Shell.Interop {
 		}
 		*/
 	}
+
 	public sealed class NaturalStringComparer : IComparer<string> {
+
 		public static readonly NaturalStringComparer Default = new NaturalStringComparer();
 
-		public int Compare(string x, string y) {
-			return ShlWapi.StrCmpLogicalW(x, y);
-		}
+		public int Compare(string x, string y) => ShlWapi.StrCmpLogicalW(x, y);		
 	}
 }

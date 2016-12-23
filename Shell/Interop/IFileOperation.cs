@@ -53,8 +53,21 @@ namespace BExplorer.Shell.Interop {
 				IShellItem psiItem,
 				IFileOperationProgressSink pfopsItem);
 
+		/// <summary>
+		/// Declares a set of items that are to be deleted.
+		/// </summary>
+		/// <param name="punkItems">Pointer to the IUnknown of the IShellItemArray, IDataObject, or IEnumShellItems object which represents the group of items to be deleted. You can also point to an IPersistIDList object to represent a single item, effectively accomplishing the same function as IFileOperation::DeleteItem.</param>
 		void DeleteItems([MarshalAs(UnmanagedType.IUnknown)] object punkItems);
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="psiDestinationFolder">Pointer to an IShellItem that specifies the destination folder that will contain the new item.</param>
+		/// <param name="dwFileAttributes">A bitwise value that specifies the file system attributes for the file or folder. See GetFileAttributes for possible values.</param>
+		/// <param name="pszName">Pointer to the file name of the new item, for instance Newfile.txt. This is a null-terminated, Unicode string.</param>
+		/// <param name="pszTemplateName">Pointer to the name of the template file (for example Excel9.xls) that the new item is based on, stored in one of the following locations</param>
+		/// <param name="pfopsItem">Pointer to an IFileOperationProgressSink object to be used for status and failure notifications. If you call IFileOperation::Advise for the overall operation, progress status and error notifications for the creation operation are included there, so set this parameter to NULL.</param>
+		/// <returns></returns>
 		uint NewItem(
 				IShellItem psiDestinationFolder,
 				FileAttributes dwFileAttributes,

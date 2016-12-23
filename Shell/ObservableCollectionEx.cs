@@ -10,10 +10,15 @@ using System.Threading.Tasks;
 namespace BExplorer.Shell {
 	public sealed class ObservableCollectionEx<T> : ObservableCollection<T>
 		where T : INotifyPropertyChanged {
+
 		public ObservableCollectionEx() {
 			CollectionChanged += FullObservableCollectionCollectionChanged;
 		}
 
+		/// <summary>
+		/// Add items into the collection
+		/// </summary>
+		/// <param name="pItems">The items to add into the collection</param>
 		public ObservableCollectionEx(IEnumerable<T> pItems) : this() {
 			foreach (var item in pItems) {
 				this.Add(item);

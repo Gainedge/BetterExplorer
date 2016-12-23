@@ -11,7 +11,7 @@ namespace BExplorer.Shell.Interop {
 		#region Constants
 		public const int SRCCOPY = 0xCC0020;
 		public const byte AC_SRC_OVER = 0x00;
-		public const byte AC_SRC_ALPHA = 0x01; 
+		public const byte AC_SRC_ALPHA = 0x01;
 		#endregion
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -28,7 +28,6 @@ namespace BExplorer.Shell.Interop {
 				AlphaFormat = format;
 			}
 		}
-
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RGBQUAD {
@@ -63,6 +62,7 @@ namespace BExplorer.Shell.Interop {
 			public int biClrUsed;
 			public int bitClrImportant;
 		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct SIZE {
 			public int cx;
@@ -73,6 +73,7 @@ namespace BExplorer.Shell.Interop {
 				this.cy = cy;
 			}
 		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct DIBSECTION {
 			public BITMAP dsBm;
@@ -84,7 +85,7 @@ namespace BExplorer.Shell.Interop {
 			public int dsOffset;
 		}
 
-		[System.Runtime.InteropServices.DllImportAttribute("gdi32.dll")]
+		[DllImportAttribute("gdi32.dll")]
 		public static extern int BitBlt(
 			IntPtr hdcDest,     // handle to destination DC (device context)
 			int nXDest,         // x-coord of destination upper-left corner
@@ -103,24 +104,24 @@ namespace BExplorer.Shell.Interop {
 			 IntPtr hdcSrc, int nXOriginSrc, int nYOriginSrc, int nWidthSrc, int nHeightSrc,
 			 BLENDFUNCTION blendFunction);
 
-		[System.Runtime.InteropServices.DllImportAttribute("gdi32.dll")]
+		[DllImportAttribute("gdi32.dll")]
 		public static extern IntPtr CreateCompatibleDC(IntPtr hdc);
 
-		[System.Runtime.InteropServices.DllImportAttribute("gdi32.dll")]
+		[DllImportAttribute("gdi32.dll")]
 		public static extern IntPtr SelectObject(IntPtr hdc, IntPtr obj);
 
-		[System.Runtime.InteropServices.DllImportAttribute("gdi32.dll")]
+		[DllImportAttribute("gdi32.dll")]
 		public static extern void DeleteObject(IntPtr obj);
 
 		[DllImport("gdi32.dll", EntryPoint = "GetObject")]
 		public static extern int GetObjectDIBSection(IntPtr hObject, int nCount, ref DIBSECTION lpObject);
 
-    [DllImport("gdi32.dll", EntryPoint = "GetObject")]
-    public static extern int GetObjectBitmap(IntPtr hObject, int nCount, [Out] IntPtr lpObject);
+		[DllImport("gdi32.dll", EntryPoint = "GetObject")]
+		public static extern int GetObjectBitmap(IntPtr hObject, int nCount, [Out] IntPtr lpObject);
 
 		public static void GetBitmapDimentions(IntPtr ipd, out int width, out int height) {
 			// get the info about the HBITMAP inside the IPictureDisp
-			DIBSECTION dibsection = new DIBSECTION();
+			var dibsection = new DIBSECTION();
 			var res = GetObjectDIBSection(ipd, Marshal.SizeOf(dibsection), ref dibsection);
 			width = dibsection.dsBm.bmWidth;
 			height = dibsection.dsBm.bmHeight;
@@ -132,22 +133,22 @@ namespace BExplorer.Shell.Interop {
 			var res = GetObjectDIBSection(ipd, Marshal.SizeOf(dibsection), ref dibsection);
 			width = dibsection.dsBm.bmWidth;
 			height = dibsection.dsBm.bmHeight;
-			unsafe {
+			unsafe
+			{
 				//Check is that 32bit bitmap
-				if (dibsection.dsBmih.biBitCount == 32)
-				{
+				if (dibsection.dsBmih.biBitCount == 32) {
 					// get a pointer to the raw bits
 					RGBQUAD* pBits = (RGBQUAD*)(void*)dibsection.dsBm.bmBits;
-          
-          // copy each pixel manually and premultiply the color values
-          for (int x = 0; x < dibsection.dsBmih.biWidth; x++)
+
+					// copy each pixel manually and premultiply the color values
+					for (int x = 0; x < dibsection.dsBmih.biWidth; x++)
 						for (int y = 0; y < dibsection.dsBmih.biHeight; y++) {
 							int offset = y * dibsection.dsBmih.biWidth + x;
-              if (pBits[offset].rgbReserved > 0 && (pBits[offset].rgbBlue > pBits[offset].rgbReserved || pBits[offset].rgbGreen > pBits[offset].rgbReserved || pBits[offset].rgbRed > pBits[offset].rgbReserved)) {
-                pBits[offset].rgbBlue = (byte)((((int)pBits[offset].rgbBlue * (int)pBits[offset].rgbReserved + 1) * 257) >> 16);
-                pBits[offset].rgbGreen = (byte)((((int)pBits[offset].rgbGreen * (int)pBits[offset].rgbReserved + 1) * 257) >> 16);
-                pBits[offset].rgbRed = (byte)((((int)pBits[offset].rgbRed * (int)pBits[offset].rgbReserved + 1) * 257) >> 16);
-              }
+							if (pBits[offset].rgbReserved > 0 && (pBits[offset].rgbBlue > pBits[offset].rgbReserved || pBits[offset].rgbGreen > pBits[offset].rgbReserved || pBits[offset].rgbRed > pBits[offset].rgbReserved)) {
+								pBits[offset].rgbBlue = (byte)((((int)pBits[offset].rgbBlue * (int)pBits[offset].rgbReserved + 1) * 257) >> 16);
+								pBits[offset].rgbGreen = (byte)((((int)pBits[offset].rgbGreen * (int)pBits[offset].rgbReserved + 1) * 257) >> 16);
+								pBits[offset].rgbRed = (byte)((((int)pBits[offset].rgbRed * (int)pBits[offset].rgbReserved + 1) * 257) >> 16);
+							}
 						}
 				}
 			}
@@ -155,6 +156,7 @@ namespace BExplorer.Shell.Interop {
 
 		[DllImport("user32.dll", EntryPoint = "GetDC", CharSet = CharSet.Auto)]
 		public static extern IntPtr GetDeviceContext(IntPtr hWnd);
+
 		[DllImport("gdi32", EntryPoint = "CreateCompatibleBitmap")]
 		public static extern IntPtr CreateCompatibleBitmap(IntPtr hDC, int nWidth, int nHeight);
 
@@ -167,6 +169,7 @@ namespace BExplorer.Shell.Interop {
 			DeleteObject(oldSource);
 			DeleteObject(hBitmap);
 		}
+
 		public static void NativeDraw(IntPtr destDC, IntPtr hBitmap, int x, int y, int iconSizeWidth, int iconSizeHeight, Boolean isHidden = false) {
 			IntPtr destCDC = CreateCompatibleDC(destDC);
 			IntPtr oldSource = SelectObject(destCDC, hBitmap);
@@ -186,8 +189,7 @@ namespace BExplorer.Shell.Interop {
 			DeleteObject(oldSource);
 			DeleteObject(hBitmap);
 		}
-
-
+		
 		public static void NativeDraw(IntPtr destDC, IntPtr hBitmap, int x, int y, int iconSizeWidth, int iconSizeHeight, int iconSizeWidthDest, int iconSizeHeightDest, Boolean isHidden = false) {
 			IntPtr destCDC = CreateCompatibleDC(destDC);
 			IntPtr oldSource = SelectObject(destCDC, hBitmap);
@@ -210,8 +212,9 @@ namespace BExplorer.Shell.Interop {
 					g.DrawRectangle(Pens.Gray, r);
 					return roundedImage;
 				}
-			} else {
-				var d = cornerRadius*2;
+			}
+			else {
+				var d = cornerRadius * 2;
 				Bitmap roundedImage = new Bitmap(StartImage.Width, StartImage.Height);
 				var r = new Rectangle(0, 0, StartImage.Width - d, StartImage.Height - d);
 				using (Graphics g = Graphics.FromImage(roundedImage)) {
@@ -224,7 +227,7 @@ namespace BExplorer.Shell.Interop {
 					gp.AddArc(r.X + r.Width - d, r.Y, d, d, 270, 90);
 					gp.AddArc(r.X + r.Width - d, r.Y + r.Height - d, d, d, 0, 90);
 					gp.AddArc(r.X, r.Y + r.Height - d, d, d, 90, 90);
-					gp.AddLine(r.X, r.Y + r.Height - d, r.X, r.Y + d/2);
+					gp.AddLine(r.X, r.Y + r.Height - d, r.X, r.Y + d / 2);
 
 					g.FillPath(backgroundColor, gp);
 					g.DrawPath(Pens.Gray, gp);

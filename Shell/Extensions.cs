@@ -1,14 +1,12 @@
-﻿using BExplorer.Shell.Interop;
+﻿using BExplorer.Shell._Plugin_Interfaces;
+using BExplorer.Shell.Interop;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
 
@@ -32,26 +30,28 @@ namespace BExplorer.Shell {
 		public int iGroup;
 	}
 
-  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-  public struct LVITEM2 {
-    public uint mask;
-    public int iItem;
-    public int iSubItem;
-    public uint state;
-    public uint stateMask;
-    public IntPtr pszText;
-    public int cchTextMax;
-    public int iImage;
-    public IntPtr lParam;
-    public int iIndent;
-    public int iGroupId;
-    public int cColumns;
-    public IntPtr puColumns;
-    public int piColFmt;
-    public int iGroup;
-  }
+	/*
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+	public struct LVITEM2 {
+		public uint mask;
+		public int iItem;
+		public int iSubItem;
+		public uint state;
+		public uint stateMask;
+		public IntPtr pszText;
+		public int cchTextMax;
+		public int iImage;
+		public IntPtr lParam;
+		public int iIndent;
+		public int iGroupId;
+		public int cColumns;
+		public IntPtr puColumns;
+		public int piColFmt;
+		public int iGroup;
+	}
+	*/
 
-  [StructLayout(LayoutKind.Sequential)]
+	[StructLayout(LayoutKind.Sequential)]
 	public struct NMHDR {
 		// 12/24
 		public IntPtr hwndFrom;
@@ -74,13 +74,15 @@ namespace BExplorer.Shell {
 		public LVITEM item;
 	}
 
-  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-  public struct NMLVDISPINFO2 {
-    public NMHDR hdr;
-    public LVITEM2 item;
-  }
+	/*
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+	public struct NMLVDISPINFO2 {
+		public NMHDR hdr;
+		public LVITEM2 item;
+	}
+	*/
 
-  public enum LVCF {
+	public enum LVCF {
 		LVCF_FMT = 0x1,
 		LVCF_WIDTH = 0x2,
 		LVCF_TEXT = 0x4,
@@ -88,6 +90,7 @@ namespace BExplorer.Shell {
 		LVCF_MINWIDTH = 0x0040
 	}
 
+	/// <summary>Native Listview column</summary>
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 	public struct LVCOLUMN {
 		public LVCF mask;
@@ -143,7 +146,6 @@ namespace BExplorer.Shell {
 		public uint flags;
 	}
 
-
 	[StructLayout(LayoutKind.Sequential)]
 	public struct NMLVFINDITEM {
 		public NMHDR hdr;
@@ -171,7 +173,7 @@ namespace BExplorer.Shell {
 		public int ptY;
 		public int vkDirection;
 	}
-	
+
 	public enum LVFI {
 		LVFI_PARAM = 0x0001,
 		LVFI_STRING = 0x0002,
@@ -180,7 +182,7 @@ namespace BExplorer.Shell {
 		LVFI_WRAP = 0x0020,
 		LVFI_NEARESTXY = 0x0040,
 	}
-	
+
 	public enum LVTVIM {
 		LVTVIM_COLUMNS = 2,
 		LVTVIM_TILESIZE = 1,
@@ -369,10 +371,16 @@ namespace BExplorer.Shell {
 	*/
 
 	public static class Extensions {
+
+		/// <summary>
+		/// Converts a <see cref="ListViewGroupEx"/> into a <see cref="LVGROUP2"/> (Native ListView Group)
+		/// </summary>
+		/// <param name="group">The <see cref="ListViewGroupEx"/> you want to convert</param>
+		/// <returns></returns>
 		public static LVGROUP2 ToNativeListViewGroup(this ListViewGroupEx group) {
 			var nativeGroup = new LVGROUP2 {
-				cbSize = (UInt32) Marshal.SizeOf(typeof (LVGROUP2)),
-				mask = (UInt32) (GroupMask.LVGF_HEADER ^ GroupMask.LVGF_STATE ^ GroupMask.LVGF_GROUPID),
+				cbSize = (UInt32)Marshal.SizeOf(typeof(LVGROUP2)),
+				mask = (UInt32)(GroupMask.LVGF_HEADER ^ GroupMask.LVGF_STATE ^ GroupMask.LVGF_GROUPID),
 				stateMask = (UInt32)GroupState.LVGS_COLLAPSIBLE,
 				state = (UInt32)GroupState.LVGS_COLLAPSIBLE,
 				pszHeader = group.Header,
@@ -387,6 +395,15 @@ namespace BExplorer.Shell {
 			return nativeGroup;
 		}
 
+		/// <summary>
+		/// Factory to create <see cref="Collumns"/> (All it does is assign values)
+		/// </summary>
+		/// <param name="column">Collumns.Name = column.pszText</param>
+		/// <param name="pkey"></param>
+		/// <param name="type">Collumns.pkey = pkey</param>
+		/// <param name="isColumnHandler">Collumns.IsColumnHandler = isColumnHandler</param>
+		/// <param name="minWidth">Collumns.MinWidth = minWidth</param>
+		/// <returns>The new Collumns</returns>
 		public static Collumns ToCollumns(this LVCOLUMN column, PROPERTYKEY pkey, Type type, Boolean isColumnHandler, Int32 minWidth) {
 			return new Collumns {
 				pkey = pkey,
@@ -408,7 +425,6 @@ namespace BExplorer.Shell {
 			User32.SendMessage(handle, MSG.HDM_SETITEM, index, ref item);
 		}
 
-
 		/// <summary>
 		/// Converts a File/Folder path into a proper string used to create a <see cref="ShellItem"/>
 		/// </summary>
@@ -425,15 +441,18 @@ namespace BExplorer.Shell {
 			else if (!path.StartsWith(@"\\")) {
 				if (path.Contains(":")) {
 					return $"{path}{(path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString())}";
-				} else {
+				}
+				else {
 					try {
 						return $"{path}{Path.DirectorySeparatorChar}";
-					} catch (Exception) {
+					}
+					catch (Exception) {
 						return @"\\" + $"{path}{Path.DirectorySeparatorChar}";
 						throw;
 					}
 				}
-			} else
+			}
+			else
 				return path;
 		}
 
@@ -470,6 +489,14 @@ namespace BExplorer.Shell {
 		}
 		*/
 
+		/// <summary>
+		/// Sets the <paramref name="row"/> and <paramref name="column"/> based on the row and column that the <paramref name="hitPoint">point</paramref> falls on
+		/// </summary>
+		/// <param name="shellView">The <see cref="ShellView"/> you want to test with</param>
+		/// <param name="hitPoint">The point on the screen you awnt to look for</param>
+		/// <param name="row">The value for row that was hit</param>
+		/// <param name="column">The value for column that was hit</param>
+		/// <returns>Was the <paramref name="shellView"/> hit at all?</returns>
 		public static bool HitTest(this ShellView shellView, Point hitPoint, out int row, out int column) {
 			// clear the output values
 			row = column = -1;
@@ -504,7 +531,8 @@ namespace BExplorer.Shell {
 					column = lvHitTestInfo.iSubItem;
 					hitLocationFound = true;
 				}
-			} else if (User32.SendMessage(shellView.LVHandle, LVM_FIRST, 0, ref lvHitTestInfo) != 0) {
+			}
+			else if (User32.SendMessage(shellView.LVHandle, LVM_FIRST, 0, ref lvHitTestInfo) != 0) {
 				row = 0;
 				hitLocationFound = true;
 			}
@@ -590,7 +618,8 @@ namespace BExplorer.Shell {
 
 					if ((value & 2) == 2) {
 						dragDropEffect = System.Windows.DragDropEffects.Move;
-					} else {
+					}
+					else {
 						dragDropEffect = dragDropEffect = System.Windows.DragDropEffects.Copy;
 					}
 				}
@@ -601,6 +630,7 @@ namespace BExplorer.Shell {
 		[DllImport("shell32.dll", CharSet = CharSet.None)]
 		public static extern int ILGetSize(IntPtr pidl);
 
+		/*
 		public static void Clear(this ConcurrentBag<Tuple<int, PROPERTYKEY, object>> bag) {
 			Tuple<int, PROPERTYKEY, object> tmp = null;
 			while (!bag.IsEmpty) {
@@ -608,6 +638,7 @@ namespace BExplorer.Shell {
 				if (tmp != null) tmp = null;
 			}
 		}
+		*/
 
 		public static MemoryStream CreateShellIDList(this IListItemEx[] items) {
 			// first convert all files into pidls list
@@ -645,22 +676,31 @@ namespace BExplorer.Shell {
 			return memStream;
 		}
 
-	  public static Boolean IsInCurrentFolder(this IListItemEx checkedItem, IListItemEx currentFolder) {
-	    var isLibraryContainer = currentFolder?.Extension == ".library-ms";
-	    if (isLibraryContainer) {
-	      var library = ShellLibrary.Load(currentFolder.DisplayName, true);
-	      var libraryFolders = library.Select(w => w).ToArray();
-	      if (libraryFolders.Count(
-	          c => c.ParsingName.Equals(checkedItem.Parent?.ParsingName, StringComparison.InvariantCultureIgnoreCase)) > 0) {
-          library.Close();
-	        return true;
-	      }
-        library.Close();
-        return false;
-	    }
-	    else {
-	      return checkedItem?.Parent?.Equals(currentFolder) == true;
-	    }
-	  }
+		/// <summary>
+		/// Is the current <paramref name="checkedItem">Item</paramref> in the <paramref name="currentFolder">Folder</paramref>?
+		/// </summary>
+		/// <param name="checkedItem">The current item who's container/parent you want to check</param>
+		/// <param name="currentFolder">The folder you are looking for</param>
+		/// <returns>Is the current <paramref name="checkedItem">Item</paramref> in the <paramref name="currentFolder">Folder</paramref>?</returns>
+		/// <remarks>
+		/// 1. Special Logic for Library folders (.library-ms)
+		/// </remarks>
+		public static Boolean IsInCurrentFolder(this IListItemEx checkedItem, IListItemEx currentFolder) {
+			var isLibraryContainer = currentFolder?.Extension == ".library-ms";
+			if (isLibraryContainer) {
+				var library = ShellLibrary.Load(currentFolder.DisplayName, true);
+				var libraryFolders = library.Select(w => w).ToArray();
+				if (libraryFolders.Count(
+					c => c.ParsingName.Equals(checkedItem.Parent?.ParsingName, StringComparison.InvariantCultureIgnoreCase)) > 0) {
+					library.Close();
+					return true;
+				}
+				library.Close();
+				return false;
+			}
+			else {
+				return checkedItem?.Parent?.Equals(currentFolder) == true;
+			}
+		}
 	}
 }
