@@ -15,18 +15,12 @@ using BExplorer.Shell._Plugin_Interfaces;
 namespace BExplorer.Shell {
 	public partial class ShellTreeViewEx : UserControl {
 
-		#region Event Handlers
-
-		public event EventHandler<TreeNodeMouseClickEventArgs> NodeClick;
-		public event EventHandler<NavigatedEventArgs> AfterSelect;
-
-		#endregion Event Handlers
-
 		#region Public Members
 
-		private TreeViewBase ShellTreeView;
+		/// <summary>Do you want to show hidden items/nodes in the list</summary>
 		public Boolean IsShowHiddenItems { get; set; }
 
+		/// <summary>The <see cref="ShellView">List</see> that this is paired with</summary>
 		public ShellView ShellListView {
 			private get {
 				return _ShellListView;
@@ -39,7 +33,17 @@ namespace BExplorer.Shell {
 
 		#endregion Public Members
 
+		#region Event Handlers
+
+		public event EventHandler<TreeNodeMouseClickEventArgs> NodeClick;
+		public event EventHandler<NavigatedEventArgs> AfterSelect;
+
+		#endregion Event Handlers
+
 		#region Private Members
+
+		private TreeViewBase ShellTreeView;
+		private List<String> _PathsToBeAdd = new List<String>();
 		private string _SearchingForFolders = "Searching for folders...";
 		private TreeNode cuttedNode { get; set; }
 		private ManualResetEvent _ResetEvent = new ManualResetEvent(true);
@@ -337,6 +341,7 @@ namespace BExplorer.Shell {
 
 		#region Public Methods
 
+		/// <summary>Refreshes/rebuilds all nods (clears nodes => initializes root items => selects current folder from <see cref="ShellListView"/>)</summary>
 		public void RefreshContents() {
 			this.ShellTreeView.Nodes.Clear();
 			InitRootItems();
@@ -346,8 +351,6 @@ namespace BExplorer.Shell {
 		}
 
 		public void RequestTreeImage(IntPtr handle) {
-			//return;
-			//this._ResetEvent.WaitOne();
 			var t = new Thread(() => {
 				Application.DoEvents();
 				Thread.Sleep(1);
@@ -384,6 +387,7 @@ namespace BExplorer.Shell {
 			t.Start();
 		}
 
+		
 		public void LoadTreeImages() {
 			//return;
 			while (true) {
@@ -951,13 +955,15 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 		}
 
 		#endregion Initializer
+		
+		#region Overrides     
+		 
 		protected override void OnHandleDestroyed(EventArgs e) {
 			this._NotificationNetWork.UnregisterChangeNotify();
 			this._NotificationGlobal.UnregisterChangeNotify();
 			base.OnHandleDestroyed(e);
 		}
 
-		private List<String> _PathsToBeAdd = new List<String>();
 		[HandleProcessCorruptedStateExceptions]
 		protected override void WndProc(ref Message m) {
 			base.WndProc(ref m);
@@ -1120,5 +1126,7 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 				}
 			}
 		}
+
+		#endregion
 	}
 }
