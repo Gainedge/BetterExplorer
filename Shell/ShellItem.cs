@@ -112,6 +112,7 @@ namespace BExplorer.Shell {
     internal IntPtr ILPidl => Shell32.ILFindLastID(Pidl);
 
     public static IntPtr MessageHandle = IntPtr.Zero;
+
     public static Boolean IsCareForMessageHandle = true;
 
     /// <summary>Add Documentation</summary>
@@ -232,17 +233,20 @@ namespace BExplorer.Shell {
       }
     }
 
-    public bool IsSearchFolder {
-      get {
-        try {
-          return (!ParsingName.StartsWith("::") && !IsFileSystem && !ParsingName.StartsWith(@"\\") && !ParsingName.Contains(":\\")) || ParsingName.EndsWith(".search-ms");
-        } catch {
-          return false;
-        }
-      }
-    }
+	/// <summary>Is the current folder a search folder?</summary>
+	public bool IsSearchFolder {
+		get {
+			try {
+				return (!ParsingName.StartsWith("::") && !IsFileSystem && !ParsingName.StartsWith(@"\\") && !ParsingName.Contains(":\\")) || ParsingName.EndsWith(".search-ms");
+			}
+			catch {
+				return false;
+			}
+		}
+	}
 
-    public bool IsImage {
+		/// <summary>Does the current file have a known image file extension (jpg, png, jpeg, gif, tiff or bmp)</summary>
+	public bool IsImage {
       get {
         switch (this.Extension.ToLowerInvariant()) {
           case ".jpg":
@@ -524,7 +528,6 @@ namespace BExplorer.Shell {
       }
     }
 
-
     public PropVariant GetPropertyValue(PROPERTYKEY pkey) {
       var pvar = new PropVariant();
       var isi2 = (IShellItem2)ComInterface;
@@ -564,10 +567,24 @@ namespace BExplorer.Shell {
     /// <returns></returns>
     public int GetSystemImageListIndex(ShellIconType type, ShellIconFlags flags) => GetSystemImageListIndex(Pidl, type, flags);
 
-    public static int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
+	/// <summary>
+	/// Gets the index in the system image list of the icon representing
+	/// the item.
+	/// </summary>
+	///
+	/// <param name="pidl">A pointer to a null-terminated string of maximum length MAX_PATH that contains the path and file name. Both absolute and relative paths are valid.</param>
+	/// <param name="type">
+	/// The type of icon to retrieve.
+	/// </param>
+	///
+	/// <param name="flags">
+	/// Flags detailing additional information to be conveyed by the icon.
+	/// </param>
+	///
+	/// <returns></returns>
+	public static int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
       var info = new SHFILEINFO();
-      IntPtr result = Shell32.SHGetFileInfo(pidl, 0, out info, Marshal.SizeOf(info),
-          SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
+      IntPtr result = Shell32.SHGetFileInfo(pidl, 0, out info, Marshal.SizeOf(info), SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
 
       if (result == IntPtr.Zero)
         throw new Exception("Error retrieving shell folder icon");
@@ -663,15 +680,18 @@ namespace BExplorer.Shell {
         // try SHGetSpecialFolderLocation first because it returns
         // a PIDL which is preferable to a path as it can express
         // virtual folder locations.
-        StringBuilder path = new StringBuilder();
+        var path = new StringBuilder();
         Marshal.ThrowExceptionForHR((int)Shell32.SHGetFolderPath(IntPtr.Zero, (CSIDL)folder, IntPtr.Zero, 0, path));
         ComInterface = CreateItemFromParsingName(path.ToString());
       }
       Constructor_Helper();
     }
 
-
-    public ShellItem(IntPtr pidl) {
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ShellItem"/> class.
+	/// </summary>
+	/// <param name="pidl">Used to set <see cref="ComInterface"/> using <see cref="CreateItemFromIDList"/></param>
+	public ShellItem(IntPtr pidl) {
       ComInterface = CreateItemFromIDList(pidl);
       Constructor_Helper();
     }
@@ -815,10 +835,20 @@ namespace BExplorer.Shell {
       }
     }
 
+	/// <summary>
+	/// Creates a <see cref="IShellItem"/> using an <see cref="IntPtr"/>
+	/// </summary>
+	/// <param name="pidl"></param>
+	/// <returns></returns>
     private static IShellItem CreateItemFromIDList(IntPtr pidl) {
       return RunningVista ? Shell32.SHCreateItemFromIDList(pidl, typeof(IShellItem).GUID) : new Interop.VistaBridge.ShellItemImpl(pidl, false);
     }
 
+	/// <summary>
+	/// Creates a <see cref="IShellItem"/> using the file/folder's path
+	/// </summary>
+	/// <param name="path">The path of the file/folder</param>
+	/// <returns></returns>
     private static IShellItem CreateItemFromParsingName(string path) {
       if (RunningVista) {
         return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
@@ -891,7 +921,6 @@ namespace BExplorer.Shell {
     /// </param>
     public ShellItem this[string name] => new ShellItem(this, name);
 
-
     /// <summary>
     /// Initializes a new instance of the <see cref="ShellItem"/> class.
     /// </summary>
@@ -935,8 +964,6 @@ namespace BExplorer.Shell {
     /// Returns a string representation of the <see cref="ShellItem"/>.
     /// </summary>
     public override string ToString() => this.DisplayName;
-
-
 
 
     /// <summary>

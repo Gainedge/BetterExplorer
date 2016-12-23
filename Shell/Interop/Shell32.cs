@@ -767,6 +767,12 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("shell32.dll", EntryPoint = "#165", CharSet = CharSet.Unicode)]
 		public static extern ERROR SHCreateDirectory(IntPtr hwnd, string pszPath);
 
+		/// <summary>
+		/// Creates and initializes a Shell item object from a pointer to an item identifier list (PIDL). The resulting shell item object supports the IShellItem interface.
+		/// </summary>
+		/// <param name="pidl">The source PIDL.</param>
+		/// <param name="riid">A reference to the IID of the requested interface.</param>
+		/// <returns></returns>
 		[DllImport("shell32.dll", PreserveSig = false)]
 		public static extern IShellItem SHCreateItemFromIDList(
 				[In] IntPtr pidl,
@@ -798,6 +804,15 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("shell32.dll", PreserveSig = false)]
 		public static extern IShellFolder SHGetDesktopFolder();
 
+		/// <summary>
+		/// Retrieves information about an object in the file system, such as a file, folder, directory, or drive root.
+		/// </summary>
+		/// <param name="pszPath">A pointer to a null-terminated string of maximum length MAX_PATH that contains the path and file name. Both absolute and relative paths are valid. </param>
+		/// <param name="dwFileAttributes">A combination of one or more file attribute flags (FILE_ATTRIBUTE_ values as defined in Winnt.h). If uFlags does not include the SHGFI_USEFILEATTRIBUTES flag, this parameter is ignored</param>
+		/// <param name="psfi">Pointer to a SHFILEINFO structure to receive the file information.</param>
+		/// <param name="cbFileInfo">The size, in bytes, of the SHFILEINFO structure pointed to by the psfi parameter.</param>
+		/// <param name="uFlags">The flags that specify the file information to retrieve. This parameter can be a combination of the following values.</param>
+		/// <returns></returns>
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern IntPtr SHGetFileInfo(IntPtr pszPath, int dwFileAttributes, out SHFILEINFO psfi, int cbFileInfo, SHGFI uFlags);
 
