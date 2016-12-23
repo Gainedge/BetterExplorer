@@ -54,6 +54,9 @@ namespace BExplorer.Shell {
 	/// </remarks>
 	public class FileFilterComboBox : ComboBox {
 		//Regex m_Regex;
+		string m_Filter = "*.*";
+		string m_FilterItems = "";
+		bool m_IgnoreSelectionChange;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileFilterComboBox"/>
@@ -245,9 +248,5 @@ namespace BExplorer.Shell {
 		//            (e.Item.IsFolder || m_Regex.IsMatch(e.Item.FileSystemPath));
 		//    }
 		//}
-
-		string m_Filter = "*.*";
-		string m_FilterItems = "";
-		bool m_IgnoreSelectionChange;
 	}
 }
