@@ -2062,12 +2062,12 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
     protected override void OnHandleDestroyed(EventArgs e) {
       try {
-        this._FsWatcher.Dispose();
+        this._FsWatcher?.Dispose();
         this.Notifications.UnregisterChangeNotify();
         this.LargeImageList.Dispose();
         this.SmallImageList.Dispose();
-        Thread t = new Thread(() => {
-          _Mre.Reset();
+        var t = new Thread(() => {
+          this._Mre.Reset();
           foreach (var thread in this._Threads) {
             if (thread.IsAlive) thread.Abort();
           }
@@ -3128,26 +3128,31 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
     /// Navigate to a folder.
     /// </summary>
     /// <param name="destination">The folder you want to navigate to.</param>
-    /// <param name="isInSameTab"></param>
+    /// <param name="isInSameTab">Do the navigation happens in same tab</param>
     /// <param name="refresh">Should the List be Refreshed?</param>
-    /// <param name="isCancel">  this.IsNavigationCancelRequested = isCancel</param>
+    /// <param name="isCancel">this.IsNavigationCancelRequested = isCancel</param>
     [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
     [HandleProcessCorruptedStateExceptions]
     private void Navigate(IListItemEx destination, Boolean isInSameTab = false, Boolean refresh = false, Boolean isCancel = false) {
-      SaveSettingsToDatabase(this.CurrentFolder);
-      //TODO: Document isCancel Param better
-      if (destination == null) return;
+      this.SaveSettingsToDatabase(this.CurrentFolder);
+
+      // TODO: Document isCancel Param better
+      if (destination == null) {
+        return;
+      }
       destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
-      if (this.RequestedCurrentLocation == destination && !refresh) return;
-      //if (this._RequestedCurrentLocation != destination) {
-      //  //this.IsCancelRequested = true;
+      if (this.RequestedCurrentLocation == destination && !refresh) {
+        return;
+      }
+      //if (this.RequestedCurrentLocation != destination) {
+      //  this.IsCancelRequested = true;
       //}
       this.LargeImageList.ResetEvent.Set();
       this.SmallImageList.ResetEvent.Set();
-      _ResetEvent.Set();
+      this._ResetEvent.Set();
 
       if (this._Threads.Count > 0) {
-        _Mre.Set();
+        this._Mre.Set();
         this._ResetEvent.Set();
         this.LargeImageList.ResetEvent.Set();
         this.SmallImageList.ResetEvent.Set();
@@ -3164,7 +3169,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
       this.Focus(false, true);
       this._ItemForRename = -1;
       this._LastItemForRename = -1;
-      Items.Clear();
+      this.Items.Clear();
       this._AddedItems.Clear();
       this.LargeImageList.ReInitQueues();
       this.SmallImageList.ReInitQueues();
@@ -3219,7 +3224,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
       }
 
       if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List) {
-        ResizeIcons(16);
+        this.ResizeIcons(16);
         this.View = folderSettings.View;
       } else if (folderSettings.IconSize >= 16) {
         this.ResizeIcons(folderSettings.IconSize);
@@ -3234,73 +3239,80 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
       this.Invoke((Action)(() => this._NavWaitTimer.Start()));
 
       var navigationThread = new Thread(() => {
+        this.IsCancelRequested = false;
         destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
         if (destination.IsFileSystem) {
           if (this._FsWatcher != null) {
             this._FsWatcher.EnableRaisingEvents = false;
             this._FsWatcher.Dispose();
-            this._FsWatcher = new FileSystemWatcher(@destination.ParsingName);
-            //this._FsWatcher.InternalBufferSize = 64 * 1024 * 1024;
-            this._FsWatcher.Changed += (sender, args) => {
-              try {
-                var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
-                if (objUpdateItem.IsInCurrentFolder(this.CurrentFolder)) {
-                  var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
-                  if (exisitingUItem != null)
-                    this.RefreshItem(exisitingUItem.ItemIndex, true);
+            try {
+              this._FsWatcher = new FileSystemWatcher(@destination.ParsingName);
+              //this._FsWatcher.InternalBufferSize = 64 * 1024 * 1024;
+              this._FsWatcher.Changed += (sender, args) => {
+                try {
+                  var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
+                  if (objUpdateItem.IsInCurrentFolder(this.CurrentFolder)) {
+                    var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
+                    if (exisitingUItem != null)
+                      this.RefreshItem(exisitingUItem.ItemIndex, true);
 
-                  if (this.RequestedCurrentLocation != null && objUpdateItem.Equals(this.RequestedCurrentLocation))
-                    this.UnvalidateDirectory();
-                }
-              } catch (FileNotFoundException) {
-                //Probably a temporary file 
-                this._TemporaryFiles.Add(args.FullPath);
-              } catch {
-              }
-            };
-            this._FsWatcher.Error += (sender, args) => {
-              var ex = args.GetException();
-            };
-            this._FsWatcher.Created += (sender, args) => {
-              try {
-                //var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
-                //if (existing != null) return;
-                if (Path.GetExtension(args.FullPath).ToLowerInvariant() == ".tmp" ||
-                        Path.GetExtension(args.FullPath) == String.Empty) {
-                  if (!this._TemporaryFiles.Contains(args.FullPath))
-                    this._TemporaryFiles.Add(args.FullPath);
-                }
-                var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
-                if (obj.IsInCurrentFolder(this.CurrentFolder)) {
-                  if (this.IsRenameNeeded) {
-                    var existingItem = this.Items.ToArray().FirstOrDefault(s => s.Equals(obj));
-                    if (existingItem == null) {
-                      var itemIndex = this.InsertNewItem(obj);
-                      this.SelectItemByIndex(itemIndex, true, true);
-                      this.RenameSelectedItem(itemIndex);
-                      this.IsRenameNeeded = false;
-                    } else {
-                      this.RenameSelectedItem(existingItem.ItemIndex);
-                    }
-                  } else {
-                    if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj)))
+                    if (this.RequestedCurrentLocation != null && objUpdateItem.Equals(this.RequestedCurrentLocation))
                       this.UnvalidateDirectory();
                   }
+                } catch (FileNotFoundException) {
+                  //Probably a temporary file 
+                  this._TemporaryFiles.Add(args.FullPath);
+                } catch {
                 }
-              } catch (FileNotFoundException) {
-                this.QueueDeleteItem(args);
-              } catch { }
-            };
+              };
+              this._FsWatcher.Error += (sender, args) => {
+                var ex = args.GetException();
+              };
+              this._FsWatcher.Created += (sender, args) => {
+                try {
+                  //var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
+                  //if (existing != null) return;
+                  if (Path.GetExtension(args.FullPath).ToLowerInvariant() == ".tmp" ||
+                          Path.GetExtension(args.FullPath) == String.Empty) {
+                    if (!this._TemporaryFiles.Contains(args.FullPath))
+                      this._TemporaryFiles.Add(args.FullPath);
+                  }
+                  var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
+                  if (obj.IsInCurrentFolder(this.CurrentFolder)) {
+                    if (this.IsRenameNeeded) {
+                      var existingItem = this.Items.ToArray().FirstOrDefault(s => s.Equals(obj));
+                      if (existingItem == null) {
+                        var itemIndex = this.InsertNewItem(obj);
+                        this.SelectItemByIndex(itemIndex, true, true);
+                        this.RenameSelectedItem(itemIndex);
+                        this.IsRenameNeeded = false;
+                      } else {
+                        this.RenameSelectedItem(existingItem.ItemIndex);
+                      }
+                    } else {
+                      if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj)))
+                        this.UnvalidateDirectory();
+                    }
+                  }
+                } catch (FileNotFoundException) {
+                  this.QueueDeleteItem(args);
+                } catch { }
+              };
 
-            this._FsWatcher.Deleted += (sender, args) => this.QueueDeleteItem(args);
-            this._FsWatcher.Renamed += (sender, args) => { };
-            this._FsWatcher.IncludeSubdirectories = false;
-            this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.Attributes |
-            NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size;
+              this._FsWatcher.Deleted += (sender, args) => this.QueueDeleteItem(args);
+              this._FsWatcher.Renamed += (sender, args) => { };
+              this._FsWatcher.IncludeSubdirectories = false;
+              this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.Attributes |
+              NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size;
+            } catch (ArgumentException) {
+              this._FsWatcher = new FileSystemWatcher();
+            }
           }
 
           try {
-            this._FsWatcher.EnableRaisingEvents = true;
+            if (this._FsWatcher != null && !String.IsNullOrEmpty(this._FsWatcher.Path)) {
+              this._FsWatcher.EnableRaisingEvents = true;
+            }
           } catch (FileNotFoundException) { }
         }
 
@@ -3313,6 +3325,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
           CurrentI++;
 
           if (!this.RequestedCurrentLocation.Equals(shellItem.Parent) && this.IsNavigationCancelRequested) {
+            this.IsNavigationCancelRequested = false;
             return;
           }
 
@@ -3334,6 +3347,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
             this.BeginInvoke((MethodInvoker)(() => this._IIListView.SetItemCount(this.Items.Count, 0x2)));
           }
         }
+
         this.IsCancelRequested = false;
         this.IsNavigationInProgress = false;
 
@@ -3357,8 +3371,10 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
         //User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
 
-        var sortColIndex = this.Collumns.IndexOf(columns);
-        if (sortColIndex > -1) this.SetSortIcon(sortColIndex, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
+        var sortColIndex = this.Collumns.SingleOrDefault(s => s.ID == columns?.ID)?.Index;
+        if (sortColIndex != null) {
+          this.SetSortIcon(sortColIndex.Value, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
+        }
 
         if (isThereSettings) {
           if (columns?.ID == "A0" && String.Equals(this.RequestedCurrentLocation.ParsingName, KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase))

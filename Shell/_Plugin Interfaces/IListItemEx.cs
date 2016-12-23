@@ -91,7 +91,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
         String ParsingName { get; set; }
 
-        Boolean IsBrowsable { get; set; }
+        Boolean IsBrowsable { get; }
 
         /// <summary>Is this a folder?</summary>
         Boolean IsFolder { get; set; }
