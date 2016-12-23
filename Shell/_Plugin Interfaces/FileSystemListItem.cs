@@ -15,9 +15,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
   /// </summary>
   public class FileSystemListItem : IListItemEx {
 
-    #region Private Members
+	#region Private Members
 
-    private ShellItem _Item { get; set; }
+	/// <summary>The real item that is a wrapper for</summary>
+	private ShellItem _Item { get; set; }
 
     #endregion Private Members
 
@@ -94,7 +95,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public bool IsShared { get; set; }
 
-    public bool IsParentSearchFolder { get; set; }
+	/// <summary>Is the parent a search folder?</summary>
+	public bool IsParentSearchFolder { get; set; }
 
     public Int32 GroupIndex { get; set; }
 
