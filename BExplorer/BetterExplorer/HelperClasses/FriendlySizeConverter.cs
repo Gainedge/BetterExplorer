@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace BetterExplorer {
+
+	/// <summary>Contains functionality for presenting the size of a file</summary>
 	public class FriendlySizeConverter {
+
+		/// <summary>The various units in which to display the size of a file</summary>
 		public enum FileSizeMeasurements {
 			Bytes = 0,
 			Kilobytes = 1,
@@ -12,6 +13,12 @@ namespace BetterExplorer {
 			Gigabytes = 3,
 		}
 
+		/// <summary>
+		/// Converts a the size of a file in units (<see cref="FileSizeMeasurements"/> and <see cref="double"/>) into the number of bytes
+		/// </summary>
+		/// <param name="size"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
 		public static long GetByteLength(double size, FileSizeMeasurements type) {
 			switch (type) {
 				case FileSizeMeasurements.Bytes:
@@ -27,6 +34,11 @@ namespace BetterExplorer {
 			}
 		}
 
+		/// <summary>
+		/// Converts bytes into a user friendly string converted into larger units when desired.
+		/// </summary>
+		/// <param name="bytes">The number of bytes</param>
+		/// <returns></returns>
 		public static string GetFriendlySize(double bytes) {
 			if (bytes < 1000)
 				return bytes.ToString() + " B";
