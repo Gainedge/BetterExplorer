@@ -134,7 +134,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public TreeNode FromItem(IListItemEx item, TreeNode rootNode) {
+		private TreeNode FromItem(IListItemEx item, TreeNode rootNode) {
 			foreach (TreeNode node in rootNode.Nodes) {
 				if ((node.Tag as IListItemEx)?.Equals(item) == true) return node;
 				TreeNode next = FromItem(item, node);
@@ -143,7 +143,7 @@ namespace BExplorer.Shell {
 			return null;
 		}
 
-		public TreeNode FromItem(IListItemEx item) {
+		private TreeNode FromItem(IListItemEx item) {
 			foreach (TreeNode node in this.ShellTreeView.Nodes.OfType<TreeNode>().Where(w => {
 				var nodeItem = w.Tag as IListItemEx;
 				return nodeItem != null && (w.Tag != null && !nodeItem.ParsingName.Equals(KnownFolders.Links.ParsingName));
@@ -156,7 +156,7 @@ namespace BExplorer.Shell {
 		}
 
 		Stack<IListItemEx> parents = new Stack<IListItemEx>();
-		public void FindItem(IListItemEx item) {
+		private void FindItem(IListItemEx item) {
 			var nodeNext = this.ShellTreeView.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(item));
 			if (nodeNext == null) {
 				parents.Push(item);
@@ -176,7 +176,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public void SelItem(IListItemEx item) {
+		private void SelItem(IListItemEx item) {
 			var node = this.FromItem(item);
 			if (node != null) {
 				this.BeginInvoke((Action)(() => { this.ShellTreeView.SelectedNode = node; }));
@@ -186,7 +186,7 @@ namespace BExplorer.Shell {
 			this.FindItem(item.Clone());
 		}
 
-		public void DeleteItem(IListItemEx item) {
+		private void DeleteItem(IListItemEx item) {
 			TreeNode itemNode = null;
 			foreach (TreeNode node in this.ShellTreeView.Nodes) {
 				itemNode = this.FromItem(item, node);
@@ -196,7 +196,7 @@ namespace BExplorer.Shell {
 			itemNode?.Remove();
 		}
 
-		public void AddItem(IListItemEx item) {
+		private void AddItem(IListItemEx item) {
 			TreeNode itemNode = null;
 			foreach (TreeNode node in this.ShellTreeView.Nodes) {
 				try {
@@ -229,7 +229,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public void RenameItem(IListItemEx prevItem, IListItemEx newItem) {
+		private void RenameItem(IListItemEx prevItem, IListItemEx newItem) {
 		  if (!newItem.Equals(prevItem)) {
 		    this.DeleteItem(prevItem);
 		    this.AddItem(newItem);
@@ -284,7 +284,7 @@ namespace BExplorer.Shell {
 			childsThread.Start();
 		}
 
-		void ShellTreeView_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
+		private void ShellTreeView_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
 			e.UseDefaultCursors = true;
 			var doo = new System.Windows.Forms.DataObject(this._DataObject);
 			if (doo.GetDataPresent("DragWindow")) {
@@ -336,21 +336,8 @@ namespace BExplorer.Shell {
 				NodeClick.Invoke(this, new TreeNodeMouseClickEventArgs(treeNode, e.Button, e.Clicks, e.X, e.Y));
 			}
 		}
-
-		#endregion Private Methods
-
-		#region Public Methods
-
-		/// <summary>Refreshes/rebuilds all nods (clears nodes => initializes root items => selects current folder from <see cref="ShellListView"/>)</summary>
-		public void RefreshContents() {
-			this.ShellTreeView.Nodes.Clear();
-			InitRootItems();
-
-			if (this.ShellListView?.CurrentFolder != null)
-				this.SelItem(this.ShellListView.CurrentFolder);
-		}
-
-		public void RequestTreeImage(IntPtr handle) {
+		
+		private void RequestTreeImage(IntPtr handle) {
 			var t = new Thread(() => {
 				Application.DoEvents();
 				Thread.Sleep(1);
@@ -371,7 +358,8 @@ namespace BExplorer.Shell {
 									pidl = item.AbsolutePidl;
 								}
 							}
-						} catch { }
+						}
+						catch { }
 
 					}));
 
@@ -387,8 +375,8 @@ namespace BExplorer.Shell {
 			t.Start();
 		}
 
-		
-		public void LoadTreeImages() {
+		/// <summary>Loads the images for each node in a permanent loop</summary>
+		private void LoadTreeImages() {
 			//return;
 			while (true) {
 				this._ResetEvent.WaitOne();
@@ -420,7 +408,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public void RequestLoadChilds(IntPtr handle) {
+		private void RequestLoadChilds(IntPtr handle) {
 			var t = new Thread(() => {
 				//Application.DoEvents();
 				//Thread.Sleep(1);
@@ -429,14 +417,12 @@ namespace BExplorer.Shell {
 				IntPtr treeHandle = IntPtr.Zero;
 				var visible = true;
 				//var pidl = IntPtr.Zero;
-				if (ShellTreeView != null) {
-					this.ShellTreeView.BeginInvoke((Action)(() => {
-						node = TreeNode.FromHandle(ShellTreeView, handle);
-						treeHandle = this.ShellTreeView.Handle;
-						if (node != null)
-							visible = node.IsVisible;
-					}));
-				}
+				this.ShellTreeView?.BeginInvoke((Action)(() => {
+					node = TreeNode.FromHandle(ShellTreeView, handle);
+					treeHandle = this.ShellTreeView.Handle;
+					if (node != null)
+						visible = node.IsVisible;
+				}));
 
 				if (!visible)
 					return;
@@ -445,24 +431,24 @@ namespace BExplorer.Shell {
 				if (node?.Nodes.Count > 0) {
 					var childItem = node.Nodes[0];
 					if (childItem != null) {
-						var nodeHandle = childItem.Handle;
-
 						//TODO: Try to remove this Try Catch! It's slowing this down!!
 						try {
 							var sho = (node.Tag as IListItemEx);
 							if (!sho.HasSubFolders)
-								User32.SendMessage(treeHandle, MSG.TVM_DELETEITEM, 0, nodeHandle);
+								User32.SendMessage(treeHandle, MSG.TVM_DELETEITEM, 0, childItem.Handle);
 
 							this.CheckedFroChilds.Add(handle);
-						} catch (Exception) {
+						}
+						catch (Exception) {
 						}
 					}
 				}
 			});
+
 			t.Start();
 		}
 
-		public void LoadChilds() {
+		private void LoadChilds() {
 			while (true) {
 				//this._ResetEvent.WaitOne();
 				var handle = childsQueue.Dequeue();
@@ -487,7 +473,8 @@ namespace BExplorer.Shell {
 							var sho = (node.Tag as IListItemEx);
 							if (!sho.HasSubFolders) User32.SendMessage(treeHandle, MSG.TVM_DELETEITEM, 0, nodeHandle);
 							this.CheckedFroChilds.Add(handle);
-						} catch (Exception) {
+						}
+						catch (Exception) {
 						}
 					}
 				}
@@ -495,7 +482,7 @@ namespace BExplorer.Shell {
 		}
 
 		/// <summary>Sets up the UI to allow the user to edit the currently selected node if and only if it is not currently being edited</summary>
-		public void RenameSelectedNode() {
+		private void RenameSelectedNode() {
 			var node = this.ShellTreeView.SelectedNode;
 			if (node != null && !node.IsEditing) {
 				node.BeginEdit();
@@ -507,10 +494,10 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="dataObject">Contains the items you want to moe</param>
 		/// <param name="destination">The place you want to move the items to</param>
-		public void DoMove(IDataObject dataObject, IListItemEx destination) {
+		private void DoMove(IDataObject dataObject, IListItemEx destination) {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
-				IShellItem[] items = 
+				IShellItem[] items =
 					dataObject.GetDataPresent("FileDrop") ?
 					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray()
 					:
@@ -523,7 +510,8 @@ namespace BExplorer.Shell {
 					}
 
 					fo.PerformOperations();
-				} catch (SecurityException) {
+				}
+				catch (SecurityException) {
 					throw;
 				}
 			});
@@ -567,7 +555,7 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 		/// <summary>
 		/// Pasted the files in the clipboard to the <see cref="ShellTreeView"/>'s currentlt <see cref="TreeView.SelectedNode">Selected Node</see> on a separate thread
 		/// </summary>
-		public void PasteAvailableFiles() {
+		private void PasteAvailableFiles() {
 			var selectedItem = this.ShellTreeView.SelectedNode.Tag as IListItemEx;
 			if (selectedItem == null) return;
 			var handle = this.Handle;
@@ -577,7 +565,8 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 				if (dataObject.GetDataPresent("FileDrop")) {
 					//TODO: Fix FileDorp option
 					//items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
-				} else {
+				}
+				else {
 					items = dataObject.ToShellItemArray();
 				}
 
@@ -589,7 +578,8 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 						fo.MoveItems(items, selectedItem);
 
 					fo.PerformOperations();
-				} catch (SecurityException) {
+				}
+				catch (SecurityException) {
 					throw;
 				}
 			});
@@ -599,7 +589,7 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 		}
 
 		/// <summary>Cuts the currently selected items (signals the UI and saves items into the clipboard)</summary>
-		public void CutSelectedFiles() {
+		private void CutSelectedFiles() {
 			var item = new TVITEMW() {
 				mask = TVIF.TVIF_STATE,
 				stateMask = TVIS.TVIS_CUT,
@@ -619,12 +609,26 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 		}
 
 		/// <summary>Copies the currently selected items (saves items into the clipboard)</summary>
-		public void CopySelectedFiles() {
+		private void CopySelectedFiles() {
 			var selectedItems = new[] { this.ShellTreeView.SelectedNode.Tag as IListItemEx };
 			var ddataObject = new F.DataObject();
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 5, 0, 0, 0 }));
 			ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
 			Clipboard.SetDataObject(ddataObject, true);
+		}
+
+
+		#endregion Private Methods
+
+		#region Public Methods
+
+		/// <summary>Refreshes/rebuilds all nods (clears nodes => initializes root items => selects current folder from <see cref="ShellListView"/>)</summary>
+		public void RefreshContents() {
+			this.ShellTreeView.Nodes.Clear();
+			InitRootItems();
+
+			if (this.ShellListView?.CurrentFolder != null)
+				this.SelItem(this.ShellListView.CurrentFolder);
 		}
 
 		#endregion Public Methods
