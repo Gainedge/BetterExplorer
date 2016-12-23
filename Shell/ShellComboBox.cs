@@ -259,7 +259,12 @@ namespace BExplorer.Shell
         }
 		*/
 
-        void CreateItem(ShellItem folder, int indent)
+		/// <summary>
+		/// Creates a <see cref="ComboItem"/> and adds it to <see cref="m_Combo"/>
+		/// </summary>
+		/// <param name="folder">Sets <see cref="ComboItem.Folder"/></param>
+		/// <param name="indent">Sets <see cref="ComboItem.Indent"/></param>
+		void CreateItem(ShellItem folder, int indent)
         {
 			//TODO: Double Check recursive code
             int index = m_Combo.Items.Add(new ComboItem(folder, indent));
@@ -269,7 +274,7 @@ namespace BExplorer.Shell
                 m_Combo.SelectedIndex = index;
             }
 
-            if (ShouldCreateChildren(folder))
+			if (folder == m_Computer || folder == ShellItem.Desktop || folder.IsParentOf(m_SelectedFolder))
             {
 				foreach (var item in folder)
 				{
@@ -278,12 +283,14 @@ namespace BExplorer.Shell
 			}
         }
 		
+		/*
         bool ShouldCreateChildren(ShellItem folder)
         {
             return folder == m_Computer ||
                    folder == ShellItem.Desktop ||
                    folder.IsParentOf(m_SelectedFolder);
         }
+		*/
 
 		void NavigateShellView()
 		{
