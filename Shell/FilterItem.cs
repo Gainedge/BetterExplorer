@@ -35,12 +35,21 @@ namespace BExplorer.Shell
             Filter = filter;
         }
 
+		/// <summary>
+		/// Splits the filter, trims the results then return all that contain that equal the filter
+		/// </summary>
+		/// <param name="filter">The string you are looking for</param>
+		/// <returns></returns>
         public bool Contains(string filter)
         {
             return Filter.Split(',').Any(x => x.Trim() == filter);
         }
 
-        public override string ToString()
+		/// <summary>
+		/// Returns a string that represents the current object.
+		/// </summary>
+		/// <returns>A string that represents the current object.</returns>
+		public override string ToString()
         {
             string filterString = $" ({Filter})";
             return Caption.EndsWith(filterString) ? Caption : Caption + filterString;
@@ -59,7 +68,7 @@ namespace BExplorer.Shell
         /// </summary>
         /// <param name="filterString">The string representing a list of filters like: "txt|All files|"</param>
         /// <param name="existing">Not Sure</param>
-        /// <param name="existingIndex">Not Sure</param>
+        /// <param name="existingIndex">Sets the index of the currently selected item in the <see cref="FileFilterComboBox"/></param>
         /// <returns></returns>
         public static FilterItem[] ParseFilterString(string filterString, string existing, out int existingIndex)
         {
