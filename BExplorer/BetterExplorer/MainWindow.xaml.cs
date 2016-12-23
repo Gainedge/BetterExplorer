@@ -2105,7 +2105,7 @@ namespace BetterExplorer {
     }
 
     private void chkPinNav_CheckChanged(object sender, RoutedEventArgs e) {
-      this._ShellListView.IsLibraryInModify = true;
+      //this._ShellListView.IsLibraryInModify = true;
       this._ShellListView.CurrentRefreshedItemIndex = this._ShellListView.GetFirstSelectedItemIndex();
       var NeededFile = _ShellListView.GetSelectedCount() == 1 ? _ShellListView.GetFirstSelectedItem() : _ShellListView.CurrentFolder;
       try {

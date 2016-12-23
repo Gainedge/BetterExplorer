@@ -110,7 +110,7 @@ namespace BetterExplorer {
 			var itemIndex = _ShellView.GetFirstSelectedItemIndex();
 			this._ShellView.CurrentRefreshedItemIndex = itemIndex;
 			if (this._IsLibrary) {
-				this._ShellView.IsLibraryInModify = true;
+				//this._ShellView.IsLibraryInModify = true;
 				var lib = _ShellView.GetFirstSelectedItem() != null ?
 					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(_ShellView.GetFirstSelectedItem().ParsingName), false) :
 					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(_ShellView.CurrentFolder.ParsingName), false);

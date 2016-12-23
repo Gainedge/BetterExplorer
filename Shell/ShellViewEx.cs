@@ -195,6 +195,7 @@ namespace BExplorer.Shell {
 
   /// <summary> The ShellFileListView class that visualize contents of a directory </summary>
   public partial class ShellView : UserControl {
+
     #region Event Handler
 
     public event EventHandler<NavigatingEventArgs> Navigating;
@@ -245,7 +246,7 @@ namespace BExplorer.Shell {
     public List<Collumns> Collumns = new List<Collumns>();
     public List<ListViewGroupEx> Groups = new List<ListViewGroupEx>();
     public Boolean IsRenameNeeded { get; set; }
-    public Boolean IsLibraryInModify { get; set; }
+    //public Boolean IsLibraryInModify { get; set; }
     public Boolean IsFileExtensionShown { get; set; }
     public Boolean IsCancelRequested;
     public Boolean IsNavigationCancelRequested = false;
