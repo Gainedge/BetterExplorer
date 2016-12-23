@@ -490,6 +490,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/// <summary>Sets up the UI to allow the user to edit the currently selected node if and only if it is not currently being edited</summary>
 		public void RenameSelectedNode() {
 			var node = this.ShellTreeView.SelectedNode;
 			if (node != null && !node.IsEditing) {
@@ -497,14 +498,19 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/// <summary>
+		/// Moves the selected items to the destination on a separate thread
+		/// </summary>
+		/// <param name="dataObject">Contains the items you want to moe</param>
+		/// <param name="destination">The place you want to move the items to</param>
 		public void DoMove(IDataObject dataObject, IListItemEx destination) {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
-				var items = new IShellItem[0];
-				if (dataObject.GetDataPresent("FileDrop"))
-					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
-				else
-					items = dataObject.ToShellItemArray().ToArray();
+				IShellItem[] items = 
+					dataObject.GetDataPresent("FileDrop") ?
+					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray()
+					:
+					dataObject.ToShellItemArray().ToArray();
 
 				try {
 					var fo = new IIFileOperation(handle);
@@ -517,6 +523,7 @@ namespace BExplorer.Shell {
 					throw;
 				}
 			});
+
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}
@@ -553,13 +560,15 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 }
 */
 
+		/// <summary>
+		/// Pasted the files in the clipboard to the <see cref="ShellTreeView"/>'s currentlt <see cref="TreeView.SelectedNode">Selected Node</see> on a separate thread
+		/// </summary>
 		public void PasteAvailableFiles() {
 			var selectedItem = this.ShellTreeView.SelectedNode.Tag as IListItemEx;
 			if (selectedItem == null) return;
 			var handle = this.Handle;
 			var thread = new Thread(() => {
 				var dataObject = F.Clipboard.GetDataObject();
-				var dropEffect = dataObject.ToDropEffect();
 				IShellItemArray items = null;
 				if (dataObject.GetDataPresent("FileDrop")) {
 					//TODO: Fix FileDorp option
@@ -570,7 +579,7 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 
 				try {
 					var fo = new IIFileOperation(handle);
-					if (dropEffect == System.Windows.DragDropEffects.Copy)
+					if (dataObject.ToDropEffect() == System.Windows.DragDropEffects.Copy)
 						fo.CopyItems(items, selectedItem);
 					else
 						fo.MoveItems(items, selectedItem);
@@ -580,10 +589,12 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 					throw;
 				}
 			});
+
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}
 
+		/// <summary>Cuts the currently selected items (signals the UI and saves items into the clipboard)</summary>
 		public void CutSelectedFiles() {
 			var item = new TVITEMW() {
 				mask = TVIF.TVIF_STATE,
@@ -592,7 +603,7 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 				hItem = this.ShellTreeView.SelectedNode.Handle,
 			};
 
-			User32.SendMessage(this.ShellTreeView.Handle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW, 0, ref item);
+			User32.SendMessage(this.ShellTreeView.Handle, MSG.TVM_SETITEMW, 0, ref item);
 
 			this.cuttedNode = this.ShellTreeView.SelectedNode;
 			var selectedItems = new[] { this.ShellTreeView.SelectedNode.Tag as IListItemEx };
@@ -600,15 +611,16 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 			// Copy or Cut operation (5 = copy; 2 = cut)
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 2, 0, 0, 0 }));
 			ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
-			F.Clipboard.SetDataObject(ddataObject, true);
+			Clipboard.SetDataObject(ddataObject, true);
 		}
 
+		/// <summary>Copies the currently selected items (saves items into the clipboard)</summary>
 		public void CopySelectedFiles() {
 			var selectedItems = new[] { this.ShellTreeView.SelectedNode.Tag as IListItemEx };
 			var ddataObject = new F.DataObject();
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 5, 0, 0, 0 }));
 			ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
-			F.Clipboard.SetDataObject(ddataObject, true);
+			Clipboard.SetDataObject(ddataObject, true);
 		}
 
 		#endregion Public Methods
