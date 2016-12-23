@@ -7,8 +7,6 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 
 namespace BExplorer.Shell {
-	//TODO: Document this or find out if we need it at all
-
 	/// <summary>
 	/// Represents an application that this <see cref="ShellItem"/> is associated with.
 	/// </summary>
