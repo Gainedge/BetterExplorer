@@ -10,6 +10,7 @@ using MenuItem = Fluent.MenuItem;
 namespace BetterExplorer {
 
 	partial class MainWindow {
+		Wpf.Controls.TabItem _CurrentlySelectedItem = null;
 
 		private void InitializeInitialTabs() {
 			var InitialTabs = Utilities.GetRegistryValue("OpenedTabs", "").ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
@@ -18,10 +19,8 @@ namespace BetterExplorer {
 
 				if (tcMain.Items.OfType<Wpf.Controls.TabItem>().Any())
 					NavigationController(sho);
-				else {
-					var tab = tcMain.NewTab(sho, true);
-					this.SelectTab(tab);
-				}
+				else
+					this.SelectTab(tcMain.NewTab(sho, true));
 			}
 			if (_IsrestoreTabs) {
 				isOnLoad = true;
@@ -32,12 +31,12 @@ namespace BetterExplorer {
 						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
 							continue;
 						}
-						var tab = tcMain.NewTab(FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, str.ToShellParsingName()), i == InitialTabs.Length);
 						if (i == InitialTabs.Length) {
-							this.SelectTab(tab);
+							this.SelectTab(tcMain.NewTab(FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, str.ToShellParsingName()), i == InitialTabs.Length));
 							bcbc.SetPathWithoutNavigate(str);
 						}
-					} catch {
+					}
+					catch {
 						//AddToLog(String.Format("Unable to load {0} into a tab!", str));
 						MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
 					}
@@ -57,33 +56,29 @@ namespace BetterExplorer {
 		}
 
 		private void SelectTab(Wpf.Controls.TabItem tab) {
-			if (tab == null) return;
 			//tab.ShellObject = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, tab.ShellObject.PIDL);
-			if (!tab.ShellObject.Equals(this._ShellListView.CurrentFolder) || tab.ShellObject.IsSearchFolder) {
+			if (tab != null && !tab.ShellObject.Equals(this._ShellListView.CurrentFolder) || tab.ShellObject.IsSearchFolder) {
 				tcMain.isGoingBackOrForward = true;
 				NavigationController(tab.ShellObject);
-				var selectedItem = tab;
+				var selectedItem = tab; //TODO: Find out if we can replace [selectedItem] with [tab]
 				selectedItem.Header = tab.ShellObject.DisplayName;
-				var bmpSource = tab.ShellObject.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
-				selectedItem.Icon = bmpSource;
+				selectedItem.Icon = tab.ShellObject.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default); ;
 				selectedItem.ShellObject = tab.ShellObject;
-				if (selectedItem != null) {
-					var selectedPaths = selectedItem.SelectedItems;
-					if (selectedPaths != null && selectedPaths.Any()) {
-						foreach (var path in selectedPaths.ToArray()) {
-							var sho = this._ShellListView.Items.ToArray().FirstOrDefault(w => w.ParsingName == path);
-							if (sho != null) {
-								var index = sho.ItemIndex;
-							  if (sho.Equals(this._ShellListView.Items[index])) {
-							    this._ShellListView.SelectItemByIndex(index, true);
-							    selectedPaths.Remove(path);
-							  }
-							}
+				//if (selectedItem != null) {
+				var selectedPaths = selectedItem?.SelectedItems;
+				if (selectedPaths != null && selectedPaths.Any()) {
+					foreach (var path in selectedPaths) {
+						var sho = this._ShellListView.Items.FirstOrDefault(w => w.ParsingName == path);
+						if (sho != null && sho.Equals(this._ShellListView.Items[sho.ItemIndex])) {
+							this._ShellListView.SelectItemByIndex(sho.ItemIndex, true);
+							selectedPaths.Remove(path);
 						}
-					} else {
-						//this._ShellListView.ScrollToTop();
 					}
 				}
+				else {
+					//this._ShellListView.ScrollToTop();
+				}
+				//}
 			}
 		}
 
@@ -106,7 +101,8 @@ namespace BetterExplorer {
 
 				mimDocuments = Utilities.Build_MenuItem(FindResource("btnctDocumentsCP"), icon: bmpSourceDocuments, onClick: new RoutedEventHandler(btnmtDocuments_Click));
 				micDocuments = Utilities.Build_MenuItem(FindResource("btnctDocumentsCP"), icon: bmpSourceDocuments, onClick: new RoutedEventHandler(btnctDocuments_Click));
-			} catch (Exception) {
+			}
+			catch (Exception) {
 				mimDocuments = null;
 				micDocuments = null;
 				//catch the exception in case the user deleted that basic folder somehow
@@ -119,7 +115,8 @@ namespace BetterExplorer {
 
 				mimDownloads = Utilities.Build_MenuItem(FindResource("btnctDownloadsCP"), icon: bmpSourceDownloads, onClick: new RoutedEventHandler(btnmtDounloads_Click));
 				micDownloads = Utilities.Build_MenuItem(FindResource("btnctDownloadsCP"), icon: bmpSourceDownloads, onClick: new RoutedEventHandler(btnctDounloads_Click));
-			} catch (Exception) {
+			}
+			catch (Exception) {
 				micDownloads = null;
 				mimDownloads = null;
 				//catch the exception in case the user deleted that basic folder somehow
@@ -158,7 +155,8 @@ namespace BetterExplorer {
 																												 bmpSource, onClick: new RoutedEventHandler(mim_Click)));
 
 						btnCopyto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.DisplayName, item.ShellObject, bmpSource, onClick: new RoutedEventHandler(mico_Click)));
-					} catch {
+					}
+					catch {
 						//Do nothing if ShellItem is not available anymore and close the problematic item
 						//tcMain.RemoveTabItem(item);
 					}
@@ -170,8 +168,6 @@ namespace BetterExplorer {
 			btnCopyto.Items.Add(new Separator());
 			btnCopyto.Items.Add(OtherLocationCopy);
 		}
-
-		Wpf.Controls.TabItem _CurrentlySelectedItem = null;
 
 		private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			if (e.RemovedItems.Count > 0) {
