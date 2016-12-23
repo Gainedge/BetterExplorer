@@ -2073,7 +2073,7 @@ namespace BetterExplorer {
     private void btnChangeLibIcon_Click(object sender, RoutedEventArgs e) => new IconView().LoadIcons(_ShellListView, true);
 
     private void btnOLItem_Click(object sender, RoutedEventArgs e) {
-      this._ShellListView.IsLibraryInModify = true;
+      //this._ShellListView.IsLibraryInModify = true;
       this._ShellListView.CurrentRefreshedItemIndex = this._ShellListView.GetFirstSelectedItemIndex();
       var NeededFile = _ShellListView.GetSelectedCount() == 1 ? _ShellListView.GetFirstSelectedItem() : _ShellListView.CurrentFolder;
       var lib = ShellLibrary.Load(Path.GetFileNameWithoutExtension(NeededFile.ParsingName), false);
