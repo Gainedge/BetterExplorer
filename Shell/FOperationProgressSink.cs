@@ -27,7 +27,7 @@ namespace BExplorer.Shell {
 		public override void UpdateProgress(uint iWorkTotal, uint iWorkSoFar) {
 			//base.UpdateProgress(iWorkTotal, iWorkSoFar);
 			if (iWorkSoFar == iWorkTotal) {
-		  	//this._View.UnvalidateDirectory();
+				//this._View.UnvalidateDirectory();
 			}
 		}
 		public override void PreDeleteItem(uint dwFlags, IShellItem psiItem) { }
@@ -44,15 +44,15 @@ namespace BExplorer.Shell {
 			//  }
 			//  theNewItem.Dispose();
 			//}
-		  //if (psiItem != null) {
-		  //  Marshal.FinalReleaseComObject(psiItem);
-		  //}
+			//if (psiItem != null) {
+			//  Marshal.FinalReleaseComObject(psiItem);
+			//}
 
-    //  if (psiNewlyCreated != null) {
-    //    Marshal.FinalReleaseComObject(psiNewlyCreated);
-    //  }
-      //Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-    }
+			//  if (psiNewlyCreated != null) {
+			//    Marshal.FinalReleaseComObject(psiNewlyCreated);
+			//  }
+			//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+		}
 
 		public override void PreCopyItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName) {
 			this._View.LargeImageList.SupressThumbnailGeneration(true);
@@ -61,7 +61,7 @@ namespace BExplorer.Shell {
 		[HandleProcessCorruptedStateExceptions]
 		public override void PostCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrCopy, IShellItem psiNewlyCreated) {
 			//if (hrCopy == 0) {
-   //     var destination = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiDestinationFolder);
+			//     var destination = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiDestinationFolder);
 			//  if (destination.Equals(this._View.CurrentFolder)) {
 			//    var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
 			//    Shell32.SHChangeNotify(
@@ -72,22 +72,22 @@ namespace BExplorer.Shell {
 			//      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
 			//    theNewItem.Dispose();
 			//  }
-   //     destination.Dispose();
+			//     destination.Dispose();
 			//}
-      //if (psiItem != null) {
-      //  Marshal.FinalReleaseComObject(psiItem);
-      //}
+			//if (psiItem != null) {
+			//  Marshal.FinalReleaseComObject(psiItem);
+			//}
 
-      //if (psiNewlyCreated != null) {
-      //  Marshal.FinalReleaseComObject(psiNewlyCreated);
-      //}
-      //Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-    }
+			//if (psiNewlyCreated != null) {
+			//  Marshal.FinalReleaseComObject(psiNewlyCreated);
+			//}
+			//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+		}
 
 		[HandleProcessCorruptedStateExceptions]
 		public override void PostMoveItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrMove, IShellItem psiNewlyCreated) {
 			//if (hrMove == 0) {
-   //     var destination = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiDestinationFolder);
+			//     var destination = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiDestinationFolder);
 			//  if (destination.Equals(this._View.CurrentFolder)) {
 			//    var theOldItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
 			//    var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
@@ -102,20 +102,20 @@ namespace BExplorer.Shell {
 			//    theNewItem.Dispose();
 			//  }
 			//}
-      //Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-    }
+			//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+		}
 
 		public override void PreMoveItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName) {
 			this._View.LargeImageList.SupressThumbnailGeneration(true);
 		}
 
-	  public override void PreRenameItem(uint dwFlags, IShellItem psiItem, string pszNewName) {
-	    this._View.IsRenameInProgress = true;
-	  }
+		public override void PreRenameItem(uint dwFlags, IShellItem psiItem, string pszNewName) {
+			this._View.IsRenameInProgress = true;
+		}
 
 		[HandleProcessCorruptedStateExceptions]
 		public override void PostRenameItem(uint dwFlags, IShellItem psiItem, string pszNewName, uint hrRename, IShellItem psiNewlyCreated) {
-			this._View.Invoke((Action) (() => {
+			this._View.Invoke((Action)(() => {
 				if (hrRename == 2555912 && psiItem != null && psiNewlyCreated != null) {
 					var oldItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
 					var newItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
@@ -125,5 +125,5 @@ namespace BExplorer.Shell {
 			}));
 		}
 
-  }
+	}
 }
