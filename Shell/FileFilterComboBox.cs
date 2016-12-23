@@ -53,6 +53,7 @@ namespace BExplorer.Shell {
 	/// </para>
 	/// </remarks>
 	public class FileFilterComboBox : ComboBox {
+		//Regex m_Regex;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileFilterComboBox"/>
@@ -60,7 +61,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public FileFilterComboBox() {
 			DropDownStyle = ComboBoxStyle.DropDownList;
-			m_Regex = GenerateRegex(m_Filter);
+			//m_Regex = GenerateRegex(m_Filter);
 		}
 
 		/// <summary>
@@ -71,14 +72,8 @@ namespace BExplorer.Shell {
 		public string Filter {
 			get { return m_Filter; }
 			set {
-				if ((value != null) && (value.Length > 0)) {
-					m_Filter = value;
-				}
-				else {
-					m_Filter = "*.*";
-				}
-
-				m_Regex = GenerateRegex(m_Filter);
+				m_Filter = value != null && value.Length > 0 ? value : "*.*";
+				//m_Regex = GenerateRegex(m_Filter);
 
 				foreach (FilterItem item in Items) {
 					if (item.Contains(m_Filter)) {
@@ -92,9 +87,7 @@ namespace BExplorer.Shell {
 					}
 				}
 
-				if (m_ShellView != null) {
-					m_ShellView.RefreshContents();
-				}
+				ShellView?.RefreshContents();
 			}
 		}
 
@@ -172,6 +165,8 @@ namespace BExplorer.Shell {
 		public new ComboBox.ObjectCollection Items {
 			get { return base.Items; }
 		}
+		
+		//ShellView m_ShellView;
 
 		/// <summary>
 		/// Gets/sets the <see cref="ShellView"/> control that the 
@@ -179,51 +174,51 @@ namespace BExplorer.Shell {
 		/// </summary>
 		[DefaultValue(null)]
 		[Category("Behaviour")]
-		public ShellView ShellView {
-			get { return m_ShellView; }
-			set {
-				if (m_ShellView != null) {
-					//m_ShellView.FilterItem -= new FilterItemEventHandler(m_ShellView_FilterItem);
-				}
+		public ShellView ShellView { get; set; }
+		//	get { return m_ShellView; }
+		//	set {
+		//		if (m_ShellView != null) {
+		//			//m_ShellView.FilterItem -= new FilterItemEventHandler(m_ShellView_FilterItem);
+		//		}
 
-				m_ShellView = value;
+		//		m_ShellView = value;
 
-				if (m_ShellView != null) {
-					//m_ShellView.FilterItem += new FilterItemEventHandler(m_ShellView_FilterItem);
-				}
-			}
-		}
+		//		if (m_ShellView != null) {
+		//			//m_ShellView.FilterItem += new FilterItemEventHandler(m_ShellView_FilterItem);
+		//		}
+		//	}
+		//}
 
-		/// <summary>
-		/// Generates a <see cref="Regex"/> object equivalent to the 
-		/// provided wildcard.
-		/// </summary>
-		/// 
-		/// <param name="wildcard">
-		/// The wildcard to generate a regex for.
-		/// </param>
-		/// 
-		/// <returns>
-		/// A regex equivalent to the wildcard.
-		/// </returns>
-		public static Regex GenerateRegex(string wildcard) {
-			string[] wildcards = wildcard.Split(',');
-			StringBuilder regexString = new StringBuilder();
+		///// <summary>
+		///// Generates a <see cref="Regex"/> object equivalent to the 
+		///// provided wildcard.
+		///// </summary>
+		///// 
+		///// <param name="wildcard">
+		///// The wildcard to generate a regex for.
+		///// </param>
+		///// 
+		///// <returns>
+		///// A regex equivalent to the wildcard.
+		///// </returns>
+		//public static Regex GenerateRegex(string wildcard) {
+		//	string[] wildcards = wildcard.Split(',');
+		//	StringBuilder regexString = new StringBuilder();
 
-			foreach (string s in wildcards) {
-				if (regexString.Length > 0) {
-					regexString.Append('|');
-				}
+		//	foreach (string s in wildcards) {
+		//		if (regexString.Length > 0) {
+		//			regexString.Append('|');
+		//		}
 
-				regexString.Append(
-					Regex.Escape(s).
-					Replace(@"\*", ".*").
-					Replace(@"\?", "."));
-			}
+		//		regexString.Append(
+		//			Regex.Escape(s).
+		//			Replace(@"\*", ".*").
+		//			Replace(@"\?", "."));
+		//	}
 
-			return new Regex(regexString.ToString(),
-				RegexOptions.IgnoreCase | RegexOptions.Compiled);
-		}
+		//	return new Regex(regexString.ToString(),
+		//		RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		//}
 
 		/// <summary>
 		/// Raises the <see cref="Control.TextChanged"/> event.
@@ -254,9 +249,7 @@ namespace BExplorer.Shell {
 		//}
 
 		string m_Filter = "*.*";
-		string m_FilterItems = "";
-		ShellView m_ShellView;
-		Regex m_Regex;
+		string m_FilterItems = "";		
 		bool m_IgnoreSelectionChange;
 	}
 }
