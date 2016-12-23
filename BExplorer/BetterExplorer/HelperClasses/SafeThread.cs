@@ -39,16 +39,16 @@ namespace BetterExplorer
     /// </summary>
     public partial class SafeThread : MarshalByRefObject
     {
-        /// <summary>
-        /// internal thread
-        /// </summary>
-        protected Thread _thread;
-        /// <summary>
-        /// gets the internal thread being used
-        /// </summary>
-        public Thread ThreadObject
+		///// <summary>
+		///// internal thread
+		///// </summary>
+		//protected Thread _thread;
+		/// <summary>
+		/// gets the internal thread being used
+		/// </summary>
+		public Thread ThreadObject
         {
-            get { return _thread; }
+			get; private set;
         }
 
         /// <summary>
@@ -64,27 +64,27 @@ namespace BetterExplorer
         /// </summary>
         protected SimpleDelegate dlg;
 
-        /// <summary>
-        /// the thread-start argument object, if any
-        /// </summary>
-        protected object _arg;
+        ///// <summary>
+        ///// the thread-start argument object, if any
+        ///// </summary>
+        //protected object _arg;
         /// <summary>
         /// gets the thread-start argument, if any
         /// </summary>
         public object ThreadStartArg
         {
-            get { return _arg; }
+			get; private set;
         }
-        /// <summary>
-        /// the last exception thrown
-        /// </summary>
-        protected Exception _lastException;
+        ///// <summary>
+        ///// the last exception thrown
+        ///// </summary>
+        //protected Exception _lastException;
         /// <summary>
         /// gets the last exception thrown
         /// </summary>
         public Exception LastException
         {
-            get { return _lastException; }
+			get; private set;
         }
         /// <summary>
         /// the name of the internal thread
@@ -95,22 +95,17 @@ namespace BetterExplorer
         /// </summary>
         public string Name
         {
-            get
-            {
-                if (_name == null) { return "SafeThread#" + this.GetHashCode().ToString(); }
-                return _name;
-            }
+            get { return _name == null ? "SafeThread#" + this.GetHashCode().ToString() : _name; }
             set { _name = value; }
         }
-
-        private object _tag;
+		   
         /// <summary>
         /// object tag - use to hold extra info about the SafeThread
         /// </summary>
         public object Tag
         {
-            get { return _tag; }
-            set { _tag = value; }
+			get;
+            set;
         }
 
         /// <summary>
@@ -129,7 +124,7 @@ namespace BetterExplorer
             : this()
         {
             _Ts = ts;
-            _thread = new Thread(ts);
+            ThreadObject = new Thread(ts);
         }
 
         /// <summary>
@@ -140,7 +135,7 @@ namespace BetterExplorer
             : this()
         {
             _Pts = pts;
-            _thread = new Thread(pts);
+            ThreadObject = new Thread(pts);
         }
 
         /// <summary>
@@ -155,7 +150,7 @@ namespace BetterExplorer
         {
             dlg = sd;
             _Pts = new ParameterizedThreadStart(this.CallDelegate);
-            _thread = new Thread(_Pts);
+            ThreadObject = new Thread(_Pts);
         }
 
         /// <summary>
@@ -174,12 +169,9 @@ namespace BetterExplorer
                 if (ex is ThreadAbortException && !ShouldReportThreadAbort)
                 {
                     return;
-                }
+                }			
 
-                if (ThreadException != null)
-                {
-                    ThreadException.Invoke(this, ex);
-                }
+                ThreadException?.Invoke(this, ex);
             }
             catch { }
         }
@@ -196,10 +188,7 @@ namespace BetterExplorer
         {
             try
             {
-                if (ThreadCompleted != null)
-                {
-                    ThreadCompleted.Invoke(this, bHadException, ex);
-                }
+                ThreadCompleted?.Invoke(this, bHadException, ex);
             }
             catch { }
         }
@@ -220,15 +209,16 @@ namespace BetterExplorer
                 }
                 else if (_Pts != null)
                 {
-                    _Pts.Invoke(_arg);
+                    _Pts.Invoke(ThreadStartArg);
                 }
             }
             catch (Exception ex)
             {
                 bHadException = true;
                 exceptn = ex;
-                this._lastException = ex;
-                OnThreadException(ex);
+				//this._lastException = ex;
+				this.LastException = ex;
+				OnThreadException(ex);
             }
             finally
             {
@@ -250,10 +240,10 @@ namespace BetterExplorer
         /// </summary>
         public void Start()
         {
-            _thread = new Thread(new ThreadStart(startTarget));
-            _thread.Name = this.Name;
-            if (_aptState != null) { _thread.TrySetApartmentState((ApartmentState)_aptState); }
-            _thread.Start();
+            ThreadObject = new Thread(new ThreadStart(startTarget));
+            ThreadObject.Name = this.Name;
+            if (_aptState != null) { ThreadObject.TrySetApartmentState((ApartmentState)_aptState); }
+            ThreadObject.Start();
         }
 
         /// <summary>
@@ -262,21 +252,21 @@ namespace BetterExplorer
         /// <param name="val">parameter object</param>
         public void Start(object val)
         {
-            _arg = val;
+			ThreadStartArg = val;
             Start();
         }
 
-        /// <summary>
-        /// flag to control whether thread-abort exception is reported or not
-        /// </summary>
-        protected bool bReportThreadAbort = false;
+        ///// <summary>
+        ///// flag to control whether thread-abort exception is reported or not
+        ///// </summary>
+        //protected bool bReportThreadAbort = false;
         /// <summary>
         /// gets/sets a flag to control whether thread-abort exception is reported or not
         /// </summary>
         public bool ShouldReportThreadAbort
         {
-            get { return bReportThreadAbort; }
-            set { bReportThreadAbort = value; }
+			get;
+			set;
         }
 
         /// <summary>
@@ -290,7 +280,7 @@ namespace BetterExplorer
         public void Abort()
         {
             bThreadIsAborting = true;
-            _thread.Abort();
+            ThreadObject.Abort();
         }
 
         /// <summary>
@@ -298,7 +288,7 @@ namespace BetterExplorer
         /// </summary>
         public System.Globalization.CultureInfo CurrentCulture
         {
-            get { if (_thread != null) { return _thread.CurrentCulture; } return null; }
+            get { return ThreadObject != null ? ThreadObject.CurrentCulture : null; }
         }
 
         /// <summary>
@@ -307,7 +297,7 @@ namespace BetterExplorer
         /// </summary>
         public System.Globalization.CultureInfo CurrentUICulture
         {
-            get { if (_thread != null) { return _thread.CurrentUICulture; } return null; }
+            get { return ThreadObject != null ? ThreadObject.CurrentUICulture : null; }
         }
 
         /// <summary>
@@ -316,7 +306,7 @@ namespace BetterExplorer
         /// </summary>
         public ExecutionContext ExecutionContext
         {
-            get { if (_thread != null) { return _thread.ExecutionContext; } return null; }
+            get { return ThreadObject != null ? ThreadObject.ExecutionContext : null; }
         }
 
         /// <summary>
@@ -325,8 +315,7 @@ namespace BetterExplorer
         /// <returns></returns>
         public ApartmentState GetApartmentState()
         {
-            if (_thread != null) { return _thread.GetApartmentState(); }
-            return ApartmentState.Unknown;
+			return ThreadObject != null ? ThreadObject.GetApartmentState() : ApartmentState.Unknown;
         }
 
         /// <summary>
@@ -334,7 +323,7 @@ namespace BetterExplorer
         /// </summary>
         public void Interrupt()
         {
-            if (_thread != null) { _thread.Interrupt(); }
+            ThreadObject?.Interrupt();
         }
 
         /// <summary>
@@ -342,7 +331,7 @@ namespace BetterExplorer
         /// </summary>
         public bool IsAlive
         {
-            get { if (_thread != null) { return _thread.IsAlive; } return false; }
+            get { return ThreadObject != null ? ThreadObject.IsAlive : false; }
         }
 
         /// <summary>
@@ -350,8 +339,8 @@ namespace BetterExplorer
         /// </summary>
         public bool IsBackground
         {
-            get { if (_thread != null) { return _thread.IsBackground; } return false; }
-            set { if (_thread != null) { _thread.IsBackground = value; } }
+            get { return ThreadObject != null ? ThreadObject.IsBackground : false; }
+            set { if (ThreadObject != null) { ThreadObject.IsBackground = value; } }
         }
 
         /// <summary>
@@ -359,7 +348,7 @@ namespace BetterExplorer
         /// </summary>
         public bool IsThreadPoolThread
         {
-            get { if (_thread != null) { return _thread.IsThreadPoolThread; } return false; }
+            get { return ThreadObject != null ? ThreadObject.IsThreadPoolThread : false; }
         }
 
         /// <summary>
@@ -368,7 +357,7 @@ namespace BetterExplorer
         /// </summary>
         public void Join()
         {
-            if (_thread != null) { _thread.Join(); }
+			ThreadObject?.Join();
         }
 
         /// <summary>
@@ -379,8 +368,7 @@ namespace BetterExplorer
         /// thread to terminate</param>
         public bool Join(int millisecondsTimeout)
         {
-            if (_thread != null) { return _thread.Join(millisecondsTimeout); }
-            return false;
+			return ThreadObject != null ? ThreadObject.Join(millisecondsTimeout) : false;
         }
 
         /// <summary>
@@ -391,25 +379,21 @@ namespace BetterExplorer
         /// for the thread to terminate </param>
         public bool Join(TimeSpan timeout)
         {
-            if (_thread != null) { return _thread.Join(timeout); }
-            return false;
+			return ThreadObject != null ? ThreadObject.Join(timeout) : false;
         }
 
-        /// <summary>
-        /// Gets a unique identifier for the current managed thread
-        /// </summary>
-        public int ManagedThreadId
-        {
-            get { if (_thread != null) { return _thread.ManagedThreadId; } return 0; }
-        }
+		/// <summary>
+		/// Gets a unique identifier for the current managed thread
+		/// </summary>
+		public int ManagedThreadId { get { return ThreadObject != null ? ThreadObject.ManagedThreadId : 0; } }
 
-        /// <summary>
-        /// gets or sets a value indicating the scheduling priority of a thread
-        /// </summary>
-        public ThreadPriority Priority
+		/// <summary>
+		/// gets or sets a value indicating the scheduling priority of a thread
+		/// </summary>
+		public ThreadPriority Priority
         {
-            get { if (_thread != null) { return _thread.Priority; } return ThreadPriority.Lowest; }
-            set { if (_thread != null) { _thread.Priority = value; } }
+            get { return ThreadObject != null ? ThreadObject.Priority : ThreadPriority.Lowest; }
+            set { if (ThreadObject != null) { ThreadObject.Priority = value; } }
         }
 
         private object _aptState;
@@ -419,8 +403,8 @@ namespace BetterExplorer
         /// <param name="state">ApartmentState</param>
         public void SetApartmentState(ApartmentState state)
         {
-            if (_thread != null) { _thread.SetApartmentState(state); }
-            else { _aptState = state; }
+            if (ThreadObject != null) ThreadObject.SetApartmentState(state); 
+            else  _aptState = state; 
         }
 
         /// <summary>
@@ -428,7 +412,7 @@ namespace BetterExplorer
         /// </summary>
         public ThreadState ThreadState
         {
-            get { if (_thread != null) { return _thread.ThreadState; } return ThreadState.Unstarted; }
+            get { return ThreadObject != null ? ThreadObject.ThreadState : ThreadState.Unstarted; }
         }
 
         /// <summary>
@@ -437,8 +421,7 @@ namespace BetterExplorer
         /// <returns></returns>
         public override string ToString()
         {
-            if (_thread != null) { return _thread.ToString(); }
-            return base.ToString();
+            return ThreadObject != null ? ThreadObject.ToString(): base.ToString();
         }
 
         /// <summary>
@@ -447,7 +430,7 @@ namespace BetterExplorer
         /// <param name="state">ApartmentState</param>
         public bool TrySetApartmentState(ApartmentState state)
         {
-            if (_thread != null) { return _thread.TrySetApartmentState(state); }
+            if (ThreadObject != null) return ThreadObject.TrySetApartmentState(state); 
             _aptState = state;
             return false;
         }
