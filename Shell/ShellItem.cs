@@ -107,7 +107,7 @@ namespace BExplorer.Shell {
     private ShellThumbnail thumbnail;
     protected IShellItem m_ComInterface;
     //internal bool IsInvalid { get; set; }
-    internal int OverlayIconIndex { get; set; }
+    //internal int OverlayIconIndex { get; set; }
     internal IExtractIconPWFlags IconType { get; private set; }
     internal IntPtr ILPidl => Shell32.ILFindLastID(Pidl);
 
@@ -584,7 +584,7 @@ namespace BExplorer.Shell {
       //this.IconType = GetIconType();
       this.CachedParsingName = this.ParsingName;
       this.CachedDisplayName = this.DisplayName;
-      this.OverlayIconIndex = -1;
+      //this.OverlayIconIndex = -1;
     }
 
     protected ShellItem() { }
@@ -687,7 +687,7 @@ namespace BExplorer.Shell {
       ComInterface = comInterface;
       this.CachedParsingName = this.ParsingName;
       this.CachedDisplayName = this.DisplayName;
-      this.OverlayIconIndex = -1;
+      //this.OverlayIconIndex = -1;
     }
 
     public ShellItem(ShellItem parent, IntPtr pidl) {
