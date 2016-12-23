@@ -341,7 +341,7 @@ namespace BExplorer.Shell {
 			this.ShellTreeView.Nodes.Clear();
 			InitRootItems();
 
-			if (this.ShellListView != null && this.ShellListView.CurrentFolder != null)
+			if (this.ShellListView?.CurrentFolder != null)
 				this.SelItem(this.ShellListView.CurrentFolder);
 		}
 
@@ -396,18 +396,15 @@ namespace BExplorer.Shell {
 				//var hash = -1;
 				var pidl = IntPtr.Zero;
 				var visible = false;
-				if (this.ShellTreeView != null) {
-					this.ShellTreeView.BeginInvoke((Action)(() => {
-						node = TreeNode.FromHandle(ShellTreeView, handle);
-						treeHandle = ShellTreeView.Handle;
-						if (node != null) {
-							visible = node.IsVisible;
-							var item = node.Tag as IListItemEx;
-							pidl = item.AbsolutePidl;
-						}
-
-					}));
-				}
+				this.ShellTreeView?.BeginInvoke((Action)(() => {
+					node = TreeNode.FromHandle(ShellTreeView, handle);
+					treeHandle = ShellTreeView.Handle;
+					if (node != null) {
+						visible = node.IsVisible;
+						var item = node.Tag as IListItemEx;
+						pidl = item.AbsolutePidl;
+					}
+				}));
 
 				if (visible) {
 					var nodeHandle = handle;
@@ -469,13 +466,11 @@ namespace BExplorer.Shell {
 				IntPtr treeHandle = IntPtr.Zero;
 				var visible = true;
 				//var pidl = IntPtr.Zero;
-				if (ShellTreeView != null) {
-					this.ShellTreeView.BeginInvoke((Action)(() => {
-						node = TreeNode.FromHandle(ShellTreeView, handle);
-						treeHandle = this.ShellTreeView.Handle;
-						if (node != null) visible = node.IsVisible;
-					}));
-				}
+				this.ShellTreeView?.BeginInvoke((Action)(() => {
+					node = TreeNode.FromHandle(ShellTreeView, handle);
+					treeHandle = this.ShellTreeView.Handle;
+					if (node != null) visible = node.IsVisible;
+				}));
 
 				if (!visible) continue;
 
