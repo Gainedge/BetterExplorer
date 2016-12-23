@@ -24,7 +24,7 @@ namespace BExplorer.Shell {
 
 		#region Public Members
 
-		public TreeViewBase ShellTreeView;
+		private TreeViewBase ShellTreeView;
 		public Boolean IsShowHiddenItems { get; set; }
 
 		public ShellView ShellListView {
