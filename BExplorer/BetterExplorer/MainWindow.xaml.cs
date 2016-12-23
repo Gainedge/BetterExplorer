@@ -4168,8 +4168,6 @@ item.IsChecked = false;
 
     private void bcbc_BreadcrumbItemDropDownClosed(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) => this._ShellListView.IsFocusAllowed = true;
 
-    #endregion
-
     private void btnOpenWith_DropDownOpened(object sender, EventArgs e) {
       var mnu = new ShellContextMenu(this._ShellListView, false);
 
@@ -4220,10 +4218,10 @@ item.IsChecked = false;
       this._ShellListView.IsTraditionalNameGrouping = e.RoutedEvent.Name == "Checked";
     }
 
-    /*
-	private void GrdItemTextColor_OnRowEditEnding(object sender, DataGridRowEditEndingEventArgs e) {
-		//this.save
-	}
-	*/
+	private void btnResetFolderSettings_OnClick(object sender, RoutedEventArgs e) => this._ShellListView.ResetFolderSettings();
+
+
+	#endregion
+
   }
 }

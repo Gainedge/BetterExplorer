@@ -12,6 +12,9 @@ namespace BetterExplorer {
 	partial class MainWindow {
 		Wpf.Controls.TabItem _CurrentlySelectedItem = null;
 
+		/// <summary>
+		/// Handles initialization for tabs on startup if and only if no startup tab is set.
+		/// </summary>
 		private void InitializeInitialTabs() {
 			var InitialTabs = Utilities.GetRegistryValue("OpenedTabs", "").ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			if (InitialTabs.Length == 0 || !_IsrestoreTabs) {
@@ -31,7 +34,7 @@ namespace BetterExplorer {
 						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
 							continue;
 						}
-						if (i == InitialTabs.Length) {
+						else if (i == InitialTabs.Length) {
 							this.SelectTab(tcMain.NewTab(FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, str.ToShellParsingName()), i == InitialTabs.Length));
 							bcbc.SetPathWithoutNavigate(str);
 						}
@@ -55,6 +58,10 @@ namespace BetterExplorer {
 			}
 		}
 
+		/// <summary>
+		/// Selects the <paramref name="tab"/> and navigates to it correctly if and only if it is not already selected
+		/// </summary>
+		/// <param name="tab">The tab you want to select</param>
 		private void SelectTab(Wpf.Controls.TabItem tab) {
 			//tab.ShellObject = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, tab.ShellObject.PIDL);
 			if (tab != null && !tab.ShellObject.Equals(this._ShellListView.CurrentFolder) || tab.ShellObject.IsSearchFolder) {
@@ -62,7 +69,7 @@ namespace BetterExplorer {
 				NavigationController(tab.ShellObject);
 				var selectedItem = tab; //TODO: Find out if we can replace [selectedItem] with [tab]
 				selectedItem.Header = tab.ShellObject.DisplayName;
-				selectedItem.Icon = tab.ShellObject.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default); ;
+				selectedItem.Icon = tab.ShellObject.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 				selectedItem.ShellObject = tab.ShellObject;
 				//if (selectedItem != null) {
 				var selectedPaths = selectedItem?.SelectedItems;
@@ -182,6 +189,5 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void btnResetFolderSettings_OnClick(object sender, RoutedEventArgs e) => this._ShellListView.ResetFolderSettings();
 	}
 }

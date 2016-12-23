@@ -2143,18 +2143,14 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
     public void ResetFolderSettings() {
       var m_dbConnection = new SQLite.SQLiteConnection("Data Source=" + this._DBPath + ";Version=3;");
       m_dbConnection.Open();
-
-      var command1 = new SQLite.SQLiteCommand("DELETE FROM foldersettings", m_dbConnection);
-
-      command1.ExecuteNonQuery();
+      new SQLite.SQLiteCommand("DELETE FROM foldersettings", m_dbConnection).ExecuteNonQuery();
     }
 
     public static Boolean IsDropDescriptionValid(System.Runtime.InteropServices.ComTypes.IDataObject dataObject) {
       Object data = dataObject.GetDropDescription();
-      if (data is DataObject.DropDescription)
-        return (DataObject.DropImageType)((DataObject.DropDescription)data).type != DataObject.DropImageType.Invalid;
-      else
-        return false;
+	  return data is DataObject.DropDescription ?
+				(DataObject.DropImageType)((DataObject.DropDescription)data).type != DataObject.DropImageType.Invalid :
+				false;
     }
 
     public static IntPtr GetIntPtrFromData(Object data) {
