@@ -284,7 +284,8 @@ namespace BExplorer.Shell {
     public ImageListEx LargeImageList;
     public ImageListEx SmallImageList;
 
-    public List<IListItemEx> SelectedItems {
+	/// <summary>Returns the currently selected item and removes any items in <see cref="_SelectedIndexes"/> not in <see cref="Items"/>  </summary>
+	public List<IListItemEx> SelectedItems {
       get {
         var data = this._SelectedIndexes.ToArray();
         var selItems = new List<IListItemEx>();
@@ -418,15 +419,18 @@ namespace BExplorer.Shell {
       }
     }
 
-    public Int32 CurrentRefreshedItemIndex = -1;
-    public Boolean IsSearchNavigating = false;
-    public ShellNotifications Notifications = new ShellNotifications();
+    public Int32 CurrentRefreshedItemIndex = -1; //TODO: Find out if we need this property
+
+	/// <summary>Are we/have we navigated to a search folder</summary>
+	public Boolean IsSearchNavigating = false;
+
     public Boolean IsRenameInProgress = false;
 
     #endregion Public Members
 
     #region Private Members
-
+	
+	private ShellNotifications Notifications = new ShellNotifications();
     private IListView _IIListView;
     private FileSystemWatcher _FsWatcher = new FileSystemWatcher();
     private ListViewEditor _EditorSubclass;
@@ -3217,7 +3221,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
       columns = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == folderSettings.SortColumn).Value;
       this.IsViewSelectionAllowed = false;
       if (!isThereSettings) {
-        this.View = this.IsSearchNavigating ? ShellViewStyle.Details : ShellViewStyle.Details;
+        this.View = ShellViewStyle.Details;
       }
 
       if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List) {
