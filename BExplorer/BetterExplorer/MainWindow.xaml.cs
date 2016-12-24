@@ -1849,13 +1849,9 @@ namespace BetterExplorer {
       }
 
       if (this.WindowState != WindowState.Minimized) {
-        string OpenedTabs = "";
-        foreach (Wpf.Controls.TabItem item in tcMain.Items) {
-          OpenedTabs += ";" + item.ShellObject.ParsingName;
-        }
-
-        SaveSettings(OpenedTabs);
+        SaveSettings(string.Concat(from item in tcMain.Items.Cast<Wpf.Controls.TabItem>() select ";" + item.ShellObject.ParsingName));
       }
+
       this._ShellListView.SaveSettingsToDatabase(this._ShellListView.CurrentFolder);
       //SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", this.bcbc.DropDownItems.OfType<String>().Select(s => s).ToList());
       AddToLog("Session Ended");
@@ -2743,21 +2739,10 @@ namespace BetterExplorer {
       dcsplit.IsChecked = false;
       dmsplit.IsChecked = false;
 
-      /*
-foreach (var item in scSize.Items.OfType<MenuItem>().Union(dcsplit.Items.OfType<MenuItem>()).Union(dmsplit.Items.OfType<MenuItem>()) {
-item.IsChecked = false;
-}
-*/
 
-      foreach (var item in scSize.Items.OfType<MenuItem>()) {
-        item.IsChecked = false;
-      }
-      foreach (var item in dcsplit.Items.OfType<MenuItem>()) {
-        item.IsChecked = false;
-      }
-      foreach (var item in dmsplit.Items.OfType<MenuItem>()) {
-        item.IsChecked = false;
-      }
+	  foreach (var item in scSize.Items.OfType<MenuItem>().Union(dcsplit.Items.OfType<MenuItem>()).Union(dmsplit.Items.OfType<MenuItem>())) {
+	  	item.IsChecked = false;
+	  }
     }
 
     private void MenuItem_Click_3(object sender, RoutedEventArgs e) {
@@ -3076,14 +3061,14 @@ item.IsChecked = false;
       btnUndoClose.IsDropDownOpen = false;
       btnUndoClose.IsEnabled = false;
 
-      foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
-        foreach (FrameworkElement m in item.mnu.Items) {
-          if (m.Tag?.ToString() == "UCTI") (m as MenuItem).IsEnabled = false;
-
-          //if (m.Tag != null)
-          //    if (m.Tag.ToString() == "UCTI") (m as MenuItem).IsEnabled = false;
-        }
-      }
+	  foreach (var item in 
+			  from Item in this.tcMain.Items.OfType<Wpf.Controls.TabItem>()
+			  from m in Item.mnu.Items.OfType<MenuItem>()
+			  where m.Tag?.ToString() == "UCTI"
+			  select m) 
+	  {
+		item.IsEnabled = false;
+	  }		
     }
 
     private void btnUndoClose_DropDownOpened(object sender, EventArgs e) {
@@ -3124,8 +3109,7 @@ item.IsChecked = false;
 
       if (Directory.Exists(sstdir)) {
         foreach (string item in Directory.GetFiles(sstdir)) {
-          var obj = new ShellItem(item);
-          o.Add(Utilities.RemoveExtensionsFromFile(obj.GetDisplayName(SIGDN.NORMALDISPLAY), item.Substring(item.LastIndexOf("."))));
+          o.Add(Utilities.RemoveExtensionsFromFile(new ShellItem(item).GetDisplayName(SIGDN.NORMALDISPLAY), item.Substring(item.LastIndexOf("."))));
         }
       }
 
@@ -4123,22 +4107,6 @@ item.IsChecked = false;
       this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex(), true);
     }
 	
-	/*
-    public Dictionary<string, IRibbonControl> GetAllButtonsAsDictionary() {
-      var rb = new Dictionary<string, IRibbonControl>();
-
-      foreach (RibbonTabItem item in TheRibbon.Tabs) {
-        foreach (RibbonGroupBox itg in item.Groups) {
-          foreach (var ic in itg.Items.OfType<IRibbonControl>()) {
-            rb.Add((ic as FrameworkElement).Name, ic);
-          }
-        }
-      }
-
-      return rb;
-    }
-	*/
-
     private void btnCancel_Click(object sender, RoutedEventArgs e) {
       this._ShellListView.CancelNavigation();
       this._ProgressTimer.Stop();
