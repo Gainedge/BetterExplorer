@@ -40,7 +40,14 @@ namespace BetterExplorer {
 		}
 
 		private void RefreshQATDialog(Ribbon ribbon) {
-			foreach (IRibbonControl item in GetNonQATButtons(ribbon)) {
+			List<IRibbonControl> NonQATButtons = (from Tab in ribbon.Tabs
+												  from Group in Tab.Groups
+												  from Item in Group.Items.OfType<IRibbonControl>()
+												  where !(ribbon.IsInQuickAccessToolBar(Item as UIElement))
+												  orderby Item.Header
+												  select Item).ToList();
+
+			foreach (IRibbonControl item in NonQATButtons) {
 				AllControls.Items.Add(GetRibbonItemListDisplay(item));
 			}
 
@@ -55,24 +62,9 @@ namespace BetterExplorer {
 			AllMenuItems.AddRange(Controls);
 			//Here add visible elements since we want to show in that dialog only visible elements into the QAT.
 			//Maybe have to find a way to show all elements even not visible and do some handling to display them properly
-			foreach (var item in MainForm.TheRibbon.QuickAccessItems.Select(s => s as Control).ToList()) {
-				QATControls.Items.Add(GetRibbonItemListDisplay(item as IRibbonControl));
+			foreach (var item in MainForm.TheRibbon.QuickAccessItems.Cast<IRibbonControl>()) {
+				QATControls.Items.Add(GetRibbonItemListDisplay(item));
 			}
-		}
-
-		private List<Fluent.IRibbonControl> GetNonQATButtons(Ribbon ribbon) {
-			var rb = new List<Fluent.IRibbonControl>();
-			foreach (RibbonGroupBox itg in ribbon.Tabs.SelectMany(x => x.Groups)) {
-				foreach (object ic in itg.Items) {
-					if (ic is IRibbonControl) {
-						if (!(ribbon.IsInQuickAccessToolBar(ic as UIElement))) {
-							rb.Add(ic as IRibbonControl);
-						}
-					}
-				}
-			}
-
-			return rb.OrderBy(x => x.Header as string).ToList();
 		}
 
 		private void AddToList(RibbonItemListDisplay source, bool qatlist = true) {
@@ -85,31 +77,10 @@ namespace BetterExplorer {
 		}
 
 		private void CheckAgainstList() {
-			var torem = new List<RibbonItemListDisplay>();
-			foreach (RibbonItemListDisplay item in this.QATControls.Items) {
-				foreach (RibbonItemListDisplay thing in this.AllControls.Items) {
-					if (thing.ItemName == item.ItemName) {
-						torem.Add(thing);
-					}
-				}
-			}
-
-			foreach (RibbonItemListDisplay item in torem) {
+			var QATControlsNames = this.QATControls.Items.OfType<RibbonItemListDisplay>().Select(_ => _.ItemName).ToArray();
+			foreach (var item in this.AllControls.Items.OfType<RibbonItemListDisplay>().Where(_ => QATControlsNames.Contains(_.ItemName)).ToArray()) {
 				this.AllControls.Items.Remove(item);
 			}
-		}
-
-		private List<Fluent.IRibbonControl> GetAllButtons() {
-			var rb = new List<Fluent.IRibbonControl>();
-			foreach (RibbonGroupBox itg in MainForm.TheRibbon.Tabs.SelectMany(x => x.Groups)) {
-				foreach (object ic in itg.Items) {
-					if (ic is IRibbonControl) {
-						rb.Add(ic as IRibbonControl);
-					}
-				}
-			}
-
-			return rb;
 		}
 
 		#endregion Helpers
@@ -139,7 +110,7 @@ namespace BetterExplorer {
 			int sel = QATControls.SelectedIndex;
 			QATControls.Items.Remove(QATControls.SelectedValue as RibbonItemListDisplay);
 			this.AllControls.Items.Clear();
-			foreach (IRibbonControl thing in GetAllButtons()) {
+			foreach (IRibbonControl thing in from Tab in MainForm.TheRibbon.Tabs from Group in Tab.Groups from Item in Group.Items.OfType<IRibbonControl>() select Item) {
 				this.AllControls.Items.Add(GetRibbonItemListDisplay(thing));
 			}
 
@@ -172,7 +143,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnMoveDown_Click(object sender, RoutedEventArgs e) {
-			if (QATControls.SelectedIndex != (QATControls.Items.Count - 1)) {
+			if (QATControls.SelectedIndex != QATControls.Items.Count - 1) {
 				int sel = QATControls.SelectedIndex;
 				Object oItem = QATControls.Items.GetItemAt(sel);
 				QATControls.Items.RemoveAt(sel);
@@ -183,15 +154,14 @@ namespace BetterExplorer {
 		}
 
 		private void btnApply_Click(object sender, RoutedEventArgs e) {
-			var Item2 = MainForm.TheRibbon.QuickAccessItems.ToList();
-			var list = new List<string>();
-			foreach (RibbonItemListDisplay item in this.QATControls.Items) {
-				list.Add(item.ItemName);
-			}
-
 			MainForm.TheRibbon.ClearQuickAccessToolBar();
-			Dictionary<string, IRibbonControl> items = MainForm.GetAllButtonsAsDictionary();
-			foreach (string item in list) {
+			Dictionary<string, IRibbonControl> items = (from Tab in MainForm.TheRibbon.Tabs
+														from Group in Tab.Groups
+														from Item in Group.Items.OfType<IRibbonControl>()
+														select Item).
+														ToDictionary(_ => (_ as FrameworkElement).Name, _ => _);
+
+			foreach (string item in from Item in this.QATControls.Items.Cast<RibbonItemListDisplay>() select Item.ItemName) {
 				IRibbonControl ctrl;
 				if (items.TryGetValue(item, out ctrl)) {
 					MainForm.TheRibbon.AddToQuickAccessToolBar(ctrl as UIElement);
@@ -211,7 +181,7 @@ namespace BetterExplorer {
 		}
 
 		public static void Open(MainWindow mainWindow, Ribbon ribbon) {
-			CustomizeQAT qal = new CustomizeQAT();
+			var qal = new CustomizeQAT();
 			qal.Owner = mainWindow;
 			qal.MainForm = mainWindow;
 			qal.RefreshQATDialog(ribbon);

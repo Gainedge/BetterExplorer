@@ -4122,7 +4122,8 @@ item.IsChecked = false;
       this._ShellListView.BadgesData = this.Badges;
       this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex(), true);
     }
-
+	
+	/*
     public Dictionary<string, IRibbonControl> GetAllButtonsAsDictionary() {
       var rb = new Dictionary<string, IRibbonControl>();
 
@@ -4136,6 +4137,7 @@ item.IsChecked = false;
 
       return rb;
     }
+	*/
 
     private void btnCancel_Click(object sender, RoutedEventArgs e) {
       this._ShellListView.CancelNavigation();
