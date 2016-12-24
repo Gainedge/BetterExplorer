@@ -60,8 +60,7 @@ namespace BetterExplorer {
 			var left = 10;
 			var top = 20;
 
-			var names = Enum.GetNames(EnumType);
-			foreach (var name in names) {
+			foreach (var name in Enum.GetNames(EnumType)) {
 				var radioButton = new RadioButton();
 				radioButton.Text = name;
 				radioButton.Left = left;
