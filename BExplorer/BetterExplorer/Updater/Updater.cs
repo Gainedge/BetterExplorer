@@ -158,8 +158,8 @@ namespace BetterExplorer
                     }
                 }
 
-                Version vCurrent = new Version(CurrentVersion);
-                Version vOnline = new Version(this.AvailableUpdates[0].Version);
+                var vCurrent = new Version(CurrentVersion);
+                var vOnline = new Version(this.AvailableUpdates[0].Version);
                 return (this.AvailableUpdates.Count > 0 && vOnline > vCurrent);
             }
             catch (Exception)
