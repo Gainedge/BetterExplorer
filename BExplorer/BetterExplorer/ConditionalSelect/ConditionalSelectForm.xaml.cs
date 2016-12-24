@@ -83,7 +83,7 @@ namespace BetterExplorer {
 
 			if (csd.FilterByFileSize) {
 				foreach (var item in Matches_Name) {
-					FileInfo data = new FileInfo(item.ParsingName);
+					var data = new FileInfo(item.ParsingName);
 					switch (csd.FileSizeData.filter) {
 						case ConditionalSelectParameters.FileSizeFilterTypes.LargerThan:
 							if (data.Length > csd.FileSizeData.query1) Matches_Size.Add(item);
@@ -147,58 +147,23 @@ namespace BetterExplorer {
 				Matches_Size.AddRange(Matches_Name);
 			}
 
-			if (csd.FilterByDateCreated) {
+			if (csd.FilterByDateCreated) 
 				Matches_DateCreated.AddRange(!csd.FilterByDateCreated ? Matches_Size : DateFilter(Matches_Size, csd.DateCreatedData, x => x.CreationTimeUtc));
-			}
 
-			if (csd.FilterByDateModified) {
-				Matches_DateLastModified.Add(!csd.FilterByDateModified ? Matches_Size : DateFilter(Matches_DateCreated, csd.DateModifiedData, x => x.LastWriteTimeUtc));
-			}
+			if (csd.FilterByDateModified) 
+				Matches_DateLastModified.AddRange(!csd.FilterByDateModified ? Matches_Size : DateFilter(Matches_DateCreated, csd.DateModifiedData, x => x.LastWriteTimeUtc));
 
-			if (csd.FilterByDateAccessed) {
-				foreach (var item in !csd.FilterByDateAccessed ? Matches_DateLastModified : DateFilter(Matches_DateLastModified, csd.DateAccessedData, x => x.LastAccessTimeUtc)) {
-					Matches_LastAccessed.Add(item);
-				}
-			}
+			if (csd.FilterByDateAccessed) 
+				Matches_LastAccessed.AddRange(!csd.FilterByDateAccessed ? Matches_DateLastModified : DateFilter(Matches_DateLastModified, csd.DateAccessedData, x => x.LastAccessTimeUtc));
 
-			//ShellListView.SelectItems(Matches_LastAccessed.ToArray());
-
-
-			//TODO: Inline these!!!
-
-
-			/*
-			ShellListView.SelectedItems.Clear();
-			ShellListView.SelectedItems.AddRange(Matches_Name);
-			ShellListView.SelectedItems.AddRange(Matches_Size);
-			ShellListView.SelectedItems.AddRange(Matches_DateCreated);
-			ShellListView.SelectedItems.AddRange(Matches_DateLastModified);
-			ShellListView.SelectedItems.AddRange(Matches_LastAccessed);
-			*/
-
-			/*
-			var Indexes = new List<int>();
-			Indexes.AddRange(Matches_Name.Select(x => x.ItemIndex));
-			Indexes.AddRange(Matches_Size.Select(x => x.ItemIndex));
-			Indexes.AddRange(Matches_DateCreated.Select(x => x.ItemIndex));
-			Indexes.AddRange(Matches_DateLastModified.Select(x => x.ItemIndex));
-			Indexes.AddRange(Matches_LastAccessed.Select(x => x.ItemIndex));
-
-			foreach (var item in Indexes) {
-				ShellListView.SelectItemByIndex(item);
-			}
-			*/
-
-
-			var SelectedItems = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
-			SelectedItems.AddRange(Matches_Name);
-			SelectedItems.AddRange(Matches_Size);
-			SelectedItems.AddRange(Matches_DateCreated);
-			SelectedItems.AddRange(Matches_DateLastModified);
-			SelectedItems.AddRange(Matches_LastAccessed);
-
-			ShellListView.SelectItems(SelectedItems.ToArray());
-
+			ShellListView.SelectItems(
+				Matches_Name.
+				Union(Matches_Size).
+				Union(Matches_Size).
+				Union(Matches_DateCreated).
+				Union(Matches_DateLastModified).
+				Union(Matches_LastAccessed
+			).ToArray());
 			ShellListView.Focus();
 		}
 
@@ -206,8 +171,7 @@ namespace BetterExplorer {
 			var outshells = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
 
 			foreach (var item in shells) {
-				FileInfo data = new FileInfo(item.ParsingName);
-				var Date = GetDate(data);
+				var Date = GetDate(new FileInfo(item.ParsingName));
 
 				switch (filter.filter) {
 					case ConditionalSelectParameters.DateFilterTypes.EarlierThan:
