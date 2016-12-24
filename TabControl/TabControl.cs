@@ -265,8 +265,7 @@ namespace Wpf.Controls {
       }
 
       TabPanel tp = Helper.FindVirtualizingTabPanel(tc);
-      if (tp != null)
-        tp.InvalidateMeasure();
+      tp?.InvalidateMeasure();
     }
 
     /// <summary>
