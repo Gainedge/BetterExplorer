@@ -147,7 +147,8 @@ namespace BExplorer.Shell {
 			foreach (TreeNode node in this.ShellTreeView.Nodes.OfType<TreeNode>().Where(w => {
 				var nodeItem = w.Tag as IListItemEx;
 				return nodeItem != null && (w.Tag != null && !nodeItem.ParsingName.Equals(KnownFolders.Links.ParsingName));
-			})) {
+			})) 
+			{
 				if ((node.Tag as IListItemEx)?.Equals(item) == true) return node;
 				TreeNode next = FromItem(item, node);
 				if (next != null) return next;
@@ -178,12 +179,10 @@ namespace BExplorer.Shell {
 
 		private void SelItem(IListItemEx item) {
 			var node = this.FromItem(item);
-			if (node != null) {
+			if(node == null) 
+				this.FindItem(item.Clone());			
+			else
 				this.BeginInvoke((Action)(() => { this.ShellTreeView.SelectedNode = node; }));
-				return;
-			}
-
-			this.FindItem(item.Clone());
 		}
 
 		private void DeleteItem(IListItemEx item) {
@@ -209,19 +208,18 @@ namespace BExplorer.Shell {
 
 			if (itemNode != null) {
 				var node = new TreeNode(item.DisplayName);
-				IListItemEx itemReal = null;
-				itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.ParsingName.ToShellParsingName());
+				IListItemEx itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.ParsingName.ToShellParsingName());
 				node.Tag = itemReal;
 				var oldnodearray = itemNode.Nodes.OfType<TreeNode>().ToList();
-				//if (oldnodearray.FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(itemReal)) == null) oldnodearray.Add(node);
 				if (!oldnodearray.Any(s => s.Tag != null && (s.Tag as IListItemEx).Equals(itemReal))) oldnodearray.Add(node);
-				var newArray = oldnodearray.OrderBy(o => o.Text).ToArray();
+				//var newArray = oldnodearray.OrderBy(o => o.Text).ToArray();
 				this.ShellTreeView.BeginUpdate();
 				itemNode.Nodes.Clear();
-				itemNode.Nodes.AddRange(newArray);
+				itemNode.Nodes.AddRange(oldnodearray.OrderBy(o => o.Text).ToArray());
 				this.ShellTreeView.EndUpdate();
-				if (itemNode != null && itemNode.Nodes.Count > 0) {
-					var newNode = itemNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(itemReal));
+				//if (itemNode != null && itemNode.Nodes.Count > 0) {
+				if (itemNode?.Nodes?.Count > 0) {
+					var newNode = itemNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => (s?.Tag as IListItemEx).Equals(itemReal));
 					if (newNode != null) {
 						SetNodeImage(newNode.Handle, itemReal.PIDL, this.ShellTreeView.Handle, !(newNode.Parent != null && (newNode.Parent.Tag as IListItemEx).ParsingName == KnownFolders.Links.ParsingName));
 					}
@@ -331,19 +329,15 @@ namespace BExplorer.Shell {
 
 		private void ShellTreeView_MouseDown(object sender, MouseEventArgs e) {
 			this.isFromTreeview = true;
-			if (NodeClick != null) {
-				var treeNode = this.ShellTreeView.GetNodeAt(e.X, e.Y);
-				NodeClick.Invoke(this, new TreeNodeMouseClickEventArgs(treeNode, e.Button, e.Clicks, e.X, e.Y));
-			}
+			NodeClick?.Invoke(this, new TreeNodeMouseClickEventArgs(this.ShellTreeView.GetNodeAt(e.X, e.Y), e.Button, e.Clicks, e.X, e.Y));
 		}
 		
 		private void RequestTreeImage(IntPtr handle) {
-			var t = new Thread(() => {
+			new Thread(() => {
 				Application.DoEvents();
 				Thread.Sleep(1);
 				TreeNode node = null;
 				IntPtr treeHandle = IntPtr.Zero;
-				//var hash = -1;
 				var pidl = IntPtr.Zero;
 				var visible = false;
 				if (this.ShellTreeView != null) {
@@ -371,8 +365,7 @@ namespace BExplorer.Shell {
 						SetNodeImage(nodeHandle, pidl, treeHandle, !(node.Parent != null && (node.Parent.Tag as IListItemEx).ParsingName == KnownFolders.Links.ParsingName));
 					}
 				}
-			});
-			t.Start();
+			}).Start();
 		}
 
 		/// <summary>Loads the images for each node in a permanent loop</summary>
@@ -393,8 +386,7 @@ namespace BExplorer.Shell {
 					treeHandle = ShellTreeView.Handle;
 					if (node != null) {
 						visible = node.IsVisible;
-						var item = node.Tag as IListItemEx;
-						pidl = item.AbsolutePidl;
+						pidl = (node.Tag as IListItemEx).AbsolutePidl;
 					}
 				}));
 
@@ -409,7 +401,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void RequestLoadChilds(IntPtr handle) {
-			var t = new Thread(() => {
+			new Thread(() => {
 				//Application.DoEvents();
 				//Thread.Sleep(1);
 				//this._ResetEvent.WaitOne();
@@ -428,7 +420,7 @@ namespace BExplorer.Shell {
 					return;
 
 				//if (node != null && node.Nodes.Count > 0)
-				if (node?.Nodes.Count > 0) {
+				if (node?.Nodes?.Count > 0) {
 					var childItem = node.Nodes[0];
 					if (childItem != null) {
 						//TODO: Try to remove this Try Catch! It's slowing this down!!
@@ -443,9 +435,7 @@ namespace BExplorer.Shell {
 						}
 					}
 				}
-			});
-
-			t.Start();
+			}).Start();
 		}
 
 		private void LoadChilds() {
@@ -464,7 +454,7 @@ namespace BExplorer.Shell {
 
 				if (!visible) continue;
 
-				if (node?.Nodes.Count > 0) {
+				if (node?.Nodes?.Count > 0) {
 					var childItem = node.Nodes[0];
 					if (childItem != null) {
 						var nodeHandle = childItem.Handle;
@@ -521,36 +511,36 @@ namespace BExplorer.Shell {
 		}
 
 		/*
-public void DoCopy(IDataObject dataObject, IListItemEx destination)
-{
-		var handle = this.Handle;
-		var thread = new Thread(() =>
+		public void DoCopy(IDataObject dataObject, IListItemEx destination)
 		{
-				var items = new IShellItem[0];
-				if (dataObject.GetDataPresent("FileDrop"))
-						items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
-				else
-						items = dataObject.ToShellItemArray().ToArray();
-
-				try
+				var handle = this.Handle;
+				var thread = new Thread(() =>
 				{
-						var fo = new IIFileOperation(handle);
-						foreach (var item in items)
+						var items = new IShellItem[0];
+						if (dataObject.GetDataPresent("FileDrop"))
+								items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
+						else
+								items = dataObject.ToShellItemArray().ToArray();
+
+						try
 						{
-								fo.CopyItem(item, destination);
-						}
+								var fo = new IIFileOperation(handle);
+								foreach (var item in items)
+								{
+										fo.CopyItem(item, destination);
+								}
 
-						fo.PerformOperations();
-				}
-				catch (SecurityException)
-				{
-						throw;
-				}
-		});
-		thread.SetApartmentState(ApartmentState.STA);
-		thread.Start();
-}
-*/
+								fo.PerformOperations();
+						}
+						catch (SecurityException)
+						{
+								throw;
+						}
+				});
+				thread.SetApartmentState(ApartmentState.STA);
+				thread.Start();
+		}
+		*/
 
 		/// <summary>
 		/// Pasted the files in the clipboard to the <see cref="ShellTreeView"/>'s currentlt <see cref="TreeView.SelectedNode">Selected Node</see> on a separate thread
@@ -661,11 +651,11 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 					imagesQueue.Clear();
 					childsQueue.Clear();
 					var sho = e.Node.Tag as IListItemEx;
-					var lvSho = this.ShellListView != null && this.ShellListView.CurrentFolder != null ? this.ShellListView.CurrentFolder.Clone() : null;
+					//var lvSho = this.ShellListView != null && this.ShellListView.CurrentFolder != null ? this.ShellListView.CurrentFolder.Clone() : null;
+					var lvSho = this.ShellListView?.CurrentFolder?.Clone();
 					var node = e.Node;
 					node.Nodes.Add(this._SearchingForFolders);
-					var t = new Thread(() => {
-						//var nodes = await Task.Run(() => {
+					new Thread(() => {
 						var nodesTemp = new List<TreeNode>();
 						if (sho?.IsLink == true) {
 							try {
@@ -686,12 +676,12 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 								} catch { }
 							}
 							var itemNode = new TreeNode(item.DisplayName);
-							IListItemEx itemReal = null;
-							if (item.Parent?.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
-								itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.ParsingName.ToShellParsingName());
-							} else {
-								itemReal = item;
-							}
+							//IListItemEx itemReal = null;
+							//if (item.Parent?.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
+							IListItemEx itemReal = item?.Parent?.Parent?.ParsingName == KnownFolders.Libraries.ParsingName ?
+								FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.ParsingName.ToShellParsingName()) :
+								item;
+
 							itemNode.Tag = itemReal;
 
 							if ((sho.IsNetworkPath || sho.IsNetworkPath) && sho.ParsingName != KnownFolders.Network.ParsingName) {
@@ -715,25 +705,20 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 							}
 							//Application.DoEvents();
 						}
-						//return nodesTemp;
-						//});
+
 						this.BeginInvoke((Action)(() => {
 							if (node.Nodes.Count == 1 && node.Nodes[0].Text == _SearchingForFolders) node.Nodes.RemoveAt(0);
 							node.Nodes.AddRange(nodesTemp.ToArray());
 							if (lvSho != null) this.SelItem(lvSho);
 						}));
-
-					});
-					t.Start();
+					}).Start();
 				}
 			}
 		}
 
 		private void ShellTreeView_HandleDestroyed(object sender, EventArgs e) {
-			if (imagesThread != null)
-				imagesThread.Abort();
-			if (childsThread != null)
-				childsThread.Abort();
+			imagesThread?.Abort();
+			childsThread?.Abort();
 		}
 
 		private void ShellTreeView_AfterExpand(object sender, TreeViewEventArgs e) {
@@ -746,7 +731,9 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 				this._AcceptSelection = true;
 				return;
 			}
-			var sho = e.Node != null ? e.Node.Tag as IListItemEx : null;
+
+			//var sho = e.Node != null ? e.Node.Tag as IListItemEx : null;
+			var sho = e?.Node?.Tag as IListItemEx;
 			if (sho != null) {
 				IListItemEx linkSho = null;
 				if (sho.IsLink) {
@@ -974,7 +961,8 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 			if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
 				//MessageBox.Show("1");
 				if (this._NotificationGlobal.NotificationReceipt(m.WParam, m.LParam)) {
-					var computerNode = this.ShellTreeView.Nodes.OfType<TreeNode>().Single(s => s.Tag != null && (s.Tag as IListItemEx).ParsingName == KnownFolders.Computer.ParsingName);
+					//var computerNode = this.ShellTreeView.Nodes.OfType<TreeNode>().Single(s => s.Tag != null && (s.Tag as IListItemEx).ParsingName == KnownFolders.Computer.ParsingName);
+					var computerNode = this.ShellTreeView.Nodes.OfType<TreeNode>().First(s => (s?.Tag as IListItemEx)?.ParsingName == KnownFolders.Computer.ParsingName);
 					foreach (NotifyInfos info in this._NotificationGlobal.NotificationsReceived.ToArray()) {
 						switch (info.Notification) {
 							case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
@@ -984,8 +972,7 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 								break;
 							case ShellNotifications.SHCNE.SHCNE_MKDIR:
 								try {
-									var objAddDir = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
-									this.AddItem(objAddDir);
+									this.AddItem(FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1));
 								} catch (FileNotFoundException) { }
 								break;
 							case ShellNotifications.SHCNE.SHCNE_RMDIR:
@@ -997,7 +984,7 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 							case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
 							case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
 								var objDm = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
-								var exisitingMItem = computerNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(objDm));
+								var exisitingMItem = computerNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null & (s.Tag as IListItemEx).Equals(objDm));
 								if (exisitingMItem != null) {
 									exisitingMItem.Text = objDm.DisplayName;
 									exisitingMItem.ImageIndex = objDm.GetSystemImageListIndex(objDm.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
@@ -1006,9 +993,7 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 								break;
 							case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
 								var objDr = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
-								var theNode =
-										computerNode.Nodes.OfType<TreeNode>()
-												.FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx)?.Equals(objDr) == true);
+								var theNode = computerNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null & (s.Tag as IListItemEx).Equals(objDr));
 								if (theNode != null)
 									computerNode.Nodes.Remove(theNode);
 								objDr.Dispose();
@@ -1054,7 +1039,9 @@ public void DoCopy(IDataObject dataObject, IListItemEx destination)
 									var sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
 									if (sho.Parent == null || !sho.Parent.ParsingName.Equals(KnownFolders.Network.ParsingName, StringComparison.InvariantCultureIgnoreCase))
 										break;
-									var existingItem = this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.OfType<TreeNode>().Where(w => (w.Tag as IListItemEx) != null && (w.Tag as IListItemEx).ParsingName == sho.ParsingName).Count();
+									//var existingItem = this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.OfType<TreeNode>().Where(w => (w.Tag as IListItemEx) != null && (w.Tag as IListItemEx)?.ParsingName == sho.ParsingName).Count();
+									var existingItem = this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.OfType<TreeNode>().Where(w => (w.Tag as IListItemEx)?.ParsingName == sho.ParsingName).Count();
+
 									if (existingItem > 0)
 										break;
 									var node = new TreeNode(sho.DisplayName);
