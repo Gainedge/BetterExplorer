@@ -39,7 +39,7 @@ namespace BetterExplorer
 
             foreach (char item in allchars)
             {
-                if (toremove.Contains(item) == false)
+                if (!toremove.Contains(item))
                 {
                     cbbLetter.Items.Add(item);
                 }
