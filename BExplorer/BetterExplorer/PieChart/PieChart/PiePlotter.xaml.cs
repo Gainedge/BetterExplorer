@@ -175,8 +175,7 @@ namespace BetterExplorer.PieChart {
 
 			foreach (object item in myCollectionView) {
 				if (item is INotifyPropertyChanged) {
-					INotifyPropertyChanged observable = (INotifyPropertyChanged)item;
-					observable.PropertyChanged += new PropertyChangedEventHandler(ItemPropertyChanged);
+					(item as INotifyPropertyChanged).PropertyChanged += new PropertyChangedEventHandler(ItemPropertyChanged);
 				}
 			}
 		}
@@ -231,7 +230,7 @@ namespace BetterExplorer.PieChart {
 		/// Constructs pie pieces and adds them to the visual tree for this control's canvas
 		/// </summary>
 		public void ConstructPiePieces() {
-			CollectionView myCollectionView = (CollectionView)CollectionViewSource.GetDefaultView(this.DataContext);
+			var myCollectionView = (CollectionView)CollectionViewSource.GetDefaultView(this.DataContext);
 			if (myCollectionView == null)
 				return;
 
@@ -239,10 +238,7 @@ namespace BetterExplorer.PieChart {
 			double innerRadius = halfWidth * HoleSize;
 
 			// compute the total for the property which is being plotted
-			double total = 0;
-			foreach (Object item in myCollectionView) {
-				total += GetPlottedPropertyValue(item);
-			}
+			double total = myCollectionView.Cast<Object>().Sum(_ => GetPlottedPropertyValue(_));
 
 			// add the pie pieces
 			canvas.Children.Clear();
