@@ -49,14 +49,8 @@ namespace BetterExplorer
         public void SetUpTooltip(string tabs)
         {
             lst = SaveTabs.LoadTabList($"{Directory}{Location}.txt");
-            var blah = new StringBuilder(lst.Count);
-            foreach (string item in lst)
-            {
-                blah.AppendLine(item);
-            }
-
-            string de = $"{tabs}: {lst.Count.ToString()}\n\r" + blah;
-            this.ToolTip = de.Remove(de.Length - 2);
+            string de = $"{tabs}: {lst.Count.ToString()}\n\r" + string.Join("\r\n", lst.ToArray());
+			this.ToolTip = de.Remove(de.Length - 2);
         }
 
         public void SetSelected()
