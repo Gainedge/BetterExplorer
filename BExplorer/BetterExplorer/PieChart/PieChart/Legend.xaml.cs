@@ -91,8 +91,7 @@ namespace BetterExplorer.PieChart
                                                         {
                                                             if (item is INotifyPropertyChanged)
                                                             {
-                                                                INotifyPropertyChanged observable = (INotifyPropertyChanged)item;
-                                                                observable.PropertyChanged += new PropertyChangedEventHandler(ItemPropertyChanged);
+																(item as INotifyPropertyChanged).PropertyChanged += new PropertyChangedEventHandler(ItemPropertyChanged);
                                                             }
                                                         }
                                                     }));
