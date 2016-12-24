@@ -414,19 +414,16 @@ namespace BaseWPFHelpers
 
             foreach (FrameworkElement me in lst)
             {
-                MediaElement meCast = me as MediaElement;
+                var meCast = me as MediaElement;
 
-                if (meCast != null)
+                if (meCast != null && meCast.CanPause)
                 {
-                    if (meCast.CanPause)
+                    try
                     {
-                        try
-                        {
-                            meCast.Pause();
-                        }
-                        catch //(Exception e)
-                        {
-                        }
+                        meCast.Pause();
+                    }
+                    catch //(Exception e)
+                    {
                     }
                 }
             }
@@ -443,17 +440,13 @@ namespace BaseWPFHelpers
 
             foreach (FrameworkElement me in lst)
             {
-                MediaElement meCast = me as MediaElement;
-
-                if (meCast != null)
+                var meCast = me as MediaElement;
+                try
                 {
-                    try
-                    {
-                        meCast.Play();
-                    }
-                    catch //(Exception e)
-                    {
-                    }
+                    meCast?.Play();
+                }
+                catch //(Exception e)
+                {
                 }
             }
         }

@@ -1999,7 +1999,6 @@ namespace BetterExplorer {
       }
     }
 
-
     private void miExtractHere_Click(object sender, RoutedEventArgs e) {
       string FileName = _ShellListView.GetFirstSelectedItem().ParsingName;
       var extractor = new SevenZipExtractor(FileName);
@@ -2026,7 +2025,7 @@ namespace BetterExplorer {
 
     void extractor_ExtractionFinished(object sender, EventArgs e) {
       //throw new NotImplementedException();
-      if ((sender as SevenZipExtractor) != null) (sender as SevenZipExtractor).Dispose();
+		(sender as SevenZipExtractor)?.Dispose();
     }
 
     void extractor_Extracting(object sender, ProgressEventArgs e) {
@@ -3371,8 +3370,7 @@ item.IsChecked = false;
           var selectedTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
           if (selectedTabItem != null) {
             selectedTabItem.Header = e.Folder.DisplayName;
-            selectedTabItem.Icon = e.Folder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly,
-                ShellThumbnailRetrievalOption.Default);
+            selectedTabItem.Icon = e.Folder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
             selectedTabItem.ShellObject = e.Folder;
             selectedTabItem.ToolTip = e.Folder.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
           }

@@ -107,14 +107,10 @@ namespace BExplorer.Shell {
     public Boolean isInSameTab { get; set; }
 
     public void Dispose() {
-      if (Folder != null) {
-        Folder.Dispose();
+        Folder?.Dispose();
         Folder = null;
-      }
-      if (OldFolder != null) {
-        OldFolder.Dispose();
+        OldFolder?.Dispose();
         OldFolder = null;
-      }
     }
 
     public NavigatedEventArgs(IListItemEx folder, IListItemEx old) {
@@ -147,9 +143,7 @@ namespace BExplorer.Shell {
     }
 
     public void Dispose() {
-      if (Folder != null) {
         Folder = null;
-      }
     }
   }
 
@@ -1912,8 +1906,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
               var nmhdrHdn = (NMHEADER)(m.GetLParam(typeof(NMHEADER)));
               var itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
-              if (this.ToolTip != null)
-                this.ToolTip.HideTooltip();
+              this.ToolTip?.HideTooltip();
 
               if (nmhdrHdn.iItem != -1 && nmhdrHdn.hdr.hwndFrom == this.LVHandle) {
                 //Workaround for cases where on right click over an ites the item is not actually selected
@@ -1961,8 +1954,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                 EndLabelEdit();
               if (IsGroupsEnabled)
                 RedrawWindow();
-              if (this.ToolTip != null)
-                this.ToolTip.HideTooltip();
+              this.ToolTip?.HideTooltip();
               //OnLostFocus();
               if (this.IsRenameInProgress) {
                 this.Focus(false);
@@ -2088,8 +2080,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
     #region Public Methods
 
     public void RaiseMiddleClickOnItem(IListItemEx item) {
-      if (this.ItemMiddleClick != null)
-        this.ItemMiddleClick.Invoke(this, new NavigatedEventArgs(item, item));
+		this.ItemMiddleClick?.Invoke(this, new NavigatedEventArgs(item, item));
     }
 
     /// <summary>
@@ -2561,9 +2552,8 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
       for (var i = 0; i < this.Collumns.Count; i++) {
         this.Collumns[i].SetSplitButton(headerhandle, i);
       }
-      if (this.OnListViewCollumnsChanged != null) {
-        this.OnListViewCollumnsChanged.Invoke(this, new CollumnsChangedArgs(remove));
-      }
+
+		this.OnListViewCollumnsChanged?.Invoke(this, new CollumnsChangedArgs(remove));
     }
 
     public void RemoveAllCollumns() {
@@ -3439,11 +3429,9 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
     private void QueueDeleteItem(FileSystemEventArgs args) {
       this._TemporaryFiles.Remove(args.FullPath);
       var existingItem = this.Items.ToArray().FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
-      if (existingItem != null) {
-        if (existingItem.IsFolder || this._TemporaryFiles.Count(c => c.Contains(Path.GetFileName(existingItem.ParsingName))) == 0) {
+      if (existingItem != null && (existingItem.IsFolder || this._TemporaryFiles.Count(c => c.Contains(Path.GetFileName(existingItem.ParsingName))) == 0)) {
           this._ItemsQueue.Enqueue(Tuple.Create(ItemUpdateType.Deleted, existingItem), true);
           this.UnvalidateDirectory();
-        }
       }
     }
 
@@ -3933,14 +3921,12 @@ navigationThread.Start();
                   if (exisitingUItem != null) {
                     if (this.View == ShellViewStyle.Details) {
                       foreach (var collumn in this.Collumns) {
-                        if (collumn.Index > 0) {
-                          if (this.IconSize == 16) {
-                            this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingUItem.ItemIndex,
-                                collumn.Index, collumn.pkey));
-                          }
+                        if (collumn.Index > 0 && this.IconSize == 16) {
+						  this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingUItem.ItemIndex, collumn.Index, collumn.pkey));
                         }
                       }
                     }
+
                     if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Updated, exisitingUItem)))
                       this.UnvalidateDirectory();
                     //this.RefreshItem(exisitingUItem.ItemIndex, true);
@@ -3964,11 +3950,8 @@ navigationThread.Start();
                 var exisitingItemNetA = this.Items.FirstOrDefault(w => w.Equals(objNetA));
                 if (this.View == ShellViewStyle.Details) {
                   foreach (var collumn in this.Collumns) {
-                    if (collumn.Index > 0) {
-                      if (this.IconSize == 16) {
-                        this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingItemNetA.ItemIndex,
-                            collumn.Index, collumn.pkey));
-                      }
+                    if (collumn.Index > 0 &&this.IconSize == 16) {
+                        this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingItemNetA.ItemIndex, collumn.Index, collumn.pkey));
                     }
                   }
                 }
@@ -4204,8 +4187,7 @@ navigationThread.Start();
       if (sho.Parent.IsFileSystem) {
         var size = sho.GetPropertyValue(SystemProperties.FileSize, typeof(Int64)).Value;
         if (size != null) {
-          g.DrawString(ShlWapi.StrFormatByteSize(Int64.Parse(size.ToString())), subItemFont, subItemTextBrush, lblrectSubiTem3,
-                          fmt);
+          g.DrawString(ShlWapi.StrFormatByteSize(Int64.Parse(size.ToString())), subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
         }
       }
 

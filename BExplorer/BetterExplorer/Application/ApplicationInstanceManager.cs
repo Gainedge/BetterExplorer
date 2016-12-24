@@ -58,7 +58,7 @@ namespace SingleInstanceApplication
                 UpdateRemoteObject(name);
 
                 // invoke (signal) wait handle on other process
-                if (eventWaitHandle != null) eventWaitHandle.Set();
+                eventWaitHandle?.Set();
 
 
                 // kill current process
@@ -81,11 +81,10 @@ namespace SingleInstanceApplication
             // get shared object from other process
             var proxy =
                 Activator.GetObject(typeof(InstanceProxy),
-                string.Format("ipc://{0}{1}{2}/{1}", Environment.MachineName, uri, Environment.UserName)) as InstanceProxy;
+                $"ipc://{Environment.MachineName}{uri}{Environment.UserName}/{uri}") as InstanceProxy;
 
             // pass current command line args to proxy
-            if (proxy != null)
-                proxy.SetCommandLineArgs(InstanceProxy.IsFirstInstance, InstanceProxy.CommandLineArgs);
+            proxy?.SetCommandLineArgs(InstanceProxy.IsFirstInstance, InstanceProxy.CommandLineArgs);
 
             // close current client channel
             ChannelServices.UnregisterChannel(clientChannel);
@@ -102,8 +101,7 @@ namespace SingleInstanceApplication
             ChannelServices.RegisterChannel(serverChannel, true);
 
             // register shared type
-            RemotingConfiguration.RegisterWellKnownServiceType(
-                typeof(InstanceProxy), uri, WellKnownObjectMode.Singleton);
+            RemotingConfiguration.RegisterWellKnownServiceType(typeof(InstanceProxy), uri, WellKnownObjectMode.Singleton);
 
             // close channel, on process exit
             Process process = Process.GetCurrentProcess();

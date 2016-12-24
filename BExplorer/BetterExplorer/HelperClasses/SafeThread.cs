@@ -242,7 +242,7 @@ namespace BetterExplorer
         {
             ThreadObject = new Thread(new ThreadStart(startTarget));
             ThreadObject.Name = this.Name;
-            if (_aptState != null) { ThreadObject.TrySetApartmentState((ApartmentState)_aptState); }
+            if (_aptState != null) ThreadObject.TrySetApartmentState((ApartmentState)_aptState);
             ThreadObject.Start();
         }
 
@@ -288,7 +288,7 @@ namespace BetterExplorer
         /// </summary>
         public System.Globalization.CultureInfo CurrentCulture
         {
-            get { return ThreadObject != null ? ThreadObject.CurrentCulture : null; }
+            get { return ThreadObject?.CurrentCulture; }
         }
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace BetterExplorer
         /// </summary>
         public System.Globalization.CultureInfo CurrentUICulture
         {
-            get { return ThreadObject != null ? ThreadObject.CurrentUICulture : null; }
+            get { return ThreadObject?.CurrentUICulture; }
         }
 
         /// <summary>
@@ -306,7 +306,7 @@ namespace BetterExplorer
         /// </summary>
         public ExecutionContext ExecutionContext
         {
-            get { return ThreadObject != null ? ThreadObject.ExecutionContext : null; }
+            get { return ThreadObject?.ExecutionContext; }
         }
 
         /// <summary>

@@ -70,18 +70,13 @@ namespace BetterExplorer {
 		protected override CreateParams CreateParams {
 			get {
 				CreateParams baseParams = base.CreateParams;
-
-				baseParams.ExStyle |= (int)(
-					User32.WindowStylesEx.WS_EX_NOACTIVATE |
-				  User32.WindowStylesEx.WS_EX_TOOLWINDOW);
-
+				baseParams.ExStyle |= (int)(User32.WindowStylesEx.WS_EX_NOACTIVATE | User32.WindowStylesEx.WS_EX_TOOLWINDOW);
 				return baseParams;
 			}
 		}
 
 		public void Disposeimg() {
-			if (img != null)
-				img.Dispose();
+			img?.Dispose();
 		}
 	}
 }
