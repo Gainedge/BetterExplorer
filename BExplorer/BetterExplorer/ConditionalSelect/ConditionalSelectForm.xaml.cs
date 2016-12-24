@@ -148,22 +148,15 @@ namespace BetterExplorer {
 			}
 
 			if (csd.FilterByDateCreated) {
-				Func<FileInfo, DateTime> GetCreateDate = (x) => x.CreationTimeUtc;
-				foreach (var item in !csd.FilterByDateCreated ? Matches_Size : DateFilter(Matches_Size, csd.DateCreatedData, GetCreateDate)) {
-					Matches_DateCreated.Add(item);
-				}
+				Matches_DateCreated.AddRange(!csd.FilterByDateCreated ? Matches_Size : DateFilter(Matches_Size, csd.DateCreatedData, x => x.CreationTimeUtc));
 			}
 
 			if (csd.FilterByDateModified) {
-				Func<FileInfo, DateTime> GetDateModified = (x) => x.LastWriteTimeUtc;
-				foreach (var item in !csd.FilterByDateModified ? Matches_Size : DateFilter(Matches_DateCreated, csd.DateModifiedData, GetDateModified)) {
-					Matches_DateLastModified.Add(item);
-				}
+				Matches_DateLastModified.Add(!csd.FilterByDateModified ? Matches_Size : DateFilter(Matches_DateCreated, csd.DateModifiedData, x => x.LastWriteTimeUtc));
 			}
 
 			if (csd.FilterByDateAccessed) {
-				Func<FileInfo, DateTime> GetDateAccessed = (x) => x.LastAccessTimeUtc;
-				foreach (var item in !csd.FilterByDateAccessed ? Matches_DateLastModified : DateFilter(Matches_DateLastModified, csd.DateAccessedData, GetDateAccessed)) {
+				foreach (var item in !csd.FilterByDateAccessed ? Matches_DateLastModified : DateFilter(Matches_DateLastModified, csd.DateAccessedData, x => x.LastAccessTimeUtc)) {
 					Matches_LastAccessed.Add(item);
 				}
 			}
