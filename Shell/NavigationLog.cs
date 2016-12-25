@@ -45,6 +45,10 @@ namespace BExplorer.Shell
 
         #endregion Properties
 
+        /// <summary>
+        /// A generic constructor
+        /// </summary>
+        /// <param name="StartingLocation">This location will be added as the first item in <see cref="HistoryItemsList"/></param>
         public NavigationLog(IListItemEx StartingLocation)
         {
             HistoryItemsList = new List<IListItemEx>(new[] { StartingLocation });
@@ -55,7 +59,6 @@ namespace BExplorer.Shell
         public IListItemEx NavigateBack()
         {
             CurrentLocPos--;
-            //return HistoryItemsList[CurrentLocPos < 0 ? 0 : CurrentLocPos];
             return HistoryItemsList[CurrentLocPos];
         }
 
@@ -63,14 +66,13 @@ namespace BExplorer.Shell
         public IListItemEx NavigateForward()
         {
             CurrentLocPos++;
-            //return HistoryItemsList[CurrentLocPos > HistoryItemsList.Count - 1 ? HistoryItemsList.Count - 1 : CurrentLocPos];
             return HistoryItemsList[CurrentLocPos];
         }
 
         /// <summary>Removes any Items Forward of the current position</summary>
         public void ClearForwardItems()
         {
-            ForwardEntries.ForEach(item => HistoryItemsList.Remove(item));
+			ForwardEntries.ForEach(item => HistoryItemsList.Remove(item));
         }
 
         /// <summary>Clears all items then adds all items from <param name="log">the log</param></summary>
