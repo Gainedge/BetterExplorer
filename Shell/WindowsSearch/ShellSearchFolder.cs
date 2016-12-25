@@ -136,7 +136,7 @@ namespace BExplorer.Shell
         public void SetStacks(params string[] canonicalNames)
         {
             if (canonicalNames == null) throw new ArgumentNullException("canonicalNames");
-            List<PROPERTYKEY> propertyKeyList = new List<PROPERTYKEY>();
+            var propertyKeyList = new List<PROPERTYKEY>();
 
             foreach (string prop in canonicalNames)
             {
@@ -147,7 +147,7 @@ namespace BExplorer.Shell
                 propertyKeyList.Add(propKey);
             }
 
-            if (propertyKeyList.Count > 0)
+            if (propertyKeyList.Any())
             {
                 SetStacks(propertyKeyList.ToArray());
             }
