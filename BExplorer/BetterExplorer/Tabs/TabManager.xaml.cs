@@ -36,7 +36,7 @@ namespace BetterExplorer.Tabs {
 
 		public List<string> LoadListOfTabListFiles() {
 			return (from item in Directory.GetFiles(GetSavedTabsLocation())
-					select Utilities.RemoveExtensionsFromFile(new ShellItem(item).DisplayName, item.Substring(item.LastIndexOf(".")))).ToList()
+					select Utilities.RemoveExtensionsFromFile(new ShellItem(item).DisplayName, item.Substring(item.LastIndexOf(".")))).ToList();
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e) {
