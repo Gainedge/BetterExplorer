@@ -39,8 +39,7 @@ namespace Wpf.Controls {
 		/// <summary>
 		/// Provides a place to display an Icon on the Header and on the DropDown Context Menu
 		/// </summary>
-		public object Icon
-		{
+		public object Icon {
 			get { return GetValue(IconProperty); }
 			set { SetValue(IconProperty, value); }
 		}
@@ -48,8 +47,7 @@ namespace Wpf.Controls {
 		/// <summary>
 		/// Allow the Header to be Deleted by the end user
 		/// </summary>
-		public bool AllowDelete
-		{
+		public bool AllowDelete {
 			get { return (bool)GetValue(AllowDeleteProperty); }
 			set { SetValue(AllowDeleteProperty, value); }
 		}
@@ -58,9 +56,14 @@ namespace Wpf.Controls {
 		#endregion Properties
 
 		static TabItem() {
-			DefaultStyleKeyProperty.OverrideMetadata(typeof(Wpf.Controls.TabItem), new FrameworkPropertyMetadata(typeof(Wpf.Controls.TabItem)));
+			DefaultStyleKeyProperty.OverrideMetadata(typeof(TabItem), new FrameworkPropertyMetadata(typeof(TabItem)));
 		}
 
+
+		/// <summary>
+		/// Creates the tab and navigates to the <paramref name="ShellObject"/>
+		/// </summary>
+		/// <param name="ShellObject">The location that this tab will start at</param>
 		public TabItem(IListItemEx ShellObject) {
 			this.ShellObject = ShellObject;
 			log = new NavigationLog(ShellObject);
@@ -80,24 +83,20 @@ namespace Wpf.Controls {
 					// get the parent tabcontrol
 					TabControl tc = Helper.FindParentControl<TabControl>(this);
 
-					if (tc == null)
-						return;
+					//if (tc == null)
+					//	return;
 					// remove this tabitem from the parent tabcontrol
-					tc.RemoveTabItem(this);
+					tc?.RemoveTabItem(this);
 				};
 			}
 			this.PreviewMouseLeftButtonUp += TabItem_PreviewMouseLeftButtonUp;
-			this.PreviewMouseDoubleClick += TabItem_PreviewMouseDoubleClick;
+			//this.PreviewMouseDoubleClick += TabItem_PreviewMouseDoubleClick;
 			this.MouseRightButtonUp += TabItem_MouseRightButtonUp;
 		}
 
 		void TabItem_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) {
 			e.Handled = true;
-			TabControl tc = Helper.FindParentControl<TabControl>(this);
-			if (tc == null) return;
-			//tc.IsSelectionHandled = false;
-			//tc.CurrentTabItem = this;
-			tc.RaiseTabClick(this);
+			Helper.FindParentControl<TabControl>(this)?.RaiseTabClick(this);
 		}
 
 		/// <summary>
@@ -122,12 +121,14 @@ namespace Wpf.Controls {
 			e.Handled = true;
 		}
 
+		/*
 		private void TabItem_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) {
 			e.Handled = true;
 			TabControl tc = Helper.FindParentControl<TabControl>(this);
 			if (tc == null) return;
 			//tc.IsSelectionHandled = false;
 		}
+		*/
 
 		private void TabItem_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) {
 			var tc = Helper.FindParentControl<TabControl>(this);

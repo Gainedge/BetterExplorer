@@ -12,13 +12,9 @@ namespace BExplorer.Shell {
 	[System.Diagnostics.DebuggerStepThrough]
 	public class SyncQueue<T> {
 		private readonly Queue<T> queue = new Queue<T>();
-
 		public void Clear() => this.queue.Clear();
 		public int Count() => this.queue.Count;
-
-		public Boolean Contains(T item) {
-			return queue.Contains(item);
-		}
+		public Boolean Contains(T item) => queue.Contains(item);
 
 
 		/// <summary>
@@ -63,13 +59,29 @@ namespace BExplorer.Shell {
 
 	public class QueueEx<T> {
 		private readonly Queue<T> queue = new Queue<T>();
+		/// <summary>Removes all objects</summary>
 		public void Clear() => this.queue.Clear();
+
+		/// <summary>Gets the number of elements contained</summary>
 		public int Count() => this.queue.Count;
 
-		public Boolean Contains(T item) {
-			return queue.Contains(item);
-		}
+		/// <summary>
+		/// Determines whether an element is in the System.Collections.Generic.Queue`1.
+		/// </summary>
+		/// <param name="item">The object to locate in the System.Collections.Generic.Queue`1. The value can be null for reference types.</param>
+		/// <returns>true if item is found in the System.Collections.Generic.Queue`1; otherwise, false.</returns>
+		public Boolean Contains(T item) => queue.Contains(item);
 
+		/// <summary>
+		/// Removes and returns the object at the beginning of the System.Collections.Generic.Queue(Of T). while (queue.Count == 0) System.Threading.Monitor.Wait(queue);
+		/// </summary>
+		/// <returns>
+		/// The object that is removed from the beginning of the System.Collections.Generic.Queue(Of T).
+		/// </returns>
+		/// <Exceptions>
+		/// System.InvalidOperationException: The System.Collections.Generic.Queue(Of T) is empty.
+		/// </Exceptions>
+		public T Dequeue() => queue.Dequeue();
 
 		/// <summary>
 		/// Adds an object to the end of the System.Collections.Generic.Queue[T] then runs System.Threading.Monitor.PulseAll(queue) when queue.Count == 1;
@@ -86,16 +98,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		/// <summary>
-		/// Removes and returns the object at the beginning of the System.Collections.Generic.Queue(Of T). while (queue.Count == 0) System.Threading.Monitor.Wait(queue);
-		/// </summary>
-		/// <returns>
-		/// The object that is removed from the beginning of the System.Collections.Generic.Queue(Of T).
-		/// </returns>
-		/// <Exceptions>
-		/// System.InvalidOperationException: The System.Collections.Generic.Queue(Of T) is empty.
-		/// </Exceptions>
-		public T Dequeue() => queue.Dequeue();
+
 	}
 
 	//	public class ConQueue<T> {

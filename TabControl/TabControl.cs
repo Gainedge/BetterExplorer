@@ -61,13 +61,10 @@ namespace Wpf.Controls {
     // TemplatePart controls
     private ToggleButton _toggleButton;
     private ButtonBase _addNewButton;
-    private bool IsFixedSize {
-      get {
-        /*
-				IEnumerable items = GetItems();
-				return items as IList == null || (items as IList).IsFixedSize;
-				*/
 
+	/// <summary>Determines if the underlying list if fixed in size</summary>
+	private bool IsFixedSize {
+      get {
         var items = GetItems() as IList;
         return items == null || items.IsFixedSize;
       }
@@ -355,14 +352,16 @@ namespace Wpf.Controls {
     }
 
     /// <summary>
-    /// Creates a new tab, optionally selects it then erturns it
+    /// Creates a new tab, optionally selects it then returns it
     /// </summary>
     /// <param name="Location">The file path of the new Tab</param>
     /// <param name="IsNavigate">Do you want the new tab to be selected?</param>
     /// <returns></returns>
     public TabItem NewTab(string Location, bool IsNavigate = false) => NewTab(FileSystemListItem.ToFileSystemItem(IntPtr.Zero, Location.ToShellParsingName()), IsNavigate);
 
-
+	/// <summary>
+	/// Creates a new tab starting at the libraries folder
+	/// </summary>
     public void NewTab() {
       IListItemEx DefPath;
       if (StartUpLocation.StartsWith("::") && !StartUpLocation.Contains(@"\"))
@@ -411,7 +410,11 @@ namespace Wpf.Controls {
       if (this.SelectedItem == null && !isCloseLastTab)
         this.SelectedItem = this.Items.OfType<TabItem>().ToArray()[this.Items.OfType<TabItem>().Count() - 1];
     }
-
+	
+	/// <summary>
+	/// Clones the tab and If <see cref="AddNewTabToEnd"/> Then adds at the end else inserts after the <see cref="SelectedIndex">currently selected item's index</see>
+	/// </summary>
+	/// <param name="theTab"></param>
     public void CloneTabItem(TabItem theTab) {
       int i = this.SelectedIndex;
       var newt = new TabItem(theTab.ShellObject) {
@@ -431,6 +434,10 @@ namespace Wpf.Controls {
       ConstructMoveToCopyToMenu();
     }
 
+	/// <summary>
+	/// Closes all tabs but the provided one using <see cref="RemoveTabItem"/>
+	/// </summary>
+	/// <param name="tabItem">The Tab you want to keep</param>
     public void CloseAllTabsButThis(TabItem tabItem) {
       foreach (TabItem tab in this.Items.OfType<TabItem>().Where(x => x != tabItem)) {
         this.RemoveTabItem(tab);
@@ -553,8 +560,8 @@ namespace Wpf.Controls {
         e.Handled = ti.Focus();
       }
       base.OnPreviewKeyDown(e);
-    }
-
+    }	
+	
     protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e) {
       base.OnItemsChanged(e);
       //if (e.Action == NotifyCollectionChangedAction.Add && !SelectNewTabOnCreate) {
@@ -713,9 +720,9 @@ namespace Wpf.Controls {
       if (this.Template == null) return;
 
       ButtonBase button = this.Template.FindName("PART_NewTabButton", this) as ButtonBase;
-      if (button == null) return;
-
-      if (IsFixedSize)
+      if (button == null)
+				return;
+      else if (IsFixedSize)
         button.Visibility = Visibility.Collapsed;
       else
         button.Visibility = AllowAddNew ? Visibility.Visible : Visibility.Collapsed;

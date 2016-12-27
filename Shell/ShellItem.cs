@@ -167,7 +167,8 @@ namespace BExplorer.Shell {
       }
     }
 
-    public bool IsValidShellFolder {
+	/// <summary>Is this folder valid? IF IsValidShellFolder throws an error then False Else True</summary>
+	public bool IsValidShellFolder {
       get {
         try {
           this.GetIShellFolder();

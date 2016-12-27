@@ -1575,7 +1575,6 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
               }
 
               if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS && this.CurrentFolder?.ParsingName.Equals(KnownFolders.Computer.ParsingName) == false) {
-                int[] columns = null;
                 var refGuidPDL = typeof(IPropertyDescriptionList).GUID;
                 var refGuidPD = typeof(IPropertyDescription).GUID;
                 var iShellItem2 = (IShellItem2)currentItem.ComInterface;
@@ -1587,7 +1586,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                 var descriptionsCount = 0u;
                 propertyDescriptionList.GetCount(out descriptionsCount);
                 nmlv.item.cColumns = (int)descriptionsCount;
-                columns = new int[nmlv.item.cColumns];
+                var columns = new int[nmlv.item.cColumns];
                 Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
                 for (uint i = 0; i < descriptionsCount; i++) {
                   IPropertyDescription propertyDescription = null;
@@ -1617,6 +1616,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
               if (this.LastSortedColumnId == this.Collumns[nlcv.iSubItem].ID) {
                 sortOrder = this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
               }
+
               if (!this.IsGroupsEnabled) {
                 SetSortCollumn(true, this.Collumns[nlcv.iSubItem], sortOrder);
               } else if (this.LastGroupCollumn == this.Collumns[nlcv.iSubItem]) {
@@ -1736,7 +1736,6 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
             case WNM.LVN_BEGINSCROLL:
 
               #region Case
-
 
               this.EndLabelEdit();
               this.LargeImageList.ResetEvent.Reset();

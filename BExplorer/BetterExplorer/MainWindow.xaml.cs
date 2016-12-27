@@ -49,7 +49,6 @@ using Image = System.Windows.Controls.Image;
 
 
 namespace BetterExplorer {
-  using System.Diagnostics.CodeAnalysis;
 
   /// <summary>
   /// Interaction logic for MainWindow.xaml
@@ -3377,15 +3376,11 @@ namespace BetterExplorer {
         if (item != null) tcMain.NewTab(item, false);
       }
     }
-
-
-
+		
     WIN.Forms.Timer _keyjumpTimer = new WIN.Forms.Timer();
 
     void ShellListView_KeyJumpTimerDone(object sender, EventArgs e) { _keyjumpTimer?.Stop(); _keyjumpTimer?.Start(); }
-
-
-
+		
     void _keyjumpTimer_Tick(object sender, EventArgs e) {
       //key jump done
       KeyJumpGrid.IsOpen = false;
@@ -3641,9 +3636,8 @@ namespace BetterExplorer {
     }
 
     private void SetUpButtonVisibilityOnNavComplete(bool isinLibraries) {
-      var selectedCount = this._ShellListView.GetSelectedCount();
       if (_ShellListView.CurrentFolder.ParsingName.Contains(KnownFolders.Libraries.ParsingName) && _ShellListView.CurrentFolder.ParsingName != KnownFolders.Libraries.ParsingName) {
-        if (selectedCount == 1) {
+        if (this._ShellListView.GetSelectedCount() == 1) {
           ctgLibraries.Visibility = Visibility.Visible;
           SetupLibrariesTab(ShellLibrary.Load(Path.GetFileNameWithoutExtension(_ShellListView.CurrentFolder.ParsingName), false));
         }
