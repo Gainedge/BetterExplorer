@@ -73,7 +73,6 @@ namespace BetterExplorer {
     #endregion
 
     #region Private Members
-    private bool _IsrestoreTabs;
     private bool _IsCalledFromLoading, isOnLoad;
     private bool _AsFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
     private MenuItem misa, misd, misag, misdg;
@@ -1460,21 +1459,22 @@ namespace BetterExplorer {
       btnNavigationPane.IsChecked = (int)rks.GetValue("NavigationPaneEnabled", 1) == 1;
 
       this._ShellListView.ShowCheckboxes = (int)rks.GetValue("ShowCheckboxes", 0) == 1;
-      chkShowCheckBoxes.IsChecked = _ShellListView.ShowCheckboxes;
+      this.chkShowCheckBoxes.IsChecked = this._ShellListView.ShowCheckboxes;
 
-      chkIsTerraCopyEnabled.IsChecked = (int)rks.GetValue("FileOpExEnabled", 0) == 1;
+      this.chkIsTerraCopyEnabled.IsChecked = (int)rks.GetValue("FileOpExEnabled", 0) == 1;
 
-      chkIsCFO.IsChecked = (int)rks.GetValue("IsCustomFO", 0) == 1;
-      _IsrestoreTabs = (int)rks.GetValue("IsRestoreTabs", 1) == 1;
+      this.chkIsCFO.IsChecked = (int)rks.GetValue("IsCustomFO", 0) == 1;
 
-      chkIsRestoreTabs.IsChecked = _IsrestoreTabs;
+      this.chkIsRestoreTabs.IsChecked = BESettings.IsRestoreTabs;
 
-      chkTraditionalNameGrouping.IsChecked = (int)rks.GetValue("IsTraditionalNameGrouping", 0) == 1;
-      this._IsTraditionalNameGrouping = chkTraditionalNameGrouping.IsChecked.Value;
-      _ShellListView.IsTraditionalNameGrouping = chkTraditionalNameGrouping.IsChecked.Value;
+      this.chkTraditionalNameGrouping.IsChecked = (int)rks.GetValue("IsTraditionalNameGrouping", 0) == 1;
+      this._IsTraditionalNameGrouping = this.chkTraditionalNameGrouping.IsChecked.Value;
+      this._ShellListView.IsTraditionalNameGrouping = this.chkTraditionalNameGrouping.IsChecked.Value;
 
-      //if this instance has the /norestore switch, do not load tabs from previous session, even if it is set in the Registry
-      if (App.IsStartWithStartupTab) _IsrestoreTabs = false;
+      // if this instance has the /norestore switch, do not load tabs from previous session, even if it is set in the Registry
+      if (App.IsStartWithStartupTab) {
+        BESettings.IsRestoreTabs = false;
+      }
 
       //this.chkIsLastTabCloseApp.IsChecked = (int)rks.GetValue("IsLastTabCloseApp", 1) == 1;
 

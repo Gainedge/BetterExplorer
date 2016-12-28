@@ -187,7 +187,6 @@
     <Compile Include="KnownFolders\KnownFolderSettings.cs" />
     <Compile Include="KnownFolders\NonFileSystemKnownFolder.cs" />
     <Compile Include="KnownFolders\RedirectionCapabilities.cs" />
-    <Compile Include="LinqProgress.cs" />
     <Compile Include="LVItemColor.cs" />
     <Compile Include="Interop\Enums.cs" />
     <Compile Include="Interop\NativePoint.cs" />
