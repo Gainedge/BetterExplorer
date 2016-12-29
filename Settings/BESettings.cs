@@ -10,10 +10,18 @@ using Microsoft.Win32;
 //Make sure GetValue and rks.GetValue are ONLY used here and not in the MainWindow
 
 namespace Settings {
+
+	/// <summary>
+	/// Contains all settings for Better Explorer (all settings will be moved here eventually)
+	/// </summary>
 	public static class BESettings {
+		/// <summary>When did the application last check for an update</summary>
 		public static DateTime LastUpdateCheck { get; set; }
+		/// <summary>How often the application should check for an update</summary>
 		public static Int32 UpdateCheckInterval { get; set; }
+		/// <summary>The saved application theme</summary>
 		public static String CurrentTheme { get; set; }
+		/// <summary>The version track this is on {0: release, 1: test}</summary>
 		public static Int32 UpdateCheckType { get; set; }
 		public static Boolean IsUpdateCheck { get; set; }
 		public static Boolean IsUpdateCheckStartup { get; set; }
@@ -35,6 +43,9 @@ namespace Settings {
 		public static bool EnableActionLog { get; set; }
 		public static bool IsGlassOnRibonMinimized { get; set; }
 
+		/// <summary>
+		/// Loads all the settings in BESettings from the parent registry Software\BExplorer
+		/// </summary>
 		public static void LoadSettings() {
 			using (var rkRoot = Registry.CurrentUser)
 			using (var rksRoot = rkRoot.OpenSubKey(@"Software\BExplorer", true) ?? rkRoot.CreateSubKey(@"Software\BExplorer")) {
@@ -70,7 +81,9 @@ namespace Settings {
 			}
 		}
 
-
+		/// <summary>
+		/// Saves all the settings in BESettings inside the parent registry Software\BExplorer
+		/// </summary>
 		public static void SaveSettings() {
 			using (RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true)) {
 				rks.SetValue("StartUpLoc", StartupLocation);
@@ -79,8 +92,8 @@ namespace Settings {
 				rks.SetValue("CheckForUpdatesStartup", IsUpdateCheckStartup);
 				rks.SetValue("UpdateCheckType", UpdateCheckType);
 				rks.SetValue("IsConsoleShown", IsConsoleShown);
-				rks.SetValue("EnableActionLog", EnableActionLog );
-				rks.SetValue("IsGlassOnRibonMinimized", IsGlassOnRibonMinimized );
+				rks.SetValue("EnableActionLog", EnableActionLog);
+				rks.SetValue("IsGlassOnRibonMinimized", IsGlassOnRibonMinimized);
 				rks.SetValue("LastUpdateCheck", LastUpdateCheck, RegistryValueKind.String);
 				rks.SetValue("InfoPaneHeight", InfoPaneHeight, RegistryValueKind.DWord);
 				rks.SetValue("CurrentTheme", CurrentTheme);
