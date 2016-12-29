@@ -35,7 +35,8 @@ namespace BetterExplorer {
 
         if (this.tcMain.Items.OfType<Wpf.Controls.TabItem>().Any()) {
           this.NavigationController(sho);
-        } else {
+        }
+        else {
           this.SelectTab(this.tcMain.NewTab(sho, true));
         }
       }
@@ -61,7 +62,8 @@ namespace BetterExplorer {
 
           this.SelectTab(tab);
           this.bcbc.SetPathWithoutNavigate(str);
-        } catch {
+        }
+        catch {
           // AddToLog(String.Format("Unable to load {0} into a tab!", str));
           MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
         }
@@ -131,7 +133,8 @@ namespace BetterExplorer {
 
         mimDocuments = Utilities.Build_MenuItem(this.FindResource("btnctDocumentsCP"), icon: bmpSourceDocuments, onClick: new RoutedEventHandler(this.btnmtDocuments_Click));
         micDocuments = Utilities.Build_MenuItem(this.FindResource("btnctDocumentsCP"), icon: bmpSourceDocuments, onClick: new RoutedEventHandler(this.btnctDocuments_Click));
-      } catch (Exception) {
+      }
+      catch (Exception) {
         mimDocuments = null;
         micDocuments = null;
 
@@ -145,7 +148,8 @@ namespace BetterExplorer {
 
         mimDownloads = Utilities.Build_MenuItem(this.FindResource("btnctDownloadsCP"), icon: bmpSourceDownloads, onClick: new RoutedEventHandler(this.btnmtDounloads_Click));
         micDownloads = Utilities.Build_MenuItem(this.FindResource("btnctDownloadsCP"), icon: bmpSourceDownloads, onClick: new RoutedEventHandler(this.btnctDounloads_Click));
-      } catch (Exception) {
+      }
+      catch (Exception) {
         micDownloads = null;
         mimDownloads = null;
 
@@ -189,7 +193,8 @@ namespace BetterExplorer {
             var bmpSource = so.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
             this.btnMoveto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.DisplayName, item.ShellObject, bmpSource, onClick: new RoutedEventHandler(this.mim_Click)));
             this.btnCopyto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.DisplayName, item.ShellObject, bmpSource, onClick: new RoutedEventHandler(this.mico_Click)));
-          } catch {
+          }
+          catch {
 
             // Do nothing if ShellItem is not available anymore and close the problematic item
             // tcMain.RemoveTabItem(item);
