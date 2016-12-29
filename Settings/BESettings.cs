@@ -11,6 +11,18 @@ using Microsoft.Win32;
 
 namespace Settings {
 
+	public static class Extensions {
+		public static Boolean ToBoolean(this Object value) {
+			if (value is Int32) {
+				return (Int32?)value == 1;
+			}
+			else if (value is String) {
+				return Boolean.Parse(value.ToString());
+			}
+			return (Boolean)value;
+		}
+	}
+
 	/// <summary>
 	/// Contains all settings for Better Explorer (all settings will be moved here eventually)
 	/// </summary>
@@ -80,47 +92,47 @@ namespace Settings {
 				StartupLocation = rksRoot?.GetValue("StartUpLoc", "shell:::{031E4825-7B94-4DC3-B131-E946B44C8DD5}").ToString();
 				UpdateCheckType = (int)rksRoot.GetValue("UpdateCheckType", 0);
 				CurrentTheme = (string)rksRoot.GetValue("CurrentTheme", "Blue");
-				IsUpdateCheck = bool.Parse(rksRoot.GetValue("CheckForUpdates", "False").ToString());
-				IsUpdateCheckStartup = bool.Parse(rksRoot.GetValue("CheckForUpdatesStartup", "False").ToString());
+				IsUpdateCheck = rksRoot.GetValue("CheckForUpdates", "False").ToBoolean();
+				IsUpdateCheckStartup = rksRoot.GetValue("CheckForUpdatesStartup", "False").ToBoolean();
 				UpdateCheckInterval = (int)rksRoot.GetValue("CheckInterval", 7);
-				//LastUpdateCheck = DateTime.FromBinary(Convert.ToInt64(rksRoot?.GetValue("LastUpdateCheck", 0)));
-				LastUpdateCheck = DateTime.Parse(rksRoot.GetValue("LastUpdateCheck", DateTime.Now.ToString()).ToString());
-				IsConsoleShown = bool.Parse(rksRoot.GetValue("IsConsoleShown", "False").ToString());
-				EnableActionLog = bool.Parse(rksRoot.GetValue("IsConsoleShown", "False").ToString());
-				IsGlassOnRibonMinimized = bool.Parse(rksRoot.GetValue("RibbonMinimizedGlass", "False").ToString());
-				IsPreviewPaneEnabled = Boolean.Parse(rksRoot.GetValue("PreviewPaneEnabled", "False").ToString());
-				IsInfoPaneEnabled = Boolean.Parse(rksRoot.GetValue("InfoPaneEnabled", "False").ToString());
-				IsTraditionalNameGrouping = bool.Parse(rksRoot.GetValue("IsTraditionalNameGrouping", "False").ToString());
+				LastUpdateCheck = DateTime.FromBinary(Convert.ToInt64(rksRoot.GetValue("LastUpdateCheck", DateTime.Now.ToBinary())));
+				//LastUpdateCheck = DateTime.Parse(rksRoot.GetValue("LastUpdateCheck", DateTime.Now.ToString()).ToString());
+				IsConsoleShown = rksRoot.GetValue("IsConsoleShown", "False").ToBoolean();
+				EnableActionLog = rksRoot.GetValue("IsConsoleShown", "False").ToBoolean();
+				IsGlassOnRibonMinimized = rksRoot.GetValue("RibbonMinimizedGlass", "False").ToBoolean();
+				IsPreviewPaneEnabled = rksRoot.GetValue("PreviewPaneEnabled", "False").ToBoolean();
+				IsInfoPaneEnabled = rksRoot.GetValue("InfoPaneEnabled", "False").ToBoolean();
+				IsTraditionalNameGrouping = rksRoot.GetValue("IsTraditionalNameGrouping", "False").ToBoolean();
 				var regLocale = rksRoot.GetValue("Locale", ":null:").ToString();
 				Locale = string.IsNullOrEmpty(regLocale) ? System.Globalization.CultureInfo.CurrentUICulture.Name : regLocale;
-				IsRestoreTabs = bool.Parse(rksRoot.GetValue("IsRestoreTabs", "False").ToString());
-				InfoPaneHeight = int.Parse(rksRoot.GetValue("InfoPaneHeight", 150).ToString());
-				IsNavigationPaneEnabled = bool.Parse(rksRoot.GetValue("NavigationPaneEnabled", "False").ToString());
-				IsFileOpExEnabled = bool.Parse(rksRoot.GetValue("FileOpExEnabled", "False").ToString());
-				IsCustomFO = bool.Parse(rksRoot.GetValue("IsCustomFO", "False").ToString());
+				IsRestoreTabs = rksRoot.GetValue("IsRestoreTabs", "False").ToBoolean();
+				InfoPaneHeight = Convert.ToInt32(rksRoot.GetValue("InfoPaneHeight", 150));
+				IsNavigationPaneEnabled = rksRoot.GetValue("NavigationPaneEnabled", "False").ToBoolean();
+				IsFileOpExEnabled = rksRoot.GetValue("FileOpExEnabled", "False").ToBoolean();
+				IsCustomFO = rksRoot.GetValue("IsCustomFO", "False").ToBoolean();
 				SearchBarWidth = Convert.ToDouble(rksRoot.GetValue("SearchBarWidth", 220));
-				OverwriteImageWhileEditing = bool.Parse(rksRoot.GetValue("OverwriteImageWhileEditing", "False").ToString());
+				OverwriteImageWhileEditing = rksRoot.GetValue("OverwriteImageWhileEditing", "False").ToBoolean();
 				SavedTabsDirectory = rksRoot.GetValue("SavedTabsDirectory", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\").ToString();
 				OpenedTabs = rksRoot.GetValue("OpenedTabs").ToString();
-				LastWindowWidth = double.Parse(rksRoot.GetValue("LastWindowWidth", 640).ToString());
-				LastWindowHeight = double.Parse(rksRoot.GetValue("LastWindowHeight", 480).ToString());
-				LastWindowPosLeft = double.Parse(rksRoot.GetValue("LastWindowPosLeft", 0).ToString());
-				LastWindowPosTop = double.Parse(rksRoot.GetValue("LastWindowPosTop", 0).ToString());
-				LastWindowState = int.Parse(rksRoot.GetValue("LastWindowState", 0).ToString());
-				IsRibonMinimized = bool.Parse(rksRoot.GetValue("IsRibonMinimized", "False").ToString());
-				RTLMode = bool.Parse(rksRoot.GetValue("RTLMode", "False").ToString());
-				AutoSwitchFolderTools = bool.Parse(rksRoot.GetValue("AutoSwitchFolderTools", "False").ToString());
-				AutoSwitchArchiveTools = bool.Parse(rksRoot.GetValue("AutoSwitchArchiveTools", "True").ToString());
-				AutoSwitchImageTools = bool.Parse(rksRoot.GetValue("AutoSwitchImageTools", "True").ToString());
-				AutoSwitchApplicationTools = bool.Parse(rksRoot.GetValue("AutoSwitchApplicationTools", "False").ToString());
-				AutoSwitchLibraryTools = bool.Parse(rksRoot.GetValue("AutoSwitchLibraryTools", "True").ToString());
-				AutoSwitchDriveTools = bool.Parse(rksRoot.GetValue("AutoSwitchDriveTools", "True").ToString());
-				AutoSwitchVirtualDriveTools = bool.Parse(rksRoot.GetValue("AutoSwitchVirtualDriveTools", "False").ToString());
-				ShowCheckboxes = bool.Parse(rksRoot.GetValue("ShowCheckboxes", "False").ToString());
-				CmdWinHeight = double.Parse(rksRoot.GetValue("CmdWinHeight", 100).ToString());
+				LastWindowWidth = Convert.ToDouble(rksRoot.GetValue("LastWindowWidth", 640));
+				LastWindowHeight = Convert.ToDouble(rksRoot.GetValue("LastWindowHeight", 480));
+				LastWindowPosLeft = Convert.ToDouble(rksRoot.GetValue("LastWindowPosLeft", 0));
+				LastWindowPosTop = Convert.ToDouble(rksRoot.GetValue("LastWindowPosTop", 0));
+				LastWindowState = Convert.ToInt32(rksRoot.GetValue("LastWindowState", 0));
+				IsRibonMinimized = rksRoot.GetValue("IsRibonMinimized", "False").ToBoolean();
+				RTLMode = rksRoot.GetValue("RTLMode", "False").ToBoolean();
+				AutoSwitchFolderTools = rksRoot.GetValue("AutoSwitchFolderTools", "False").ToBoolean();
+				AutoSwitchArchiveTools = rksRoot.GetValue("AutoSwitchArchiveTools", "True").ToBoolean();
+				AutoSwitchImageTools = rksRoot.GetValue("AutoSwitchImageTools", "True").ToBoolean();
+				AutoSwitchApplicationTools = rksRoot.GetValue("AutoSwitchApplicationTools", "False").ToBoolean();
+				AutoSwitchLibraryTools = rksRoot.GetValue("AutoSwitchLibraryTools", "True").ToBoolean();
+				AutoSwitchDriveTools = rksRoot.GetValue("AutoSwitchDriveTools", "True").ToBoolean();
+				AutoSwitchVirtualDriveTools = rksRoot.GetValue("AutoSwitchVirtualDriveTools", "False").ToBoolean();
+				ShowCheckboxes = rksRoot.GetValue("ShowCheckboxes", "False").ToBoolean();
+				CmdWinHeight = Convert.ToDouble(rksRoot.GetValue("CmdWinHeight", 100));
 				TabBarAlignment = rksRoot.GetValue("TabBarAlignment", "top").ToString();
-				HFlyoutEnabled = bool.Parse(rksRoot.GetValue("HFlyoutEnabled", "False").ToString());
-				PreviewPaneWidth = double.Parse(rksRoot.GetValue("PreviewPaneWidth", 120).ToString());
+				HFlyoutEnabled = rksRoot.GetValue("HFlyoutEnabled", "False").ToBoolean();
+				PreviewPaneWidth = Convert.ToDouble(rksRoot.GetValue("PreviewPaneWidth", 120));
 			}
 		}
 
@@ -137,7 +149,7 @@ namespace Settings {
 				rks.SetValue("IsConsoleShown", IsConsoleShown);
 				rks.SetValue("EnableActionLog", EnableActionLog);
 				rks.SetValue("IsGlassOnRibonMinimized", IsGlassOnRibonMinimized);
-				rks.SetValue("LastUpdateCheck", LastUpdateCheck, RegistryValueKind.String);
+				rks.SetValue("LastUpdateCheck", LastUpdateCheck.ToBinary());
 				rks.SetValue("InfoPaneHeight", InfoPaneHeight, RegistryValueKind.DWord);
 				rks.SetValue("CurrentTheme", CurrentTheme);
 				rks.SetValue("PreviewPaneEnabled", IsPreviewPaneEnabled);
