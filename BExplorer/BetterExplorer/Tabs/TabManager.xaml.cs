@@ -26,10 +26,6 @@ namespace BetterExplorer.Tabs {
 			InitializeComponent();
 		}
 
-		private string GetDefaultLocation() {
-			return Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
-		}
-
 		private string GetSavedTabsLocation() {
 			return Utilities.GetRegistryValue("SavedTabsDirectory", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\").ToString();
 		}
@@ -77,13 +73,13 @@ namespace BetterExplorer.Tabs {
 		}
 
 		private void button5_Click(object sender, RoutedEventArgs e) {
-			tabListEditor1.AddTab(GetDefaultLocation());
+			tabListEditor1.AddTab(Settings.BESettings.StartupLocation);
 		}
 
 		private void button4_Click(object sender, RoutedEventArgs e) {
 			var Entered_Name = NameTabList.Open(this);
 			if (Entered_Name != null) {
-				SaveTabs.SaveTabList(SaveTabs.CreateFromString(GetDefaultLocation()), GetSavedTabsLocation() + Entered_Name + ".txt");
+				SaveTabs.SaveTabList(SaveTabs.CreateFromString(Settings.BESettings.StartupLocation), GetSavedTabsLocation() + Entered_Name + ".txt");
 				RefreshListAndLoad(sstdir + Entered_Name + ".txt");
 			}
 		}

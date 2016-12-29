@@ -2,12 +2,10 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Threading;
-using Microsoft.Win32;
 
 namespace BetterExplorer {
 	partial class MainWindow {
 		private BackgroundWorker UpdaterWorker;
-		private int UpdateCheckType;
 		private Boolean _IsCheckUpdateFromTimer = false;
 		private Boolean _IsUpdateNotificationMessageBoxShown = false;
 
@@ -39,8 +37,8 @@ namespace BetterExplorer {
 					autoUpdater.ForceCheckForUpdate(true);
 				}));
 
-			Utilities.SetRegistryValue("LastUpdateCheck", DateTime.Now.ToBinary(), RegistryValueKind.QWord);
-			LastUpdateCheck = DateTime.Now;
+			Settings.BESettings.LastUpdateCheck = DateTime.Now;
+			Settings.BESettings.SaveSettings();
 		}
 
 		/// <summary>
@@ -49,7 +47,7 @@ namespace BetterExplorer {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void updateCheckTimer_Tick(object sender, EventArgs e) {
-			if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
+			if (DateTime.Now.Subtract(Settings.BESettings.LastUpdateCheck).Days >= Settings.BESettings.UpdateCheckInterval) {
 				CheckForUpdate(false);
 			}
 		}

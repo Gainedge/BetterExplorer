@@ -133,7 +133,8 @@ namespace BetterExplorer {
     /// <param name="e">SessionEndingCancel EventArgs</param>
     protected override void OnSessionEnding(SessionEndingCancelEventArgs e) {
       Current.Shutdown();
-      base.OnSessionEnding(e);
+	  Settings.BESettings.SaveSettings();
+	  base.OnSessionEnding(e);
     }
 
     /// <summary>
@@ -141,6 +142,7 @@ namespace BetterExplorer {
     /// </summary>
     /// <param name="e">Startup EventArgs</param>
     protected override void OnStartup(StartupEventArgs e) {
+	  Settings.BESettings.LoadSettings();
       Process process = Process.GetCurrentProcess();
       process.PriorityClass = ProcessPriorityClass.Normal;
 
@@ -148,7 +150,6 @@ namespace BetterExplorer {
       Thread thread = Thread.CurrentThread;
       thread.Priority = ThreadPriority.Highest;
 
-      String locale = string.Empty;
       Boolean dmi = true;
       System.Windows.Forms.Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
       Current.DispatcherUnhandledException += this.Current_DispatcherUnhandledException;
@@ -236,12 +237,10 @@ namespace BetterExplorer {
       base.OnStartup(e);
 
       try {
-        var regLocale = Utilities.GetRegistryValue("Locale", string.Empty).ToString();
-        locale = string.IsNullOrEmpty(regLocale) ? CultureInfo.CurrentUICulture.Name : regLocale;
-        this.SelectCulture(locale);
+        this.SelectCulture(Settings.BESettings.Locale);
       } catch {
         // MessageBox.Show(String.Format("A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {0}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.", Locale));
-        MessageBox.Show($"A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {locale}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.");
+        MessageBox.Show($"A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {Settings.BESettings.Locale}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.");
 
         this.Shutdown();
       }
@@ -311,16 +310,12 @@ namespace BetterExplorer {
         return;
       }
 
-      var startUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+      var startUpLocation = Settings.BESettings.StartupLocation;
 
-      Action<Boolean> d = x => {
+	  Action<Boolean> d = x => {
         var win = this.MainWindow as MainWindow;
         var windowsActivate = new CombinedWindowActivator();
-        if (!x) {
-          return;
-        }
-
-        if (win == null) {
+        if (!x || win == null) {
           return;
         }
 
@@ -348,7 +343,7 @@ namespace BetterExplorer {
 
             if (!IsStartMinimized || win.tcMain.Items.Count == 0) {
               this.CreateInitialTab(win, sho);
-            } else if ((Int32)Utilities.GetRegistryValue("IsRestoreTabs", "1") == 0) {
+            } else if (Settings.BESettings.IsRestoreTabs) {
               win.tcMain.Items.Clear();
               this.CreateInitialTab(win, sho);
             } else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {

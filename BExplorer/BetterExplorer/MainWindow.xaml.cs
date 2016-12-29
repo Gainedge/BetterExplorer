@@ -76,12 +76,9 @@ namespace BetterExplorer {
     private bool _IsCalledFromLoading, isOnLoad;
     private bool _AsFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
     private MenuItem misa, misd, misag, misdg;
-    private bool IsInfoPaneEnabled, IsConsoleShown, IsPreviewPaneEnabled;
-    private int PreviewPaneWidth = 120, InfoPaneHeight = 150;
+    private int PreviewPaneWidth = 120;
     private ShellTreeViewEx ShellTree = new ShellTreeViewEx();
     private ShellView _ShellListView = new ShellView();
-    private bool IsUpdateCheck;
-    private bool IsUpdateCheckStartup;
     private bool IsNeedEnsureVisible;
     private ClipboardMonitor cbm = new ClipboardMonitor();
     private ContextMenu _CMHistory = new ContextMenu();
@@ -90,17 +87,13 @@ namespace BetterExplorer {
     private List<string> Images = new List<string>(new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
     private string SelectedArchive = "";
     private bool KeepBackstageOpen = false;
-    bool canlogactions = false;
     string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
     string logdir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\ActionLog\\";
     string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
     string sstdir;
     bool OverwriteOnRotate = false;
     WIN.Forms.Timer updateCheckTimer = new WIN.Forms.Timer();
-    DateTime LastUpdateCheck;
-    Int32 UpdateCheckInterval;
     Double CommandPromptWinHeight;
-    Boolean IsGlassOnRibonMinimized { get; set; }
     Boolean _IsTraditionalNameGrouping { get; set; }
 
     List<LVItemColor> LVItemsColor { get; set; }
@@ -124,7 +117,7 @@ namespace BetterExplorer {
     private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e) => CustomizeQAT.Open(this, TheRibbon);
 
     private void btnConsolePane_Click(object sender, RoutedEventArgs e) {
-      this.IsConsoleShown = btnConsolePane.IsChecked.Value;
+	  Settings.BESettings.IsConsoleShown = btnConsolePane.IsChecked.Value;
       if (btnConsolePane.IsChecked.Value) {
         rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
         rCommandPrompt.MinHeight = 100;
@@ -190,18 +183,15 @@ namespace BetterExplorer {
           this.WindowState = WindowState.Maximized;
           break;
       }
-
-      int isGlassOnRibonMinimized = (int)rks.GetValue("RibbonMinimizedGlass", 1);
-      this.IsGlassOnRibonMinimized = isGlassOnRibonMinimized == 1;
-      chkRibbonMinimizedGlass.IsChecked = this.IsGlassOnRibonMinimized;
-
+      
+      chkRibbonMinimizedGlass.IsChecked = BESettings.IsGlassOnRibonMinimized;
       TheRibbon.IsMinimized = Convert.ToBoolean(rks.GetValue("IsRibonMinimized", false));
 
       //CommandPrompt window size
       this.CommandPromptWinHeight = Convert.ToDouble(rks.GetValue("CmdWinHeight", 100));
       rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
 
-      if ((int)rks.GetValue("IsConsoleShown", 0) == 1) {
+      if (BESettings.IsConsoleShown) {
         rCommandPrompt.MinHeight = 100;
         rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
         spCommandPrompt.Height = GridLength.Auto;
@@ -577,7 +567,7 @@ namespace BetterExplorer {
         }
 
         btnNewItem.IsEnabled = this._ShellListView.CurrentFolder.IsFileSystem || this._ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName;
-        if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && selItemsCount == 1)
+        if (selectedItem != null && selectedItem.IsFileSystem && BESettings.IsPreviewPaneEnabled && !selectedItem.IsFolder && selItemsCount == 1)
           this.Previewer.FileName = selectedItem.ParsingName;
         else if (!String.IsNullOrEmpty(this.Previewer.FileName))
           this.Previewer.FileName = null;
@@ -1167,7 +1157,7 @@ namespace BetterExplorer {
 
     private void AddToLog(string value) {
       try {
-        if (canlogactions) {
+        if (BESettings.EnableActionLog) {
           if (!Directory.Exists(logdir)) Directory.CreateDirectory(logdir);
 
           using (var sw = new StreamWriter($"{logdir}{sessionid}.txt", true)) {
@@ -1179,120 +1169,120 @@ namespace BetterExplorer {
       }
     }
 
-    #endregion
+		#endregion
 
-    #region Updater
+	#region Updater
 
-    private void CheckBox_Checked(object sender, RoutedEventArgs e) {
-      if (isOnLoad) return;
+	private void CheckBox_Checked(object sender, RoutedEventArgs e) {
+		if (isOnLoad) return;
 
-      Utilities.SetRegistryValue("CheCkForUpdates", 1);
-      IsUpdateCheck = true;
-      updateCheckTimer.Start();
+		Settings.BESettings.IsUpdateCheck = true;
+		Settings.BESettings.SaveSettings();
+		updateCheckTimer.Start();
+	}
 
-      //if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) CheckForUpdate(false);
-    }
+	private void CheckBox_Unchecked(object sender, RoutedEventArgs e) {
+		if (isOnLoad) return;
 
-    private void CheckBox_Unchecked(object sender, RoutedEventArgs e) {
-      if (isOnLoad) return;
-      Utilities.SetRegistryValue("CheckForUpdates", 0);
-      IsUpdateCheck = false;
-    }
+		Settings.BESettings.IsUpdateCheck = false;
+		Settings.BESettings.SaveSettings();
+	}
 
-    private void rbCheckInterval_Click(object sender, RoutedEventArgs e) {
-      if (rbDaily.IsChecked.Value)
-        UpdateCheckInterval = 1;
-      else if (rbMonthly.IsChecked.Value)
-        UpdateCheckInterval = 30;
-      else
-        UpdateCheckInterval = 7;
+	private void rbCheckInterval_Click(object sender, RoutedEventArgs e) {
+		if (rbDaily.IsChecked.Value)
+			Settings.BESettings.UpdateCheckInterval = 1;
+		else if (rbMonthly.IsChecked.Value)
+			Settings.BESettings.UpdateCheckInterval = 30;
+		else
+			Settings.BESettings.UpdateCheckInterval = 7;
 
-      Utilities.SetRegistryValue("CheckInterval", UpdateCheckInterval);
-    }
+		Settings.BESettings.SaveSettings();
+	}
 
-    private void chkUpdateStartupCheck_Click(object sender, RoutedEventArgs e) {
-      Utilities.SetRegistryValue("CheckForUpdatesStartup", chkUpdateStartupCheck.IsChecked.Value ? 1 : 0);
-      IsUpdateCheckStartup = chkUpdateStartupCheck.IsChecked.Value;
-    }
+	private void chkUpdateStartupCheck_Click(object sender, RoutedEventArgs e) {
+		Settings.BESettings.IsUpdateCheckStartup = chkUpdateStartupCheck.IsChecked.Value;
+		Settings.BESettings.SaveSettings();
+	}
 
-    private void UpdateTypeCheck_Click(object sender, RoutedEventArgs e) {
-      Utilities.SetRegistryValue("UpdateCheckType", rbReleases.IsChecked.Value ? 0 : 1);
-      UpdateCheckType = rbReleases.IsChecked.Value ? 0 : 1;
-    }
+	private void UpdateTypeCheck_Click(object sender, RoutedEventArgs e) {
+		Settings.BESettings.UpdateCheckType = rbReleases.IsChecked.Value ? 0 : 1;
+		Settings.BESettings.SaveSettings();
+	}
 
-    #endregion
+	#endregion
 
-    #region On Startup
+	#region On Startup
 
-    /// <summary>
-    /// Gets the badges from the folder Badges located in the .EXE's directory and the badges from SQLite database
-    /// </summary>
-    /// <returns></returns>
-    private Dictionary<String, Dictionary<IListItemEx, List<string>>> LoadBadgesData() {
-      var result = new Dictionary<String, Dictionary<IListItemEx, List<string>>>();
-      var badgesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Badges");
-      var badgesIshellItem = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, badgesDirectory);
-      foreach (var item in badgesIshellItem.Where(w => w.IsFolder)) {
-        var innerDict = new Dictionary<IListItemEx, List<string>>();
-        foreach (var badgeItem in item.Where(w => w.Extension.ToLowerInvariant() == ".ico")) {
-          innerDict.Add(badgeItem, new List<String>());
-        }
+	/// <summary>
+	/// Gets the badges from the folder Badges located in the .EXE's directory and the badges from SQLite database
+	/// </summary>
+	/// <returns></returns>
+	private Dictionary<String, Dictionary<IListItemEx, List<string>>> LoadBadgesData() {
+		var result = new Dictionary<String, Dictionary<IListItemEx, List<string>>>();
+		var badgesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Badges");
+		var badgesIshellItem = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, badgesDirectory);
+		foreach (var item in badgesIshellItem.Where(w => w.IsFolder)) {
+			var innerDict = new Dictionary<IListItemEx, List<string>>();
+			foreach (var badgeItem in item.Where(w => w.Extension.ToLowerInvariant() == ".ico")) {
+				innerDict.Add(badgeItem, new List<String>());
+			}
 
-        result.Add(item.DisplayName, innerDict);
-      }
+			result.Add(item.DisplayName, innerDict);
+		}
 
-      try {
-        var m_dbConnection = new System.Data.SQLite.SQLiteConnection($"Data Source={this._DBPath};Version=3;");
-        m_dbConnection.Open();
+		try {
+			var m_dbConnection = new System.Data.SQLite.SQLiteConnection($"Data Source={this._DBPath};Version=3;");
+			m_dbConnection.Open();
 
-        var command1 = new System.Data.SQLite.SQLiteCommand("SELECT * FROM badges", m_dbConnection);
+			var command1 = new System.Data.SQLite.SQLiteCommand("SELECT * FROM badges", m_dbConnection);
 
-        var Reader = command1.ExecuteReader();
-        while (Reader.Read()) {
-          var values = Reader.GetValues();
-          var path = values.GetValues("Path").Single();
-          var collectionName = values.GetValues("Collection").Single();
-          var badgeName = values.GetValues("Badge").Single();
-          var badgeDBItem = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, Path.Combine(badgesDirectory, collectionName, badgeName));
-          var collectionDict = result[collectionName];
-          var collectionItemKey = collectionDict.Keys.SingleOrDefault(w => w.ParsingName.Equals(badgeDBItem.ParsingName));
+			var Reader = command1.ExecuteReader();
+			while (Reader.Read()) {
+				var values = Reader.GetValues();
+				var path = values.GetValues("Path").Single();
+				var collectionName = values.GetValues("Collection").Single();
+				var badgeName = values.GetValues("Badge").Single();
+				var badgeDBItem = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, Path.Combine(badgesDirectory, collectionName, badgeName));
+				var collectionDict = result[collectionName];
+				var collectionItemKey = collectionDict.Keys.SingleOrDefault(w => w.ParsingName.Equals(badgeDBItem.ParsingName));
 
-          if (collectionItemKey != null) {
-            result[collectionName][collectionItemKey].Add(path);
-          }
-        }
-        Reader.Close();
-      } catch (Exception) {
-      }
+				if (collectionItemKey != null) {
+					result[collectionName][collectionItemKey].Add(path);
+				}
+			}
+			Reader.Close();
+		}
+		catch (Exception) {
+		}
 
-      return result;
-    }
+		return result;
+	}
 
-    /// <summary>
-    /// Adds all default items to <see cref="btnFavorites"/>
-    /// </summary>
-    /// <remarks>
-    /// 1. Sets OpenFavorites's OnClick event to open <see cref="KnownFolders.Links"/>
-    /// 2. Adds all links from <see cref="KnownFolders.Links"/> that are not hidden 
-    /// </remarks>
-    private void SetUpFavoritesMenu() {
-      Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
-        btnFavorites.Visibility = Visibility.Visible;
+	/// <summary>
+	/// Adds all default items to <see cref="btnFavorites"/>
+	/// </summary>
+	/// <remarks>
+	/// 1. Sets OpenFavorites's OnClick event to open <see cref="KnownFolders.Links"/>
+	/// 2. Adds all links from <see cref="KnownFolders.Links"/> that are not hidden 
+	/// </remarks>
+	private void SetUpFavoritesMenu() {
+		Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
+			btnFavorites.Visibility = Visibility.Visible;
 
-        var OpenFavorites = new MenuItem() { Header = "Open Favorites" };
-        var Path = ((ShellItem)KnownFolders.Links).FileSystemPath;
-        OpenFavorites.Click += (x, y) => Process.Start(Path);
+			var OpenFavorites = new MenuItem() { Header = "Open Favorites" };
+			var Path = ((ShellItem)KnownFolders.Links).FileSystemPath;
+			OpenFavorites.Click += (x, y) => Process.Start(Path);
 
-        btnFavorites.Items.Add(OpenFavorites);
-        btnFavorites.Items.Add(new Separator());
+			btnFavorites.Items.Add(OpenFavorites);
+			btnFavorites.Items.Add(new Separator());
 
-        foreach (ShellItem item in KnownFolders.Links.Where(w => !w.IsHidden)) {
-          item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-          item.Thumbnail.CurrentSize = new WIN.Size(16, 16);
-          btnFavorites.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.Thumbnail.BitmapSource, onClick: mif_Click));
-        }
-      }));
-    }
+			foreach (ShellItem item in KnownFolders.Links.Where(w => !w.IsHidden)) {
+				item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+				item.Thumbnail.CurrentSize = new WIN.Size(16, 16);
+				btnFavorites.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.Thumbnail.BitmapSource, onClick: mif_Click));
+			}
+		}));
+	}
 
     private void InitializeExplorerControl() {
       this.ShellTree.NodeClick += ShellTree_NodeClick;
@@ -1375,7 +1365,7 @@ namespace BetterExplorer {
       RegistryKey rk = Registry.CurrentUser;
       RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
 
-      switch (Convert.ToString(rks.GetValue("CurrentTheme", "Blue"))) {
+      switch (BESettings.CurrentTheme) {
         case "Blue":
           btnBlue.IsChecked = true;
           break;
@@ -1393,10 +1383,7 @@ namespace BetterExplorer {
           break;
       }
 
-      LastUpdateCheck = DateTime.FromBinary(Convert.ToInt64(rks.GetValue("LastUpdateCheck", 0)));
-      UpdateCheckInterval = (int)rks.GetValue("CheckInterval", 7);
-
-      switch (UpdateCheckInterval) {
+      switch (Settings.BESettings.UpdateCheckInterval) {
         case 1:
           rbDaily.IsChecked = true;
           break;
@@ -1408,9 +1395,7 @@ namespace BetterExplorer {
           break;
       }
 
-      UpdateCheckType = (int)rks.GetValue("UpdateCheckType", 1);
-
-      switch (UpdateCheckType) {
+      switch (Settings.BESettings.UpdateCheckType) {
         case 0:
           rbReleases.IsChecked = true;
           break;
@@ -1419,36 +1404,25 @@ namespace BetterExplorer {
           break;
       }
 
-      IsUpdateCheck = (int)rks.GetValue("CheckForUpdates", 1) == 1;
-      chkUpdateCheck.IsChecked = IsUpdateCheck;
+      chkUpdateCheck.IsChecked = Settings.BESettings.IsUpdateCheck;
+      chkUpdateStartupCheck.IsChecked = Settings.BESettings.IsUpdateCheckStartup;
 
-      IsUpdateCheckStartup = (int)rks.GetValue("CheckForUpdatesStartup", 1) == 1;
-      chkUpdateStartupCheck.IsChecked = IsUpdateCheckStartup;
+      btnConsolePane.IsChecked = BESettings.IsConsoleShown;
+      chkIsFlyout.IsChecked = (int)rks.GetValue("HFlyoutEnabled", 0) == 1;			
+      btnInfoPane.IsChecked = BESettings.IsInfoPaneEnabled;
 
-      IsConsoleShown = (int)rks.GetValue("IsConsoleShown", 0) == 1;
-      btnConsolePane.IsChecked = this.IsConsoleShown;
-      chkIsFlyout.IsChecked = (int)rks.GetValue("HFlyoutEnabled", 0) == 1;
-
-      IsInfoPaneEnabled = (int)rks.GetValue("InfoPaneEnabled", 0) == 1;
-      IsInfoPaneEnabled = false; //Since the user cannot disable it right now, it should always be disabled
-      btnInfoPane.IsChecked = IsInfoPaneEnabled;
-
-      InfoPaneHeight = (int)rks.GetValue("InfoPaneHeight", 150);
-
-      if (IsInfoPaneEnabled) {
-        rPreviewPane.Height = new GridLength(InfoPaneHeight);
+      if (BESettings.IsInfoPaneEnabled) {
+        rPreviewPane.Height = new GridLength(BESettings.InfoPaneHeight);
         rPreviewPaneSplitter.Height = new GridLength(1);
       } else {
         rPreviewPane.Height = new GridLength(0);
         rPreviewPaneSplitter.Height = new GridLength(0);
       }
-
-      IsPreviewPaneEnabled = (int)rks.GetValue("PreviewPaneEnabled", 0) == 1;
-      btnPreviewPane.IsChecked = IsPreviewPaneEnabled;
-
+      
+      btnPreviewPane.IsChecked = BESettings.IsPreviewPaneEnabled;
       PreviewPaneWidth = (int)rks.GetValue("PreviewPaneWidth", 120);
 
-      if (IsPreviewPaneEnabled) {
+      if (BESettings.IsPreviewPaneEnabled) {
         clPreview.Width = new GridLength((double)PreviewPaneWidth);
         clPreviewSplitter.Width = new GridLength(1);
       } else {
@@ -1456,20 +1430,15 @@ namespace BetterExplorer {
         clPreviewSplitter.Width = new GridLength(0);
       }
 
-      btnNavigationPane.IsChecked = (int)rks.GetValue("NavigationPaneEnabled", 1) == 1;
+      btnNavigationPane.IsChecked =BESettings.IsNavigationPaneEnabled;
 
       this._ShellListView.ShowCheckboxes = (int)rks.GetValue("ShowCheckboxes", 0) == 1;
       this.chkShowCheckBoxes.IsChecked = this._ShellListView.ShowCheckboxes;
+      this.chkIsTerraCopyEnabled.IsChecked = BESettings.IsFileOpExEnabled;
 
-      this.chkIsTerraCopyEnabled.IsChecked = (int)rks.GetValue("FileOpExEnabled", 0) == 1;
-
-      this.chkIsCFO.IsChecked = (int)rks.GetValue("IsCustomFO", 0) == 1;
-
+	  this.chkIsCFO.IsChecked = BESettings.IsCustomFO;
       this.chkIsRestoreTabs.IsChecked = BESettings.IsRestoreTabs;
-
-      this.chkTraditionalNameGrouping.IsChecked = (int)rks.GetValue("IsTraditionalNameGrouping", 0) == 1;
-      this._IsTraditionalNameGrouping = this.chkTraditionalNameGrouping.IsChecked.Value;
-      this._ShellListView.IsTraditionalNameGrouping = this.chkTraditionalNameGrouping.IsChecked.Value;
+	  this.chkTraditionalNameGrouping.IsChecked = BESettings.IsTraditionalNameGrouping;
 
       // if this instance has the /norestore switch, do not load tabs from previous session, even if it is set in the Registry
       if (App.IsStartWithStartupTab) {
@@ -1478,9 +1447,8 @@ namespace BetterExplorer {
 
       //this.chkIsLastTabCloseApp.IsChecked = (int)rks.GetValue("IsLastTabCloseApp", 1) == 1;
 
-      canlogactions = (int)rks.GetValue("EnableActionLog", 0) == 1;
-      chkLogHistory.IsChecked = canlogactions;
-      if (canlogactions) {
+      chkLogHistory.IsChecked = BESettings.EnableActionLog;
+      if (BESettings.EnableActionLog) {
         chkLogHistory.Visibility = Visibility.Visible;
         ShowLogsBorder.Visibility = Visibility.Visible;
         paddinglbl8.Visibility = Visibility.Visible;
@@ -1549,11 +1517,11 @@ namespace BetterExplorer {
 
 
       miTabManager.IsEnabled = Directory.Exists(sstdir);
-      autoUpdater.DaysBetweenChecks = this.UpdateCheckInterval;
+      autoUpdater.DaysBetweenChecks = Settings.BESettings.UpdateCheckInterval;
 
       try {
-        autoUpdater.UpdateType = IsUpdateCheck ? UpdateType.OnlyCheck : UpdateType.DoNothing;
-        if (IsUpdateCheckStartup) this.CheckForUpdate();
+        autoUpdater.UpdateType = Settings.BESettings.IsUpdateCheck ? UpdateType.OnlyCheck : UpdateType.DoNothing;
+        if (Settings.BESettings.IsUpdateCheckStartup) this.CheckForUpdate();
       } catch (IOException) {
         this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
         this.btnUpdateCheck.IsEnabled = false;
@@ -1809,15 +1777,14 @@ namespace BetterExplorer {
       rks.SetValue("ShowCheckboxes", Convert.ToInt32(this._ShellListView.ShowCheckboxes));
       //rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(this.IsCloseLastTabCloseApp));
       //rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(chkIsLastTabCloseApp.IsChecked.Value));
+	  rks.SetValue("TabBarAlignment", this.TabbaBottom.IsChecked == true ? "bottom" : "top");
 
-      rks.SetValue("IsConsoleShown", this.IsConsoleShown ? 1 : 0);
-      rks.SetValue("TabBarAlignment", this.TabbaBottom.IsChecked == true ? "bottom" : "top");
-
-      if (this.IsPreviewPaneEnabled)
-        rks.SetValue("PreviewPaneWidth", (int)clPreview.ActualWidth, RegistryValueKind.DWord);
-      if (this.IsInfoPaneEnabled)
-        rks.SetValue("InfoPaneHeight", (int)rPreviewPane.ActualHeight, RegistryValueKind.DWord);
-      if (this.IsConsoleShown)
+      if (BESettings.IsPreviewPaneEnabled)
+		 rks.SetValue("PreviewPaneWidth", (int)clPreview.ActualWidth, RegistryValueKind.DWord);
+      if (BESettings.IsInfoPaneEnabled) {
+		BESettings.InfoPaneHeight = (int)rPreviewPane.ActualHeight;
+	  }
+      if (BESettings.IsConsoleShown)
         rks.SetValue("CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
 
       rks.Close();
@@ -1907,7 +1874,8 @@ namespace BetterExplorer {
           --owner.Width;
         }
 
-        Utilities.SetRegistryValue("CurrentTheme", ThemeName);
+		Settings.BESettings.CurrentTheme = ThemeName;
+		Settings.BESettings.SaveSettings();
       }));
     }
 
@@ -2372,7 +2340,8 @@ namespace BetterExplorer {
     private void TranslationComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
       e.Handled = true;
       if (this.IsLoaded) {
-        Utilities.SetRegistryValue("Locale", ((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
+		BESettings.Locale = ((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode;
+		BESettings.SaveSettings();
         ((App)Application.Current).SelectCulture(((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
 
         if (_ShellListView.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
@@ -2515,14 +2484,31 @@ namespace BetterExplorer {
 
     private void btnClearFoldericon_Click(object sender, RoutedEventArgs e) => _ShellListView.ClearFolderIcon(_ShellListView.GetFirstSelectedItem().ParsingName);
 
-    #endregion
+	#endregion
 
-    #region Registry Setting Changes / BetterExplorerOperations Calls / Action Log
+	#region Registry Setting Changes / BetterExplorerOperations Calls / Action Log
 
-    private void chkIsRestoreTabs_CheckChanged(object sender, RoutedEventArgs e) => Utilities.SetRegistryValue("IsRestoreTabs", e.RoutedEvent.Name == "Checked" ? 1 : 0);
-    private void gridSplitter1_DragCompleted(object sender, DragCompletedEventArgs e) => Utilities.SetRegistryValue("SearchBarWidth", SearchBarColumn.Width.Value);
-    private void SearchBarReset_Click(object sender, RoutedEventArgs e) => Utilities.SetRegistryValue("SearchBarWidth", SearchBarColumn.Width.Value);
-    private void chkIsCFO_Click(object sender, RoutedEventArgs e) => Utilities.SetRegistryValue("IsCustomFO", chkIsCFO.IsChecked.Value == true ? 1 : 0);
+	//private void chkIsRestoreTabs_CheckChanged(object sender, RoutedEventArgs e) => Utilities.SetRegistryValue("IsRestoreTabs", e.RoutedEvent.Name == "Checked" ? 1 : 0);
+	//private void gridSplitter1_DragCompleted(object sender, DragCompletedEventArgs e) => Utilities.SetRegistryValue("SearchBarWidth", SearchBarColumn.Width.Value);
+	//private void SearchBarReset_Click(object sender, RoutedEventArgs e) => Utilities.SetRegistryValue("SearchBarWidth", SearchBarColumn.Width.Value);
+	//private void chkIsCFO_Click(object sender, RoutedEventArgs e) => Utilities.SetRegistryValue("IsCustomFO", chkIsCFO.IsChecked.Value == true ? 1 : 0);
+
+	private void chkIsRestoreTabs_CheckChanged(object sender, RoutedEventArgs e) {
+		BESettings.IsRestoreTabs = e.RoutedEvent.Name == "Checked";
+		BESettings.SaveSettings();
+	}
+	private void gridSplitter1_DragCompleted(object sender, DragCompletedEventArgs e) {
+		BESettings.SearchBarWidth = SearchBarColumn.Width.Value;
+		BESettings.SaveSettings();
+	}
+	private void SearchBarReset_Click(object sender, RoutedEventArgs e) {
+		BESettings.SearchBarWidth = SearchBarColumn.Width.Value;
+		BESettings.SaveSettings();
+	}
+	private void chkIsCFO_Click(object sender, RoutedEventArgs e) {
+		BESettings.IsCustomFO = chkIsCFO.IsChecked.Value == true;
+		BESettings.SaveSettings();
+	}
 
     private Process Rename_CheckChanged_Helper() {
       string ExePath = Utilities.AppDirectoryItem("BetterExplorerOperations.exe");
@@ -2589,15 +2575,22 @@ namespace BetterExplorer {
       btnSetCurrentasStartup.Header = _ShellListView.CurrentFolder.DisplayName;
       //btnSetCurrentasStartup.Icon = ShellListView.CurrentFolder.Thumbnail.BitmapSource;
 
-      Utilities.SetRegistryValue("StartUpLoc", CurrentLocString);
+      BESettings.StartupLocation =  CurrentLocString;
+	  BESettings.SaveSettings();
     }
 
     private void chkIsFlyout_CheckChanged(object sender, RoutedEventArgs e) {
-      if (!isOnLoad) Utilities.SetRegistryValue("FileOpExEnabled", e.RoutedEvent.Name == "Checked" ? 1 : 0);
+		if (!isOnLoad) {
+			BESettings.IsFileOpExEnabled = e.RoutedEvent.Name == "Checked";
+			BESettings.SaveSettings();
+		}
     }
 
     private void chkIsTerraCopyEnabled_CheckChanged(object sender, RoutedEventArgs e) {
-      if (!isOnLoad) Utilities.SetRegistryValue("FileOpExEnabled", e.RoutedEvent.Name == "Checked" ? 1 : 0);
+		if (!isOnLoad) {
+			BESettings.IsFileOpExEnabled = e.RoutedEvent.Name == "Checked";
+			BESettings.SaveSettings();
+		}
     }
 
     private void chkShowCheckBoxes_CheckChanged(object sender, RoutedEventArgs e) {
@@ -2611,22 +2604,25 @@ namespace BetterExplorer {
     }
 
     private void chkRibbonMinimizedGlass_Click(object sender, RoutedEventArgs e) {
-      this.IsGlassOnRibonMinimized = chkRibbonMinimizedGlass.IsChecked.Value == true;
-      Utilities.SetRegistryValue("RibbonMinimizedGlass", chkRibbonMinimizedGlass.IsChecked.Value == true ? 1 : 0, RegistryValueKind.DWord);
+      BESettings.IsGlassOnRibonMinimized = chkRibbonMinimizedGlass.IsChecked.Value == true;
+	  BESettings.SaveSettings();
 
-      if (!TheRibbon.IsMinimized) {
-      } else if (chkRibbonMinimizedGlass.IsChecked.Value) {
-        var p = ShellViewHost.TransformToAncestor(this).Transform(new WIN.Point(0, 0));
-        this.GlassFrameThickness = new Thickness(8, p.Y, 8, 8);
-      } else {
-        var p = backstage.TransformToAncestor(this).Transform(new WIN.Point(0, 0));
-        this.GlassFrameThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
-      }
-    }
+	  if (!TheRibbon.IsMinimized) {
+	  }
+	  else if (chkRibbonMinimizedGlass.IsChecked.Value) {
+	    var p = ShellViewHost.TransformToAncestor(this).Transform(new WIN.Point(0, 0));
+	    this.GlassFrameThickness = new Thickness(8, p.Y, 8, 8);
+	  }
+	  else {
+	    var p = backstage.TransformToAncestor(this).Transform(new WIN.Point(0, 0));
+	    this.GlassFrameThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
+	  }
+		}
 
     private void chkLogHistory_CheckChanged(object sender, RoutedEventArgs e) {
-      canlogactions = e.RoutedEvent.Name == "Checked";
-      Utilities.SetRegistryValue("EnableActionLog", e.RoutedEvent.Name == "Checked" ? 1 : 0);
+	  BESettings.EnableActionLog = e.RoutedEvent.Name == "Checked";
+	  BESettings.EnableActionLog = e.RoutedEvent.Name == "Checked";
+	  BESettings.SaveSettings();
     }
 
     private void btnShowLogs_Click(object sender, RoutedEventArgs e) {
@@ -2647,11 +2643,13 @@ namespace BetterExplorer {
       if (isOnLoad) {
       } else if (e.RoutedEvent.Name == "Checked") {
         TreeGrid.ColumnDefinitions[0].Width = new GridLength(200);
-        Utilities.SetRegistryValue("NavigationPaneEnabled", 1);
+		BESettings.IsNavigationPaneEnabled = true;
+		BESettings.SaveSettings();
       } else {
         TreeGrid.ColumnDefinitions[0].Width = new GridLength(1);
-        Utilities.SetRegistryValue("NavigationPaneEnabled", 0);
-      }
+		BESettings.IsNavigationPaneEnabled = false;
+		BESettings.SaveSettings();
+      }	  
     }
 
     private void btnPreviewPane_CheckChanged(object sender, RoutedEventArgs e) {
@@ -2664,31 +2662,31 @@ namespace BetterExplorer {
           this.Previewer.FileName = selectedItem.ParsingName;
         }
 
-        Utilities.SetRegistryValue("PreviewPaneEnabled", 1);
-        this.IsPreviewPaneEnabled = true;
+        BESettings.IsPreviewPaneEnabled = true;
+	    BESettings.SaveSettings();
       } else {
         this.clPreview.Width = new GridLength(0);
         this.clPreviewSplitter.Width = new GridLength(0);
         this.Previewer.FileName = null;
-        Utilities.SetRegistryValue("PreviewPaneEnabled", 0);
-        this.IsPreviewPaneEnabled = false;
+        BESettings.IsPreviewPaneEnabled = false;
+	    BESettings.SaveSettings();
       }
     }
 
     private void btnInfoPane_CheckChanged(object sender, RoutedEventArgs e) {
       if (isOnLoad) {
       } else if (e.RoutedEvent.Name == "Checked") {
-        this.rPreviewPane.Height = new GridLength(this.InfoPaneHeight);
+        this.rPreviewPane.Height = new GridLength(BESettings.InfoPaneHeight);
         this.rPreviewPaneSplitter.Height = new GridLength(1);
-        Utilities.SetRegistryValue("InfoPaneEnabled", 1);
-        this.IsInfoPaneEnabled = true;
-      } else {
+		BESettings.IsInfoPaneEnabled = true;
+		BESettings.SaveSettings();
+	  } else {
         this.rPreviewPane.Height = new GridLength(0);
         this.rPreviewPaneSplitter.Height = new GridLength(0);
-        Utilities.SetRegistryValue("InfoPaneEnabled", 0);
-        this.IsInfoPaneEnabled = false;
-      }
-    }
+		BESettings.IsInfoPaneEnabled = false;
+		BESettings.SaveSettings();
+	}
+  }
 
     #endregion
 
@@ -3427,7 +3425,7 @@ namespace BetterExplorer {
     void ShellListView_SelectionChanged(object sender, EventArgs e) {
       if (!this._ShellListView.IsNavigationInProgress && !this._ShellListView.IsSearchNavigating)
         SetupUIOnSelectOrNavigate();
-      if (this.IsInfoPaneEnabled) Task.Run(() => this.DetailsPanel.FillPreviewPane(this._ShellListView));
+      if (BESettings.IsInfoPaneEnabled) Task.Run(() => this.DetailsPanel.FillPreviewPane(this._ShellListView));
       SetUpStatusBarOnSelectOrNavigate(_ShellListView.GetSelectedCount());
     }
 
@@ -3454,7 +3452,7 @@ namespace BetterExplorer {
         tcMain.isGoingBackOrForward = false;
         SetupUIonNavComplete(e);
 
-        if (this.IsConsoleShown)
+        if (Settings.BESettings.IsConsoleShown)
           ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
       }));
 
@@ -3464,7 +3462,7 @@ namespace BetterExplorer {
         SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
       }));
 
-      if (this.IsInfoPaneEnabled) {
+      if (BESettings.IsInfoPaneEnabled) {
         Task.Run(() => {
           this.DetailsPanel.FillPreviewPane(this._ShellListView);
         });
@@ -3717,13 +3715,12 @@ namespace BetterExplorer {
 
       // loads current Ribbon color theme
       try {
-        var Color = Convert.ToString(rks.GetValue("CurrentTheme", "Blue"));
-        switch (Color) {
+        switch (Settings.BESettings.CurrentTheme) {
           case "Blue":
           case "Silver":
           case "Black":
           case "Green":
-            ChangeRibbonTheme(Color);
+            ChangeRibbonTheme(Settings.BESettings.CurrentTheme);
             break;
           case "Metro":
             //ChangeRibbonTheme(Color, true);
@@ -3961,12 +3958,15 @@ namespace BetterExplorer {
       tcMain.ConstructMoveToCopyToMenu += ConstructMoveToCopyToMenu;
       tcMain.DefaultTabPath = tcMain.StartUpLocation.ToShellParsingName();
       tcMain.PreviewSelectionChanged += tcMain_PreviewSelectionChanged;
-      tcMain.StartUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
-      if (tcMain.StartUpLocation == "") {
-        Utilities.SetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName);
-        tcMain.StartUpLocation = KnownFolders.Libraries.ParsingName;
-      }
-    }
+	  //    tcMain.StartUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+	  //    if (tcMain.StartUpLocation == "") {
+			//BESettings.StartupLocation = KnownFolders.Libraries.ParsingName;
+			//BESettings.SaveSettings();
+	  //      tcMain.StartUpLocation = KnownFolders.Libraries.ParsingName;
+	  //    }
+
+	  tcMain.StartUpLocation = BESettings.StartupLocation;
+	}
 
     void tcMain_PreviewSelectionChanged(object sender, Wpf.Controls.PreviewSelectionChangedEventArgs e) {
       //if (tcMain.IsInTabDragDrop) {
@@ -4174,12 +4174,11 @@ namespace BetterExplorer {
     }
 
     private void chkTraditionalNameGrouping_CheckChanged(Object sender, RoutedEventArgs e) {
-      Utilities.SetRegistryValue("IsTraditionalNameGrouping", e.RoutedEvent.Name == "Checked" ? 1 : 0);
-      this._ShellListView.IsTraditionalNameGrouping = e.RoutedEvent.Name == "Checked";
-    }
+      BESettings.IsTraditionalNameGrouping = e.RoutedEvent.Name == "Checked";
+	  BESettings.SaveSettings();
+	}
 
 	private void btnResetFolderSettings_OnClick(object sender, RoutedEventArgs e) => this._ShellListView.ResetFolderSettings();
-
 
 	#endregion
 

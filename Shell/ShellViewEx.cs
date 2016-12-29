@@ -246,7 +246,7 @@ namespace BExplorer.Shell {
     public Boolean IsNavigationCancelRequested = false;
     public Boolean IsNavigationInProgress = false;
     public Boolean IsGroupsEnabled { get; set; }
-    public Boolean IsTraditionalNameGrouping { get; set; }
+    //public Boolean IsTraditionalNameGrouping { get; set; }
 
     /// <summary> Returns the key jump string as it currently is.</summary>
     public String KeyJumpString { get; private set; }
@@ -2726,7 +2726,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
       this.Groups.Clear();
       if (col.CollumnType == typeof(String)) {
-        if (this.IsTraditionalNameGrouping) {
+        if (Settings.BESettings.IsTraditionalNameGrouping) {
           var groups = this.Items.ToArray().GroupBy(k => k.DisplayName.ToUpperInvariant().First(), e => e).OrderBy(o => o.Key);
           var i = reversed ? groups.Count() - 1 : 0;
           foreach (var group in groups) {

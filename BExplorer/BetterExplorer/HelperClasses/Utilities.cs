@@ -18,18 +18,21 @@ namespace BetterExplorer {
 
 		#region Registry
 
+		[Obsolete("Use BESettings")]
 		public static void SetRegistryValue(string Name, object Value) {
 			using (RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true)) {
 				rks.SetValue(Name, Value);
 			}
 		}
 
+		[Obsolete("Use BESettings")]
 		public static void SetRegistryValue(string Name, object Value, RegistryValueKind Kind) {
 			using (RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true)) {
 				rks.SetValue(Name, Value, Kind);
 			}
 		}
 
+		[Obsolete("Use BESettings")]
 		public static Object GetRegistryValue(string Name, string DefaultValue) {
 			using (RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true)) {
 				return rks.GetValue(Name, DefaultValue);
@@ -104,7 +107,8 @@ namespace BetterExplorer {
 				using (var s = new System.IO.FileStream(filename, System.IO.FileMode.Open)) {
 					return System.Windows.Markup.XamlReader.Load(s) as System.Windows.ResourceDictionary;
 				}
-			} else {
+			}
+			else {
 				return null;
 			}
 		}//TODO: Move somewhere else later
