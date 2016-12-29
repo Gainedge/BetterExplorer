@@ -75,7 +75,6 @@ namespace BetterExplorer {
     #region Private Members
     private bool _IsCalledFromLoading, isOnLoad;
     private MenuItem misa, misd, misag, misdg;
-    private int PreviewPaneWidth = 120;
     private ShellTreeViewEx ShellTree = new ShellTreeViewEx();
     private ShellView _ShellListView = new ShellView();
     private bool IsNeedEnsureVisible;
@@ -1378,7 +1377,6 @@ namespace BetterExplorer {
       Handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
     }
 
-    [Obsolete("being replaced with BESettings")]
     private void LoadRegistryRelatedSettings() {
       BESettings.LoadSettings();
       RegistryKey rk = Registry.CurrentUser;
@@ -1427,7 +1425,7 @@ namespace BetterExplorer {
       chkUpdateStartupCheck.IsChecked = Settings.BESettings.IsUpdateCheckStartup;
 
       btnConsolePane.IsChecked = BESettings.IsConsoleShown;
-      chkIsFlyout.IsChecked = (int)rks.GetValue("HFlyoutEnabled", 0) == 1;
+      chkIsFlyout.IsChecked = BESettings.HFlyoutEnabled;//
       btnInfoPane.IsChecked = BESettings.IsInfoPaneEnabled;
 
       if (BESettings.IsInfoPaneEnabled) {
@@ -1440,10 +1438,9 @@ namespace BetterExplorer {
       }
 
       btnPreviewPane.IsChecked = BESettings.IsPreviewPaneEnabled;
-      PreviewPaneWidth = (int)rks.GetValue("PreviewPaneWidth", 120);
 
       if (BESettings.IsPreviewPaneEnabled) {
-        clPreview.Width = new GridLength((double)PreviewPaneWidth);
+        clPreview.Width = new GridLength(BESettings.PreviewPaneWidth);
         clPreviewSplitter.Width = new GridLength(1);
       }
       else {
@@ -1475,14 +1472,6 @@ namespace BetterExplorer {
         paddinglbl8.Visibility = Visibility.Visible;
       }
 
-      // load settings for auto-switch to contextual tab
-      BESettings.AutoSwitchFolderTools = (int)rks.GetValue("AutoSwitchFolderTools", 0) == 1;
-      BESettings.AutoSwitchArchiveTools = (int)rks.GetValue("AutoSwitchArchiveTools", 1) == 1;
-      BESettings.AutoSwitchImageTools = (int)rks.GetValue("AutoSwitchImageTools", 1) == 1;
-      BESettings.AutoSwitchApplicationTools = (int)rks.GetValue("AutoSwitchApplicationTools", 0) == 1;
-      BESettings.AutoSwitchLibraryTools = (int)rks.GetValue("AutoSwitchLibraryTools", 1) == 1;
-      BESettings.AutoSwitchDriveTools = (int)rks.GetValue("AutoSwitchDriveTools", 1) == 1;
-      BESettings.AutoSwitchVirtualDriveTools = (int)rks.GetValue("AutoSwitchVirtualDriveTools", 0) == 1;
 
       chkFolder.IsChecked = BESettings.AutoSwitchFolderTools;
       chkArchive.IsChecked = BESettings.AutoSwitchArchiveTools;
@@ -1505,8 +1494,7 @@ namespace BetterExplorer {
       try {
         var rkbe = Registry.ClassesRoot;
         var rksbe = rkbe.OpenSubKey(@"Folder\shell\open\command", RegistryKeyPermissionCheck.ReadSubTree);
-        var isThereDefault = rksbe.GetValue("DelegateExecute", "-1").ToString() == "-1";
-        chkIsDefault.IsChecked = isThereDefault;
+        chkIsDefault.IsChecked = rksbe.GetValue("DelegateExecute", "-1").ToString() == "-1";
         chkIsDefault.IsEnabled = true;
         rksbe.Close();
         rkbe.Close();
@@ -1756,9 +1744,6 @@ namespace BetterExplorer {
     #region On Closing
 
     private void SaveSettings(String openedTabs) {
-      RegistryKey rk = Registry.CurrentUser;
-      RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-
       BESettings.LastWindowWidth = this.Width;
       BESettings.LastWindowHeight = this.Height;
       BESettings.LastWindowPosLeft = this.Left;
@@ -1801,7 +1786,6 @@ namespace BetterExplorer {
       if (BESettings.IsConsoleShown)
         BESettings.CmdWinHeight = rCommandPrompt.ActualHeight;
 
-      rks.Close();
       BESettings.SaveSettings();
     }
 
@@ -2695,7 +2679,7 @@ namespace BetterExplorer {
       if (isOnLoad) {
       }
       else if (e.RoutedEvent.Name == "Checked") {
-        this.clPreview.Width = new GridLength((double)this.PreviewPaneWidth);
+        this.clPreview.Width = new GridLength(BESettings.PreviewPaneWidth);
         this.clPreviewSplitter.Width = new GridLength(1);
         var selectedItem = _ShellListView.SelectedItems.FirstOrDefault();
         if (selectedItem != null && selectedItem.IsFileSystem && _ShellListView.GetSelectedCount() == 1 && !selectedItem.IsFolder) {

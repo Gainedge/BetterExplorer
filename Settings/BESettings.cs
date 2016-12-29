@@ -62,6 +62,7 @@ namespace Settings {
     public static bool ShowCheckboxes { get; set; }
     public static double CmdWinHeight { get; set; }
     public static string TabBarAlignment { get; set; }
+    public static bool HFlyoutEnabled { get; set; }
 
     /// <summary>
     /// Loads all the settings in BESettings from the parent registry Software\BExplorer
@@ -109,15 +110,17 @@ namespace Settings {
         IsRibonMinimized = bool.Parse(rksRoot.GetValue("IsRibonMinimized", "False").ToString());
         RTLMode = bool.Parse(rksRoot.GetValue("RTLMode", "False").ToString());
         AutoSwitchFolderTools = bool.Parse(rksRoot.GetValue("AutoSwitchFolderTools", "False").ToString());
-        AutoSwitchArchiveTools = bool.Parse(rksRoot.GetValue("AutoSwitchArchiveTools", "False").ToString());
-        AutoSwitchImageTools = bool.Parse(rksRoot.GetValue("AutoSwitchImageTools", "False").ToString());
+        AutoSwitchArchiveTools = bool.Parse(rksRoot.GetValue("AutoSwitchArchiveTools", "True").ToString());
+        AutoSwitchImageTools = bool.Parse(rksRoot.GetValue("AutoSwitchImageTools", "True").ToString());
         AutoSwitchApplicationTools = bool.Parse(rksRoot.GetValue("AutoSwitchApplicationTools", "False").ToString());
-        AutoSwitchLibraryTools = bool.Parse(rksRoot.GetValue("AutoSwitchLibraryTools", "False").ToString());
-        AutoSwitchDriveTools = bool.Parse(rksRoot.GetValue("AutoSwitchDriveTools", "False").ToString());
+        AutoSwitchLibraryTools = bool.Parse(rksRoot.GetValue("AutoSwitchLibraryTools", "True").ToString());
+        AutoSwitchDriveTools = bool.Parse(rksRoot.GetValue("AutoSwitchDriveTools", "True").ToString());
         AutoSwitchVirtualDriveTools = bool.Parse(rksRoot.GetValue("AutoSwitchVirtualDriveTools", "False").ToString());
         ShowCheckboxes = bool.Parse(rksRoot.GetValue("ShowCheckboxes", "False").ToString());
         CmdWinHeight = (double)rksRoot.GetValue("CmdWinHeight", 100);
         TabBarAlignment = rksRoot.GetValue("TabBarAlignment", "top").ToString();
+        HFlyoutEnabled = bool.Parse(rksRoot.GetValue("HFlyoutEnabled", "False").ToString());
+        PreviewPaneWidth = (double)rksRoot.GetValue("PreviewPaneWidth", 120);
       }
     }
 
@@ -168,6 +171,8 @@ namespace Settings {
         rks.SetValue("ShowCheckboxes", ShowCheckboxes);
         rks.SetValue("CmdWinHeight", CmdWinHeight);
         rks.SetValue("TabBarAlignment", TabBarAlignment);
+        rks.SetValue("HFlyoutEnabled", HFlyoutEnabled);
+        rks.SetValue("PreviewPaneWidth", PreviewPaneWidth);
       }
     } //TODO: Make sure you only use this 1 time when the application closes OR when a new instance is opened
   }
