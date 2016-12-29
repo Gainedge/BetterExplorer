@@ -74,7 +74,6 @@ namespace BetterExplorer {
 
     #region Private Members
     private bool _IsCalledFromLoading, isOnLoad;
-    private bool _AsFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
     private MenuItem misa, misd, misag, misdg;
     private int PreviewPaneWidth = 120;
     private ShellTreeViewEx ShellTree = new ShellTreeViewEx();
@@ -83,20 +82,16 @@ namespace BetterExplorer {
     private ClipboardMonitor cbm = new ClipboardMonitor();
     private ContextMenu _CMHistory = new ContextMenu();
     private WIN.Shell.JumpList AppJL = new WIN.Shell.JumpList();
-    private List<string> Archives = new List<string>(new[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
+    //private List<string> Archives = new List<string>(new[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
     private List<string> Images = new List<string>(new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
     private string SelectedArchive = "";
     private bool KeepBackstageOpen = false;
     string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
     string logdir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\ActionLog\\";
-    string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
-    string sstdir;
-    bool OverwriteOnRotate = false;
     WIN.Forms.Timer updateCheckTimer = new WIN.Forms.Timer();
     Double CommandPromptWinHeight;
-    Boolean _IsTraditionalNameGrouping { get; set; }
 
-    List<LVItemColor> LVItemsColor { get; set; }
+    //List<LVItemColor> LVItemsColor { get; set; }
     ContextMenu chcm;
 
     WIN.Forms.Timer focusTimer = new WIN.Forms.Timer() { Interval = 500 };
@@ -118,6 +113,7 @@ namespace BetterExplorer {
 
     private void btnConsolePane_Click(object sender, RoutedEventArgs e) {
       Settings.BESettings.IsConsoleShown = btnConsolePane.IsChecked.Value;
+      Settings.BESettings.SaveSettings();
       if (btnConsolePane.IsChecked.Value) {
         rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
         rCommandPrompt.MinHeight = 100;
@@ -158,12 +154,12 @@ namespace BetterExplorer {
 
       if (rks == null) return;
 
-      this.Width = Convert.ToDouble(rks.GetValue("LastWindowWidth", "640"));
-      this.Height = Convert.ToDouble(rks.GetValue("LastWindowHeight", "480"));
+      this.Width = BESettings.LastWindowWidth;
+      this.Height = BESettings.LastWindowHeight;
 
       var location = new System.Drawing.Point();
       try {
-        location = new System.Drawing.Point(Convert.ToInt32(rks.GetValue("LastWindowPosLeft", "0")), Convert.ToInt32(rks.GetValue("LastWindowPosTop", "0")));
+        location = new System.Drawing.Point((int)BESettings.LastWindowPosLeft, (int)BESettings.LastWindowPosTop);
       }
       catch { }
 
@@ -188,10 +184,10 @@ namespace BetterExplorer {
       }
 
       chkRibbonMinimizedGlass.IsChecked = BESettings.IsGlassOnRibonMinimized;
-      TheRibbon.IsMinimized = Convert.ToBoolean(rks.GetValue("IsRibonMinimized", false));
+      TheRibbon.IsMinimized = BESettings.IsRibonMinimized;
 
       //CommandPrompt window size
-      this.CommandPromptWinHeight = Convert.ToDouble(rks.GetValue("CmdWinHeight", 100));
+      this.CommandPromptWinHeight = BESettings.CmdWinHeight;
       rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
 
       if (BESettings.IsConsoleShown) {
@@ -409,14 +405,14 @@ namespace BetterExplorer {
       #region Folder Tools Context Tab
       ctgFolderTools.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && selectedItem.IsFolder && selectedItem.IsFileSystem && !selectedItem.IsDrive && !selectedItem.IsNetworkPath));
 
-      if (_AsFolder && ctgFolderTools.Visibility == Visibility.Visible) {
+      if (BESettings.AutoSwitchFolderTools && ctgFolderTools.Visibility == Visibility.Visible) {
         TheRibbon.SelectedTabItem = ctgFolderTools.Items[0];
       }
       #endregion
 
       #region Drive Contextual Tab
       ctgDrive.Visibility = BooleanToVisibiliy(_ShellListView.CurrentFolder.IsDrive || (selectedItemsCount == 1 && (selectedItem.IsDrive || (selectedItem.Parent != null && selectedItem.Parent.IsDrive))));
-      if (asDrive && ctgDrive.Visibility == Visibility.Visible && selectedItemsCount == 1 && selectedItem.IsDrive) {
+      if (BESettings.AutoSwitchDriveTools && ctgDrive.Visibility == Visibility.Visible && selectedItemsCount == 1 && selectedItem.IsDrive) {
         TheRibbon.SelectedTabItem = ctgDrive.Items[0];
       }
       #endregion
@@ -424,7 +420,7 @@ namespace BetterExplorer {
       #region Library Context Tab
       ctgLibraries.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && _ShellListView.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName)) || (selectedItemsCount == 1 && selectedItem.Parent != null && selectedItem.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName)));
 
-      if (ctgLibraries.Visibility == Visibility.Visible && asLibrary) {
+      if (ctgLibraries.Visibility == Visibility.Visible && BESettings.AutoSwitchLibraryTools) {
         TheRibbon.SelectedTabItem = ctgLibraries.Items[0];
       }
 
@@ -452,14 +448,14 @@ namespace BetterExplorer {
 
       #region Archive Contextual Tab
       ctgArchive.Visibility = WIN.Visibility.Collapsed; //TODO: Restore this: BooleanToVisibiliy(selectedItemsCount == 1 && Archives.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
-      if (asArchive && ctgArchive.Visibility == Visibility.Visible)
+      if (BESettings.AutoSwitchArchiveTools && ctgArchive.Visibility == Visibility.Visible)
         TheRibbon.SelectedTabItem = ctgArchive.Items[0];
 
       #endregion
 
       #region Application Context Tab
       ctgExe.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".exe" || Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".msi"));
-      if (asApplication && ctgExe.Visibility == Visibility.Visible) {
+      if (BESettings.AutoSwitchApplicationTools && ctgExe.Visibility == Visibility.Visible) {
         TheRibbon.SelectedTabItem = ctgExe.Items[0];
       }
       #endregion
@@ -473,7 +469,7 @@ namespace BetterExplorer {
               imgSizeDisplay.WidthData = cvt.Width.ToString();
               imgSizeDisplay.HeightData = cvt.Height.ToString();
 
-              if (asImage) TheRibbon.SelectedTabItem = ctgImage.Items[0];
+              if (BESettings.AutoSwitchImageTools) TheRibbon.SelectedTabItem = ctgImage.Items[0];
             }
           }
         }
@@ -485,7 +481,7 @@ namespace BetterExplorer {
 
       #region Virtual Disk Context Tab
       ctgVirtualDisk.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".iso");
-      if (asVirtualDrive && ctgVirtualDisk.Visibility == Visibility.Visible) {
+      if (BESettings.AutoSwitchVirtualDriveTools && ctgVirtualDisk.Visibility == Visibility.Visible) {
         TheRibbon.SelectedTabItem = ctgVirtualDisk.Items[0];
       }
       #endregion
@@ -1382,6 +1378,7 @@ namespace BetterExplorer {
       Handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
     }
 
+    [Obsolete("being replaced with BESettings")]
     private void LoadRegistryRelatedSettings() {
       BESettings.LoadSettings();
       RegistryKey rk = Registry.CurrentUser;
@@ -1479,36 +1476,30 @@ namespace BetterExplorer {
       }
 
       // load settings for auto-switch to contextual tab
-      _AsFolder = (int)rks.GetValue("AutoSwitchFolderTools", 0) == 1;
-      asArchive = (int)rks.GetValue("AutoSwitchArchiveTools", 1) == 1;
-      asImage = (int)rks.GetValue("AutoSwitchImageTools", 1) == 1;
-      asApplication = (int)rks.GetValue("AutoSwitchApplicationTools", 0) == 1;
-      asLibrary = (int)rks.GetValue("AutoSwitchLibraryTools", 1) == 1;
-      asDrive = (int)rks.GetValue("AutoSwitchDriveTools", 1) == 1;
-      asVirtualDrive = (int)rks.GetValue("AutoSwitchVirtualDriveTools", 0) == 1;
+      BESettings.AutoSwitchFolderTools = (int)rks.GetValue("AutoSwitchFolderTools", 0) == 1;
+      BESettings.AutoSwitchArchiveTools = (int)rks.GetValue("AutoSwitchArchiveTools", 1) == 1;
+      BESettings.AutoSwitchImageTools = (int)rks.GetValue("AutoSwitchImageTools", 1) == 1;
+      BESettings.AutoSwitchApplicationTools = (int)rks.GetValue("AutoSwitchApplicationTools", 0) == 1;
+      BESettings.AutoSwitchLibraryTools = (int)rks.GetValue("AutoSwitchLibraryTools", 1) == 1;
+      BESettings.AutoSwitchDriveTools = (int)rks.GetValue("AutoSwitchDriveTools", 1) == 1;
+      BESettings.AutoSwitchVirtualDriveTools = (int)rks.GetValue("AutoSwitchVirtualDriveTools", 0) == 1;
 
-      chkFolder.IsChecked = _AsFolder;
-      chkArchive.IsChecked = asArchive;
-      chkImage.IsChecked = asImage;
-      chkApp.IsChecked = asApplication;
-      chkLibrary.IsChecked = asLibrary;
-      chkDrive.IsChecked = asDrive;
-      chkVirtualTools.IsChecked = asVirtualDrive;
+      chkFolder.IsChecked = BESettings.AutoSwitchFolderTools;
+      chkArchive.IsChecked = BESettings.AutoSwitchArchiveTools;
+      chkImage.IsChecked = BESettings.AutoSwitchImageTools;
+      chkApp.IsChecked = BESettings.AutoSwitchApplicationTools;
+      chkLibrary.IsChecked = BESettings.AutoSwitchLibraryTools;
+      chkDrive.IsChecked = BESettings.AutoSwitchDriveTools;
+      chkVirtualTools.IsChecked = BESettings.AutoSwitchVirtualDriveTools;
 
       // load OverwriteOnImages setting (default is false)
-      bool oor = (int)rks.GetValue("OverwriteImageWhileEditing", 0) == 1;
-      OverwriteOnRotate = oor;
-      chkOverwriteImages.IsChecked = oor;
+      chkOverwriteImages.IsChecked = BESettings.OverwriteImageWhileEditing;
 
       // load Saved Tabs Directory location (if different from default)
-      string tdir = Convert.ToString(rks.GetValue("SavedTabsDirectory", satdir));
-      txtDefSaveTabs.Text = tdir;
-      sstdir = tdir;
+      txtDefSaveTabs.Text = BESettings.SavedTabsDirectory;
 
-      var StartUpLocation = rks.GetValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
       if (tcMain.StartUpLocation == "") {
-        rks.SetValue("StartUpLoc", KnownFolders.Libraries.ParsingName);
-        tcMain.StartUpLocation = KnownFolders.Libraries.ParsingName;
+        tcMain.StartUpLocation = BESettings.StartupLocation;
       }
 
       try {
@@ -1535,13 +1526,13 @@ namespace BetterExplorer {
       rk.Close();
 
 
-      var sho = new ShellItem(StartUpLocation.ToShellParsingName());
+      var sho = new ShellItem(BESettings.StartupLocation.ToShellParsingName());
       btnSetCurrentasStartup.Header = sho.DisplayName;
       sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
       btnSetCurrentasStartup.Icon = sho.Thumbnail.SmallBitmapSource;
 
 
-      miTabManager.IsEnabled = Directory.Exists(sstdir);
+      miTabManager.IsEnabled = Directory.Exists(BESettings.SavedTabsDirectory);
       autoUpdater.DaysBetweenChecks = Settings.BESettings.UpdateCheckInterval;
 
       try {
@@ -1767,59 +1758,51 @@ namespace BetterExplorer {
     private void SaveSettings(String openedTabs) {
       RegistryKey rk = Registry.CurrentUser;
       RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-      rks.SetValue("LastWindowWidth", this.Width);
-      rks.SetValue("LastWindowHeight", this.Height);
-      rks.SetValue("LastWindowPosLeft", this.Left);
-      rks.SetValue("LastWindowPosTop", this.Top);
+
+      BESettings.LastWindowWidth = this.Width;
+      BESettings.LastWindowHeight = this.Height;
+      BESettings.LastWindowPosLeft = this.Left;
+      BESettings.LastWindowPosTop = this.Top;
 
       if (btnBlue.IsChecked == true)
-        rks.SetValue("CurrentTheme", "Blue");
+        BESettings.CurrentTheme = "Blue";
       else if (btnSilver.IsChecked == true)
-        rks.SetValue("CurrentTheme", "Silver");
+        BESettings.CurrentTheme = "Silver";
       else if (btnBlack.IsChecked == true)
-        rks.SetValue("CurrentTheme", "Black");
+        BESettings.CurrentTheme = "Black";
       else if (btnMetro.IsChecked == true)
-        rks.SetValue("CurrentTheme", "Metro");
+        BESettings.CurrentTheme = "Metro";
 
       switch (this.WindowState) {
         case WIN.WindowState.Maximized:
-          rks.SetValue("LastWindowState", 2);
+          BESettings.LastWindowState = 2;
           break;
         case WIN.WindowState.Minimized:
-          rks.SetValue("LastWindowState", 1);
+          BESettings.LastWindowState = 1;
           break;
         case WIN.WindowState.Normal:
-          rks.SetValue("LastWindowState", 0);
+          BESettings.LastWindowState = 0;
           break;
         default:
-          rks.SetValue("LastWindowState", -1);
+          BESettings.LastWindowState = -1;
           break;
       }
 
-      rks.SetValue("IsRibonMinimized", TheRibbon.IsMinimized);
-      rks.SetValue("OpenedTabs", openedTabs);
-      rks.SetValue("RTLMode", FlowDirection == FlowDirection.RightToLeft ? "true" : "false");
-      rks.SetValue("AutoSwitchFolderTools", Convert.ToInt32(_AsFolder));
-      rks.SetValue("AutoSwitchArchiveTools", Convert.ToInt32(asArchive));
-      rks.SetValue("AutoSwitchImageTools", Convert.ToInt32(asImage));
-      rks.SetValue("AutoSwitchApplicationTools", Convert.ToInt32(asApplication));
-      rks.SetValue("AutoSwitchLibraryTools", Convert.ToInt32(asLibrary));
-      rks.SetValue("AutoSwitchDriveTools", Convert.ToInt32(asDrive));
-      rks.SetValue("AutoSwitchVirtualDriveTools", Convert.ToInt32(asVirtualDrive));
-      rks.SetValue("ShowCheckboxes", Convert.ToInt32(this._ShellListView.ShowCheckboxes));
-      //rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(this.IsCloseLastTabCloseApp));
-      //rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(chkIsLastTabCloseApp.IsChecked.Value));
-      rks.SetValue("TabBarAlignment", this.TabbaBottom.IsChecked == true ? "bottom" : "top");
+      BESettings.IsRibonMinimized = TheRibbon.IsMinimized;
+      BESettings.OpenedTabs = openedTabs;
+      BESettings.RTLMode = FlowDirection == FlowDirection.RightToLeft;
+      BESettings.ShowCheckboxes = this._ShellListView.ShowCheckboxes;
+      BESettings.TabBarAlignment = this.TabbaBottom.IsChecked == true ? "bottom" : "top";
 
       if (BESettings.IsPreviewPaneEnabled)
-        rks.SetValue("PreviewPaneWidth", (int)clPreview.ActualWidth, RegistryValueKind.DWord);
-      if (BESettings.IsInfoPaneEnabled) {
-        BESettings.InfoPaneHeight = (int)rPreviewPane.ActualHeight;
-      }
+        BESettings.PreviewPaneWidth = clPreview.ActualWidth;
+      if (BESettings.IsInfoPaneEnabled)
+        BESettings.InfoPaneHeight = rPreviewPane.ActualHeight;
       if (BESettings.IsConsoleShown)
-        rks.SetValue("CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
+        BESettings.CmdWinHeight = rCommandPrompt.ActualHeight;
 
       rks.Close();
+      BESettings.SaveSettings();
     }
 
     private void RibbonWindow_Closing(object sender, CancelEventArgs e) {
@@ -2454,6 +2437,11 @@ namespace BetterExplorer {
       }
     }
 
+    /// <summary>
+    /// Sets the wallpaper based on the sender
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void Set_Wallpaper(object sender, RoutedEventArgs e) {
       Wallpaper.Style ThisStyle;
 
@@ -2473,7 +2461,7 @@ namespace BetterExplorer {
         throw new Exception("Invalid Sender");
 
       Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
-        Wallpaper TheWall = new Wallpaper();
+        var TheWall = new Wallpaper();
         TheWall.Set(new Uri(_ShellListView.GetFirstSelectedItem().ParsingName), ThisStyle);
       }));
     }
@@ -2506,7 +2494,7 @@ namespace BetterExplorer {
       foreach (FileSystemListItem item in _ShellListView.SelectedItems) {
         var cvt = new Bitmap(item.ParsingName);
         cvt.RotateFlip(Rotation);
-        if (OverwriteOnRotate) {
+        if (BESettings.OverwriteImageWhileEditing) {
           cvt.Save(item.ParsingName);
         }
         else {
@@ -2647,8 +2635,8 @@ namespace BetterExplorer {
     }
 
     private void chkOverwriteImages_Checked(object sender, RoutedEventArgs e) {
-      OverwriteOnRotate = e.RoutedEvent.Name == "Checked";
-      Utilities.SetRegistryValue("OverwriteImageWhileEditing", e.RoutedEvent.Name == "Checked" ? 1 : 0);
+      BESettings.OverwriteImageWhileEditing = e.RoutedEvent.Name == "Checked";
+      BESettings.SaveSettings();
     }
 
     private void chkRibbonMinimizedGlass_Click(object sender, RoutedEventArgs e) {
@@ -2896,13 +2884,13 @@ namespace BetterExplorer {
 
     #region AutoSwitch
 
-    private void chkFolder_CheckChanged(object sender, RoutedEventArgs e) => _AsFolder = e.RoutedEvent.Name == "Checked";
-    private void chkDrive_CheckChanged(object sender, RoutedEventArgs e) => asDrive = e.RoutedEvent.Name == "Checked";
-    private void chkArchive_CheckChanged(object sender, RoutedEventArgs e) => asArchive = e.RoutedEvent.Name == "Checked";
-    private void chkApp_CheckChanged(object sender, RoutedEventArgs e) => asApplication = e.RoutedEvent.Name == "Checked";
-    private void chkImage_CheckChanged(object sender, RoutedEventArgs e) => asImage = e.RoutedEvent.Name == "Checked";
-    private void chkLibrary_CheckChanged(object sender, RoutedEventArgs e) => asLibrary = e.RoutedEvent.Name == "Checked";
-    private void chkVirtualTools_CheckChanged(object sender, RoutedEventArgs e) => asVirtualDrive = e.RoutedEvent.Name == "Checked";
+    private void chkFolder_CheckChanged(object sender, RoutedEventArgs e) => BESettings.AutoSwitchFolderTools = e.RoutedEvent.Name == "Checked";
+    private void chkDrive_CheckChanged(object sender, RoutedEventArgs e) => BESettings.AutoSwitchDriveTools = e.RoutedEvent.Name == "Checked";
+    private void chkArchive_CheckChanged(object sender, RoutedEventArgs e) => BESettings.AutoSwitchArchiveTools = e.RoutedEvent.Name == "Checked";
+    private void chkApp_CheckChanged(object sender, RoutedEventArgs e) => BESettings.AutoSwitchApplicationTools = e.RoutedEvent.Name == "Checked";
+    private void chkImage_CheckChanged(object sender, RoutedEventArgs e) => BESettings.AutoSwitchImageTools = e.RoutedEvent.Name == "Checked";
+    private void chkLibrary_CheckChanged(object sender, RoutedEventArgs e) => BESettings.AutoSwitchLibraryTools = e.RoutedEvent.Name == "Checked";
+    private void chkVirtualTools_CheckChanged(object sender, RoutedEventArgs e) => BESettings.AutoSwitchVirtualDriveTools = e.RoutedEvent.Name == "Checked";
 
     #endregion
 
@@ -2928,7 +2916,7 @@ namespace BetterExplorer {
     }
 
     void gli_Click(object sender, Tuple<string> e) {
-      var list = SaveTabs.LoadTabList($"{sstdir}{e.Item1}.txt");
+      var list = SaveTabs.LoadTabList($"{BESettings.SavedTabsDirectory}{e.Item1}.txt");
       if (list.Count > 0) {
         foreach (var tabItem in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray()) {
           tcMain.RemoveTabItem(tabItem, true, true);
@@ -3110,10 +3098,10 @@ namespace BetterExplorer {
       var Name = BetterExplorer.Tabs.NameTabList.Open(this);
       if (Name == null) return;
 
-      if (!Directory.Exists(sstdir))
-        Directory.CreateDirectory(sstdir);
+      if (!Directory.Exists(BESettings.SavedTabsDirectory))
+        Directory.CreateDirectory(BESettings.SavedTabsDirectory);
 
-      SaveTabs.SaveTabList(list, $"{sstdir}{Name}.txt");
+      SaveTabs.SaveTabList(list, $"{BESettings.SavedTabsDirectory}{Name}.txt");
       miTabManager.IsEnabled = true;
     }
 
@@ -3150,11 +3138,11 @@ namespace BetterExplorer {
     private void btnChangeTabsFolder_Click(object sender, RoutedEventArgs e) {
       var ctf = new FolderSelectDialog();
       ctf.Title = "Change Tab Folder";
-      ctf.InitialDirectory = new DirectoryInfo(sstdir).Parent.FullName;
+      ctf.InitialDirectory = new DirectoryInfo(BESettings.SavedTabsDirectory).Parent.FullName;
       if (ctf.ShowDialog()) {
-        Utilities.SetRegistryValue("SavedTabsDirectory", ctf.FileName + "\\");
+        BESettings.SavedTabsDirectory = ctf.FileName + "\\";
+        BESettings.SaveSettings();
         txtDefSaveTabs.Text = ctf.FileName + "\\";
-        sstdir = ctf.FileName + "\\";
       }
     }
 
@@ -3167,8 +3155,8 @@ namespace BetterExplorer {
     private void btnSavedTabs_DropDownOpened(object sender, EventArgs e) {
       var o = new List<string>();
 
-      if (Directory.Exists(sstdir)) {
-        foreach (string item in Directory.GetFiles(sstdir)) {
+      if (Directory.Exists(BESettings.SavedTabsDirectory)) {
+        foreach (string item in Directory.GetFiles(BESettings.SavedTabsDirectory)) {
           o.Add(Utilities.RemoveExtensionsFromFile(new ShellItem(item).GetDisplayName(SIGDN.NORMALDISPLAY), item.Substring(item.LastIndexOf("."))));
         }
       }
@@ -3176,7 +3164,7 @@ namespace BetterExplorer {
       stGallery.Items.Clear();
       foreach (string item in o) {
         var gli = new SavedTabsListGalleryItem(item);
-        gli.Directory = sstdir;
+        gli.Directory = BESettings.SavedTabsDirectory;
         gli.Click += gli_Click;
         gli.SetUpTooltip((FindResource("tabTabsCP") as string));
         stGallery.Items.Add(gli);
@@ -4000,8 +3988,8 @@ namespace BetterExplorer {
 
     private void btnTest_Click(object sender, RoutedEventArgs e) {
       /*
-		We could easily move this to another project and send that method			 
-		*/
+    We could easily move this to another project and send that method			 
+    */
 
       //Following could be an example of what the most basic plugin could look like
       //We could also separate plugins so they could be enabled WHEN
@@ -4014,8 +4002,8 @@ namespace BetterExplorer {
       Tab.Groups.Add(groupBox1);
       var XML =
                                       @"<Shortcuts>
-						<Shortcut Name='Test' Path = 'C:\Aaron'/>
-					</Shortcuts>";
+            <Shortcut Name='Test' Path = 'C:\Aaron'/>
+          </Shortcuts>";
 
       var xDoc = XElement.Parse(XML);
       var shortcuts = xDoc.Elements("Shortcut");

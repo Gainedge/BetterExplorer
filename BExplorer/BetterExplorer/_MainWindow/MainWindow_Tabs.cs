@@ -29,7 +29,7 @@ namespace BetterExplorer {
     /// Handles initialization for tabs on startup if and only if no startup tab is set.
     /// </summary>
     private void InitializeInitialTabs() {
-      var initialTabs = Utilities.GetRegistryValue("OpenedTabs", String.Empty).ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+      var initialTabs = BESettings.OpenedTabs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
       if (initialTabs.Length == 0 || !BESettings.IsRestoreTabs) {
         var sho = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, this.tcMain.StartUpLocation.ToShellParsingName());
 

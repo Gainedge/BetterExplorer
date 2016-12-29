@@ -16,31 +16,6 @@ namespace BetterExplorer {
         rks = rk.CreateSubKey(@"Software\BExplorer");
     }
 
-    #region Registry
-
-    [Obsolete("Use BESettings")]
-    public static void SetRegistryValue(string Name, object Value) {
-      using (RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true)) {
-        rks.SetValue(Name, Value);
-      }
-    }
-
-    [Obsolete("Use BESettings")]
-    public static void SetRegistryValue(string Name, object Value, RegistryValueKind Kind) {
-      using (RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true)) {
-        rks.SetValue(Name, Value, Kind);
-      }
-    }
-
-    [Obsolete("Use BESettings")]
-    public static Object GetRegistryValue(string Name, string DefaultValue) {
-      using (RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true)) {
-        return rks.GetValue(Name, DefaultValue);
-      }
-    }
-
-    #endregion
-
     #region File Extensions
 
     public static string RemoveExtensionsFromFile(string file, string ext) {

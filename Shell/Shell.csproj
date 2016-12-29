@@ -117,7 +117,7 @@
     <Compile Include="FOperationProgressSink.cs" />
     <Compile Include="Interop\WindowsThumbnailProvider.cs" />
     <Compile Include="Interop\IOperationsProgressDialog.cs" />
-    <Compile Include="Interop\Wallpaer.cs" />
+    <Compile Include="Interop\Wallpaper.cs" />
     <Compile Include="Reflector.cs" />
     <Compile Include="FolderSelectDialog.cs" />
     <Compile Include="FolderSettings.cs" />

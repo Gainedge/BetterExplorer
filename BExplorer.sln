@@ -42,6 +42,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4FA511FB-3973-4DBB-AB5D-DBFCEBD743E4}"
 	ProjectSection(SolutionItems) = preProject
 		BetterExplorer1.psess = BetterExplorer1.psess
+		Rebracer.xml = Rebracer.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell", "Shell\Shell.csproj", "{711CCF1F-6B8F-4E97-8D84-0EE679C83B41}"
