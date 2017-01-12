@@ -1906,7 +1906,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
               var nmhdrHdn = (NMHEADER)(m.GetLParam(typeof(NMHEADER)));
               var itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
               this.ToolTip?.HideTooltip();
-
+              this.IsFocusAllowed = false;
               if (nmhdrHdn.iItem != -1 && nmhdrHdn.hdr.hwndFrom == this.LVHandle) {
                 //Workaround for cases where on right click over an ites the item is not actually selected
                 if (this.GetSelectedCount() == 0) {
@@ -1919,8 +1919,10 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                 var cm = new ShellContextMenu(new IListItemEx[1] { this.CurrentFolder }, SVGIO.SVGIO_BACKGROUND, this);
                 cm.ShowContextMenu(this, itemActivate.ptAction, 0, true);
               } else {
+                this.IsFocusAllowed = true;
                 this.ColumnHeaderRightClick?.Invoke(this, new MouseEventArgs(F.MouseButtons.Right, 1, MousePosition.X, MousePosition.Y, 0));
               }
+
               break;
 
             #endregion Case

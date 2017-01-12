@@ -108,16 +108,16 @@ namespace BExplorer.Shell {
       m_MessageWindow = new MessageWindow(this);
     }
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ShellContextMenu"/> 
-	/// class.
-	/// </summary>
-	/// 
-	/// <param name="shellView">The <see cref="ShellView">ShellView</see> for this context menu</param>
-	/// <param name="item">
-	/// The item to which the context menu should refer.
-	/// </param>
-	public ShellContextMenu(ShellView shellView, IListItemEx item) {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ShellContextMenu"/> 
+    /// class.
+    /// </summary>
+    /// 
+    /// <param name="shellView">The <see cref="ShellView">ShellView</see> for this context menu</param>
+    /// <param name="item">
+    /// The item to which the context menu should refer.
+    /// </param>
+    public ShellContextMenu(ShellView shellView, IListItemEx item) {
       this._ShellView = shellView;
       Initialize(new IListItemEx[] { item });
     }
@@ -219,25 +219,23 @@ namespace BExplorer.Shell {
     /// <summary>
     /// Shows a context menu for a shell item.
     /// </summary>
-    /// 
     /// <param name="control">
     /// The parent control.
     /// </param>
-    /// 
     /// <param name="pos">
     /// The position on <paramref name="control"/> that the menu
     /// should be displayed at.
     /// </param>
-    /// <param name="aditionalFlags"></param>
-    /// <param name="IsOnEmpty"></param>
+    /// <param name="aditionalFlags">additional flags that are used to display items in context menu</param>
+    /// <param name="IsOnEmpty">Is context menu invoked on empty space</param>
     public void ShowContextMenu(Control control, Point pos, CMF aditionalFlags = 0, bool IsOnEmpty = false) {
       using (ContextMenu mnu = new ContextMenu()) {
         pos = control.PointToScreen(pos);
-        Populate(mnu, aditionalFlags);
-        ContextMenu view = new ContextMenu();
-        ContextMenu sortMenu = new ContextMenu();
-        ContextMenu groupMenu = new ContextMenu();
-        int count = User32.GetMenuItemCount(mnu.Handle);
+        this.Populate(mnu, aditionalFlags);
+        var view = new ContextMenu();
+        var sortMenu = new ContextMenu();
+        var groupMenu = new ContextMenu();
+        var count = User32.GetMenuItemCount(mnu.Handle);
         var itemInfo = new MENUITEMINFO();
         itemInfo.cbSize = (uint)Marshal.SizeOf(itemInfo);
         itemInfo.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU;
@@ -246,14 +244,19 @@ namespace BExplorer.Shell {
             User32.DeleteMenu(mnu.Handle, count - 1, MF.MF_BYPOSITION);
           }
         }
+        if (control is ShellView) {
+          mnu.Collapse += (sender, args) => ((ShellView)control).IsFocusAllowed = true;
+        }
 
         if (IsOnEmpty) {
           this.RemoveDefaultExplorerItems(mnu, control, ref itemInfo);
         }
+
         User32.GetMenuItemInfo(mnu.Handle, User32.GetMenuItemCount(mnu.Handle) - 3, true, ref itemInfo);
         if (itemInfo.hSubMenu == IntPtr.Zero) {
           User32.GetMenuItemInfo(mnu.Handle, User32.GetMenuItemCount(mnu.Handle) - 1, true, ref itemInfo);
         }
+
         this._NewMenuPtr = itemInfo.hSubMenu;
 
         if (IsOnEmpty) {
@@ -266,7 +269,7 @@ namespace BExplorer.Shell {
 
         this.RemoveDuplicatedSeparators(mnu);
 
-        int command = User32.TrackPopupMenuEx(mnu.Handle, TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle, IntPtr.Zero);
+        var command = User32.TrackPopupMenuEx(mnu.Handle, TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle, IntPtr.Zero);
         if (command > 0 && command < m_CmdFirst) {
           switch (command) {
             case 245:
@@ -327,6 +330,7 @@ namespace BExplorer.Shell {
             default:
               break;
           }
+
           if (command >= 262 && command <= 262 + this._ShellView.Collumns.Count) {
             this._ShellView.SetSortCollumn(true, this._ShellView.Collumns[command - 262], SortOrder.Ascending);
           } else if (command > 260 && command != 301) {
@@ -335,18 +339,17 @@ namespace BExplorer.Shell {
             this._ShellView.GenerateGroupsFromColumn(this._ShellView.Collumns[command - (262 + this._ShellView.Collumns.Count) - 1], false);
           }
         }
+
         if (command > m_CmdFirst) {
-          string info = string.Empty;
-          byte[] bytes = new byte[256];
-          int index;
+          var info = string.Empty;
+          var bytes = new byte[256];
 
-          m_ComInterface.GetCommandString(command - (int)m_CmdFirst, 4, 0, bytes, 260);
+          this.m_ComInterface.GetCommandString(command - (int)m_CmdFirst, 4, 0, bytes, 260);
 
-          index = 0;
+          var index = 0;
           while (index < bytes.Length - 1 && (bytes[index] != 0 || bytes[index + 1] != 0)) { index += 2; }
 
-          if (index < bytes.Length - 1)
-            info = Encoding.Unicode.GetString(bytes, 0, index);
+          if (index < bytes.Length - 1) { info = Encoding.Unicode.GetString(bytes, 0, index); }
 
           switch (info) {
             case "open":
@@ -362,15 +365,11 @@ namespace BExplorer.Shell {
               (control as ShellView)?.CopySelectedFiles();
               break;
             default:
-              InvokeCommand((IntPtr)(command - m_CmdFirst), pos, (IntPtr)(command - m_CmdFirst));
+              this.InvokeCommand((IntPtr)(command - m_CmdFirst), pos, (IntPtr)(command - m_CmdFirst));
               break;
           }
         }
 
-        //if (command == 0) {
-        //	if (this._ShellView != null)
-        //		this._ShellView.IsRenameNeeded = false;
-        //}
         User32.DestroyMenu(mnu.Handle);
         view.Dispose();
         User32.DestroyMenu(view.Handle);
@@ -378,13 +377,13 @@ namespace BExplorer.Shell {
         User32.DestroyMenu(sortMenu.Handle);
         groupMenu.Dispose();
         User32.DestroyMenu(groupMenu.Handle);
-
       }
-      Marshal.ReleaseComObject(m_ComInterface);
-      Marshal.ReleaseComObject(m_ComInterface2);
-      Marshal.ReleaseComObject(m_ComInterface3);
-      Marshal.Release(_Result);
-      _Result = IntPtr.Zero;
+
+      Marshal.ReleaseComObject(this.m_ComInterface);
+      Marshal.ReleaseComObject(this.m_ComInterface2);
+      Marshal.ReleaseComObject(this.m_ComInterface3);
+      Marshal.Release(this._Result);
+      this._Result = IntPtr.Zero;
     }
 
     private List<string> GetNewContextMenuItems() {
