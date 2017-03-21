@@ -99,7 +99,7 @@ namespace ConsoleControl {
 			ClearOutput();
 		}
 
-		private void richTextBoxConsole_TextChanged(object sender, EventArgs e) => SendMessage(richTextBoxConsole.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
+		private void richTextBoxConsole_TextChanged(object sender, EventArgs e) {}// => SendMessage(richTextBoxConsole.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
 
 		#endregion Control Events
 
@@ -170,12 +170,14 @@ namespace ConsoleControl {
 		/// The <see cref="ProcessEventArgs" /> instance containing the event data.
 		/// </param>
 		private void processInterace_OnProcessOutput(object sender, ProcessInterface.ProcessEventArgs args) {
-			// Write the output, in white
-			WriteOutput(args.Content, Color.White);
+      // Write the output, in white
+      this.richTextBoxConsole.SuspendLayout();
+      WriteOutput(args.Content, Color.White);
 
 			// Fire the output event.
 			FireConsoleOutputEvent(args.Content);
-		}
+      this.richTextBoxConsole.ResumeLayout();
+    }
 
 		/// <summary> Handles the OnProcessInput event of the processInterace control. </summary>
 		/// <param name="sender"> The source of the event. </param>
@@ -314,7 +316,7 @@ namespace ConsoleControl {
 
 			// Disable special commands by default.
 			SendKeyboardCommandsToProcess = true;
-
+		  this.richTextBoxConsole.HideSelection = false;
 			// Initialize the keymappings.
 			InitialiseKeyMappings();
 

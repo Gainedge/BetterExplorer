@@ -259,7 +259,7 @@ private static extern bool SetConsoleOutputCP(uint wCodePageID);
                     outputWorker.ReportProgress(0, builder.ToString());
                 } while (count > 0);
 
-                System.Threading.Thread.Sleep(200);
+                //System.Threading.Thread.Sleep(200);
             }
         }
 
@@ -298,7 +298,7 @@ private static extern bool SetConsoleOutputCP(uint wCodePageID);
                     errorWorker.ReportProgress(0, builder.ToString());
                 } while (count > 0);
 
-                System.Threading.Thread.Sleep(200);
+                //System.Threading.Thread.Sleep(200);
             }
         }
 

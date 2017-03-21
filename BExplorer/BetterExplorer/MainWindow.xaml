@@ -3362,12 +3362,15 @@
 				<Separator/>
 				<Ribbon:ToggleButton Header="Sync" SizeDefinition="Middle" Icon="Images\Sync16.png" IsEnabled="False"/>
 			</ToolBar>
-			<Helper:NoFlickerWindowsFormsHost x:Name="ctrlConsoleHost" Grid.Row="1" VerticalAlignment="Stretch" Background="White" Grid.ColumnSpan="2">
-				<console:ConsoleControl x:Name="ctrlConsole" BackColor="Black" OnConsoleInput="ctrlConsole_OnConsoleInput" />
-				<!--
-									SendKeyboardCommandsToProcess="True" 
-									OnConsoleInput="ctrlConsole_OnConsoleInput"
-									-->
+      <!--<consoleWPF:ConsoleControl x:Name="ctrlConsole" VerticalAlignment="Stretch" Grid.Row="1">
+        
+      </consoleWPF:ConsoleControl>-->
+			<Helper:NoFlickerWindowsFormsHost x:Name="ctrlConsoleHost" Grid.Row="1" VerticalAlignment="Stretch" Background="Black" Grid.ColumnSpan="2">
+				<console:ConsoleControl x:Name="ctrlConsole" BackColor="Black" OnConsoleInput="ctrlConsole_OnConsoleInput"/>
+				
+									<!--SendKeyboardCommandsToProcess="True" 
+									OnConsoleInput="ctrlConsole_OnConsoleInput"-->
+									
 			</Helper:NoFlickerWindowsFormsHost>
 		</Grid>
 		<Ribbon:StatusBar x:Name="TheStatusBar" Grid.Row="8" Grid.ColumnSpan="2" Margin="0,0,0,-2">

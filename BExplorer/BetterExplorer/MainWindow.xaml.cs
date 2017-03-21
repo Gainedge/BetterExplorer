@@ -1566,7 +1566,7 @@ namespace BetterExplorer {
       ShellViewHost.Child = _ShellListView;
 
       ShellTree.ShellListView = _ShellListView;
-      this.ctrlConsole.ShellListView = this._ShellListView;
+      //this.ctrlConsole.ShellListView = this._ShellListView;
       this.autoUpdater.UpdateAvailable += AutoUpdater_UpdateAvailable;
       this.updateCheckTimer.Interval = 10000;//3600000 * 3;
       this.updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
@@ -3802,7 +3802,7 @@ namespace BetterExplorer {
             } else if (e.CurrentView == ShellViewStyle.Content) {
               ViewGallery.SelectedIndex = 7;
             } else if (e.CurrentView == ShellViewStyle.Thumbstrip) {
-              ViewGallery.SelectedIndex = 8;
+              ViewGallery.SelectedIndex = 8; 
             }
             this._IsShouldRiseViewChanged = true;
           }));
@@ -4142,7 +4142,7 @@ namespace BetterExplorer {
 
     private void btnStartPowerShellClick(object sender, RoutedEventArgs e) {
       if (ctrlConsole.IsProcessRunning) ctrlConsole.StopProcess();
-      ctrlConsole.StartPowerShell();
+      //ctrlConsole.StartPowerShell();
     }
 
     private void chkTraditionalNameGrouping_CheckChanged(Object sender, RoutedEventArgs e) {

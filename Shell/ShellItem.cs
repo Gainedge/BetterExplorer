@@ -122,7 +122,8 @@ namespace BExplorer.Shell {
     /// <summary>Gets the thumbnail of the ShellObject.</summary>
     public ShellThumbnail Thumbnail {
       get {
-        if (thumbnail == null) thumbnail = new ShellThumbnail(this);
+        if (thumbnail == null)
+          thumbnail = new ShellThumbnail(this);
         return thumbnail;
       }
     }
@@ -167,8 +168,8 @@ namespace BExplorer.Shell {
       }
     }
 
-	/// <summary>Is this folder valid? IF IsValidShellFolder throws an error then False Else True</summary>
-	public bool IsValidShellFolder {
+    /// <summary>Is this folder valid? IF IsValidShellFolder throws an error then False Else True</summary>
+    public bool IsValidShellFolder {
       get {
         try {
           this.GetIShellFolder();
@@ -189,7 +190,7 @@ namespace BExplorer.Shell {
     /// </summary>
     public bool IsFileSystem => COM_Attribute_Check(SFGAO.FILESYSTEM);
 
-    public bool IsShared => COM_Attribute_Check(SFGAO.SHARE);
+    public bool IsShared => COM_Attribute_Check(SFGAO.SHARE | SFGAO.VALIDATE);
 
     /// <summary>Gets a value indicating whether the item is Hidden.</summary>
     public bool IsHidden => COM_Attribute_Check(SFGAO.HIDDEN);
@@ -234,20 +235,19 @@ namespace BExplorer.Shell {
       }
     }
 
-	/// <summary>Is the current folder a search folder?</summary>
-	public bool IsSearchFolder {
-		get {
-			try {
-				return (!ParsingName.StartsWith("::") && !IsFileSystem && !ParsingName.StartsWith(@"\\") && !ParsingName.Contains(":\\")) || ParsingName.EndsWith(".search-ms");
-			}
-			catch {
-				return false;
-			}
-		}
-	}
+    /// <summary>Is the current folder a search folder?</summary>
+    public bool IsSearchFolder {
+      get {
+        try {
+          return (!ParsingName.StartsWith("::") && !IsFileSystem && !ParsingName.StartsWith(@"\\") && !ParsingName.Contains(":\\")) || ParsingName.EndsWith(".search-ms");
+        } catch {
+          return false;
+        }
+      }
+    }
 
-		/// <summary>Does the current file have a known image file extension (jpg, png, jpeg, gif, tiff or bmp)</summary>
-	public bool IsImage {
+    /// <summary>Does the current file have a known image file extension (jpg, png, jpeg, gif, tiff or bmp)</summary>
+    public bool IsImage {
       get {
         switch (this.Extension.ToLowerInvariant()) {
           case ".jpg":
@@ -307,7 +307,8 @@ namespace BExplorer.Shell {
         } catch (Exception) {
           return string.Empty;
         }
-        if (result == IntPtr.Zero) return String.Empty;
+        if (result == IntPtr.Zero)
+          return String.Empty;
         queryInfo = (IQueryInfo)Marshal.GetTypedObjectForIUnknown(result, typeof(IQueryInfo));
         queryInfo.GetInfoTip(0x00000001 | 0x00000008, out infoTipPtr);
         infoTip = Marshal.PtrToStringUni(infoTipPtr);
@@ -418,7 +419,8 @@ namespace BExplorer.Shell {
       if (this.Extension == ".exe" || this.Extension == ".com" || this.Extension == ".bat" || this.Extension == ".msi")
         return IExtractIconPWFlags.GIL_PERINSTANCE;
 
-      if (this.Parent == null) return 0;
+      if (this.Parent == null)
+        return 0;
 
       if (this.IsFolder) {
         IExtractIcon iextract = null;
@@ -471,7 +473,10 @@ namespace BExplorer.Shell {
     }
 
     public IExtractIconPWFlags GetShield() {
-      IExtractIcon iextract = null; IShellFolder ishellfolder = null; StringBuilder str = null; IntPtr result;
+      IExtractIcon iextract = null;
+      IShellFolder ishellfolder = null;
+      StringBuilder str = null;
+      IntPtr result;
 
       try {
         var guid = new Guid("000214fa-0000-0000-c000-000000000046");
@@ -531,7 +536,11 @@ namespace BExplorer.Shell {
 
     public PropVariant GetPropertyValue(PROPERTYKEY pkey) {
       var pvar = new PropVariant();
-      var isi2 = (IShellItem2)ComInterface;
+      var isi2 = (IShellItem2)this.ComInterface;
+      if (isi2 == null) {
+        return PropVariant.FromObject(null);
+      }
+
       isi2.GetProperty(ref pkey, pvar);
       return pvar;
     }
@@ -568,22 +577,22 @@ namespace BExplorer.Shell {
     /// <returns></returns>
     public int GetSystemImageListIndex(ShellIconType type, ShellIconFlags flags) => GetSystemImageListIndex(Pidl, type, flags);
 
-	/// <summary>
-	/// Gets the index in the system image list of the icon representing
-	/// the item.
-	/// </summary>
-	///
-	/// <param name="pidl">A pointer to a null-terminated string of maximum length MAX_PATH that contains the path and file name. Both absolute and relative paths are valid.</param>
-	/// <param name="type">
-	/// The type of icon to retrieve.
-	/// </param>
-	///
-	/// <param name="flags">
-	/// Flags detailing additional information to be conveyed by the icon.
-	/// </param>
-	///
-	/// <returns></returns>
-	public static int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
+    /// <summary>
+    /// Gets the index in the system image list of the icon representing
+    /// the item.
+    /// </summary>
+    ///
+    /// <param name="pidl">A pointer to a null-terminated string of maximum length MAX_PATH that contains the path and file name. Both absolute and relative paths are valid.</param>
+    /// <param name="type">
+    /// The type of icon to retrieve.
+    /// </param>
+    ///
+    /// <param name="flags">
+    /// Flags detailing additional information to be conveyed by the icon.
+    /// </param>
+    ///
+    /// <returns></returns>
+    public static int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
       var info = new SHFILEINFO();
       IntPtr result = Shell32.SHGetFileInfo(pidl, 0, out info, Marshal.SizeOf(info), SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
 
@@ -688,11 +697,11 @@ namespace BExplorer.Shell {
       Constructor_Helper();
     }
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ShellItem"/> class.
-	/// </summary>
-	/// <param name="pidl">Used to set <see cref="ComInterface"/> using <see cref="CreateItemFromIDList"/></param>
-	public ShellItem(IntPtr pidl) {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ShellItem"/> class.
+    /// </summary>
+    /// <param name="pidl">Used to set <see cref="ComInterface"/> using <see cref="CreateItemFromIDList"/></param>
+    public ShellItem(IntPtr pidl) {
       ComInterface = CreateItemFromIDList(pidl);
       Constructor_Helper();
     }
@@ -836,25 +845,26 @@ namespace BExplorer.Shell {
       }
     }
 
-	/// <summary>
-	/// Creates a <see cref="IShellItem"/> using an <see cref="IntPtr"/>
-	/// </summary>
-	/// <param name="pidl"></param>
-	/// <returns></returns>
+    /// <summary>
+    /// Creates a <see cref="IShellItem"/> using an <see cref="IntPtr"/>
+    /// </summary>
+    /// <param name="pidl"></param>
+    /// <returns></returns>
     private static IShellItem CreateItemFromIDList(IntPtr pidl) {
       return RunningVista ? Shell32.SHCreateItemFromIDList(pidl, typeof(IShellItem).GUID) : new Interop.VistaBridge.ShellItemImpl(pidl, false);
     }
 
-	/// <summary>
-	/// Creates a <see cref="IShellItem"/> using the file/folder's path
-	/// </summary>
-	/// <param name="path">The path of the file/folder</param>
-	/// <returns></returns>
+    /// <summary>
+    /// Creates a <see cref="IShellItem"/> using the file/folder's path
+    /// </summary>
+    /// <param name="path">The path of the file/folder</param>
+    /// <returns></returns>
     private static IShellItem CreateItemFromParsingName(string path) {
       if (RunningVista) {
         return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
       } else {
-        uint attributes = 0, eaten; IntPtr pidl;
+        uint attributes = 0, eaten;
+        IntPtr pidl;
         Desktop.GetIShellFolder().ParseDisplayName(IntPtr.Zero, IntPtr.Zero, path, out eaten, out pidl, ref attributes);
         return new Interop.VistaBridge.ShellItemImpl(pidl, true);
       }

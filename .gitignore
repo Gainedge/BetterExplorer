@@ -255,3 +255,6 @@ packages/
 .vs/
 BExplorer.sln.DotSettings
 /.nuget/NuGet.exe
+StyleCop.Cache
+BExplorer/BetterExplorer/BEHelper.dll.config
+*.obj

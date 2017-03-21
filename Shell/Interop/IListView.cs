@@ -77,7 +77,7 @@ namespace BExplorer.Shell.Interop {
 		HResult CreateDragImage(int a, POINT b, out IntPtr c);
 		HResult GetViewRect(out User32.RECT rect);
 		HResult GetClientRect(Boolean a, out User32.RECT b);
-		HResult GetColumnWidth(int a, out int b);
+		HResult GetColumnWidth(int iSubitem, out int width);
 		HResult SetColumnWidth(int a, int b);
 		HResult GetCallbackMask(out long a);
 		HResult SetCallbackMask(out long b);

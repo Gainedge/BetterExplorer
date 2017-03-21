@@ -587,7 +587,7 @@ public void Draw(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions o
 		public int GetIndexOfOverlay(int overlayIndex) {
 			int idx;
 			var hresult = this._ImageList.GetOverlayImage(overlayIndex, out idx);
-			Marshal.ThrowExceptionForHR(hresult);
+			//Marshal.ThrowExceptionForHR(hresult);
 			return idx;
 		}
 
