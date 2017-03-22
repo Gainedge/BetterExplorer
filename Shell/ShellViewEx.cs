@@ -2437,7 +2437,7 @@ namespace BExplorer.Shell {
 
     public void DoMove(System.Windows.IDataObject dataObject, IListItemEx destination) => Do_Copy_OR_Move_Helper(false, destination, dataObject.ToShellItemArray().ToArray());
 
-    public void DoMove(IListItemEx destination) => Do_Copy_OR_Move_Helper(false, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
+    public void DoMove(IListItemEx destination) => this.Do_Copy_OR_Move_Helper(false, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
 
     public void DoMove(F.IDataObject dataObject, IListItemEx destination) => Do_Copy_OR_Move_Helper_2(false, destination, dataObject);
 
@@ -2480,7 +2480,7 @@ namespace BExplorer.Shell {
     /// <param name="value">The icon size you want</param>
     public void ResizeIcons(Int32 value) {
       try {
-        IconSize = value;
+        this.IconSize = value;
         foreach (var obj in this.Items.ToArray()) {
           obj.IsIconLoaded = false;
           obj.IsNeedRefreshing = true;
@@ -2492,7 +2492,6 @@ namespace BExplorer.Shell {
         var newW = 0;
         var newH = 0;
         this._IIListView?.SetIconSpacing(value + 28, value + 38, out newW, out newH);
-        //User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, (IntPtr)User32.MAKELONG((Int32)(value * 1.3), (Int32)(value * 1.4)));
       } catch (Exception) {
       }
     }
@@ -2507,9 +2506,10 @@ namespace BExplorer.Shell {
     /// Selects only the specified items. First runs <see cref="DeSelectAllItems">DeSelectAllItems</see> Then selects all items on a separate thread.
     /// </summary>
     /// <param name="shellObjectArray"></param>
-    public void SelectItems(IListItemEx[] shellObjectArray) {
+    public void SelectItems(IListItemEx[] shellObjectArray, Boolean isEnsureVisible = false) {
       this.DeSelectAllItems();
       var selectionThread = new Thread(() => {
+        var lastItem = shellObjectArray.LastOrDefault();
         foreach (var item in shellObjectArray) {
           try {
             var exestingItem = this.Items.FirstOrDefault(s => s.Equals(item));
@@ -2517,6 +2517,11 @@ namespace BExplorer.Shell {
             var lvii = new LVITEMINDEX() { iItem = itemIndex, iGroup = this.GetGroupIndex(itemIndex) };
             var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
             User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
+            if (isEnsureVisible && item.Equals(lastItem)) {
+              this.BeginInvoke((Action)(() => {
+                this._IIListView.EnsureItemVisible(lvii, true);
+              }));
+            }
           } catch (Exception) {
             //catch the given key was not found. It happen on fast delete of items
           }
