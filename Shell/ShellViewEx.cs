@@ -2075,11 +2075,11 @@ namespace BExplorer.Shell {
 
       this.Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
       this._UnvalidateTimer.Interval = 350;
-      this._UnvalidateTimer.Tick += _UnvalidateTimer_Tick;
+      this._UnvalidateTimer.Tick += this._UnvalidateTimer_Tick;
       this._UnvalidateTimer.Stop();
 
       this._MaintenanceTimer.Interval = 1000 * 15;
-      this._MaintenanceTimer.Tick += _MaintenanceTimer_Tick;
+      this._MaintenanceTimer.Tick += this._MaintenanceTimer_Tick;
       this._MaintenanceTimer.Start();
 
       this._SearchTimer.Interval = 750;
