@@ -1520,8 +1520,9 @@ namespace BExplorer.Shell {
     [HandleProcessCorruptedStateExceptions]
     protected override void WndProc(ref Message m) {
       try {
-        if (m.Msg == (Int32)WM.WM_PARENTNOTIFY && User32.LOWORD((Int32)m.WParam) == (Int32)WM.WM_MBUTTONDOWN)
+        if (m.Msg == (Int32)WM.WM_PARENTNOTIFY && User32.LOWORD((Int32)m.WParam) == (Int32)WM.WM_MBUTTONDOWN) {
           this.OnItemMiddleClick();
+        }
         base.WndProc(ref m);
 
         if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
@@ -2072,7 +2073,7 @@ namespace BExplorer.Shell {
     protected override void OnHandleCreated(EventArgs e) {
       base.OnHandleCreated(e);
 
-      Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
+      this.Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
       this._UnvalidateTimer.Interval = 350;
       this._UnvalidateTimer.Tick += _UnvalidateTimer_Tick;
       this._UnvalidateTimer.Stop();
