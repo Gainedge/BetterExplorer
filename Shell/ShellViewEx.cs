@@ -1521,7 +1521,7 @@ namespace BExplorer.Shell {
     protected override void WndProc(ref Message m) {
       try {
         if (m.Msg == (Int32)WM.WM_PARENTNOTIFY && User32.LOWORD((Int32)m.WParam) == (Int32)WM.WM_MBUTTONDOWN)
-          OnItemMiddleClick();
+          this.OnItemMiddleClick();
         base.WndProc(ref m);
 
         if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
