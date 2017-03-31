@@ -75,7 +75,9 @@ namespace BExplorer.Shell {
   }
 
   public class RenameEventArgs : EventArgs {
-    public Int32 ItemIndex { get; private set; }
+    public Int32 ItemIndex {
+      get; private set;
+    }
 
     public RenameEventArgs(Int32 itemIndex) {
       this.ItemIndex = itemIndex;
@@ -83,7 +85,9 @@ namespace BExplorer.Shell {
   }
 
   public class CollumnsChangedArgs : EventArgs {
-    public Boolean IsRemove { get; set; }
+    public Boolean IsRemove {
+      get; set;
+    }
 
     public CollumnsChangedArgs(Boolean isRemove) {
       this.IsRemove = isRemove;
@@ -91,8 +95,12 @@ namespace BExplorer.Shell {
   }
 
   public class ListViewColumnDropDownArgs : EventArgs {
-    public Int32 ColumnIndex { get; set; }
-    public DPoint ActionPoint { get; set; }
+    public Int32 ColumnIndex {
+      get; set;
+    }
+    public DPoint ActionPoint {
+      get; set;
+    }
 
     public ListViewColumnDropDownArgs(Int32 colIndex, DPoint pt) {
       this.ColumnIndex = colIndex;
@@ -102,10 +110,16 @@ namespace BExplorer.Shell {
 
   public class NavigatedEventArgs : EventArgs, IDisposable {
     /// <summary> The folder that is navigated to. </summary>
-    public IListItemEx Folder { get; set; }
+    public IListItemEx Folder {
+      get; set;
+    }
 
-    public IListItemEx OldFolder { get; set; }
-    public Boolean isInSameTab { get; set; }
+    public IListItemEx OldFolder {
+      get; set;
+    }
+    public Boolean isInSameTab {
+      get; set;
+    }
 
     public void Dispose() {
       Folder?.Dispose();
@@ -129,9 +143,13 @@ namespace BExplorer.Shell {
   /// <summary> Provides information for the <see cref="ShellView.Navigating" /> event. </summary>
   public class NavigatingEventArgs : EventArgs, IDisposable {
     /// <summary> The folder being navigated to. </summary>
-    public IListItemEx Folder { get; private set; }
+    public IListItemEx Folder {
+      get; private set;
+    }
 
-    public Boolean IsNavigateInSameTab { get; private set; }
+    public Boolean IsNavigateInSameTab {
+      get; private set;
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NavigatingEventArgs"/> class.
@@ -158,13 +176,21 @@ namespace BExplorer.Shell {
   }
 
   public class ItemUpdatedEventArgs : EventArgs {
-    public ItemUpdateType UpdateType { get; private set; }
+    public ItemUpdateType UpdateType {
+      get; private set;
+    }
 
-    public IListItemEx PreviousItem { get; private set; }
+    public IListItemEx PreviousItem {
+      get; private set;
+    }
 
-    public IListItemEx NewItem { get; private set; }
+    public IListItemEx NewItem {
+      get; private set;
+    }
 
-    public Int32 NewItemIndex { get; private set; }
+    public Int32 NewItemIndex {
+      get; private set;
+    }
 
     public ItemUpdatedEventArgs(ItemUpdateType type, IListItemEx newItem, IListItemEx previousItem, Int32 index) {
       this.UpdateType = type;
@@ -175,10 +201,14 @@ namespace BExplorer.Shell {
   }
 
   public class ViewChangedEventArgs : EventArgs {
-    public Int32 ThumbnailSize { get; private set; }
+    public Int32 ThumbnailSize {
+      get; private set;
+    }
 
     /// <summary> The current ViewStyle </summary>
-    public ShellViewStyle CurrentView { get; private set; }
+    public ShellViewStyle CurrentView {
+      get; private set;
+    }
 
     public ViewChangedEventArgs(ShellViewStyle view, Int32? thumbnailSize) {
       CurrentView = view;
@@ -241,17 +271,25 @@ namespace BExplorer.Shell {
     public Dictionary<PROPERTYKEY, Collumns> AllAvailableColumns;
     public List<Collumns> Collumns = new List<Collumns>();
     public List<ListViewGroupEx> Groups = new List<ListViewGroupEx>();
-    public Boolean IsRenameNeeded { get; set; }
+    public Boolean IsRenameNeeded {
+      get; set;
+    }
     //public Boolean IsLibraryInModify { get; set; }
-    public Boolean IsFileExtensionShown { get; set; }
+    public Boolean IsFileExtensionShown {
+      get; set;
+    }
     public Boolean IsCancelRequested;
     public Boolean IsNavigationCancelRequested = false;
     public Boolean IsNavigationInProgress = false;
-    public Boolean IsGroupsEnabled { get; set; }
+    public Boolean IsGroupsEnabled {
+      get; set;
+    }
     //public Boolean IsTraditionalNameGrouping { get; set; }
 
     /// <summary> Returns the key jump string as it currently is.</summary>
-    public String KeyJumpString { get; private set; }
+    public String KeyJumpString {
+      get; private set;
+    }
 
     /// <summary>
     /// Gets a value indicating whether the folder currently being browsed by the <see
@@ -267,16 +305,34 @@ namespace BExplorer.Shell {
     /// the <see cref="ShellView" />.
     /// </summary>
     [Browsable(false)]
-    public IListItemEx CurrentFolder { get; private set; }
+    public IListItemEx CurrentFolder {
+      get; private set;
+    }
 
-    public Int32 IconSize { get; private set; }
-    public List<IListItemEx> Items { get; private set; }
-    public String LastSortedColumnId { get; private set; }
-    public SortOrder LastSortOrder { get; private set; }
-    public Collumns LastGroupCollumn { get; private set; }
-    public SortOrder LastGroupOrder { get; private set; }
-    public IntPtr LVHandle { get; private set; }
-    public ObservableCollectionEx<LVItemColor> LVItemsColorCodes { get; set; }
+    public Int32 IconSize {
+      get; private set;
+    }
+    public List<IListItemEx> Items {
+      get; private set;
+    }
+    public String LastSortedColumnId {
+      get; private set;
+    }
+    public SortOrder LastSortOrder {
+      get; private set;
+    }
+    public Collumns LastGroupCollumn {
+      get; private set;
+    }
+    public SortOrder LastGroupOrder {
+      get; private set;
+    }
+    public IntPtr LVHandle {
+      get; private set;
+    }
+    public ObservableCollectionEx<LVItemColor> LVItemsColorCodes {
+      get; set;
+    }
     public ImageListEx LargeImageList;
     public ImageListEx SmallImageList;
 
@@ -300,7 +356,9 @@ namespace BExplorer.Shell {
     }
 
     public Boolean ShowCheckboxes {
-      get { return _ShowCheckBoxes; }
+      get {
+        return _ShowCheckBoxes;
+      }
       set {
         if (value) {
           User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT, (Int32)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT);
@@ -315,7 +373,9 @@ namespace BExplorer.Shell {
     }
 
     public Boolean ShowHidden {
-      get { return _ShowHidden; }
+      get {
+        return _ShowHidden;
+      }
       set {
         _ShowHidden = value;
         this.RefreshContents();
@@ -325,7 +385,9 @@ namespace BExplorer.Shell {
     /// <summary> Gets or sets how items are displayed in the control. </summary>
     [DefaultValue(ShellViewStyle.Medium), Category("Appearance")]
     public ShellViewStyle View {
-      get { return _MView; }
+      get {
+        return _MView;
+      }
       set {
         _MView = value;
         this.IsViewSelectionAllowed = false;
@@ -460,10 +522,18 @@ namespace BExplorer.Shell {
     }
 
     private Boolean _ItemForRealNameIsAny => _ItemForRename != -1;
-    private Int32 _ItemForRename { get; set; }
-    private Boolean _IsCanceledOperation { get; set; }
-    private Int32 _LastItemForRename { get; set; }
-    private System.Runtime.InteropServices.ComTypes.IDataObject _DataObject { get; set; }
+    private Int32 _ItemForRename {
+      get; set;
+    }
+    private Boolean _IsCanceledOperation {
+      get; set;
+    }
+    private Int32 _LastItemForRename {
+      get; set;
+    }
+    private System.Runtime.InteropServices.ComTypes.IDataObject _DataObject {
+      get; set;
+    }
     private Boolean _ShowCheckBoxes = false;
     private Boolean _ShowHidden;
     private F.Timer _ResetTimer = new F.Timer();
@@ -486,7 +556,9 @@ namespace BExplorer.Shell {
 
     public Dictionary<String, Dictionary<IListItemEx, List<String>>> BadgesData;
     private readonly QueueEx<Tuple<ItemUpdateType, IListItemEx>> _ItemsQueue = new QueueEx<Tuple<ItemUpdateType, IListItemEx>>();
-    public IListItemEx RequestedCurrentLocation { get; set; }
+    public IListItemEx RequestedCurrentLocation {
+      get; set;
+    }
     private readonly List<String> _TemporaryFiles = new List<String>();
     private Boolean _IsDisplayEmptyText = false;
     private readonly List<Thread> _Threads = new List<Thread>();
@@ -1378,7 +1450,7 @@ namespace BExplorer.Shell {
                         ((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
         }
       } else {
-        this.RefreshItem(_LastDropHighLightedItemIndex);
+        this.RefreshItem(this._LastDropHighLightedItemIndex);
         this._LastDropHighLightedItemIndex = -1;
         if (ddResult == HResult.S_OK) {
           if (e.Effect == F.DragDropEffects.Link) {
@@ -1407,13 +1479,13 @@ namespace BExplorer.Shell {
       var wp = new DataObject.Win32Point() { X = e.X, Y = e.Y };
       Drag_SetEffect(e);
 
-      if (e.Data.GetDataPresent("DragImageBits"))
+      if (e.Data.GetDataPresent("DragImageBits")) {
         DropTarget.Create.DragEnter(
-          this.Handle,
-          (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data,
-          ref wp,
-          (Int32)e.Effect);
-      else {
+        this.Handle,
+        (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data,
+        ref wp,
+        (Int32)e.Effect);
+      } else {
         base.OnDragEnter(e);
       }
     }
@@ -3348,7 +3420,8 @@ namespace BExplorer.Shell {
               };
 
               this._FsWatcher.Deleted += (sender, args) => this.QueueDeleteItem(args);
-              this._FsWatcher.Renamed += (sender, args) => { };
+              this._FsWatcher.Renamed += (sender, args) => {
+              };
               this._FsWatcher.IncludeSubdirectories = false;
               this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.Attributes |
               NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size;
@@ -4104,10 +4177,12 @@ navigationThread.Start();
     //private new void ResumeLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 1, 0);
     //private new void SuspendLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 0, 0);
     [Obsolete("Contains No Code")]
-    private void RedrawWindow() { }//User32.InvalidateRect(this.LVHandle, IntPtr.Zero, false);
+    private void RedrawWindow() {
+    }//User32.InvalidateRect(this.LVHandle, IntPtr.Zero, false);
 
     [Obsolete("Contains No Code")]
-    private void RedrawWindow(User32.RECT rect) { }// => User32.InvalidateRect(this.LVHandle, ref rect, false);
+    private void RedrawWindow(User32.RECT rect) {
+    }// => User32.InvalidateRect(this.LVHandle, ref rect, false);
 
     /// <summary>
     /// Returns the index of the first item whose display name starts with the search string.
