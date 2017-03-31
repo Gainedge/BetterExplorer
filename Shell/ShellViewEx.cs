@@ -2157,8 +2157,9 @@ namespace BExplorer.Shell {
         var t = new Thread(() => {
           this._Mre.Reset();
           foreach (var thread in this._Threads) {
-            if (thread.IsAlive)
+            if (thread.IsAlive) {
               thread.Abort();
+            }
           }
         });
 
