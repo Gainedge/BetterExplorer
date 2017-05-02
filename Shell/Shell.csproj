@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ImageListEx.cs" />
     <Compile Include="Interop\IListView.cs" />
     <Compile Include="TooltipDataTemplateSelector.cs" />
@@ -340,6 +341,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta001\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta001\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -362,4 +367,13 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="DisableAnalyzersForVisualStudioBuild" BeforeTargets="CoreCompile" Condition="'$(BuildingInsideVisualStudio)' == 'True' And '$(BuildingProject)' == 'True'">
+    <!--
+      Disable analyzers when building a project inside Visual Studio. Note that analyzer behavior for IntelliSense
+      purposes is not altered by this.
+    -->
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)" />
+    </ItemGroup>
+  </Target>
 </Project>

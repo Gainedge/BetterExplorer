@@ -299,6 +299,7 @@
     <Compile Include="Customize\RibbonItemListDisplay.xaml.cs">
       <DependentUpon>RibbonItemListDisplay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HelperClasses\SafeThread.cs" />
     <Compile Include="HelperClasses\Utilities.cs" />
     <Compile Include="HelperClasses\WindowExtensions.cs" />
@@ -1190,7 +1191,10 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.1.0-beta001\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
+    <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.1.0-beta001\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+  </ItemGroup>
   <!-- <ItemGroup>
     <Page Include="App.xaml">
       <SubType>Designer</SubType>
@@ -1226,4 +1230,13 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="DisableAnalyzersForVisualStudioBuild" BeforeTargets="CoreCompile" Condition="'$(BuildingInsideVisualStudio)' == 'True' And '$(BuildingProject)' == 'True'">
+    <!--
+      Disable analyzers when building a project inside Visual Studio. Note that analyzer behavior for IntelliSense
+      purposes is not altered by this.
+    -->
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)" />
+    </ItemGroup>
+  </Target>
 </Project>
