@@ -1122,3 +1122,6 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1500:Braces for multi-line statements must not share line", Justification = "<Pending>", Scope = "type", Target = "~T:ThumbnailGenerator.WindowsThumbnailProvider.IShellItemImageFactory")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1500:Braces for multi-line statements must not share line", Justification = "<Pending>", Scope = "type", Target = "~T:ThumbnailGenerator.WindowsThumbnailProvider.NativeSize")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1500:Braces for multi-line statements must not share line", Justification = "<Pending>", Scope = "type", Target = "~T:ThumbnailGenerator.WindowsThumbnailProvider.SIGDN")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:Element must begin with upper-case letter", Justification = "<Pending>", Scope = "member", Target = "~P:BExplorer.Shell.ShellView")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:Element must begin with upper-case letter", Justification = "<Pending>", Scope = "member", Target = "~P:BExplorer.Shell.ShellView")]
+

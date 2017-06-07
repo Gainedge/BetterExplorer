@@ -586,7 +586,7 @@ namespace BExplorer.Shell {
           if (items[n].ParsingName.Equals(ShellItem.Desktop.ParsingName)) {
             parent = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ShellItem.Desktop.Pidl);
           } else {
-            parent = items[n].Parent;
+            parent = FileSystemListItem.ToFileSystemItem(IntPtr.Zero,  items[n].PIDL).Parent;
           }
         } else if (!items[n].Parent.Equals(parent)) {
           throw new Exception("All shell items must have the same parent");
