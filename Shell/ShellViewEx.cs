@@ -3043,7 +3043,7 @@ namespace BExplorer.Shell {
         this.Groups.Reverse();
       }
 
-      this.Invoke(new MethodInvoker(() => {
+      this.BeginInvoke(new MethodInvoker(() => {
         this._IIListView.SetItemCount(this.Items.Count, 0x2);
       }));
       foreach (var group in this.Groups.ToArray()) {
@@ -3457,11 +3457,11 @@ namespace BExplorer.Shell {
       }
 
       this.IsViewSelectionAllowed = true;
-      this.BeginInvoke((Action)(() => this._NavWaitTimer.Start()));
+      this.Invoke((Action)(() => this._NavWaitTimer.Start()));
 
       var navigationThread = new Thread(() => {
         this.IsCancelRequested = false;
-        destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
+        //destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
         if (destination.IsFileSystem) {
           if (this._FsWatcher != null) {
             this._FsWatcher.EnableRaisingEvents = false;
@@ -3554,8 +3554,7 @@ namespace BExplorer.Shell {
         //  var contentCount = content.GetItemsForCount(this.ShowHidden).Count();
         //  this._IIListView.SetItemCount(contentCount, 0x2);
         //}));
-        foreach (var shellItem in content.TakeWhile(shellItem => !this.IsCancelRequested).SetSortCollumn(this, true, columns,
-          folderSettings.SortOrder, false)) {
+        foreach (var shellItem in content.TakeWhile(shellItem => !this.IsCancelRequested).SetSortCollumn(this, true, columns, folderSettings.SortOrder, false)) {
           currentI++;
           if (shellItem == null) {
             continue;
@@ -3583,10 +3582,10 @@ namespace BExplorer.Shell {
           //  this.BeginInvoke((MethodInvoker)(() => {
           //      this._IIListView.RedrawItems(shellItem.ItemIndex, shellItem.ItemIndex);
           //  }));
-          if (delta >= 100) {
+          if (delta >= 500) {
             lastI = currentI;
              //this.BeginInvoke((MethodInvoker)(() => this._IIListView.RedrawItems(0, this.Items.Count)));
-            if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, shellItem.ItemIndex, 0) != IntPtr.Zero)
+            //if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, shellItem.ItemIndex, 0) != IntPtr.Zero)
               this.BeginInvoke((MethodInvoker)(() => this._IIListView.SetItemCount(this.Items.Count, 0x2)));
             
           }
@@ -3642,6 +3641,15 @@ namespace BExplorer.Shell {
         //  this.Items.ToList().ForEach(e => e.ItemIndex = i++);
         //  User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
         //}
+        if (isThereSettings) {
+          var colIndexReal = this.Collumns.IndexOf(this.Collumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId));
+          if (colIndexReal > -1) {
+            User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, colIndexReal, 0);
+            this.SetSortIcon(colIndexReal, this.LastSortOrder);
+          } else {
+            User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, -1, 0);
+          }
+        }
 
         if (this.IsGroupsEnabled) {
           var colData = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == folderSettings.GroupCollumn).Value;
@@ -4152,7 +4160,7 @@ navigationThread.Start();
       itemBounds.Top -= 2;
       itemBounds.Bottom += 2;
       itemBounds.Right += 2;
-      this.Invoke(new MethodInvoker(() => this._IIListView.RedrawItems(index, index)));
+      this.BeginInvoke(new MethodInvoker(() => this._IIListView.RedrawItems(index, index)));
 
       // TODO: Find out why we have this loop
       for (Int32 i = 0; i < 1; i++) {

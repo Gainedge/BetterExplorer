@@ -200,6 +200,7 @@
     }
 
     private void SelItem(IListItemEx item) {
+      item = FileSystemListItem.ToFileSystemItem(item.ParentHandle, item.PIDL);
       var node = this.FromItem(item);
       if (node == null) {
         this.FindItem(item.Clone());
@@ -236,7 +237,7 @@
 
       if (itemNode != null) {
         var node = new TreeNode(item.DisplayName);
-        var itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.ParsingName.ToShellParsingName());
+        var itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.PIDL);
         node.Tag = itemReal;
         var oldnodearray = itemNode.Nodes.OfType<TreeNode>().ToList();
         if (!oldnodearray.Any(s => s.Tag != null && ((IListItemEx)s.Tag).Equals(itemReal))) {
@@ -738,7 +739,7 @@
 
                 // IListItemEx itemReal = null;
                 // if (item.Parent?.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
-                IListItemEx itemReal = item?.Parent?.Parent?.ParsingName == KnownFolders.Libraries.ParsingName ? FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.ParsingName.ToShellParsingName()) : item;
+                IListItemEx itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.PIDL);
 
                 itemNode.Tag = itemReal;
 
@@ -825,11 +826,12 @@
       if (this.isFromTreeview) {
         return;
       }
-      var thread = new Thread(() => {
-        this.SelItem(e.Folder);
-      });
-      thread.SetApartmentState(ApartmentState.STA);
-      thread.Start();
+      // TODO: Try to reenable this since sometimes it causes an exceptions
+      //var thread = new Thread(() => {
+        //this.SelItem(e.Folder);
+      //});
+      //thread.SetApartmentState(ApartmentState.STA);
+      //thread.Start();
     }
 
     private void ShellTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
