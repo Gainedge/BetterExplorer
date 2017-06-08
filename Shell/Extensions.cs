@@ -699,8 +699,64 @@ namespace BExplorer.Shell {
 				return false;
 			}
 			else {
-				return checkedItem?.Parent?.Equals(currentFolder) == true;
+				return checkedItem?.Parent?.ParsingName == currentFolder.ParsingName;
 			}
 		}
+
+	  public static IOrderedEnumerable<IListItemEx> SetSortCollumn(this IEnumerable<IListItemEx> items, ShellView view, Boolean isReorder, Collumns column, SortOrder order, Boolean reverseOrder = true) {
+	    if (column == null) {
+	      column = view.Collumns.FirstOrDefault();
+	    }
+
+	    try {
+        IOrderedEnumerable<IListItemEx> result = null;
+	      var itemsArray = items;
+	      //var selectedItems = this.SelectedItems.ToArray();
+	      if (column.ID == view.LastSortedColumnId && reverseOrder) {
+	        // Reverse the current sort direction for this column.
+	        view.LastSortOrder = view.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+	      } else {
+	        // Set the column number that is to be sorted; default to ascending.
+	        view.LastSortedColumnId = column.ID;
+	        view.LastSortOrder = order;
+	      }
+
+	      if (isReorder) {
+	        var itemsQuery = itemsArray.Where(w => view.ShowHidden || !w.IsHidden).OrderByDescending(o => o.IsFolder);
+	        if (column.CollumnType != typeof(String)) {
+	          if (order == SortOrder.Ascending) {
+	            result = itemsQuery.ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value ?? "1");
+	          } else {
+	            result = itemsQuery.ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value ?? "1");
+	          }
+	        } else {
+	          if (order == SortOrder.Ascending) {
+	            result = itemsQuery.ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default);
+	          } else {
+	            result = itemsQuery.ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(),
+	              NaturalStringComparer.Default);
+	          }
+	        }
+
+	        var i = 0;
+	      }
+
+
+	      var colIndexReal = view.Collumns.IndexOf(view.Collumns.FirstOrDefault(w => w.ID == view.LastSortedColumnId));
+	      if (colIndexReal > -1) {
+	        User32.SendMessage(view.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, colIndexReal, 0);
+	        view.SetSortIcon(colIndexReal, order);
+	      } else {
+	        User32.SendMessage(view.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, -1, 0);
+	      }
+
+	      //if (!this.IsRenameInProgress) {
+	      //  this.SelectItems(selectedItems);
+	      //}
+	      return result;
+	    } catch {
+        return null;
+	    }
+	  }
 	}
 }

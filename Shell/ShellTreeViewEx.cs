@@ -78,9 +78,9 @@
       this.childsQueue.Clear();
       this.UpdatedImages.Clear();
       this.CheckedFroChilds.Clear();
-      var favoritesItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Links).ParsingName.ToShellParsingName());
+      var favoritesItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Links).Pidl);
       var favoritesRoot = new TreeNode(favoritesItem.DisplayName);
-      favoritesRoot.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Links).ParsingName.ToShellParsingName());
+      favoritesRoot.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Links).Pidl);
       favoritesRoot.ImageIndex = ((ShellItem)KnownFolders.Favorites).GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
       favoritesRoot.SelectedImageIndex = favoritesRoot.ImageIndex;
 
@@ -88,16 +88,16 @@
         favoritesRoot.Nodes.Add(this._EmptyItemString);
       }
 
-      var librariesItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Libraries).ParsingName.ToShellParsingName());
+      var librariesItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Libraries).Pidl);
       var librariesRoot = new TreeNode(librariesItem.DisplayName);
-      librariesRoot.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Libraries).ParsingName.ToShellParsingName());
+      librariesRoot.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Libraries).Pidl);
       librariesRoot.ImageIndex = librariesItem.GetSystemImageListIndex(librariesItem.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
       librariesRoot.SelectedImageIndex = librariesRoot.ImageIndex;
       if (librariesItem.HasSubFolders) {
         librariesRoot.Nodes.Add(this._EmptyItemString);
       }
 
-      var computerItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Computer).ParsingName.ToShellParsingName());
+      var computerItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Computer).Pidl);
       var computerRoot = new TreeNode(computerItem.DisplayName);
       computerRoot.Tag = computerItem;
       computerRoot.ImageIndex = computerItem.GetSystemImageListIndex(computerItem.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
@@ -106,7 +106,7 @@
         computerRoot.Nodes.Add(this._EmptyItemString);
       }
 
-      var networkItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Network).ParsingName.ToShellParsingName());
+      var networkItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Network).Pidl);
       var networkRoot = new TreeNode(networkItem.DisplayName);
       networkRoot.Tag = networkItem;
       networkRoot.ImageIndex = networkItem.GetSystemImageListIndex(networkItem.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
@@ -825,11 +825,11 @@
       if (this.isFromTreeview) {
         return;
       }
-      //var thread = new Thread(() => { 
-      this.SelItem(e.Folder);
-      //});
-      //thread.SetApartmentState(ApartmentState.STA);
-      //thread.Start();
+      var thread = new Thread(() => {
+        this.SelItem(e.Folder);
+      });
+      thread.SetApartmentState(ApartmentState.STA);
+      thread.Start();
     }
 
     private void ShellTreeView_ItemDrag(object sender, ItemDragEventArgs e) {

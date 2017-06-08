@@ -309,7 +309,7 @@ namespace BExplorer.Shell {
           else
             this._Large.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - 30, iconBounds.Bottom - 32));
         }
-        var badge = this.GetBadgeForPath(sho.ParsingName);
+        IListItemEx badge = this.GetBadgeForPath(sho.ParsingName);
         if (badge != null) {
           var badgeIco = badge.GetHBitmap(this._CurrentSize, false);
           Gdi32.ConvertPixelByPixel(badgeIco, out width, out height);
@@ -387,7 +387,7 @@ namespace BExplorer.Shell {
           this._Small.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - 9, iconBounds.Bottom - 16));
         }
 
-        var badge = this.GetBadgeForPath(sho.ParsingName);
+        IListItemEx badge = this.GetBadgeForPath(sho.ParsingName);
         if (badge != null) {
           var badgeIco = badge.GetHBitmap(16, false);
           Gdi32.ConvertPixelByPixel(badgeIco, out width, out height);
@@ -457,7 +457,7 @@ namespace BExplorer.Shell {
           Int32 overlayIndex = 0;
           this._Small.GetIconIndexWithOverlay(sho.PIDL, out overlayIndex);
           shoTemp.OverlayIconIndex = overlayIndex;
-          if (sho.IsFolder && sho.IsShared) shoTemp.IsShared = true;
+          //if (sho.IsFolder && sho.IsShared) shoTemp.IsShared = true;
           if (overlayIndex > 0) {
             if (!this._RedrawQueue.Contains(index))
               this._RedrawQueue.Enqueue(index);
@@ -477,12 +477,12 @@ namespace BExplorer.Shell {
         var sho = this._ShellViewEx.Items[index];
         if (!sho.IsIconLoaded) {
           try {
-            var temp = FileSystemListItem.ToFileSystemItem(sho.ParentHandle, sho.ParsingName.ToShellParsingName());
-            var icon = temp.GetHBitmap(this._CurrentSize, false, true);
+            //var temp = FileSystemListItem.ToFileSystemItem(sho.ParentHandle, sho.ParsingName.ToShellParsingName());
+            var icon = sho.GetHBitmap(this._CurrentSize, false, true);
             var shieldOverlay = 0;
 
             if (sho.ShieldedIconIndex == -1) {
-              if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = this._ShieldIconIndex;
+              if ((sho.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = this._ShieldIconIndex;
               sho.ShieldedIconIndex = shieldOverlay;
             }
 
@@ -535,7 +535,7 @@ namespace BExplorer.Shell {
     private void _RedrawingThreadRun() {
       while (true) {
         ResetEvent?.WaitOne();
-        Application.DoEvents();
+        //Application.DoEvents();
         var index = this._RedrawQueue.Dequeue();
         if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero) continue;
         this._ShellViewEx.RedrawItem(index);
