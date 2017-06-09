@@ -424,7 +424,8 @@ namespace BExplorer.Shell {
                 submenuHandle == IntPtr.Zero ? menu.Handle : submenuHandle, TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle, IntPtr.Zero
             );
 
-            if (command > 0) InvokeCommand((IntPtr)(command - m_CmdFirst), pos, (IntPtr)(command - m_CmdFirst));
+            if (command > 0)
+              InvokeCommand((IntPtr)(command - m_CmdFirst), pos, (IntPtr)(command - m_CmdFirst));
           }
 
           return User32.GetMenuItemCount(submenuHandle == IntPtr.Zero ? menu.Handle : submenuHandle);
@@ -580,7 +581,7 @@ namespace BExplorer.Shell {
       IListItemEx parent = null;
 
       for (int n = 0; n < items.Length; ++n) {
-        pidls[n] = Shell32.ILFindLastID(items[n].PIDL);
+        pidls[n] = items[n].ILPidl;
 
         if (parent == null) {
           if (items[n].ParsingName.Equals(ShellItem.Desktop.ParsingName)) {
@@ -616,7 +617,8 @@ namespace BExplorer.Shell {
       var ishellViewPtr = (item.IsDrive || !item.IsFileSystem || item.IsNetworkPath) ? item.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID) : item.Parent.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID);
       var view = Marshal.GetObjectForIUnknown(ishellViewPtr) as IShellView;
       view?.GetItemObject(SVGIO.SVGIO_BACKGROUND, typeof(IContextMenu).GUID, out _Result);
-      if (view != null) Marshal.ReleaseComObject(view);
+      if (view != null)
+        Marshal.ReleaseComObject(view);
       m_ComInterface = (IContextMenu)Marshal.GetTypedObjectForIUnknown(_Result, typeof(IContextMenu));
       m_ComInterface2 = m_ComInterface as IContextMenu2;
       m_ComInterface3 = m_ComInterface as IContextMenu3;
@@ -627,7 +629,8 @@ namespace BExplorer.Shell {
         try {
           var hhh = IntPtr.Zero;
           iShellExtInit?.Initialize(_ShellView.CurrentFolder.PIDL, null, 0);
-          if (iShellExtInit != null) Marshal.ReleaseComObject(iShellExtInit);
+          if (iShellExtInit != null)
+            Marshal.ReleaseComObject(iShellExtInit);
           Marshal.Release(iShellExtInitPtr);
         } catch {
 
@@ -681,10 +684,12 @@ namespace BExplorer.Shell {
         if (itemInfo.hSubMenu == IntPtr.Zero) {
           // If the item has no submenu we can't get the tag, so 
           // check its ID to determine if it was added by the shell.
-          if (itemInfo.wID >= m_CmdFirst) remove.Add(n);
+          if (itemInfo.wID >= m_CmdFirst)
+            remove.Add(n);
         } else {
           User32.GetMenuInfo(itemInfo.hSubMenu, ref menuInfo);
-          if (menuInfo.dwMenuData != tag) remove.Add(n);
+          if (menuInfo.dwMenuData != tag)
+            remove.Add(n);
         }
       }
 

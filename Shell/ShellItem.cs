@@ -871,6 +871,8 @@ namespace BExplorer.Shell {
     }
 
     public static IEnumIDList GetIEnumIDList(IShellFolder folder, SHCONTF flags, out HResult navResult) {
+      navResult = HResult.S_OK;
+      if (folder == null) return null;
       IEnumIDList result;
       var res = folder.EnumObjects(IsCareForMessageHandle ? MessageHandle : IntPtr.Zero, flags, out result);
       navResult = res;

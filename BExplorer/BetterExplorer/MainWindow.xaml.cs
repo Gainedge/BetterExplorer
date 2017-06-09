@@ -3410,6 +3410,7 @@ namespace BetterExplorer {
     #region On Navigated
 
     void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
+      //return;
       this._ProgressTimer.Stop();
       this.btnCancelNavigation.Visibility = Visibility.Collapsed;
       this.btnGoNavigation.Visibility = Visibility.Visible;

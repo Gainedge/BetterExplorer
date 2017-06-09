@@ -120,9 +120,9 @@ namespace BExplorer.Shell {
     }
 
     public void EnqueueSubitemsGet(Tuple<int, int, PROPERTYKEY> item) {
-      Task.Run(() => {
+      //Task.Run(() => {
         this._ItemsForSubitemsUpdate.Enqueue(item);
-      });
+      //});
     }
 
     public void ResizeImages(Int32 newSize) {
@@ -141,7 +141,7 @@ namespace BExplorer.Shell {
     }
 
     public void EnqueueOverlay(Int32 index) {
-      Thread.Sleep(150);
+      //Thread.Sleep(150);
       this._OverlayQueue.Enqueue(index);
     }
 
@@ -182,13 +182,13 @@ namespace BExplorer.Shell {
           }
         } else {
           if (sho.IsIconLoaded ||
-              (((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS ||
+              ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS ||
                 (!this._ShellViewEx.IsSearchNavigating &&
                  this._ShellViewEx.RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Libraries.ParsingName,
                    StringComparison.InvariantCultureIgnoreCase)) ||
                 (!this._ShellViewEx.IsSearchNavigating &&
                  this._ShellViewEx.RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName,
-                   StringComparison.InvariantCultureIgnoreCase))))) {
+                   StringComparison.InvariantCultureIgnoreCase)))) {
             hThumbnail = sho.GetHBitmap(this._CurrentSize, false);
             if (hThumbnail != IntPtr.Zero) {
               Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
@@ -206,9 +206,9 @@ namespace BExplorer.Shell {
               });
             }
             if (!sho.IsThumbnailLoaded || sho.IsNeedRefreshing)
-              Task.Run(() => {
+              //Task.Run(() => {
                 this._ThumbnailsForCacheLoad.Enqueue(index);
-              });
+              //});
           } else {
             var editControl = User32.SendMessage(this._ShellViewEx.LVHandle, 0x1018, 0, 0);
             if (editControl == IntPtr.Zero) {
@@ -228,9 +228,9 @@ namespace BExplorer.Shell {
                 this.DrawDefaultIcons(hdc, sho, iconBounds);
                 sho.IsIconLoaded = false;
                 //if (!this._IconsForRetreval.Contains(index))
-                Task.Run(() => {
+                //Task.Run(() => {
                   this._IconsForRetreval.Enqueue(index);
-                });
+                //});
               }
               if ((sho.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) {
                 sho.ShieldedIconIndex = this._ShieldIconIndex;
@@ -309,7 +309,7 @@ namespace BExplorer.Shell {
           else
             this._Large.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - 30, iconBounds.Bottom - 32));
         }
-        var badge = this.GetBadgeForPath(sho.ParsingName);
+        IListItemEx badge = this.GetBadgeForPath(sho.ParsingName);
         if (badge != null) {
           var badgeIco = badge.GetHBitmap(this._CurrentSize, false);
           Gdi32.ConvertPixelByPixel(badgeIco, out width, out height);
@@ -361,9 +361,9 @@ namespace BExplorer.Shell {
 							});
 						}
 						*/
-            Task.Run(() => {
+            //Task.Run(() => {
               this._IconsForRetreval.Enqueue(index);
-            });
+            //});
 
             this._Small.DrawIcon(hdc, this._ExeFallBackIndex,
               new Point(iconBounds.Left + (iconBounds.Right - iconBounds.Left - this._CurrentSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - this._CurrentSize) / 2));
@@ -387,7 +387,7 @@ namespace BExplorer.Shell {
           this._Small.DrawIcon(hdc, this._SharedIconIndex, new Point(iconBounds.Right - 9, iconBounds.Bottom - 16));
         }
 
-        var badge = this.GetBadgeForPath(sho.ParsingName);
+        IListItemEx badge = this.GetBadgeForPath(sho.ParsingName);
         if (badge != null) {
           var badgeIco = badge.GetHBitmap(16, false);
           Gdi32.ConvertPixelByPixel(badgeIco, out width, out height);
@@ -457,7 +457,7 @@ namespace BExplorer.Shell {
           Int32 overlayIndex = 0;
           this._Small.GetIconIndexWithOverlay(sho.PIDL, out overlayIndex);
           shoTemp.OverlayIconIndex = overlayIndex;
-          if (sho.IsFolder && sho.IsShared) shoTemp.IsShared = true;
+          //if (sho.IsFolder && sho.IsShared) shoTemp.IsShared = true;
           if (overlayIndex > 0) {
             if (!this._RedrawQueue.Contains(index))
               this._RedrawQueue.Enqueue(index);
@@ -469,7 +469,7 @@ namespace BExplorer.Shell {
     private void _IconsLoadingThreadRun() {
       while (true) {
         if (this._ShellViewEx != null && this._ShellViewEx.IsSearchNavigating) {
-          Thread.Sleep(5);
+          //Thread.Sleep(5);
           //F.Application.DoEvents();
         }
         var index = 0;
@@ -477,12 +477,12 @@ namespace BExplorer.Shell {
         var sho = this._ShellViewEx.Items[index];
         if (!sho.IsIconLoaded) {
           try {
-            var temp = FileSystemListItem.ToFileSystemItem(sho.ParentHandle, sho.ParsingName.ToShellParsingName());
-            var icon = temp.GetHBitmap(this._CurrentSize, false, true);
+            //var temp = FileSystemListItem.ToFileSystemItem(sho.ParentHandle, sho.ParsingName.ToShellParsingName());
+            var icon = sho.GetHBitmap(this._CurrentSize, false, true);
             var shieldOverlay = 0;
 
             if (sho.ShieldedIconIndex == -1) {
-              if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = this._ShieldIconIndex;
+              if ((sho.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = this._ShieldIconIndex;
               sho.ShieldedIconIndex = shieldOverlay;
             }
 
@@ -535,7 +535,7 @@ namespace BExplorer.Shell {
     private void _RedrawingThreadRun() {
       while (true) {
         ResetEvent?.WaitOne();
-        Application.DoEvents();
+        //Application.DoEvents();
         var index = this._RedrawQueue.Dequeue();
         if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero) continue;
         this._ShellViewEx.RedrawItem(index);
