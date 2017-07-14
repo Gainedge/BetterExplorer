@@ -16,7 +16,7 @@ namespace BExplorer.Shell {
           return WindowsVersions.Windows8;
         } else if (environmentInfo.Major == 6 && environmentInfo.Minor == 3) {
           return WindowsVersions.Windows81;
-        } else  {
+        } else {
           return WindowsVersions.Windows10;
         }
       }

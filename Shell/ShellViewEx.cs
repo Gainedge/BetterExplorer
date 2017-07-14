@@ -2628,7 +2628,7 @@ namespace BExplorer.Shell {
     public void SelectItems(IListItemEx[] shellObjectArray, Boolean isEnsureVisible = false) {
       this.DeSelectAllItems();
       var selectionThread = new Thread(() => {
-        var lastItem = shellObjectArray.LastOrDefault();
+        var lastItemIndex = shellObjectArray.Any() ? shellObjectArray.Max(m => m.ItemIndex) : -1;
         foreach (var item in shellObjectArray) {
           try {
             var exestingItem = this.Items.FirstOrDefault(s => s.Equals(item));
@@ -2636,7 +2636,7 @@ namespace BExplorer.Shell {
             var lvii = new LVITEMINDEX() { iItem = itemIndex, iGroup = this.GetGroupIndex(itemIndex) };
             var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
             User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
-            if (isEnsureVisible && item.Equals(lastItem)) {
+            if (isEnsureVisible && itemIndex.Equals(lastItemIndex)) {
               this.BeginInvoke((Action)(() => {
                 this._IIListView.EnsureItemVisible(lvii, true);
               }));
