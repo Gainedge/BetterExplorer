@@ -131,9 +131,13 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     Dictionary<PROPERTYKEY, Object> ColumnValues { get; set; }
 
+    /// <summary>
+    /// Gets all the sub items
+    /// </summary>
+    /// <param name="isEnumHidden">Should we include the hidden items?</param>
+    /// <returns></returns>
+    IListItemEx[] GetSubItems(Boolean isEnumHidden);
     IEnumerable<IntPtr> GetItemsForCount(Boolean isEnumHidden);
-
-    IEnumerable<IListItemEx> GetContents(Boolean isEnumHidden);
 
     IShellFolder GetIShellFolder();
 

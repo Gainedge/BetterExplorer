@@ -311,7 +311,7 @@ namespace BExplorer.Shell {
         }
         IListItemEx badge = this.GetBadgeForPath(sho.ParsingName);
         if (badge != null) {
-          var badgeIco = badge.GetHBitmap(this._CurrentSize, false, false, true);
+          var badgeIco = badge.GetHBitmap(this._CurrentSize, false);
           Gdi32.ConvertPixelByPixel(badgeIco, out width, out height);
           Gdi32.NativeDraw(hdc, badgeIco, iconBounds.Left + (iconBounds.Right - iconBounds.Left - _CurrentSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - _CurrentSize) / 2, _CurrentSize, isGhosted);
           Gdi32.DeleteObject(badgeIco);
@@ -389,7 +389,7 @@ namespace BExplorer.Shell {
 
         IListItemEx badge = this.GetBadgeForPath(sho.ParsingName);
         if (badge != null) {
-          var badgeIco = badge.GetHBitmap(16, false, false, true);
+          var badgeIco = badge.GetHBitmap(16, false);
           Gdi32.ConvertPixelByPixel(badgeIco, out width, out height);
           Gdi32.NativeDraw(hdc, badgeIco, iconBounds.Left, iconBounds.Top, 16, isGhosted);
           Gdi32.DeleteObject(badgeIco);
@@ -556,7 +556,7 @@ namespace BExplorer.Shell {
           IPropertyStore propStore = null;
           isi2.GetPropertyStore(GetPropertyStoreOptions.Default, ref guid, out propStore);
           if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-            if (currentItem.ColumnValues.Keys.ToArray().Count(s => s.fmtid == pk.fmtid && s.pid == pk.pid) == 0) {
+            if (currentItem.ColumnValues.Keys.Count(s => s.fmtid == pk.fmtid && s.pid == pk.pid) == 0) {
               try {
                 currentItem.ColumnValues.Add(pk, pvar.Value);
                 if (!this._RedrawQueue.Contains(index.Item1))
@@ -577,7 +577,7 @@ namespace BExplorer.Shell {
     private Boolean ThreadRun_Helper(SyncQueue<Int32> queue, Boolean useComplexCheck, ref Int32 index) {
       try {
         index = queue.Dequeue();
-        if (index < 0) {
+        if (index == null) { //TODO: Fix this because an integer cannot ever be null
           return false;
         } else {
           var result = User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index, 0) != IntPtr.Zero;

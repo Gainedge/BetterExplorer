@@ -3367,7 +3367,6 @@ namespace BExplorer.Shell {
       this._IsDisplayEmptyText = false;
       User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, 0, 0);
       this.DisableGroups();
-      this.RemoveAllCollumns();
       this.Focus(false, true);
       this._ItemForRename = -1;
       this._LastItemForRename = -1;
@@ -3393,6 +3392,7 @@ namespace BExplorer.Shell {
       this._ResetTimer.Stop();
       if (isThereSettings) {
         if (folderSettings.Columns != null) {
+          this.RemoveAllCollumns();
           foreach (var collumn in folderSettings.Columns.Elements()) {
             var theColumn = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == collumn.Attribute("ID").Value).Value;// .Single();
             if (theColumn == null) {
@@ -3404,7 +3404,8 @@ namespace BExplorer.Shell {
               if (collumn.Attribute("Width").Value != "0") {
                 theCollumnInternal.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
               }
-              this.BeginInvoke((Action)(() => { this._IIListView.SetColumnWidth(this.Collumns.IndexOf(theCollumnInternal), theCollumnInternal.Width); }));
+
+              this._IIListView.SetColumnWidth(this.Collumns.IndexOf(theCollumnInternal), theCollumnInternal.Width);
               continue;
             }
 
@@ -3421,7 +3422,7 @@ namespace BExplorer.Shell {
           }
         }
       } else {
-        //this.RemoveAllCollumns();
+        this.RemoveAllCollumns();
         this.AddDefaultColumns(false, true);
       }
 
@@ -3495,8 +3496,8 @@ namespace BExplorer.Shell {
               };
               this._FsWatcher.Created += (sender, args) => {
                 try {
-                  var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
-                  if (existing != null) return;
+                  // var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
+                  // if (existing != null) return;
                   if (Path.GetExtension(args.FullPath)?.ToLowerInvariant() == ".tmp" ||
                           Path.GetExtension(args.FullPath) == String.Empty) {
                     if (!this._TemporaryFiles.Contains(args.FullPath)) {
@@ -3548,25 +3549,45 @@ namespace BExplorer.Shell {
         var column = columns ?? this.AllAvailableColumns.Single(s => s.Value.ID == "A0").Value;
         var order = folderSettings.SortOrder;
         var content = destination;
-
-        foreach (var shellItem in content.GetContents(this.ShowHidden).TakeWhile(shellItem => !this.IsCancelRequested).SetSortCollumn(this, true, columns, isThereSettings ? folderSettings.SortOrder : SortOrder.Ascending, false)) {
+        
+        //this.BeginInvoke((MethodInvoker)(() => {
+        //  var contentCount = content.GetItemsForCount(this.ShowHidden).Count();
+        //  this._IIListView.SetItemCount(contentCount, 0x2);
+        //}));
+        foreach (var shellItem in content.TakeWhile(shellItem => !this.IsCancelRequested).SetSortCollumn(this, true, columns, folderSettings.SortOrder, false)) {
           currentI++;
           if (shellItem == null) {
             continue;
           }
-          if (!this.RequestedCurrentLocation.Equals(shellItem?.Parent) && this.IsNavigationCancelRequested) {
+          //if (!this.RequestedCurrentLocation.Equals(shellItem?.Parent) && this.IsNavigationCancelRequested) {
+          if (this.IsNavigationCancelRequested) {
             this.IsNavigationCancelRequested = false;
             return;
           }
 
-          shellItem.ItemIndex = k++;
-          this.Items.Add(shellItem);
-          if (currentI == 1) {
-            this.BeginInvoke((Action)(() => {
-              this._NavWaitTimer.Stop();
-              this._IsDisplayEmptyText = false;
-              this._IIListView.ResetEmptyText();
-            }));
+          if (this.ShowHidden || !shellItem.IsHidden) {
+            shellItem.ItemIndex = k++;
+            this.Items.Add(shellItem);
+            if (currentI == 1) {
+              this.BeginInvoke((Action)(() => {
+                this._NavWaitTimer.Stop();
+                this._IsDisplayEmptyText = false;
+                this._IIListView.ResetEmptyText();
+              }));
+            }
+          }
+
+          var delta = currentI - lastI;
+          //if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, shellItem.ItemIndex, 0) != IntPtr.Zero)
+          //  this.BeginInvoke((MethodInvoker)(() => {
+          //      this._IIListView.RedrawItems(shellItem.ItemIndex, shellItem.ItemIndex);
+          //  }));
+          if (delta >= 500) {
+            lastI = currentI;
+             //this.BeginInvoke((MethodInvoker)(() => this._IIListView.RedrawItems(0, this.Items.Count)));
+            //if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, shellItem.ItemIndex, 0) != IntPtr.Zero)
+              this.BeginInvoke((MethodInvoker)(() => this._IIListView.SetItemCount(this.Items.Count, 0x2)));
+            
           }
         }
 
@@ -3596,11 +3617,30 @@ namespace BExplorer.Shell {
           this.AutosizeAllColumns(-2);
         }
 
+        // User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
+
         var sortColIndex = this.Collumns.SingleOrDefault(s => s.ID == columns?.ID)?.Index;
         if (sortColIndex != null) {
           this.SetSortIcon(sortColIndex.Value, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
         }
 
+        //if (isThereSettings) {
+        //  if (columns?.ID == "A0" && String.Equals(this.RequestedCurrentLocation.ParsingName, KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase)) {
+        //    this.SetSortCollumn(true, this.AvailableColumns().Single(s => s.Value.ID == "A180").Value, SortOrder.Ascending, false);
+        //  } else {
+        //    this.SetSortCollumn(true, columns, folderSettings.SortOrder, false);
+        //  }
+        //} else if (String.Equals(this.RequestedCurrentLocation.ParsingName, KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase)) {
+        //  this.Items = this.Items.OrderBy(o => o.ParsingName).ToList();
+        //  var i = 0;
+        //  this.Items.ForEach(e => e.ItemIndex = i++);
+        //  User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
+        //} else {
+        //  this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
+        //  var i = 0;
+        //  this.Items.ToList().ForEach(e => e.ItemIndex = i++);
+        //  User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
+        //}
         if (isThereSettings) {
           var colIndexReal = this.Collumns.IndexOf(this.Collumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId));
           if (colIndexReal > -1) {
@@ -3684,6 +3724,9 @@ namespace BExplorer.Shell {
       if (this.RequestedCurrentLocation == destination && !refresh) {
         return;
       }
+
+      // if (this._RequestedCurrentLocation != destination) {
+      // }
 
       this._ResetEvent.Set();
 
@@ -3827,6 +3870,149 @@ namespace BExplorer.Shell {
       this._Threads.Add(navigationThread);
       navigationThread.Start();
     }
+
+    /*
+[Obsolete("Not Used")]
+private void NavigateNet(IListItemEx destination, Boolean isInSameTab = false, Boolean refresh = false, Boolean isCancel = false)
+{
+SaveSettingsToDatabase(this.CurrentFolder);
+//TODO: Document isCancel Param better
+if (destination == null) return;
+if (this._RequestedCurrentLocation == destination && !refresh) return;
+
+resetEvent.Set();
+
+if (this.Threads.Count > 0)
+{
+mre.Set();
+this.resetEvent.Set();
+foreach (var thread in this.Threads.ToArray())
+{
+	thread.Abort();
+	this.Threads.Remove(thread);
+}
+}
+
+this._UnvalidateTimer.Stop();
+this.IsDisplayEmptyText = false;
+User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, 0, 0);
+this.DisableGroups();
+
+this._ItemForRename = -1;
+this._LastItemForRename = -1;
+
+Items.Clear();
+this._AddedItems.Clear();
+ItemsForSubitemsUpdate.Clear();
+waitingThumbnails.Clear();
+overlayQueue.Clear();
+shieldQueue.Clear();
+this._CuttedIndexes.Clear();
+this.SubItemValues.Clear();
+this._RequestedCurrentLocation = destination;
+if (!refresh)
+Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab));
+
+var columns = new Collumns();
+//var isFailed = true;
+Int32 CurrentI = 0, LastI = 0, K = 0;
+this.IsNavigationInProgress = true;
+_ResetTimer.Stop();
+
+this.RemoveAllCollumns();
+this.AddDefaultColumns(false, true);
+this.IsViewSelectionAllowed = true;
+
+var navigationThread = new Thread(() =>
+{
+destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
+this._RequestedCurrentLocation = destination;
+this.Invoke((Action)(() =>
+{
+	if (!this._SearchTimer.Enabled)
+	{
+		this._SearchTimer.Start();
+	}
+}));
+foreach (var shellItem in destination.TakeWhile(shellItem => !this.IsCancelRequested))
+{
+	CurrentI++;
+	//if (CurrentI == 1) {
+	//  isFailed = false;
+	//}
+	smre.WaitOne();
+
+	if (this.ShowHidden || !shellItem.IsHidden)
+	{
+		shellItem.ItemIndex = K++;
+		this.Items.Add(shellItem);
+	}
+
+	var delta = CurrentI - LastI;
+	if (delta >= (this.IsSearchNavigating ? 1 : 5000))
+		LastI = CurrentI;
+	if (this.IsSearchNavigating && delta >= 20)
+		Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+}
+
+this.IsCancelRequested = false;
+this.IsNavigationInProgress = false;
+
+if (this._RequestedCurrentLocation.NavigationStatus != HResult.S_OK)
+{
+	this.Invoke((Action)(() =>
+	{
+		if (this._SearchTimer.Enabled)
+			this._SearchTimer.Stop();
+	}));
+	GC.Collect();
+	Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+	if (this.Threads.Count <= 1) return;
+	mre.Set();
+	this.resetEvent.Set();
+	this.Threads[0].Abort();
+	this.Threads.RemoveAt(0);
+	return;
+}
+
+var headerhandle = User32.SendMessage(this.LVHandle, MSG.LVM_GETHEADER, 0, 0);
+for (var i = 0; i < this.Collumns.Count; i++)
+{
+	this.Collumns[i].SetSplitButton(headerhandle, i);
+}
+
+if (this.View != ShellViewStyle.Details) AutosizeAllColumns(-2);
+
+var sortColIndex = 0;
+if (sortColIndex > -1) this.SetSortIcon(sortColIndex, SortOrder.Ascending);
+
+this.SetSortCollumn(false, this.Collumns.First(), SortOrder.Ascending, false);
+
+this.BeginInvoke((Action)(() =>
+{
+	var navArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
+	this.CurrentFolder = this._RequestedCurrentLocation;
+	if (!refresh)
+		Navigated?.Invoke(this, navArgs);
+}));
+
+GC.Collect();
+Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+this.Invoke((Action)(() =>
+{
+	if (this._SearchTimer.Enabled)
+		this._SearchTimer.Stop();
+}));
+mre.Reset();
+mre.WaitOne();
+this.Focus();
+});
+
+navigationThread.SetApartmentState(ApartmentState.STA);
+this.Threads.Add(navigationThread);
+navigationThread.Start();
+}
+*/
 
     private Boolean LoadSettingsFromDatabase(IListItemEx directory, out FolderSettings folderSettings) {
       var result = false;
@@ -3991,7 +4177,13 @@ namespace BExplorer.Shell {
             switch (info.Notification) {
               case ShellNotifications.SHCNE.SHCNE_MKDIR:
               case ShellNotifications.SHCNE.SHCNE_CREATE:
+                //break;
                 try {
+                  //var obj = new FileSystemListItem();
+                  //try {
+                  //  obj.Initialize(this.LVHandle, Shell32.ILFindLastID(info.Item1), 0);
+                  //} catch {
+                  //}
                   var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
                   if (obj.IsInCurrentFolder(this.CurrentFolder)) {
                     obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, obj.PIDL);
@@ -4058,6 +4250,8 @@ namespace BExplorer.Shell {
                     if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Updated, exisitingUItem))) {
                       this.UnvalidateDirectory();
                     }
+
+                    // this.RefreshItem(exisitingUItem.ItemIndex, true);
                   }
                 }
 
@@ -4165,6 +4359,8 @@ namespace BExplorer.Shell {
 
     internal void OnSelectionChanged() => this.SelectionChanged?.Invoke(this, EventArgs.Empty);
 
+    // private new void ResumeLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 1, 0);
+    // private new void SuspendLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 0, 0);
     [Obsolete("Contains No Code")]
     private void RedrawWindow() {
     }// User32.InvalidateRect(this.LVHandle, IntPtr.Zero, false);
@@ -4197,7 +4393,7 @@ namespace BExplorer.Shell {
     private void StartProcessInCurrentDirectory(IListItemEx item) {
       Process.Start(new ProcessStartInfo() {
         FileName = item.ParsingName,
-        WorkingDirectory = this.CurrentFolder.ParsingName,
+        WorkingDirectory = this.CurrentFolder.ParsingName
       });
     }
 
@@ -4276,6 +4472,7 @@ namespace BExplorer.Shell {
     private void ProcessCustomDrawPostPaint(ref Message m, User32.NMLVCUSTOMDRAW nmlvcd, Int32 index, IntPtr hdc, IListItemEx sho, Color? textColor) {
       try {
         if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0 && this._CurrentDrawIndex == -1) {
+          // var perceivedType = (PerceivedType)sho.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType)).Value;
           this._CurrentDrawIndex = index;
           var itemBounds = nmlvcd.nmcd.rc;
           var lvi = default(LVITEMINDEX);
@@ -4363,7 +4560,8 @@ namespace BExplorer.Shell {
         Font subItemFont = System.Drawing.SystemFonts.IconTitleFont;
         var subItemTextBrush = new SolidBrush(System.Drawing.SystemColors.ControlDarkDark);
         g.DrawString(
-            $"{ShlWapi.StrFormatByteSize(driveInfo.AvailableFreeSpace)} free of {ShlWapi.StrFormatByteSize(driveInfo.TotalSize)}", subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
+            $"{ShlWapi.StrFormatByteSize(driveInfo.AvailableFreeSpace)} free of {ShlWapi.StrFormatByteSize(driveInfo.TotalSize)}",
+                                                                        subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
 
         subItemFont.Dispose();
         subItemTextBrush.Dispose();

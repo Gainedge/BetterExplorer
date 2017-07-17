@@ -891,11 +891,4 @@ namespace BExplorer.Shell.Interop {
 		public int iItem;
 		public int iSubItem;
 	}
-
-  public enum WindowsVersions {
-    Windows10,
-    Windows81,
-    Windows8,
-    Windows7
-  }
 }
