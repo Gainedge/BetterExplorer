@@ -596,7 +596,7 @@ namespace BetterExplorer {
         var typePK = new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 };
         var flt = this._ShellListView.SelectedItems.Select(item => item.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant());
         var items = this._ShellListView.Items.Where(w => flt.Contains(w.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant())).ToArray();
-        this._ShellListView.SelectItems(items);
+        this._ShellListView.SelectItems(items, true);
         this.btnCondSel.IsDropDownOpen = false;
       }
     }
@@ -606,7 +606,7 @@ namespace BetterExplorer {
         var typePK = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 15 };
         var flt = this._ShellListView.SelectedItems.Select(item => DateTime.Parse(item.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date);
         var items = this._ShellListView.Items.Where(w => flt.Contains(DateTime.Parse(w.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date)).ToArray();
-        this._ShellListView.SelectItems(items);
+        this._ShellListView.SelectItems(items, true);
         this.btnCondSel.IsDropDownOpen = false;
       }
     }
