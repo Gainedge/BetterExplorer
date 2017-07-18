@@ -83,7 +83,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
           var guid = new Guid("000214fa-0000-0000-c000-000000000046");
           uint res = 0;
           ishellfolder = this.Parent.GetIShellFolder();
-          var pidls = new IntPtr[1] {Shell32.ILFindLastID(this.PIDL)};
+          var pidls = new IntPtr[1] { Shell32.ILFindLastID(this.PIDL) };
 
           ishellfolder.GetUIObjectOf(IntPtr.Zero, 1, pidls, ref guid, res, out result);
 
@@ -91,7 +91,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
             pidls = null;
             return IExtractIconPWFlags.GIL_PERCLASS;
           }
-          iextract = (IExtractIcon) Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
+          iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
           str = new StringBuilder(512);
           var index = -1;
           IExtractIconPWFlags flags;
@@ -391,7 +391,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) {
       var pvar = new PropVariant();
       var comObject = this.ComInterface;
-      var isi2 = (IShellItem2) comObject;
+      var isi2 = (IShellItem2)comObject;
       if (isi2 == null) {
         return PropVariant.FromObject(null);
       }
@@ -444,7 +444,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         } else if (result == HResult.MK_E_NOOBJECT) {
           return null;
         } else {
-          Marshal.ThrowExceptionForHR((int) result);
+          Marshal.ThrowExceptionForHR((int)result);
           return null;
         }
       }
@@ -455,7 +455,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       try {
         var comObject = this.ComInterface;
         comObject.BindToHandler(IntPtr.Zero, BHID.SFObject, typeof(IShellFolder).GUID, out res);
-        var iShellFolder = (IShellFolder) Marshal.GetTypedObjectForIUnknown(res, typeof(IShellFolder));
+        var iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res, typeof(IShellFolder));
         Marshal.ReleaseComObject(comObject);
         return iShellFolder;
       } catch {
@@ -474,7 +474,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
         try {
           var relativePidl = this.ILPidl;
-          this.Parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, 1, new IntPtr[] {relativePidl}, typeof(IQueryInfo).GUID, 0, out result);
+          this.Parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, 1, new IntPtr[] { relativePidl }, typeof(IQueryInfo).GUID, 0, out result);
         } catch (Exception) {
           return string.Empty;
         }
@@ -482,7 +482,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
           return String.Empty;
         }
 
-        queryInfo = (IQueryInfo) Marshal.GetTypedObjectForIUnknown(result, typeof(IQueryInfo));
+        queryInfo = (IQueryInfo)Marshal.GetTypedObjectForIUnknown(result, typeof(IQueryInfo));
         queryInfo.GetInfoTip(0x00000001 | 0x00000008, out infoTipPtr);
         infoTip = Marshal.PtrToStringUni(infoTipPtr);
         Ole32.CoTaskMemFree(infoTipPtr);
@@ -509,7 +509,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         IntPtr cachePointer;
         Ole32.CoCreateInstance(ref CLSID_LocalThumbnailCache, IntPtr.Zero, Ole32.CLSCTX.INPROC, ref IID_IUnknown, out cachePointer);
 
-        thumbCache = (IThumbnailCache) Marshal.GetObjectForIUnknown(cachePointer);
+        thumbCache = (IThumbnailCache)Marshal.GetObjectForIUnknown(cachePointer);
       }
 
       var res = HResult.S_OK;
@@ -598,7 +598,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         var pidls = new IntPtr[1];
         pidls[0] = Shell32.ILFindLastID(this.PIDL);
         ishellfolder.GetUIObjectOf(IntPtr.Zero, 1, pidls, ref guid, res, out result);
-        iextract = (IExtractIcon) Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
+        iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
         str = new StringBuilder(512);
         var index = -1;
         IExtractIconPWFlags flags;
@@ -611,15 +611,19 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     }
 
     public int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
-      var info = new SHFILEINFO();
-      var result = Shell32.SHGetFileInfo(pidl, 0, out info, Marshal.SizeOf(info), SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI) type | (SHGFI) flags);
-
-      if (result == IntPtr.Zero) {
-        return 0;
+      var options = SHGetFileInfoOptions.Icon | SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.OverlayIndex | SHGetFileInfoOptions.Pidl | SHGetFileInfoOptions.AddOverlays | (SHGetFileInfoOptions)type | (SHGetFileInfoOptions)flags;
+      var shfi = new SHFILEINFO();
+      var shfiSize = Marshal.SizeOf(shfi.GetType());
+      IntPtr retVal = Win32Api.SHGetFileInfo(pidl, FileAttributes.None, ref shfi, shfiSize, options);
+      if (shfi.hIcon != IntPtr.Zero) {
+        Win32Api.DestroyIcon(shfi.hIcon);
       }
 
-      User32.DestroyIcon(info.hIcon);
-      return info.iIcon;
+      if (retVal.Equals(IntPtr.Zero)) {
+        return 0;
+      } else {
+        return shfi.iIcon;
+      }
     }
 
     public Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags) {
