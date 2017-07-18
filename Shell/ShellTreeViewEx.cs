@@ -23,9 +23,7 @@
 
     /// <summary>The <see cref="ShellView">List</see> that this is paired with</summary>
     public ShellView ShellListView {
-      private get {
-        return this._ShellListView;
-      }
+      private get { return this._ShellListView; }
 
       set {
         this._ShellListView = value;
@@ -78,37 +76,39 @@
       this.childsQueue.Clear();
       this.UpdatedImages.Clear();
       this.CheckedFroChilds.Clear();
-      var favoritesItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Links).Pidl);
+      var favoritesItem = Utilities.WindowsVersion == WindowsVersions.Windows10
+        ? FileSystemListItem.ToFileSystemItem(IntPtr.Zero, "shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}")
+        : FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem) KnownFolders.Favorites).Pidl);
       var favoritesRoot = new TreeNode(favoritesItem.DisplayName);
-      favoritesRoot.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Links).Pidl);
-      favoritesRoot.ImageIndex = ((ShellItem)KnownFolders.Favorites).GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
+      favoritesRoot.Tag = favoritesItem;
+      favoritesRoot.ImageIndex = favoritesItem.GetSystemImageListIndex(favoritesItem.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
       favoritesRoot.SelectedImageIndex = favoritesRoot.ImageIndex;
 
       if (favoritesItem.Count() > 0) {
         favoritesRoot.Nodes.Add(this._EmptyItemString);
       }
 
-      var librariesItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Libraries).Pidl);
+      var librariesItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem) KnownFolders.Libraries).Pidl);
       var librariesRoot = new TreeNode(librariesItem.DisplayName);
-      librariesRoot.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Libraries).Pidl);
+      librariesRoot.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem) KnownFolders.Libraries).Pidl);
       librariesRoot.ImageIndex = librariesItem.GetSystemImageListIndex(librariesItem.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
       librariesRoot.SelectedImageIndex = librariesRoot.ImageIndex;
       if (librariesItem.HasSubFolders) {
         librariesRoot.Nodes.Add(this._EmptyItemString);
       }
 
-      var computerItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Computer).Pidl);
+      var computerItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem) KnownFolders.Computer).Pidl);
       var computerRoot = new TreeNode(computerItem.DisplayName);
-      computerRoot.Tag = computerItem;
+      computerRoot.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem) KnownFolders.Computer).Pidl);
       computerRoot.ImageIndex = computerItem.GetSystemImageListIndex(computerItem.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
       computerRoot.SelectedImageIndex = computerRoot.ImageIndex;
       if (computerItem.HasSubFolders) {
         computerRoot.Nodes.Add(this._EmptyItemString);
       }
 
-      var networkItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Network).Pidl);
+      var networkItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem) KnownFolders.Network).Pidl);
       var networkRoot = new TreeNode(networkItem.DisplayName);
-      networkRoot.Tag = networkItem;
+      networkRoot.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem) KnownFolders.Network).Pidl);
       networkRoot.ImageIndex = networkItem.GetSystemImageListIndex(networkItem.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
       networkRoot.SelectedImageIndex = networkRoot.ImageIndex;
       networkRoot.Nodes.Add(this._EmptyItemString);
@@ -116,7 +116,7 @@
       this.ShellTreeView.Nodes.Add(favoritesRoot);
       favoritesRoot.Expand();
 
-      this.ShellTreeView.Nodes.AddRange(new[] { new TreeNode(), librariesRoot, new TreeNode(), computerRoot, new TreeNode(), networkRoot });
+      this.ShellTreeView.Nodes.AddRange(new[] {new TreeNode(), librariesRoot, new TreeNode(), computerRoot, new TreeNode(), networkRoot});
 
       librariesRoot.Expand();
       computerRoot.Expand();
@@ -133,7 +133,7 @@
         itemInfo.hItem = node;
         itemInfo.iImage = ShellItem.GetSystemImageListIndex(pidl, ShellIconType.SmallIcon, ShellIconFlags.OverlayIndex);
         if (isOverlayed) {
-          itemInfo.state = (TVIS)(itemInfo.iImage >> 16);
+          itemInfo.state = (TVIS) (itemInfo.iImage >> 16);
           itemInfo.stateMask = TVIS.TVIS_OVERLAYMASK;
         }
 
@@ -162,7 +162,10 @@
     private TreeNode FromItem(IListItemEx item) {
       foreach (TreeNode node in this.ShellTreeView.Nodes.OfType<TreeNode>().Where(w => {
         var nodeItem = w.Tag as IListItemEx;
-        return nodeItem != null && (w.Tag != null && !nodeItem.ParsingName.Equals(KnownFolders.Links.ParsingName));
+        //if (nodeItem != null) {
+        //  nodeItem = FileSystemListItem.ToFileSystemItem(item.ParentHandle, nodeItem.PIDL);
+        //}
+        return nodeItem != null && (w.Tag != null && !nodeItem.ParsingName.Equals(KnownFolders.Links.ParsingName) && !nodeItem.ParsingName.Equals("::{679f85cb-0220-4080-b29b-5540cc05aab6}"));
       })) {
         if ((node.Tag as IListItemEx)?.Equals(item) == true) {
           return node;
@@ -184,12 +187,12 @@
       if (nodeNext == null) {
         this.parents.Push(item);
         if (item.Parent != null) {
-          this.FindItem(item.Parent.Clone());
+          this.BeginInvoke((Action) (() => { this.FindItem(item.Parent.Clone()); }));
         }
       } else {
         while (this.parents.Count > 0) {
           var obj = this.parents.Pop();
-          this.BeginInvoke((Action)(() => {
+          this.BeginInvoke((Action) (() => {
             var newNode = this.FromItem(obj);
             if (newNode != null && !newNode.IsExpanded) {
               newNode.Expand();
@@ -200,12 +203,12 @@
     }
 
     private void SelItem(IListItemEx item) {
-      item = FileSystemListItem.ToFileSystemItem(item.ParentHandle, item.PIDL);
+      // item = FileSystemListItem.ToFileSystemItem(item.ParentHandle, item.PIDL);
       var node = this.FromItem(item);
       if (node == null) {
         this.FindItem(item.Clone());
       } else {
-        this.BeginInvoke((Action)(() => { this.ShellTreeView.SelectedNode = node; }));
+        this.BeginInvoke((Action) (() => { this.ShellTreeView.SelectedNode = node; }));
       }
     }
 
@@ -240,7 +243,7 @@
         var itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.PIDL);
         node.Tag = itemReal;
         var oldnodearray = itemNode.Nodes.OfType<TreeNode>().ToList();
-        if (!oldnodearray.Any(s => s.Tag != null && ((IListItemEx)s.Tag).Equals(itemReal))) {
+        if (!oldnodearray.Any(s => s.Tag != null && ((IListItemEx) s.Tag).Equals(itemReal))) {
           oldnodearray.Add(node);
         }
 
@@ -250,9 +253,9 @@
         this.ShellTreeView.EndUpdate();
 
         if (itemNode?.Nodes?.Count > 0) {
-          var newNode = itemNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && ((IListItemEx)s.Tag).Equals(itemReal));
+          var newNode = itemNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && ((IListItemEx) s.Tag).Equals(itemReal));
           if (newNode != null) {
-            this.SetNodeImage(newNode.Handle, itemReal.PIDL, this.ShellTreeView.Handle, !(newNode.Parent?.Tag != null && ((IListItemEx)newNode.Parent.Tag).ParsingName == KnownFolders.Links.ParsingName));
+            this.SetNodeImage(newNode.Handle, itemReal.PIDL, this.ShellTreeView.Handle, !(newNode.Parent?.Tag != null && ((IListItemEx) newNode.Parent.Tag).ParsingName == KnownFolders.Links.ParsingName));
           }
         }
       }
@@ -305,13 +308,13 @@
 
       SystemImageList.UseSystemImageList(this.ShellTreeView);
       this.ShellTreeView.FullRowSelect = true;
-      var defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
+      var defIconInfo = new Shell32.SHSTOCKICONINFO() {cbSize = (uint) Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO))};
       Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_FOLDER, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
       this.folderImageListIndex = defIconInfo.iSysIconIndex;
-      this.imagesThread = new Thread(new ThreadStart(this.LoadTreeImages)) { IsBackground = true };
+      this.imagesThread = new Thread(new ThreadStart(this.LoadTreeImages)) {IsBackground = true};
       this.imagesThread.SetApartmentState(ApartmentState.STA);
       this.imagesThread.Start();
-      this.childsThread = new Thread(new ThreadStart(this.LoadChilds)) { IsBackground = true };
+      this.childsThread = new Thread(new ThreadStart(this.LoadChilds)) {IsBackground = true};
       this.childsThread.Start();
     }
 
@@ -369,14 +372,12 @@
 
     private void RequestTreeImage(IntPtr handle) {
       new Thread(() => {
-        Application.DoEvents();
-        Thread.Sleep(1);
         TreeNode node = null;
         IntPtr treeHandle = IntPtr.Zero;
         var pidl = IntPtr.Zero;
         var visible = false;
         if (this.ShellTreeView != null) {
-          this.ShellTreeView.Invoke((Action)(() => {
+          this.ShellTreeView.BeginInvoke((Action) (() => {
             try {
               node = TreeNode.FromHandle(this.ShellTreeView, handle);
               treeHandle = this.ShellTreeView.Handle;
@@ -387,7 +388,8 @@
                   pidl = item.AbsolutePidl;
                 }
               }
-            } catch { }
+            } catch {
+            }
 
           }));
 
@@ -416,15 +418,14 @@
         // var hash = -1;
         var pidl = IntPtr.Zero;
         var visible = false;
-        this.ShellTreeView?.BeginInvoke(
-          (Action)(() => {
-            node = TreeNode.FromHandle(this.ShellTreeView, handle);
-            treeHandle = this.ShellTreeView.Handle;
-            if (node != null) {
-              visible = node.IsVisible;
-              pidl = (node.Tag as IListItemEx).AbsolutePidl;
-            }
-          }));
+        this.ShellTreeView?.BeginInvoke((Action) (() => {
+          node = TreeNode.FromHandle(this.ShellTreeView, handle);
+          treeHandle = this.ShellTreeView.Handle;
+          if (node != null) {
+            visible = node.IsVisible;
+            pidl = (node.Tag as IListItemEx).AbsolutePidl;
+          }
+        }));
 
         if (visible) {
           var nodeHandle = handle;
@@ -446,14 +447,13 @@
         var visible = true;
 
         // var pidl = IntPtr.Zero;
-        this.ShellTreeView?.BeginInvoke(
-          (Action)(() => {
-            node = TreeNode.FromHandle(this.ShellTreeView, handle);
-            treeHandle = this.ShellTreeView.Handle;
-            if (node != null) {
-              visible = node.IsVisible;
-            }
-          }));
+        this.ShellTreeView?.BeginInvoke((Action) (() => {
+          node = TreeNode.FromHandle(this.ShellTreeView, handle);
+          treeHandle = this.ShellTreeView.Handle;
+          if (node != null) {
+            visible = node.IsVisible;
+          }
+        }));
 
         if (!visible) {
           return;
@@ -487,14 +487,13 @@
         var visible = true;
 
         // var pidl = IntPtr.Zero;
-        this.ShellTreeView?.BeginInvoke(
-          (Action)(() => {
-            node = TreeNode.FromHandle(this.ShellTreeView, handle);
-            treeHandle = this.ShellTreeView.Handle;
-            if (node != null) {
-              visible = node.IsVisible;
-            }
-          }));
+        this.ShellTreeView?.BeginInvoke((Action) (() => {
+          node = TreeNode.FromHandle(this.ShellTreeView, handle);
+          treeHandle = this.ShellTreeView.Handle;
+          if (node != null) {
+            visible = node.IsVisible;
+          }
+        }));
 
         if (!visible) {
           continue;
@@ -535,11 +534,9 @@
     private void DoMove(F.IDataObject dataObject, IListItemEx destination) {
       var handle = this.Handle;
       var thread = new Thread(() => {
-        IShellItem[] items =
-          dataObject.GetDataPresent("FileDrop") ?
-          items = ((F.DataObject)dataObject).GetFileDropList().OfType<string>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray()
-          :
-          dataObject.ToShellItemArray().ToArray();
+        IShellItem[] items = dataObject.GetDataPresent("FileDrop")
+          ? items = ((F.DataObject) dataObject).GetFileDropList().OfType<string>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray()
+          : dataObject.ToShellItemArray().ToArray();
 
         try {
           var fo = new IIFileOperation(handle);
@@ -629,25 +626,25 @@
 
     /// <summary>Cuts the currently selected items (signals the UI and saves items into the clipboard)</summary>
     private void CutSelectedFiles() {
-      var item = new TVITEMW() { mask = TVIF.TVIF_STATE, stateMask = TVIS.TVIS_CUT, state = TVIS.TVIS_CUT, hItem = this.ShellTreeView.SelectedNode.Handle, };
+      var item = new TVITEMW() {mask = TVIF.TVIF_STATE, stateMask = TVIS.TVIS_CUT, state = TVIS.TVIS_CUT, hItem = this.ShellTreeView.SelectedNode.Handle,};
 
       User32.SendMessage(this.ShellTreeView.Handle, MSG.TVM_SETITEMW, 0, ref item);
 
       this.cuttedNode = this.ShellTreeView.SelectedNode;
-      var selectedItems = new[] { this.ShellTreeView.SelectedNode.Tag as IListItemEx };
+      var selectedItems = new[] {this.ShellTreeView.SelectedNode.Tag as IListItemEx};
       var ddataObject = new F.DataObject();
 
       // Copy or Cut operation (5 = copy; 2 = cut)
-      ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 2, 0, 0, 0 }));
+      ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] {2, 0, 0, 0}));
       ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
       Clipboard.SetDataObject(ddataObject, true);
     }
 
     /// <summary>Copies the currently selected items (saves items into the clipboard)</summary>
     private void CopySelectedFiles() {
-      var selectedItems = new[] { this.ShellTreeView.SelectedNode.Tag as IListItemEx };
+      var selectedItems = new[] {this.ShellTreeView.SelectedNode.Tag as IListItemEx};
       var ddataObject = new F.DataObject();
-      ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 5, 0, 0, 0 }));
+      ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] {5, 0, 0, 0}));
       ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
       Clipboard.SetDataObject(ddataObject, true);
     }
@@ -702,83 +699,91 @@
           this.imagesQueue.Clear();
           this.childsQueue.Clear();
           var sho = e.Node.Tag as IListItemEx;
-
+          if (sho == null) {
+            return;
+          }
+          //if (sho != null) {
+          //  sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, sho.PIDL);
+          //}
           // var lvSho = this.ShellListView != null && this.ShellListView.CurrentFolder != null ? this.ShellListView.CurrentFolder.Clone() : null;
           var lvSho = this.ShellListView?.CurrentFolder?.Clone();
           var node = e.Node;
           node.Nodes.Add(this._SearchingForFolders);
-          new Thread(
-            () => {
-              var nodesTemp = new List<TreeNode>();
-              if (sho?.IsLink == true) {
+          var thread = new Thread(() => {
+            var nodesTemp = new List<TreeNode>();
+            if (sho?.IsLink == true) {
+              try {
+                var shellLink = new ShellLink(sho.ParsingName);
+                var linkTarget = shellLink.TargetPIDL;
+                sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
+                shellLink.Dispose();
+              } catch {
+              }
+            }
+
+            foreach (var item in sho.GetContents(this.IsShowHiddenItems).Where(w => (sho != null && !sho.IsFileSystem && Path.GetExtension(sho?.ParsingName)?.ToLowerInvariant() != ".library-ms") ||
+                                                                                    (w.IsFolder || w.IsLink || w.IsDrive))) {
+              if (item != null && !item.IsFolder && !item.IsLink) {
+                continue;
+              }
+              if (item?.IsLink == true) {
                 try {
-                  var shellLink = new ShellLink(sho.ParsingName);
+                  var shellLink = new ShellLink(item.ParsingName);
                   var linkTarget = shellLink.TargetPIDL;
-                  sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
+                  var itemLinkReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
                   shellLink.Dispose();
+                  if (!itemLinkReal.IsFolder) {
+                    continue;
+                  }
                 } catch {
                 }
               }
 
-              foreach (IListItemEx item in sho?.Where(
-                w => !sho.IsFileSystem && Path.GetExtension(sho?.ParsingName).ToLowerInvariant() != ".library-ms" || ((w.IsFolder || w.IsLink) && (this.IsShowHiddenItems || w.IsHidden == false)))) {
-                if (item?.IsLink == true) {
-                  try {
-                    var shellLink = new ShellLink(item.ParsingName);
-                    var linkTarget = shellLink.TargetPIDL;
-                    var itemLinkReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
-                    shellLink.Dispose();
-                    if (!itemLinkReal.IsFolder) {
-                      continue;
-                    }
-                  } catch {
-                  }
-                }
+              var itemNode = new TreeNode(item.DisplayName);
 
-                var itemNode = new TreeNode(item.DisplayName);
+              // IListItemEx itemReal = null;
+              // if (item.Parent?.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
+              var itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.PIDL);
 
-                // IListItemEx itemReal = null;
-                // if (item.Parent?.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
-                IListItemEx itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.PIDL);
+              itemNode.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.PIDL);
 
-                itemNode.Tag = itemReal;
+              if (sho.IsNetworkPath && sho.ParsingName != KnownFolders.Network.ParsingName) {
+                itemNode.ImageIndex = this.folderImageListIndex;
+              } else if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS || sho.ParsingName == KnownFolders.Network.ParsingName) {
+                itemNode.ImageIndex = itemReal.GetSystemImageListIndex(itemReal.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
+                itemNode.SelectedImageIndex = itemNode.ImageIndex;
+              } else {
+                itemNode.ImageIndex = this.folderImageListIndex;
+              }
 
-                if ((sho.IsNetworkPath || sho.IsNetworkPath) && sho.ParsingName != KnownFolders.Network.ParsingName) {
-                  itemNode.ImageIndex = this.folderImageListIndex;
-                } else if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS || sho.ParsingName == KnownFolders.Network.ParsingName) {
-                  itemNode.ImageIndex = itemReal.GetSystemImageListIndex(itemReal.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
-                  itemNode.SelectedImageIndex = itemNode.ImageIndex;
-                } else {
-                  itemNode.ImageIndex = this.folderImageListIndex;
-                }
-
-                itemNode.Nodes.Add(this._EmptyItemString);
-                if (item.ParsingName.EndsWith(".library-ms")) {
-                  var library = ShellLibrary.Load(Path.GetFileNameWithoutExtension(item.ParsingName), false);
-                  if (library.IsPinnedToNavigationPane) {
-                    nodesTemp.Add(itemNode);
-                  }
-
-                  library.Close();
-                } else {
+              itemNode.Nodes.Add(this._EmptyItemString);
+              if (item.ParsingName.EndsWith(".library-ms")) {
+                var library = ShellLibrary.Load(Path.GetFileNameWithoutExtension(item.ParsingName), false);
+                if (library.IsPinnedToNavigationPane) {
                   nodesTemp.Add(itemNode);
                 }
 
-                // Application.DoEvents();
+                library.Close();
+              } else {
+                nodesTemp.Add(itemNode);
               }
 
-              this.BeginInvoke(
-                (Action)(() => {
-                  if (node.Nodes.Count == 1 && node.Nodes[0].Text == this._SearchingForFolders) {
-                    node.Nodes.RemoveAt(0);
-                  }
+              // Application.DoEvents();
+            }
 
-                  node.Nodes.AddRange(nodesTemp.ToArray());
-                  if (lvSho != null) {
-                    this.SelItem(lvSho);
-                  }
-                }));
-            }).Start();
+            this.BeginInvoke((Action) (() => {
+              if (node.Nodes.Count == 1 && node.Nodes[0].Text == this._SearchingForFolders) {
+                node.Nodes.RemoveAt(0);
+              }
+
+              node.Nodes.AddRange(nodesTemp.ToArray());
+              if (lvSho != null) {
+                this.SelItem(lvSho);
+              }
+            }));
+          });
+          thread.SetApartmentState(ApartmentState.STA);
+          thread.Start();
         }
       }
     }
@@ -809,7 +814,8 @@
             var linkTarget = shellLink.TargetPIDL;
             linkSho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
             shellLink.Dispose();
-          } catch { }
+          } catch {
+          }
         }
 
         this.isFromTreeview = true;
@@ -827,11 +833,9 @@
         return;
       }
       // TODO: Try to reenable this since sometimes it causes an exceptions
-      //var thread = new Thread(() => {
-        //this.SelItem(e.Folder);
-      //});
-      //thread.SetApartmentState(ApartmentState.STA);
-      //thread.Start();
+      var thread = new Thread(() => { this.SelItem(e.Folder); });
+      thread.SetApartmentState(ApartmentState.STA);
+      thread.Start();
     }
 
     private void ShellTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
@@ -861,7 +865,7 @@
     private void ShellTreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
       if (e.Label != null) {
         if (e.Label.Length > 0) {
-          if (e.Label.IndexOfAny(new[] { '@', '.', ',', '!' }) == -1) {
+          if (e.Label.IndexOfAny(new[] {'@', '.', ',', '!'}) == -1) {
             // Stop editing without canceling the label change.
             e.Node.EndEdit(false);
             var fo = new IIFileOperation(this.Handle);
@@ -903,63 +907,63 @@
       } else if (e.KeyCode == Keys.F5) {
         this.RefreshContents();
       } else if (e.KeyCode == Keys.Escape) {
-        var item = new TVITEMW() { mask = TVIF.TVIF_STATE, stateMask = TVIS.TVIS_CUT, state = 0, hItem = this.cuttedNode.Handle };
+        var item = new TVITEMW() {mask = TVIF.TVIF_STATE, stateMask = TVIS.TVIS_CUT, state = 0, hItem = this.cuttedNode.Handle};
         User32.SendMessage(this.ShellTreeView.Handle, MSG.TVM_SETITEMW, 0, ref item);
         Clipboard.Clear();
       }
     }
 
     private void ShellTreeView_DragEnter(object sender, DragEventArgs e) {
-      this._DataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data;
-      var wp = new DataObject.Win32Point() { X = e.X, Y = e.Y };
+      this._DataObject = (System.Runtime.InteropServices.ComTypes.IDataObject) e.Data;
+      var wp = new DataObject.Win32Point() {X = e.X, Y = e.Y};
       ShellView.Drag_SetEffect(e);
 
       if (e.Data.GetDataPresent("DragImageBits")) {
-        DropTargetHelper.DropTarget.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+        DropTargetHelper.DropTarget.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject) e.Data, ref wp, (int) e.Effect);
       } else {
         this.OnDragEnter(e);
       }
     }
 
     private void ShellTreeView_DragOver(object sender, DragEventArgs e) {
-      var wp = new DataObject.Win32Point() { X = e.X, Y = e.Y };
+      var wp = new DataObject.Win32Point() {X = e.X, Y = e.Y};
       ShellView.Drag_SetEffect(e);
       var descinvalid = new DataObject.DropDescription();
-      descinvalid.type = (int)DataObject.DropImageType.Invalid;
-      ((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(descinvalid);
+      descinvalid.type = (int) DataObject.DropImageType.Invalid;
+      ((System.Runtime.InteropServices.ComTypes.IDataObject) e.Data).SetDropDescription(descinvalid);
       var node = this.ShellTreeView.GetNodeAt(this.PointToClient(new Point(e.X, e.Y)));
       if (node != null && !string.IsNullOrEmpty(node.Text) && node.Text != this._EmptyItemString) {
         User32.SendMessage(this.ShellTreeView.Handle, MSG.TVM_SETHOT, 0, node.Handle);
         var desc = new DataObject.DropDescription();
         switch (e.Effect) {
           case DragDropEffects.Copy:
-            desc.type = (int)DataObject.DropImageType.Copy;
+            desc.type = (int) DataObject.DropImageType.Copy;
             desc.szMessage = "Copy To %1";
             break;
           case DragDropEffects.Link:
-            desc.type = (int)DataObject.DropImageType.Link;
+            desc.type = (int) DataObject.DropImageType.Link;
             desc.szMessage = "Create Link in %1";
             break;
           case DragDropEffects.Move:
-            desc.type = (int)DataObject.DropImageType.Move;
+            desc.type = (int) DataObject.DropImageType.Move;
             desc.szMessage = "Move To %1";
             break;
           case DragDropEffects.None:
-            desc.type = (int)DataObject.DropImageType.None;
+            desc.type = (int) DataObject.DropImageType.None;
             desc.szMessage = "";
             break;
           default:
-            desc.type = (int)DataObject.DropImageType.Invalid;
+            desc.type = (int) DataObject.DropImageType.Invalid;
             desc.szMessage = "";
             break;
         }
 
         desc.szInsert = node.Text;
-        ((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
+        ((System.Runtime.InteropServices.ComTypes.IDataObject) e.Data).SetDropDescription(desc);
       }
 
       if (e.Data.GetDataPresent("DragImageBits")) {
-        DropTargetHelper.DropTarget.Create.DragOver(ref wp, (int)e.Effect);
+        DropTargetHelper.DropTarget.Create.DragOver(ref wp, (int) e.Effect);
       } else {
         this.OnDragOver(e);
       }
@@ -999,10 +1003,10 @@
           break;
       }
 
-      var wp = new DataObject.Win32Point() { X = e.X, Y = e.Y };
+      var wp = new DataObject.Win32Point() {X = e.X, Y = e.Y};
 
       if (e.Data.GetDataPresent("DragImageBits")) {
-        DropTargetHelper.DropTarget.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+        DropTargetHelper.DropTarget.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject) e.Data, ref wp, (int) e.Effect);
       } else {
         this.OnDragDrop(e);
       }
@@ -1051,8 +1055,14 @@
                 break;
               case ShellNotifications.SHCNE.SHCNE_MKDIR:
                 try {
-                  this.AddItem(FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1));
-                } catch (FileNotFoundException) { } catch (Exception) { }
+                  var obj = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
+                  obj = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, obj.PIDL);
+                  if (obj.IsFileSystem) {
+                    this.AddItem(obj);
+                  }
+                } catch (FileNotFoundException) {
+                } catch (Exception) {
+                }
                 break;
               case ShellNotifications.SHCNE.SHCNE_RMDIR:
                 var objDelDir = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
@@ -1125,6 +1135,7 @@
                 // case ShellNotifications.SHCNE.SHCNE_CREATE:
                 try {
                   var sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
+                  sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, sho.PIDL);
                   if (sho.Parent == null || !sho.Parent.ParsingName.Equals(KnownFolders.Network.ParsingName, StringComparison.InvariantCultureIgnoreCase)) {
                     break;
                   }

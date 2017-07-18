@@ -113,6 +113,7 @@
     <Compile Include="ListViewEditor.cs" />
     <Compile Include="ObservableCollectionEx.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="WindowActivator.cs" />
     <Compile Include="ShellItemEqualityComparer.cs" />
     <Compile Include="Custom ContextMenus Remove Soon\FilterMenu_Strings.cs" />

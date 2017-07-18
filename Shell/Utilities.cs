@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BExplorer.Shell.Interop;
+﻿namespace BExplorer.Shell {
+  using System;
+  using Interop;
+  using Microsoft.Win32;
 
-namespace BExplorer.Shell {
+  /// <summary>
+  /// Utilities class that holds helper functions
+  /// </summary>
   public static class Utilities {
+    /// <summary>
+    /// Gets current Windows version
+    /// </summary>
     public static WindowsVersions WindowsVersion {
       get {
         var environmentInfo = Environment.OSVersion.Version;
@@ -19,6 +22,19 @@ namespace BExplorer.Shell {
         } else {
           return WindowsVersions.Windows10;
         }
+      }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether Is current maschine running Windows 10
+    /// </summary>
+    public static Boolean IsWindows10 {
+      get {
+        var reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+
+        var productName = (String)reg?.GetValue("ProductName");
+
+        return  productName?.StartsWith("Windows 10") ?? false;
       }
     }
   }
