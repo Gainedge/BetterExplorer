@@ -912,9 +912,6 @@
     <Resource Include="Badges\Ubuntu Human\9.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Content Include="BetterExplorerShell.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Images\savetabs16.png" />
     <Resource Include="Images\savetabs32.png" />
     <Resource Include="Images\undotab16.png" />
@@ -998,9 +995,6 @@
     <Resource Include="Images\Share16.png" />
     <Resource Include="Images\share32.png" />
     <Resource Include="Images\new_window.png" />
-    <Content Include="BetterExplorerOperations.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Images\newlib16.png" />
     <Resource Include="Images\newlib32.png" />
     <Resource Include="Images\uac16.png" />
