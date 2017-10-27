@@ -4115,14 +4115,11 @@
       try {
         if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0 && this._CurrentDrawIndex == -1) {
           this._CurrentDrawIndex = index;
-          var itemBounds = nmlvcd.nmcd.rc;
           var lvi = default(LVITEMINDEX);
           lvi.iItem = index;
           lvi.iGroup = this.GetGroupIndex(index);
           var iconBounds = new User32.RECT() { Left = 1 };
           User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref iconBounds);
-          var lvItem = new LVITEM() { iItem = index, iGroupId = lvi.iGroup, iGroup = lvi.iGroup, mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED };
-          var lvItemImageMask = new LVITEM() { iItem = index, iGroupId = lvi.iGroup, iGroup = lvi.iGroup, mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_STATEIMAGEMASK };
 
           if (sho != null) {
             var cutFlag = (User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT) & LVIS.LVIS_CUT) == LVIS.LVIS_CUT;
@@ -4143,51 +4140,9 @@
         }
 
         this._CurrentDrawIndex = -1;
-      } catch (Exception exception) {
+      } catch (Exception ex) {
         // Clean up the current item since it appears is missing or broken.
         this.QueueDeleteItem(sho, true);
-      }
-    }
-
-    private void DrawNormalFolderSubitemsInTiledView(IListItemEx sho, RectangleF lblrectTiles, Graphics g, StringFormat fmt) {
-      var lblrectSubiTem2 = new RectangleF(lblrectTiles.Left, lblrectTiles.Bottom + 1, lblrectTiles.Width, 15);
-      var lblrectSubiTem3 = new RectangleF(lblrectTiles.Left, lblrectTiles.Bottom + 17, lblrectTiles.Width, 15);
-      Font subItemFont = System.Drawing.SystemFonts.IconTitleFont;
-      var subItemTextBrush = new SolidBrush(System.Drawing.SystemColors.ControlDarkDark); // new SolidBrush(Color.FromArgb(93, 92, 92));
-      g.DrawString(sho.GetPropertyValue(SystemProperties.FileType, typeof(String)).Value.ToString(), subItemFont, subItemTextBrush, lblrectSubiTem2, fmt);
-      if (sho.Parent.IsFileSystem) {
-        var size = sho.GetPropertyValue(SystemProperties.FileSize, typeof(Int64)).Value;
-        if (size != null) {
-          g.DrawString(ShlWapi.StrFormatByteSize(Int64.Parse(size.ToString())), subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
-        }
-      }
-
-      subItemFont.Dispose();
-      subItemTextBrush.Dispose();
-    }
-
-    private void DrawComputerTiledModeView(IListItemEx sho, Graphics g, RectangleF lblrectTiles, StringFormat fmt) {
-      var driveInfo = new DriveInfo(sho.ParsingName);
-      if (driveInfo.IsReady) {
-        ProgressBarRenderer.DrawHorizontalBar(g, new Rectangle((Int32)lblrectTiles.Left, (Int32)lblrectTiles.Bottom + 4, (Int32)lblrectTiles.Width - 10, 10));
-        var fullProcent = (100 * (driveInfo.TotalSize - driveInfo.AvailableFreeSpace)) / driveInfo.TotalSize;
-        var barWidth = (lblrectTiles.Width - 12) * fullProcent / 100;
-        var rec = new Rectangle((Int32)lblrectTiles.Left + 1, (Int32)lblrectTiles.Bottom + 5, (Int32)barWidth, 8);
-        var gradRec = new Rectangle(rec.Left, rec.Top - 1, rec.Width, rec.Height + 2);
-        var criticalUsed = fullProcent >= 90;
-        var warningUsed = fullProcent >= 75;
-        var averageUsed = fullProcent >= 50;
-        var brush = new LinearGradientBrush(gradRec, criticalUsed ? Color.FromArgb(255, 0, 0) : warningUsed ? Color.FromArgb(255, 224, 0) : averageUsed ? Color.FromArgb(0, 220, 255) : Color.FromArgb(199, 248, 165),
-          criticalUsed ? Color.FromArgb(150, 0, 0) : warningUsed ? Color.FromArgb(255, 188, 0) : averageUsed ? Color.FromArgb(43, 84, 235) : Color.FromArgb(101, 247, 0), LinearGradientMode.Vertical);
-        g.FillRectangle(brush, rec);
-        brush.Dispose();
-        var lblrectSubiTem3 = new RectangleF(lblrectTiles.Left, lblrectTiles.Bottom + 16, lblrectTiles.Width, 15);
-        Font subItemFont = System.Drawing.SystemFonts.IconTitleFont;
-        var subItemTextBrush = new SolidBrush(System.Drawing.SystemColors.ControlDarkDark);
-        g.DrawString($"{ShlWapi.StrFormatByteSize(driveInfo.AvailableFreeSpace)} free of {ShlWapi.StrFormatByteSize(driveInfo.TotalSize)}", subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
-
-        subItemFont.Dispose();
-        subItemTextBrush.Dispose();
       }
     }
 
@@ -4203,7 +4158,7 @@
 
         Color? textColor = null;
         if (sho != null && this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0 && !String.IsNullOrEmpty(sho.Extension)) {
-          var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(sho.Extension)).Count() > 0;
+          var extItemsAvailable = this.LVItemsColorCodes.Any(c => c.ExtensionList.Contains(sho.Extension));
           if (extItemsAvailable) {
             var color = this.LVItemsColorCodes.SingleOrDefault(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).TextColor;
             textColor = Color.FromArgb(color.A, color.R, color.G, color.B);

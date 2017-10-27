@@ -328,6 +328,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       var result = enumId.Next(1, out pidl, out count);
       var i = 0;
       while (result == HResult.S_OK) {
+        //var sb = new StringBuilder(512);
+        //Shell32.SHGetPathFromIDList(pidl, sb);
+        //var ext = Path.GetExtension(sb.ToString());
         var fsi = new FileSystemListItem();
         try {
           fsi.InitializeWithParent(this.PIDL, this.ParentHandle, pidl, i++);

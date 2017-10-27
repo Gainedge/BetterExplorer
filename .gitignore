@@ -258,3 +258,4 @@ BExplorer.sln.DotSettings
 StyleCop.Cache
 BExplorer/BetterExplorer/BEHelper.dll.config
 *.obj
+/Deploy

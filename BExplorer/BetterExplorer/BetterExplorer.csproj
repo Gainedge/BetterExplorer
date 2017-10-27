@@ -43,6 +43,13 @@
     <RestorePackages>true</RestorePackages>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <ShouldCreateLogs>True</ShouldCreateLogs>
+    <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
+    <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>False</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>
+    </AssemblyVersionSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -74,7 +81,7 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <ApplicationIcon>Explorer.ico</ApplicationIcon>
+    <ApplicationIcon>Explorer flat colors.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -119,7 +126,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Deploy\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
@@ -882,36 +889,36 @@
     <Resource Include="Images\check.png" />
     <Resource Include="Images\edit.png" />
     <Resource Include="Images\delete_16x16-4.png" />
-    <Resource Include="Badges\Ubuntu Human\1.ico">
+    <None Include="Badges\Ubuntu Human\1.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Badges\Ubuntu Human\10.ico">
+    </None>
+    <None Include="Badges\Ubuntu Human\10.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Badges\Ubuntu Human\2.ico">
+    </None>
+    <None Include="Badges\Ubuntu Human\2.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Badges\Ubuntu Human\3.ico">
+    </None>
+    <None Include="Badges\Ubuntu Human\3.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Badges\Ubuntu Human\4.ico">
+    </None>
+    <None Include="Badges\Ubuntu Human\4.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Badges\Ubuntu Human\5.ico">
+    </None>
+    <None Include="Badges\Ubuntu Human\5.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Badges\Ubuntu Human\6.ico">
+    </None>
+    <None Include="Badges\Ubuntu Human\6.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Badges\Ubuntu Human\7.ico">
+    </None>
+    <None Include="Badges\Ubuntu Human\7.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Badges\Ubuntu Human\8.ico">
+    </None>
+    <None Include="Badges\Ubuntu Human\8.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Badges\Ubuntu Human\9.ico">
+    </None>
+    <None Include="Badges\Ubuntu Human\9.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </None>
     <Resource Include="Images\savetabs16.png" />
     <Resource Include="Images\savetabs32.png" />
     <Resource Include="Images\undotab16.png" />
@@ -1195,6 +1202,9 @@
   <ItemGroup>
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Explorer flat colors.ico" />
   </ItemGroup>
   <!-- <ItemGroup>
     <Page Include="App.xaml">
