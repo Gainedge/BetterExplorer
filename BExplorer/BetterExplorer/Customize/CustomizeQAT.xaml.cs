@@ -33,7 +33,7 @@ namespace BetterExplorer {
 				rils.ShowMenuArrow = true;
 			}
 			else if (item is Fluent.CheckBox) {
-				rils.ShowCheck = true; hjghg
+				rils.ShowCheck = true;
 			}
 
 			return rils;
