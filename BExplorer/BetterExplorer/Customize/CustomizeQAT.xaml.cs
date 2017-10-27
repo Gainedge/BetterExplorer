@@ -45,7 +45,7 @@ namespace BetterExplorer {
 												  from Item in Group.Items.OfType<IRibbonControl>()
 												  where !(ribbon.IsInQuickAccessToolBar(Item as UIElement))
 												  orderby Item.Header
-												  select Item).ToList(); sdasds
+												  select Item).ToList();
 
 			foreach (IRibbonControl item in NonQATButtons) {
 				AllControls.Items.Add(GetRibbonItemListDisplay(item));
