@@ -55,7 +55,7 @@ namespace BetterExplorer {
 			var AllMenuItems = MainForm.TheRibbon.QuickAccessItems.Select(x => x.Target).ToList();
 			var Controls = (from control in MainForm.TheRibbon.QuickAccessItems
 							select control as Control into newControl
-							where !AllMenuItems.Any(x => x.Name == newControl.Name)
+							where !AllMenuItems.Any(x => x.Uid == newControl.Uid)
 							select newControl).ToList();
 			#endregion
 
