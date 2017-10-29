@@ -38,7 +38,6 @@
 
   <Ribbon:RibbonWindow.Resources>
     <ResourceDictionary>
-      <ResourceDictionary x:Key="rdMain" Source="Themes\generic.xaml" />
       <DataTemplate DataType="{x:Type shell:ShellItem}">
         <TextBlock Text="{Binding DisplayName}" />
       </DataTemplate>
@@ -2494,8 +2493,7 @@
         Ribbon:KeyTip.Keys="L"
         Group="{Binding ElementName=ctgLibraries, Mode=OneWay}"
         Header="{DynamicResource tbManageCP}"
-        ReduceOrder="ManageLibrary,ManageLibrary,ManageLibrary"
-        Visibility="Collapsed">
+        ReduceOrder="ManageLibrary,ManageLibrary,ManageLibrary">
         <Ribbon:RibbonGroupBox
           x:Name="ManageLibrary"
           Ribbon:KeyTip.Keys="L"
@@ -2588,8 +2586,7 @@
       <Ribbon:RibbonTabItem
         Ribbon:KeyTip.Keys="D"
         Group="{Binding ElementName=ctgDrive, Mode=OneWay}"
-        Header="{DynamicResource tabDriveCP}"
-        Visibility="Collapsed">
+        Header="{DynamicResource tabDriveCP}">
         <Ribbon:RibbonGroupBox
           Ribbon:KeyTip.Keys="M"
           Header="{DynamicResource tbManageCP}"
@@ -2669,8 +2666,7 @@
       <Ribbon:RibbonTabItem
         Ribbon:KeyTip.Keys="A"
         Group="{Binding ElementName=ctgExe, Mode=OneWay}"
-        Header="{DynamicResource tabApplicationCP}"
-        Visibility="Collapsed">
+        Header="{DynamicResource tabApplicationCP}">
         <Ribbon:RibbonGroupBox
           Ribbon:KeyTip.Keys="R"
           Header="{DynamicResource tgRunCP}"
@@ -2710,8 +2706,7 @@
       <Ribbon:RibbonTabItem
         Ribbon:KeyTip.Keys="V"
         Group="{Binding ElementName=ctgVirtualDisk, Mode=OneWay}"
-        Header="{DynamicResource tbManageCP}"
-        Visibility="Collapsed">
+        Header="{DynamicResource tbManageCP}">
         <Ribbon:RibbonGroupBox>
           <Ribbon:Button
             x:Name="btnAdvMountIso"
@@ -2742,8 +2737,7 @@
         Ribbon:KeyTip.Keys="I"
         Group="{Binding ElementName=ctgImage, Mode=OneWay}"
         Header="{DynamicResource tbManageCP}"
-        ReduceOrder="imgView,imgView,imgView,imgEdit"
-        Visibility="Collapsed">
+        ReduceOrder="imgView,imgView,imgView,imgEdit">
         <Ribbon:RibbonGroupBox
           x:Name="imgEdit"
           Ribbon:KeyTip.Keys="O"
@@ -2940,8 +2934,7 @@
         Ribbon:KeyTip.Keys="A"
         Group="{Binding ElementName=ctgArchive, Mode=OneWay}"
         Header="{DynamicResource tbManageCP}"
-        ReduceOrder="grpExtract,grpManArchive,grpExtract,grpManArchive,grpManArchive"
-        Visibility="Collapsed">
+        ReduceOrder="grpExtract,grpManArchive,grpExtract,grpManArchive,grpManArchive">
         <Ribbon:RibbonGroupBox
           x:Name="grpExtract"
           Ribbon:KeyTip.Keys="X"
@@ -3073,8 +3066,7 @@
       <Ribbon:RibbonTabItem
         Ribbon:KeyTip.Keys="M"
         Group="{Binding ElementName=ctgFolderTools, Mode=OneWay}"
-        Header="{DynamicResource tbManageCP}"
-        Visibility="Collapsed">
+        Header="{DynamicResource tbManageCP}">
         <Ribbon:RibbonGroupBox
           Ribbon:KeyTip.Keys="I"
           Header="{DynamicResource tgFolderIconCP}"
@@ -3109,8 +3101,7 @@
         Ribbon:KeyTip.Keys="S"
         Group="{Binding ElementName=ctgSearch, Mode=OneWay}"
         Header="{DynamicResource tabSearchCP}"
-        ReduceOrder="tsgKind,tsgKind,tsgOther,tsgOther,tsgKind,tsgOther"
-        Visibility="Collapsed">
+        ReduceOrder="tsgKind,tsgKind,tsgOther,tsgOther,tsgKind,tsgOther">
         <!--
 			<Ribbon:RibbonGroupBox Header="Modifiers" IsLauncherVisible="False" Name="tsgModifiers">
 			<Ribbon:ToggleButton SizeDefinition="Middle" Header="AND" Tag="AND" GroupName="b1" Visibility="Collapsed"/>

@@ -1661,27 +1661,29 @@
 
                 var ptrPDL = IntPtr.Zero;
                 iShellItem2.GetPropertyDescriptionList(SpecialProperties.PropListTileInfo, ref refGuidPDL, out ptrPDL);
-                IPropertyDescriptionList propertyDescriptionList = (IPropertyDescriptionList)Marshal.GetObjectForIUnknown(ptrPDL);
-                var descriptionsCount = 0u;
-                propertyDescriptionList.GetCount(out descriptionsCount);
-                nmlv.item.cColumns = (Int32)descriptionsCount;
-                var columns = new Int32[nmlv.item.cColumns];
-                Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
-                for (UInt32 i = 0; i < descriptionsCount; i++) {
-                  IPropertyDescription propertyDescription = null;
-                  propertyDescriptionList.GetAt(i, ref refGuidPD, out propertyDescription);
-                  PROPERTYKEY pkey;
-                  propertyDescription.GetPropertyKey(out pkey);
-                  Collumns column = null;
-                  if (this.AllAvailableColumns.TryGetValue(pkey, out column)) {
-                    columns[i] = column.Index;
-                  } else {
-                    columns[i] = 0;
+                if (ptrPDL != IntPtr.Zero) {
+                  IPropertyDescriptionList propertyDescriptionList = (IPropertyDescriptionList)Marshal.GetObjectForIUnknown(ptrPDL);
+                  var descriptionsCount = 0u;
+                  propertyDescriptionList.GetCount(out descriptionsCount);
+                  nmlv.item.cColumns = (Int32)descriptionsCount;
+                  var columns = new Int32[nmlv.item.cColumns];
+                  Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
+                  for (UInt32 i = 0; i < descriptionsCount; i++) {
+                    IPropertyDescription propertyDescription = null;
+                    propertyDescriptionList.GetAt(i, ref refGuidPD, out propertyDescription);
+                    PROPERTYKEY pkey;
+                    propertyDescription.GetPropertyKey(out pkey);
+                    Collumns column = null;
+                    if (this.AllAvailableColumns.TryGetValue(pkey, out column)) {
+                      columns[i] = column.Index;
+                    } else {
+                      columns[i] = 0;
+                    }
                   }
-                }
 
-                Marshal.Copy(columns, 0, nmlv.item.puColumns, nmlv.item.cColumns);
-                Marshal.StructureToPtr(nmlv, m.LParam, false);
+                  Marshal.Copy(columns, 0, nmlv.item.puColumns, nmlv.item.cColumns);
+                  Marshal.StructureToPtr(nmlv, m.LParam, false);
+                }
               }
 
               break;
