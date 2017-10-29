@@ -141,10 +141,6 @@
     <Reference Include="AeroWizard">
       <HintPath>..\..\External References\AeroWizard.dll</HintPath>
     </Reference>
-    <Reference Include="AutomaticUpdaterWPF, Version=2.6.18.4, Culture=neutral, PublicKeyToken=3dbca7c1b6b9ada2, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External References\AutomaticUpdaterWPF.dll</HintPath>
-    </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
       <Private>True</Private>
@@ -691,6 +687,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AutomaticUpdater\ControlWPF\AutomaticUpdaterWPF.csproj">
+      <Project>{b6b5cbb6-87b2-411a-9166-9e165df5b0da}</Project>
+      <Name>AutomaticUpdaterWPF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BEHelper\BEHelper.csproj">
       <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
       <Name>BEHelper</Name>
@@ -1216,7 +1216,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

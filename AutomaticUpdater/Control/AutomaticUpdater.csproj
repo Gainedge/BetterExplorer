@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{81ECC139-5278-486D-A1C8-CEEF681F4C89}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>wyDay.Controls</RootNamespace>
+    <AssemblyName>AutomaticUpdater</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;AUPDATE NET_2_0</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\AutomaticUpdater.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;AUPDATE NET_2_0</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\AutomaticUpdater.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnimationControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Args.cs" />
+    <Compile Include="AutomaticUpdaterBackend.cs" />
+    <Compile Include="AutomaticUpdaterDesigner.cs" />
+    <Compile Include="AutoUpdaterInfo.cs" />
+    <Compile Include="AUTranslation.cs" />
+    <Compile Include="frmChanges.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmChanges.Designer.cs">
+      <DependentUpon>frmChanges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmError.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmError.designer.cs">
+      <DependentUpon>frmError.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUIDEditor.cs" />
+    <Compile Include="MenuType.cs" />
+    <Compile Include="MLLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PipeClient.cs" />
+    <Compile Include="AutomaticUpdater.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ReadWriteFiles.cs" />
+    <Compile Include="RichTextBoxEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UpdateHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UpdateHelperData.cs" />
+    <Compile Include="UpdateStepOn.cs" />
+    <Compile Include="UpdateType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="update-notify.png" />
+    <EmbeddedResource Include="update-working.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="cross.png" />
+    <EmbeddedResource Include="tick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="frmChanges.resx">
+      <DependentUpon>frmChanges.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmError.resx">
+      <DependentUpon>frmError.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>IF NOT EXIST "$(SolutionDir)..\..\Signing\SignMe.exe" GOTO done
+IF NOT $(ConfigurationName) == Release GOTO done
+     "$(SolutionDir)..\..\Signing\SignMe.exe" "$(TargetPath)"
+     COPY "$(TargetPath)" "$(SolutionDir)..\..\Designer\bin\Debug\AutomaticUpdater\$(TargetFileName)"
+     COPY "$(TargetPath)" "$(SolutionDir)..\..\Designer\bin\Release\AutomaticUpdater\$(TargetFileName)"
+     COPY "$(TargetDir)AutomaticUpdater.xml" "$(SolutionDir)..\..\Designer\bin\Debug\AutomaticUpdater\AutomaticUpdater.xml"
+     COPY "$(TargetDir)AutomaticUpdater.xml" "$(SolutionDir)..\..\Designer\bin\Release\AutomaticUpdater\AutomaticUpdater.xml"
+:done</PostBuildEvent>
+  </PropertyGroup>
+</Project>

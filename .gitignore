@@ -259,3 +259,11 @@ StyleCop.Cache
 BExplorer/BetterExplorer/BEHelper.dll.config
 *.obj
 /Deploy
+/AutomaticUpdater/TestWindowsService
+/AutomaticUpdater/TestConsoleApp
+/AutomaticUpdater/TestAppWPF4
+/AutomaticUpdater/TestAppWPF
+/AutomaticUpdater/TestAppVB
+/AutomaticUpdater/TestApp4
+/AutomaticUpdater/TestApp
+/AutomaticUpdater/ControlWPF4
