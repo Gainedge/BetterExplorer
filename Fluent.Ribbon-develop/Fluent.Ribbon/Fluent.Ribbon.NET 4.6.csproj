@@ -589,7 +589,7 @@
     <PreBuildEvent>SET tmpError=0
 "$(ProjectDir)\Themes\XamlCombine.exe" Styles.txt Styles.xaml
 SET /a tmpError=%25tmpError%25 + %25ERRORLEVEL%25
-"$(ProjectDir)\..\packages\XamlColorSchemeGenerator\tools\XamlColorSchemeGenerator.exe" "$(ProjectDir)\Themes\Accents\GeneratorParameters.json"
+"$(SolutionDir)packages\XamlColorSchemeGenerator.1.0.0\tools\XamlColorSchemeGenerator.exe" "$(ProjectDir)\Themes\Accents\GeneratorParameters.json"
 SET /a tmpError=%25tmpError%25 + %25ERRORLEVEL%25
 SET ERRORLEVEL=%25tmpError%25</PreBuildEvent>
   </PropertyGroup>
@@ -643,12 +643,4 @@ SET ERRORLEVEL=%25tmpError%25</PreBuildEvent>
       </ItemGroup>
     </When>
   </Choose>
-  <ItemGroup>
-    <Analyzer Include="..\packages\StyleCop.Analyzers\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\StyleCop.Analyzers\analyzers\dotnet\cs\StyleCop.Analyzers.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-  </ItemGroup>
 </Project>
