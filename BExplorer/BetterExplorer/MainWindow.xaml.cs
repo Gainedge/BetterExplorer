@@ -1838,33 +1838,24 @@ namespace BetterExplorer {
 
     #region Change Ribbon Color (Theme)
 
-    public void ChangeRibbonTheme(string ThemeName, bool IsMetro = false) {
-      this.Dispatcher.BeginInvoke(IsMetro ? DispatcherPriority.ApplicationIdle : DispatcherPriority.Render, (ThreadStart)(() => {
-        var owner = Window.GetWindow(this);
-        Application.Current.Resources.BeginInit();
-        Application.Current.Resources.MergedDictionaries.RemoveAt(1);
-
-        if (IsMetro)
-          Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Office2013/Generic.xaml") });
-        else
-          Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{ThemeName}.xaml") });
-
-        Application.Current.Resources.EndInit();
-
-        if (owner is RibbonWindow) {
-          owner.Style = null;
-          owner.Style = owner.FindResource("RibbonWindowStyle") as Style;
-          owner.Style = null;
-
-          // Resize Window to work around alignment issues caused by theme change
-          ++owner.Width;
-          --owner.Width;
-        }
-
-        Settings.BESettings.CurrentTheme = ThemeName;
-        Settings.BESettings.SaveSettings();
-      }));
-    }
+    public void ChangeRibbonTheme(string themeName, bool IsMetro = false) => this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
+      switch (themeName) {
+        case "Blue":
+        case "Silver":
+        case "Black":
+        case "Green":
+          ThemeManager.ChangeAppTheme(Application.Current, "BaseDark");
+          break;
+        case "Metro":
+          ThemeManager.ChangeAppTheme(Application.Current, "BaseLight");
+          break;
+        default:
+          ThemeManager.ChangeAppTheme(Application.Current, "BaseLight");
+          break;
+      }
+      Settings.BESettings.CurrentTheme = themeName;
+      Settings.BESettings.SaveSettings();
+    }));
 
     private void btnSilver_Click(object sender, RoutedEventArgs e) {
       this.ChangeRibbonTheme("Silver");
@@ -3737,14 +3728,14 @@ namespace BetterExplorer {
           case "Silver":
           case "Black":
           case "Green":
-            this.ChangeRibbonTheme(Settings.BESettings.CurrentTheme);
+            ThemeManager.ChangeAppTheme(Application.Current, "BaseDark");
             break;
           case "Metro":
-            //ChangeRibbonTheme(Color, true);
+            ThemeManager.ChangeAppTheme(Application.Current, "BaseLight");
             //Do nothing since Metro should be already loaded in App.Startup
             break;
           default:
-            this.ChangeRibbonTheme("Blue");
+            ThemeManager.ChangeAppTheme(Application.Current, "BaseLight");
             break;
         }
       } catch (Exception ex) {

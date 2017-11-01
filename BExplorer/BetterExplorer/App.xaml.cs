@@ -174,7 +174,7 @@ namespace BetterExplorer {
       //// loads current Ribbon color theme
       try {
         var owner = Current.MainWindow;
-          ThemeManager.ChangeAppTheme(this,"BaseDark");
+          
         //if (owner != null) {
         //  owner.Resources.BeginInit();
 
@@ -193,20 +193,20 @@ namespace BetterExplorer {
 
         //Current.Resources.MergedDictionaries.RemoveAt(1);
 
-        //switch (Settings.BESettings.CurrentTheme) {
-        //  case "Blue":
-        //  case "Silver":
-        //  case "Black":
-        //  case "Green":
-        //    Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{Settings.BESettings.CurrentTheme}.xaml") });
-        //    break;
-        //  case "Metro":
-        //    Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Office2013/Generic.xaml") });
-        //    break;
-        //  default:
-        //    Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{Settings.BESettings.CurrentTheme}.xaml") });
-        //    break;
-        //}
+        switch (Settings.BESettings.CurrentTheme) {
+          case "Blue":
+          case "Silver":
+          case "Black":
+          case "Green":
+            ThemeManager.ChangeAppTheme(this, "BaseDark");
+            break;
+          case "Metro":
+            ThemeManager.ChangeAppTheme(this, "BaseLight");
+            break;
+          default:
+            ThemeManager.ChangeAppTheme(this, "BaseLight");
+            break;
+        }
 
         //Current.Resources.EndInit();
       }
