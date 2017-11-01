@@ -1,0 +1,71 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:Fluent="clr-namespace:Fluent">
+
+    <ControlTemplate x:Key="GalleryGroupContainerTemplate"
+                     TargetType="{x:Type Fluent:GalleryGroupContainer}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            
+            <Grid Grid.Row="0"
+                  Height="21"
+                  x:Name="headerGrid"
+                  Background="{DynamicResource Fluent.Ribbon.Brushes.GalleryGroupContainer.Header.Background}"
+                  VerticalAlignment="Top">
+                <TextBlock Margin="7,0"
+                           Text="{TemplateBinding Header}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           FontWeight="Bold"
+                           TextWrapping="NoWrap"
+                           TextTrimming="CharacterEllipsis" />
+            </Grid>
+
+            <ItemsPresenter Grid.Row="1" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsHeadered"
+                     Value="False">
+                <Setter TargetName="headerGrid"
+                        Property="Visibility"
+                        Value="Collapsed" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="GalleryGroupContainerStyle"
+           TargetType="{x:Type Fluent:GalleryGroupContainer}">
+        <Setter Property="Template"
+                Value="{DynamicResource GalleryGroupContainerTemplate}" />
+        <Setter Property="Focusable"
+                Value="False" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel HorizontalAlignment="Left"
+                               IsItemsHost="True"
+                               Orientation="{Binding Orientation, RelativeSource={RelativeSource Self}}"
+                               ItemWidth="{Binding ItemWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:GalleryGroupContainer}}}"
+                               ItemHeight="{Binding ItemHeight, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:GalleryGroupContainer}}}" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="Orientation"
+                     Value="Vertical">
+                <Setter Property="ItemsPanel">
+                    <Setter.Value>
+                        <ItemsPanelTemplate>
+                            <StackPanel IsItemsHost="True"
+                                        Orientation="{Binding Orientation, RelativeSource={RelativeSource Self}}" />
+                        </ItemsPanelTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

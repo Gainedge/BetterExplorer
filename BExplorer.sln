@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterExplorer", "BExplorer\BetterExplorer\BetterExplorer.csproj", "{BBD6B64A-5617-4F6C-A5CE-5156365BF33E}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -68,6 +68,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomaticUpdaterWPF", "AutomaticUpdater\ControlWPF\AutomaticUpdaterWPF.csproj", "{B6B5CBB6-87B2-411A-9166-9E165DF5B0DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomaticUpdater", "AutomaticUpdater\Control\AutomaticUpdater.csproj", "{81ECC139-5278-486D-A1C8-CEEF681F4C89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fluent.Ribbon.NET 4.6", "Fluent.Ribbon-develop\Fluent.Ribbon\Fluent.Ribbon.NET 4.6.csproj", "{4C92FCF4-3561-499F-BC5B-F2F089863047}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1015,13 +1017,53 @@ Global
 		{81ECC139-5278-486D-A1C8-CEEF681F4C89}.Release|x64.Build.0 = Release|Any CPU
 		{81ECC139-5278-486D-A1C8-CEEF681F4C89}.Release|x86.ActiveCfg = Release|Any CPU
 		{81ECC139-5278-486D-A1C8-CEEF681F4C89}.Release|x86.Build.0 = Release|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.CodeAnalysisDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.CodeAnalysisDebug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.CodeAnalysisDebug|Win32.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.CodeAnalysisDebug|Win32.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.CodeAnalysisDebug|x64.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.CodeAnalysisDebug|x64.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.CodeAnalysisDebug|x86.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.CodeAnalysisDebug|x86.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Debug|Win32.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Debug|x64.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Debug|x86.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Deploy|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Deploy|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Deploy|Win32.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Deploy|Win32.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Deploy|x64.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Deploy|x64.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Deploy|x86.ActiveCfg = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Deploy|x86.Build.0 = Debug|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Release|Win32.ActiveCfg = Release|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Release|Win32.Build.0 = Release|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Release|x64.ActiveCfg = Release|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Release|x64.Build.0 = Release|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Release|x86.ActiveCfg = Release|Any CPU
+		{4C92FCF4-3561-499F-BC5B-F2F089863047}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		VisualSVNWorkingCopyRoot = .
 		SolutionGuid = {4801FBB8-3BD6-441D-B354-3299AD2610E5}
+		VisualSVNWorkingCopyRoot = .
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\BFExplorer.ndproj"

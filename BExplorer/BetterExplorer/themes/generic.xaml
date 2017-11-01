@@ -6,7 +6,7 @@
 	 xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
 	 xmlns:controls="clr-namespace:CustomControls;assembly=StarRatingControl"
 		>
-  <SolidColorBrush x:Key="NotTabItemNormalBackground" Color="#FFF5F5F5"/>
+  <!--<SolidColorBrush x:Key="NotTabItemNormalBackground" Color="#FFF5F5F5"/>
 	<ControlTemplate x:Key="HorizontalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
 		<Grid x:Name="Bg"
 											Background="Transparent"
@@ -212,7 +212,7 @@
 	<SolidColorBrush x:Key="TabItemDisabledBackground" Color="#F4F4F4"/>
 	<SolidColorBrush x:Key="TabItemDisabledBorderBrush" Color="#FFC9C7BA"/>
 
-	<!--<Style TargetType="{x:Type local:ClosableTabItem}" >
+	--><!--<Style TargetType="{x:Type local:ClosableTabItem}" >
 		<Style.Resources>
 			<LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
 				<GradientStop Color="#F3F3F3" Offset="0"/>
@@ -361,7 +361,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>-->
+	</Style>--><!--
 
 	<LinearGradientBrush x:Key="mouseOverBtnBrush" StartPoint="0,0" EndPoint="0,1">
 		<GradientStop Color="#FFEAF6FD" Offset="0"/>
@@ -388,7 +388,7 @@
 	<Geometry x:Key="DownArrow">M0,3 L7,3 3.5,7 z</Geometry>
 	<Geometry x:Key="OverflowArrow">F1 M7,0 L4,3 7,6 M3,0 L0,3 3,6</Geometry>
 
-	<!--DropDownButtonTemplate-->
+	--><!--DropDownButtonTemplate--><!--
 	<ControlTemplate TargetType="{x:Type ToggleButton}" x:Key="DropDownButtonTemplate">
 		<odc:AeroChrome  SnapsToDevicePixels="True" Focusable="False" x:Name="chrome"
 						BorderBrush="{StaticResource borderBrush}"
@@ -406,7 +406,7 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<!--ButtonTemplate-->
+	--><!--ButtonTemplate--><!--
 	<ControlTemplate TargetType="{x:Type Button}" x:Key="ButtonTemplate">
 		<Border Margin="-1,-1,0,-1" BorderBrush="{StaticResource borderBrush}" BorderThickness="1" Background="Transparent" SnapsToDevicePixels="True" Focusable="False">
 			<odc:AeroChrome  SnapsToDevicePixels="True" x:Name="chrome" Focusable="False"
@@ -424,7 +424,7 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<!--BreadcrumbItem-->
+	--><!--BreadcrumbItem--><!--
 	<Style TargetType="{x:Type odc:BreadcrumbItem}">
 		<Setter Property="Focusable" Value="False"/>
 		<Setter Property="BorderBrush" Value="{StaticResource borderBrush}"/>
@@ -558,7 +558,7 @@
 	</ControlTemplate>
 
 
-	<!--BreadcrumbBar-->
+	--><!--BreadcrumbBar--><!--
 	<Style TargetType="{x:Type odc:BreadcrumbBar}">
 		<Setter Property="MinHeight" Value="23"/>
 		<Setter Property="Background" Value="#A0FFFFFF"/>
@@ -648,7 +648,7 @@
 					</Border>
 					<ControlTemplate.Triggers>
 						<Trigger Property="Visibility" Value="Visible" SourceName="PART_ComboBox">
-							<!--hide the breadcrumb container and root button  if the combobox is visible, otherwise a breadcrumb button could get the focus on mouseover: -->
+							--><!--hide the breadcrumb container and root button  if the combobox is visible, otherwise a breadcrumb button could get the focus on mouseover: --><!--
 							<Setter Property="Visibility" Value="Hidden" TargetName="container"/>
 							<Setter Property="Visibility" Value="Hidden" TargetName="PART_Root"/>
 						</Trigger>
@@ -680,7 +680,7 @@
 		</Setter>
 	</Style>
 
-	<!--BreadcrumbButton-->
+	--><!--BreadcrumbButton--><!--
 	<Style TargetType="{x:Type odc:BreadcrumbButton}">
 		<Setter Property="BorderThickness" Value="1"/>
 		<Setter Property="BorderBrush" Value="Transparent"/>
@@ -711,7 +711,7 @@
 							</odc:AeroChrome.Content>
 						</odc:AeroChrome>
 
-						<!--Content="{TemplateBinding Header}"/>-->
+						--><!--Content="{TemplateBinding Header}"/>--><!--
 						<odc:AeroChrome Grid.Column="1" x:Name="PART_DropDown"
 																					Focusable="False"
 																					MinWidth="16"
@@ -910,7 +910,7 @@
 		</Setter>
 	</Style>
 
-	<!--RatingItem style-->
+	--><!--RatingItem style--><!--
 	<Style TargetType="{x:Type controls:RatingItem}">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -996,6 +996,6 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>
+	</Style>-->
 
 </ResourceDictionary>
