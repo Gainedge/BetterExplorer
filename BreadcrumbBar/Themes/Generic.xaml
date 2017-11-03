@@ -1,110 +1,131 @@
 <ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-    xmlns:local="clr-namespace:Odyssey.Controls">
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+  xmlns:local="clr-namespace:Odyssey.Controls">
 
 
-	<LinearGradientBrush x:Key="mouseOverBtnBrush" StartPoint="0,0" EndPoint="0,1">
-		<GradientStop Color="#FFEAF6FD" Offset="0"/>
-		<GradientStop Color="#FFD7EFFC" Offset="0.5"/>
-		<GradientStop Color="#FFBDE6FD" Offset="0.5"/>
-		<GradientStop Color="#FFA6D9F4" Offset="1"/>
-	</LinearGradientBrush>
-	<LinearGradientBrush x:Key="mousePressedBtnBrush" StartPoint="0,0" EndPoint="0,1">
-		<GradientStop Color="#FFC2E4F6" Offset="0"/>
-		<GradientStop Color="#FFC2E4F6" Offset="0.5"/>
-		<GradientStop Color="#FFA9D9F2" Offset="0.5"/>
-		<GradientStop Color="#FF90CBEB" Offset="1"/>
-	</LinearGradientBrush>
-	<LinearGradientBrush x:Key="GradientBorderBrush" StartPoint="0,0" EndPoint="0,1">
-		<GradientStop Color="White" Offset="0" />
-		<GradientStop Color="#FFCECECE" Offset="1" />
-	</LinearGradientBrush>
-  <SolidColorBrush x:Key="borderBrush" Color="#FFCECECE"/>
-	<SolidColorBrush x:Key="borderShadowBrush" Color="#60777777"/>
-	<BooleanToVisibilityConverter x:Key="boolToVisible"/>
-	<ImageSourceConverter x:Key="imgConverter"/>
+  <!--<LinearGradientBrush x:Key="mouseOverBtnBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="{DynamicResource Gray2}" />
+    <GradientStop Offset="0.5" Color="{DynamicResource Gray3}" />
+    <GradientStop Offset="0.5" Color="{DynamicResource Gray3}" />
+    <GradientStop Offset="1" Color="{DynamicResource Gray2}" />
+  </LinearGradientBrush>-->
 
-	<Geometry x:Key="RightArrow">M0,0 L5,3.5 0,7 z</Geometry>
-	<Geometry x:Key="DownArrow">M0,3 L7,3 3.5,7 z</Geometry>
-	<Geometry x:Key="OverflowArrow">F1 M7,0 L4,3 7,6 M3,0 L0,3 3,6</Geometry>
+  <SolidColorBrush x:Key="mousePressedBtnBrush" Color="{DynamicResource Gray8}" />
+  <LinearGradientBrush x:Key="GradientBorderBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="{DynamicResource Gray6}" />
+    <GradientStop Offset="1" Color="{DynamicResource Gray6}" />
+  </LinearGradientBrush>
+  <SolidColorBrush x:Key="borderBrush" Color="{DynamicResource Gray6}" />
+  <SolidColorBrush x:Key="borderShadowBrush" Color="#60777777" />
+  <BooleanToVisibilityConverter x:Key="boolToVisible" />
+  <ImageSourceConverter x:Key="imgConverter" />
 
-	<!--DropDownButtonTemplate-->
-	<ControlTemplate TargetType="{x:Type ToggleButton}" x:Key="DropDownButtonTemplate">
-		<local:AeroChrome  SnapsToDevicePixels="True" Focusable="False" x:Name="chrome"
-            BorderBrush="{StaticResource borderBrush}"
-            BorderThickness="1"
-            RenderMouseOver="{TemplateBinding IsMouseOver}" 
-            RenderPressed="{TemplateBinding IsPressed}" >
-			<local:AeroChrome.Content>
-				<Path x:Name="arrow" Data="{StaticResource DownArrow}" SnapsToDevicePixels="True" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="Black" Focusable="False"/>
-			</local:AeroChrome.Content>
-		</local:AeroChrome>
-		<ControlTemplate.Triggers>
-			<Trigger Property="IsFocused" Value="True">
-				<Setter TargetName="chrome" Property="RenderMouseOver" Value="True"/>
-			</Trigger>
-		</ControlTemplate.Triggers>
-	</ControlTemplate>
+  <Geometry x:Key="RightArrow">M0,0 L5,3.5 0,7 z</Geometry>
+  <Geometry x:Key="DownArrow">M0,3 L7,3 3.5,7 z</Geometry>
+  <Geometry x:Key="OverflowArrow">F1 M7,0 L4,3 7,6 M3,0 L0,3 3,6</Geometry>
 
-	<!--ButtonTemplate-->
-	<ControlTemplate TargetType="{x:Type Button}" x:Key="ButtonTemplate">
-		<Border Margin="-1,-1,0,-1" BorderBrush="{StaticResource borderBrush}" BorderThickness="1" Background="Transparent" SnapsToDevicePixels="True" Focusable="False">
-			<local:AeroChrome  SnapsToDevicePixels="True" x:Name="chrome" Focusable="False"
-            BorderBrush="{StaticResource borderBrush}"
-            BorderThickness="1"
-             Margin="-1"
-            RenderMouseOver="{TemplateBinding IsMouseOver}" 
-            RenderPressed="{TemplateBinding IsPressed}" 
-            Content="{TemplateBinding Content}"/>
-		</Border>
-		<ControlTemplate.Triggers>
-			<Trigger Property="IsFocused" Value="True">
-				<Setter TargetName="chrome" Property="RenderMouseOver" Value="True"/>
-			</Trigger>
-		</ControlTemplate.Triggers>
-	</ControlTemplate>
+  <!--  DropDownButtonTemplate  -->
+  <ControlTemplate x:Key="DropDownButtonTemplate" TargetType="{x:Type ToggleButton}">
+    <local:AeroChrome
+      x:Name="chrome"
+      BorderBrush="{StaticResource borderBrush}"
+      BorderThickness="1"
+      Focusable="False"
+      RenderMouseOver="{TemplateBinding IsMouseOver}"
+      RenderPressed="{TemplateBinding IsPressed}"
+      SnapsToDevicePixels="True">
+      <local:AeroChrome.Content>
+        <Path
+          x:Name="arrow"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Data="{StaticResource DownArrow}"
+          Fill="Black"
+          Focusable="False"
+          SnapsToDevicePixels="True" />
+      </local:AeroChrome.Content>
+    </local:AeroChrome>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter TargetName="chrome" Property="RenderMouseOver" Value="True" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
 
-	<!--BreadcrumbItem-->
-	<Style TargetType="{x:Type local:BreadcrumbItem}">
-		<Setter Property="Focusable" Value="False"/>
-		<Setter Property="BorderBrush" Value="{StaticResource borderBrush}"/>
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type local:BreadcrumbItem}">
-					<Border Background="Transparent" Focusable="False"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-						<DockPanel>
-							<local:BreadcrumbButton x:Name="PART_Header" 
-                                                    DataContext="{Binding}"
-                                                    IsImageVisible="{TemplateBinding IsRoot}"
-                                                    IsButtonVisible="{TemplateBinding IsButtonVisible}"
-                                                    ItemTemplate="{TemplateBinding OverflowItemTemplate}"
-                                                    ItemTemplateSelector="{TemplateBinding OverflowItemTemplateSelector}"
-                                                    IsDropDownPressed="{Binding IsDropDownPressed, RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}"
-                                                    SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}"
-                                                    Image ="{TemplateBinding Image}"
-                                                    Header="{TemplateBinding Header}" ItemsSource="{Binding Items, RelativeSource={RelativeSource TemplatedParent}}">
-							</local:BreadcrumbButton>
-							<ContentControl x:Name="PART_Selected"  Focusable="False" Content="{TemplateBinding SelectedBreadcrumb}" />
-						</DockPanel>
-					</Border>
-					<ControlTemplate.Triggers>
-						<Trigger Property="IsRoot" Value="True">
-							<Setter Property="EnableVisualButtonStyle" Value="False" TargetName="PART_Header"/>
-						</Trigger>
+  <!--  ButtonTemplate  -->
+  <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type Button}">
+    <Border
+      Margin="-1,-1,0,-1"
+      Background="Transparent"
+      BorderBrush="{StaticResource borderBrush}"
+      BorderThickness="1"
+      Focusable="False"
+      SnapsToDevicePixels="True">
+      <local:AeroChrome
+        x:Name="chrome"
+        Margin="-1"
+        BorderBrush="{StaticResource borderBrush}"
+        BorderThickness="1"
+        Content="{TemplateBinding Content}"
+        Focusable="False"
+        RenderMouseOver="{TemplateBinding IsMouseOver}"
+        RenderPressed="{TemplateBinding IsPressed}"
+        SnapsToDevicePixels="True" />
+    </Border>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter TargetName="chrome" Property="RenderMouseOver" Value="True" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
 
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
+  <!--  BreadcrumbItem  -->
+  <Style TargetType="{x:Type local:BreadcrumbItem}">
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="BorderBrush" Value="{StaticResource borderBrush}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:BreadcrumbItem}">
+          <Border
+            Background="Transparent"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}"
+            Focusable="False">
+            <DockPanel>
+              <local:BreadcrumbButton
+                x:Name="PART_Header"
+                DataContext="{Binding}"
+                Header="{TemplateBinding Header}"
+                Image="{TemplateBinding Image}"
+                IsButtonVisible="{TemplateBinding IsButtonVisible}"
+                IsDropDownPressed="{Binding IsDropDownPressed, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                IsImageVisible="{TemplateBinding IsRoot}"
+                ItemTemplate="{TemplateBinding OverflowItemTemplate}"
+                ItemTemplateSelector="{TemplateBinding OverflowItemTemplateSelector}"
+                ItemsSource="{Binding Items, RelativeSource={RelativeSource TemplatedParent}}"
+                SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+              <ContentControl
+                x:Name="PART_Selected"
+                Content="{TemplateBinding SelectedBreadcrumb}"
+                Focusable="False" />
+            </DockPanel>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsRoot" Value="True">
+              <Setter TargetName="PART_Header" Property="EnableVisualButtonStyle" Value="False" />
+            </Trigger>
 
-	<!--<ControlTemplate x:Key="progressBarTemplate" TargetType="ProgressBar" 
-                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!--<ControlTemplate x:Key="progressBarTemplate" TargetType="ProgressBar"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:s="clr-namespace:System;assembly=mscorlib">
 		<Grid Name="Background" SnapsToDevicePixels="True">
 			<Rectangle Name="PART_Track" Margin="1,1,1,1" />
@@ -200,336 +221,413 @@
 	</ControlTemplate>-->
 
 
-	<!--BreadcrumbBar-->
-	<Style TargetType="{x:Type local:BreadcrumbBar}">
-		<Setter Property="MinHeight" Value="23"/>
-		<Setter Property="Background" Value="#A0FFFFFF"/>
-		<Setter Property="BorderBrush" Value="{StaticResource borderBrush}"/>
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type local:BreadcrumbBar}">
-					<ControlTemplate.Resources>
-						<Style TargetType="{x:Type Button}">
-							<Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
-							<Setter Property="MinWidth" Value="21"/>
-							<Setter Property="BorderThickness" Value="1"/>
-							<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-							<Setter Property="BorderBrush" Value="Black"/>
-							<Setter Property="Focusable" Value="{Binding Focusable, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BreadcrumbBar}}}"/>
-						</Style>
-						<Style TargetType="{x:Type local:BreadcrumbButton}">
-							<Setter Property="Focusable" Value="{Binding Focusable, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BreadcrumbBar}}}"/>
-						</Style>
-					</ControlTemplate.Resources>
-					<Border Background="{TemplateBinding Background}" SnapsToDevicePixels="True"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            Focusable="False"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-						<Border BorderBrush="White" BorderThickness="{TemplateBinding BorderThickness}" Focusable="False" SnapsToDevicePixels="True">
-							<Grid Margin="-1">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto"/>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="Auto"/>
-									<ColumnDefinition Width="Auto"/>
-								</Grid.ColumnDefinitions>
-								<ProgressBar x:Name="progress" Grid.Column="0" Grid.ColumnSpan="4" 
-                                             Maximum="{Binding ProgressMaximum,RelativeSource={RelativeSource TemplatedParent}}" 
-                                             Minimum="{Binding ProgressMinimum,RelativeSource={RelativeSource TemplatedParent}}" 
-                                             Value="{Binding ProgressValue,RelativeSource={RelativeSource TemplatedParent}}" 
-                                             Background="Transparent"
-                                             Foreground="LightGreen"
-                                             BorderThickness="0"
-                                             />
-							
-								<local:BreadcrumbButton  ItemsSource="{TemplateBinding CollapsedTraces}" Grid.Column="0"
-                                                         x:Name="PART_Root"
-                                                         MinWidth="0"
-                                                         EnableVisualButtonStyle="False"
-                                                         Mode="{TemplateBinding OverflowMode}"
-                                                        SelectedItem="{Binding SelectedItem,RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}"
-                                                        ItemTemplate="{TemplateBinding OverflowItemTemplate}"
-                                                         IsImageVisible="True"
-                                                         Image="{Binding SelectedBreadcrumb.Image, RelativeSource={RelativeSource TemplatedParent}}"
-                                                        ItemTemplateSelector="{TemplateBinding OverflowItemTemplateSelector}"
-                                                        IsDropDownPressed="{Binding IsOverflowPressed,RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" >
-								</local:BreadcrumbButton>
-								<ContentPresenter x:Name="container" Grid.Column="1" Content="{Binding RootItem,RelativeSource={RelativeSource TemplatedParent}}"/>
-								<ToggleButton x:Name="dropDown" Grid.Column="2" 
-                                              Focusable="False"
-                                              Width="16"
-                                              Visibility="Collapsed"
-                                              FocusVisualStyle="{x:Null}"
-                                              Template="{StaticResource DropDownButtonTemplate}" 
-                                    ClickMode="Press"
-                                              IsChecked="{Binding IsDropDownOpen,RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}"
-                                              Margin="-1"
-                                              BorderThickness="1"  
-                                              BorderBrush="{StaticResource borderBrush}" />
-								<ComboBox x:Name="PART_ComboBox"                                             
-                                          Visibility="Hidden"
-                                          Margin="0,0,0,0"
-                                          IsEditable="True"
-                                          Focusable="True"
-                                          ItemTemplate="{TemplateBinding DropDownItemTemplate}"
-                                          ItemTemplateSelector="{TemplateBinding DropDownItemTemplateSelector}"
-                                          ItemsSource="{Binding DropDownItems,RelativeSource={RelativeSource TemplatedParent}}"
-                                          BorderThickness="0"
-                                          Grid.Column="0"
-                                          SelectedIndex="{Binding SelectedDropDownIndex,RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}"
-                                          Grid.ColumnSpan="3"/>
-								<ItemsControl  x:Name="buttons"  Grid.Column="3" Margin="1,0,-1,0" ItemsSource="{Binding Buttons,RelativeSource={RelativeSource TemplatedParent} }"  Focusable="False"  >
-									<ItemsControl.ItemsPanel>
-										<ItemsPanelTemplate>
-											<StackPanel Orientation="Horizontal" IsItemsHost="True"/>
-										</ItemsPanelTemplate>
-									</ItemsControl.ItemsPanel>
-								</ItemsControl>
-							</Grid>
-						</Border>
-					</Border>
-					<ControlTemplate.Triggers>
-						<Trigger Property="Visibility" Value="Visible" SourceName="PART_ComboBox">
-							<!--hide the breadcrumb container and root button  if the combobox is visible, otherwise a breadcrumb button could get the focus on mouseover: -->
-							<Setter Property="Visibility" Value="Hidden" TargetName="container"/>
-							<Setter Property="Visibility" Value="Hidden" TargetName="PART_Root"/>
-						</Trigger>
-						<Trigger Property="IsRootSelected" Value="True">
-							<Setter Property="Visibility" Value="Collapsed" TargetName="PART_Root"/>
-						</Trigger>
-						<Trigger Property="IsMouseOver" Value="True">
-							<Trigger.EnterActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<ColorAnimation Duration="0:0:0.3" To="White" Storyboard.TargetProperty="Background.Color"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</Trigger.EnterActions>
-							<Trigger.ExitActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<ColorAnimation Duration="0:0:0.3" From="White" Storyboard.TargetProperty="Background.Color"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</Trigger.ExitActions>
-						</Trigger>
-						<Trigger Property="HasDropDownItems" Value="True">
-							<Setter Property="Visibility" Value="Visible" TargetName="dropDown"/>
-						</Trigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
+  <!--  BreadcrumbBar  -->
+  <Style TargetType="{x:Type local:BreadcrumbBar}">
+    <Setter Property="MinHeight" Value="23" />
+    <Setter Property="Background" Value="White" />
+    <Setter Property="BorderBrush" Value="{DynamicResource GrayBrush6}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:BreadcrumbBar}">
+          <ControlTemplate.Resources>
+            <Style TargetType="{x:Type Button}">
+              <Setter Property="Template" Value="{StaticResource ButtonTemplate}" />
+              <Setter Property="MinWidth" Value="21" />
+              <Setter Property="BorderThickness" Value="1" />
+              <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+              <Setter Property="BorderBrush" Value="Black" />
+              <Setter Property="Focusable" Value="{Binding Focusable, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BreadcrumbBar}}}" />
+            </Style>
+            <Style TargetType="{x:Type local:BreadcrumbButton}">
+              <Setter Property="Focusable" Value="{Binding Focusable, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BreadcrumbBar}}}" />
+            </Style>
+          </ControlTemplate.Resources>
+          <Border
+            Background="White"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}"
+            Focusable="False"
+            SnapsToDevicePixels="True">
+            <Border
+              BorderBrush="White"
+              BorderThickness="{TemplateBinding BorderThickness}"
+              Focusable="False"
+              SnapsToDevicePixels="True">
+              <Grid Margin="-1">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ProgressBar
+                  x:Name="progress"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="4"
+                  Background="Transparent"
+                  BorderThickness="0"
+                  Foreground="LightGreen"
+                  Maximum="{Binding ProgressMaximum, RelativeSource={RelativeSource TemplatedParent}}"
+                  Minimum="{Binding ProgressMinimum, RelativeSource={RelativeSource TemplatedParent}}"
+                  Value="{Binding ProgressValue, RelativeSource={RelativeSource TemplatedParent}}" />
 
-	<!--BreadcrumbButton-->
-	<Style TargetType="{x:Type local:BreadcrumbButton}">
-		<Setter Property="BorderThickness" Value="1"/>
-		<Setter Property="BorderBrush" Value="Transparent"/>
-		<Setter Property="Background" Value="{StaticResource mouseOverBtnBrush}"/>
-		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-		<Setter Property="Template">
+                <local:BreadcrumbButton
+                  x:Name="PART_Root"
+                  Grid.Column="0"
+                  MinWidth="0"
+                  EnableVisualButtonStyle="False"
+                  Image="{Binding SelectedBreadcrumb.Image, RelativeSource={RelativeSource TemplatedParent}}"
+                  IsDropDownPressed="{Binding IsOverflowPressed, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                  IsImageVisible="True"
+                  ItemTemplate="{TemplateBinding OverflowItemTemplate}"
+                  ItemTemplateSelector="{TemplateBinding OverflowItemTemplateSelector}"
+                  ItemsSource="{TemplateBinding CollapsedTraces}"
+                  Mode="{TemplateBinding OverflowMode}"
+                  SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+                <ContentPresenter
+                  x:Name="container"
+                  Grid.Column="1"
+                  Content="{Binding RootItem, RelativeSource={RelativeSource TemplatedParent}}" />
+                <ToggleButton
+                  x:Name="dropDown"
+                  Grid.Column="2"
+                  Width="16"
+                  Margin="-1"
+                  BorderBrush="{StaticResource borderBrush}"
+                  BorderThickness="1"
+                  ClickMode="Press"
+                  FocusVisualStyle="{x:Null}"
+                  Focusable="False"
+                  IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                  Template="{StaticResource DropDownButtonTemplate}"
+                  Visibility="Collapsed" />
+                <ComboBox
+                  x:Name="PART_ComboBox"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="3"
+                  Margin="0,0,0,0"
+                  BorderThickness="0"
+                  Focusable="True"
+                  IsEditable="True"
+                  ItemTemplate="{TemplateBinding DropDownItemTemplate}"
+                  ItemTemplateSelector="{TemplateBinding DropDownItemTemplateSelector}"
+                  ItemsSource="{Binding DropDownItems, RelativeSource={RelativeSource TemplatedParent}}"
+                  SelectedIndex="{Binding SelectedDropDownIndex, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                  Visibility="Hidden" />
+                <ItemsControl
+                  x:Name="buttons"
+                  Grid.Column="3"
+                  Margin="1,0,-1,0"
+                  Focusable="False"
+                  Foreground="Aqua"
+                  ItemsSource="{Binding Buttons, RelativeSource={RelativeSource TemplatedParent}}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <StackPanel IsItemsHost="True" Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                </ItemsControl>
+              </Grid>
+            </Border>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger SourceName="PART_ComboBox" Property="Visibility" Value="Visible">
+              <!--  hide the breadcrumb container and root button  if the combobox is visible, otherwise a breadcrumb button could get the focus on mouseover:  -->
+              <Setter TargetName="container" Property="Visibility" Value="Hidden" />
+              <Setter TargetName="PART_Root" Property="Visibility" Value="Hidden" />
+            </Trigger>
+            <Trigger Property="IsRootSelected" Value="True">
+              <Setter TargetName="PART_Root" Property="Visibility" Value="Collapsed" />
+            </Trigger>
 
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type local:BreadcrumbButton}">
-					<Grid Margin="{TemplateBinding Padding}">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto"/>
-							<ColumnDefinition Width="Auto"/>
-						</Grid.ColumnDefinitions>
-						<local:AeroChrome Grid.Column="0"
-                                          Visibility="Visible"
-                                          x:Name="button"
-                                          Focusable="False"
-                                          Margin="-1"                                         
-                                          BorderThickness="1"       
-                                           RenderPressed="{TemplateBinding IsPressed}"
-                                          RenderMouseOver="{TemplateBinding IsMouseOver}">
-							<local:AeroChrome.Content>
-								<StackPanel Orientation="Horizontal">
-									<Image x:Name="image"  Source="{Binding Image, RelativeSource={RelativeSource TemplatedParent}}" Width="16" Height="16" Stretch="Fill"/>
-									<ContentPresenter Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" Margin="2,0,2,0"/>
-								</StackPanel>
-							</local:AeroChrome.Content>
-						</local:AeroChrome>
+            <Trigger Property="HasDropDownItems" Value="True">
+              <Setter TargetName="dropDown" Property="Visibility" Value="Visible" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
-						<!--Content="{TemplateBinding Header}"/>-->
-						<local:AeroChrome Grid.Column="1" x:Name="PART_DropDown"
-                                          Focusable="False"
-                                          MinWidth="16"
-                                          Margin="-1"
-                                          BorderThickness="1"
-                                           RenderPressed="{TemplateBinding IsDropDownPressed}"
-                                          RenderMouseOver="{TemplateBinding IsMouseOver}"
-                                          ContentTemplate="{TemplateBinding DropDownContentTemplate}" 
-                                          >
-							<local:AeroChrome.Content>
-								<Path x:Name="dropDownPath" Fill="Black" Data="{StaticResource RightArrow}" SnapsToDevicePixels="True"  HorizontalAlignment="Center"/>
-							</local:AeroChrome.Content>
-							<local:AeroChrome.ContextMenu>
-								<ContextMenu x:Name="PART_Menu"                                                
-                                              IsTextSearchEnabled="True"
-                                                 HorizontalOffset="-14"
-                                               ItemContainerStyle="{x:Null}"
-                                                 IsOpen="{Binding IsDropDownPressed, RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}">
-									<ContextMenu.Template>
-										<ControlTemplate TargetType="ContextMenu" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:mwt="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero">
-											<mwt:SystemDropShadowChrome Color="#00FFFFFF" Name="Shdw" SnapsToDevicePixels="True" MaxHeight="400">
-												<Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}">
-													<Grid>
-														<Rectangle RadiusX="2" RadiusY="2" Fill="#FFF1F1F1" Width="22" Margin="2,2,2,2" HorizontalAlignment="Left" />
-														<Rectangle Fill="#FFE2E3E3" Width="1" Margin="25,2,0,2" HorizontalAlignment="Left" />
-														<Rectangle Fill="#FFFFFFFF" Width="1" Margin="26,2,0,2" HorizontalAlignment="Left" />
-														<ScrollViewer CanContentScroll="True" Margin="1,0,1,0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" >
-															<ItemsPresenter Margin="{TemplateBinding Control.Padding}" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" KeyboardNavigation.DirectionalNavigation="Cycle" />
-														</ScrollViewer>
-													</Grid>
-												</Border>
-											</mwt:SystemDropShadowChrome>
-											<ControlTemplate.Triggers>
-												<Trigger Property="ContextMenuService.HasDropShadow">
-													<Setter Property="FrameworkElement.Margin" TargetName="Shdw">
-														<Setter.Value>
-															<Thickness>0,0,5,5</Thickness>
-														</Setter.Value>
-													</Setter>
-													<Setter Property="mwt:SystemDropShadowChrome.Color" TargetName="Shdw">
-														<Setter.Value>
-															<Color>#71000000</Color>
-														</Setter.Value>
-													</Setter>
-													<Trigger.Value>
-														<s:Boolean>True</s:Boolean>
-													</Trigger.Value>
-												</Trigger>
-											</ControlTemplate.Triggers>
-										</ControlTemplate>
-									</ContextMenu.Template>
-								</ContextMenu>
-							</local:AeroChrome.ContextMenu>
-						</local:AeroChrome>
-					</Grid>
-					<ControlTemplate.Triggers>
-						<Trigger Property="IsImageVisible" Value="False">
-							<Setter Property="Visibility" Value="Collapsed" TargetName="image"/>
-						</Trigger>
-						<Trigger Property="Image" Value="{x:Null}">
-							<Setter Property="Visibility" Value="Collapsed" TargetName="image"/>
-						</Trigger>
-						<Trigger Property="EnableVisualButtonStyle" Value="False">
-							<Setter TargetName="button" Property="MouseOverBackground" Value="Transparent"/>
-							<Setter TargetName="button" Property="MousePressedBackground" Value="Transparent"/>
-							<Setter TargetName="button" Property="BorderBrush" Value="Transparent"/>
-						</Trigger>
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
-								<Condition Property="Header" Value="{x:Null}"/>
-								<Condition Property="IsImageVisible" Value="False"/>
-								<Condition Property="Image" Value="{x:Null}"/>
-							</MultiTrigger.Conditions>
-							<Setter Property="Visibility" Value="Collapsed" TargetName="button"/>
-						</MultiTrigger>
-						<Trigger Property="HasItems" Value="False">
-							<Setter Property="Visibility" Value="Collapsed" TargetName="PART_DropDown"/>
-						</Trigger>
-						<Trigger Property="Mode" Value="Overflow">
-							<Setter Property="Data" Value="{StaticResource OverflowArrow}" TargetName="dropDownPath"/>
-							<Setter Property="Fill" Value="Transparent" TargetName="dropDownPath"/>
-							<Setter Property="Stroke" Value="Black" TargetName="dropDownPath"/>
-						</Trigger>
-						<Trigger Property="IsPressed" Value="True">
-							<Setter Property="RenderPressed" Value="True" TargetName="PART_DropDown"/>
-						</Trigger>
-						<Trigger Property="IsKeyboardFocused" Value="True">
-							<Setter Property="RenderMouseOver" Value="True" TargetName="PART_DropDown"/>
-							<Setter Property="RenderMouseOver" Value="True" TargetName="button"/>
-						</Trigger>
-						<Trigger Property="IsDropDownVisible" Value="False">
-							<Setter TargetName="PART_DropDown" Property="Visibility" Value="Collapsed"/>
-						</Trigger>
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
-								<Condition Property="IsMouseOver" Value="True" SourceName="PART_DropDown"/>
-								<Condition Property="EnableVisualButtonStyle" Value="True"/>
-							</MultiTrigger.Conditions>
-							<Setter Property="MouseOverBackground" Value="{StaticResource GradientBorderBrush}" TargetName="button"/>
-						</MultiTrigger>
-						<Trigger Property="IsButtonVisible" Value="False">
-							<Setter Property="Visibility" Value="Collapsed" TargetName="button"/>
-						</Trigger>
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
-								<Condition Property="IsDropDownPressed" Value="True"/>
-								<Condition Property="Mode" Value="Breadcrumb"/>
-							</MultiTrigger.Conditions>
-							<Setter Property="Data" Value="{StaticResource DownArrow}" TargetName="dropDownPath"/>
-							<Setter Property="RenderPressed" Value="True" TargetName="button"/>
-						</MultiTrigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
+  <!--  BreadcrumbButton  -->
+  <Style TargetType="{x:Type local:BreadcrumbButton}">
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Background" Value="{DynamicResource GrayBrush8}" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Foreground" Value="Black" />
+    <Setter Property="Template">
 
-	<Style TargetType="{x:Type local:AeroChrome}">
-		<Setter Property="MouseOverBackground" Value="{StaticResource mouseOverBtnBrush}"/>
-		<Setter Property="MousePressedBackground" Value="{StaticResource mousePressedBtnBrush}"/>
-		<Setter Property="BorderBrush" Value="{StaticResource borderBrush}"/>
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type local:AeroChrome}">
-					<Grid Margin="{TemplateBinding Padding}">
-						<Border x:Name="mouseOverBtn"
-                                    Opacity="0"
-                                    Background="{TemplateBinding MouseOverBackground}"
-                                    BorderBrush="{TemplateBinding BorderBrush}" 
-                                    BorderThickness="{TemplateBinding BorderThickness}" 
-                                    SnapsToDevicePixels="True">
-							<Border x:Name="innerButton" SnapsToDevicePixels="True"
-                                        BorderThickness="1"
-                                        BorderBrush="White"/>
-						</Border>
-						<Border x:Name="mouseDownBtn" 
-                                    Opacity="0"
-                                    Background="{TemplateBinding MousePressedBackground}"
-                                    BorderBrush="{TemplateBinding BorderBrush}" 
-                                    BorderThickness="{TemplateBinding BorderThickness}" 
-                                    SnapsToDevicePixels="True">
-							<Border x:Name="innerButton2" SnapsToDevicePixels="False"
-                                        BorderThickness="1.2,1.2,0,0"
-                                        BorderBrush="{StaticResource borderShadowBrush}"/>
-						</Border>
-						<ContentPresenter Content="{TemplateBinding Content}" 
-                                          x:Name="content"
-                                          VerticalAlignment="Center"
-                                          HorizontalAlignment="Center"
-                                          Margin="4,2,4,2"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"/>
-					</Grid>
-					<ControlTemplate.Triggers>
-						<Trigger Property="RenderMouseOver" Value="True">
-							<Trigger.EnterActions>
-								<BeginStoryboard>
-									<Storyboard >
-										<DoubleAnimation Storyboard.TargetName="mouseOverBtn" Storyboard.TargetProperty="Opacity" Duration="0:0:0.25" To="1"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</Trigger.EnterActions>
-							<Trigger.ExitActions>
-								<BeginStoryboard>
-									<Storyboard >
-										<DoubleAnimation Storyboard.TargetName="mouseOverBtn" Storyboard.TargetProperty="Opacity" Duration="0:0:0.25" To="0"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</Trigger.ExitActions>
-						</Trigger>
-						<Trigger Property="RenderPressed" Value="True">
-							<Setter Property="Opacity" TargetName="mouseDownBtn" Value="1"/>
-							<Setter Property="Margin" TargetName="content" Value="5,3,3,1"/>
-						</Trigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:BreadcrumbButton}">
+          <Grid Margin="{TemplateBinding Padding}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <local:AeroChrome
+              x:Name="button"
+              Grid.Column="0"
+              Margin="-1"
+              BorderThickness="1"
+              Focusable="False"
+              RenderMouseOver="{TemplateBinding IsMouseOver}"
+              RenderPressed="{TemplateBinding IsPressed}"
+              Visibility="Visible">
+              <local:AeroChrome.Content>
+                <StackPanel Orientation="Horizontal">
+                  <Image
+                    x:Name="image"
+                    Width="16"
+                    Height="16"
+                    Source="{Binding Image, RelativeSource={RelativeSource TemplatedParent}}"
+                    Stretch="Fill" />
+                  <ContentPresenter
+                    Margin="2,0,2,0"
+                    Content="{TemplateBinding Header}"
+                    ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                </StackPanel>
+              </local:AeroChrome.Content>
+            </local:AeroChrome>
+
+            <!--  Content="{TemplateBinding Header}"/>  -->
+            <local:AeroChrome
+              x:Name="PART_DropDown"
+              Grid.Column="1"
+              MinWidth="16"
+              Margin="-1"
+              BorderThickness="1"
+              ContentTemplate="{TemplateBinding DropDownContentTemplate}"
+              Focusable="False"
+              RenderMouseOver="{TemplateBinding IsMouseOver}"
+              RenderPressed="{TemplateBinding IsDropDownPressed}">
+              <local:AeroChrome.Content>
+                <Path
+                  x:Name="dropDownPath"
+                  HorizontalAlignment="Center"
+                  Data="{StaticResource RightArrow}"
+                  Fill="Black"
+                  SnapsToDevicePixels="True" />
+              </local:AeroChrome.Content>
+              <local:AeroChrome.ContextMenu>
+                <ContextMenu
+                  x:Name="PART_Menu"
+                  HorizontalOffset="-14"
+                  IsOpen="{Binding IsDropDownPressed, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                  IsTextSearchEnabled="True"
+                  ItemContainerStyle="{x:Null}">
+                  <ContextMenu.Template>
+                    <ControlTemplate
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:mwt="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+                      xmlns:s="clr-namespace:System;assembly=mscorlib"
+                      TargetType="ContextMenu">
+                      <mwt:SystemDropShadowChrome
+                        Name="Shdw"
+                        MaxHeight="400"
+                        SnapsToDevicePixels="True"
+                        Color="#00FFFFFF">
+                        <Border
+                          Background="{TemplateBinding Panel.Background}"
+                          BorderBrush="{TemplateBinding Border.BorderBrush}"
+                          BorderThickness="{TemplateBinding Border.BorderThickness}">
+                          <Grid>
+                            <Rectangle
+                              Width="22"
+                              Margin="2,2,2,2"
+                              HorizontalAlignment="Left"
+                              Fill="#FFF1F1F1"
+                              RadiusX="2"
+                              RadiusY="2" />
+                            <Rectangle
+                              Width="1"
+                              Margin="25,2,0,2"
+                              HorizontalAlignment="Left"
+                              Fill="#FFE2E3E3" />
+                            <Rectangle
+                              Width="1"
+                              Margin="26,2,0,2"
+                              HorizontalAlignment="Left"
+                              Fill="#FFFFFFFF" />
+                            <ScrollViewer
+                              Grid.ColumnSpan="2"
+                              Margin="1,0,1,0"
+                              CanContentScroll="True"
+                              VerticalScrollBarVisibility="Auto">
+                              <ItemsPresenter
+                                Margin="{TemplateBinding Control.Padding}"
+                                KeyboardNavigation.DirectionalNavigation="Cycle"
+                                SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                            </ScrollViewer>
+                          </Grid>
+                        </Border>
+                      </mwt:SystemDropShadowChrome>
+                      <ControlTemplate.Triggers>
+                        <Trigger Property="ContextMenuService.HasDropShadow">
+                          <Setter TargetName="Shdw" Property="FrameworkElement.Margin">
+                            <Setter.Value>
+                              <Thickness>0,0,5,5</Thickness>
+                            </Setter.Value>
+                          </Setter>
+                          <Setter TargetName="Shdw" Property="mwt:SystemDropShadowChrome.Color">
+                            <Setter.Value>
+                              <Color>#71000000</Color>
+                            </Setter.Value>
+                          </Setter>
+                          <Trigger.Value>
+                            <s:Boolean>True</s:Boolean>
+                          </Trigger.Value>
+                        </Trigger>
+                      </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                  </ContextMenu.Template>
+                </ContextMenu>
+              </local:AeroChrome.ContextMenu>
+            </local:AeroChrome>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsImageVisible" Value="False">
+              <Setter TargetName="image" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="Image" Value="{x:Null}">
+              <Setter TargetName="image" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="EnableVisualButtonStyle" Value="False">
+              <Setter TargetName="button" Property="MouseOverBackground" Value="Transparent" />
+              <Setter TargetName="button" Property="MousePressedBackground" Value="Transparent" />
+              <Setter TargetName="button" Property="BorderBrush" Value="Transparent" />
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="Header" Value="{x:Null}" />
+                <Condition Property="IsImageVisible" Value="False" />
+                <Condition Property="Image" Value="{x:Null}" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="button" Property="Visibility" Value="Collapsed" />
+            </MultiTrigger>
+            <Trigger Property="HasItems" Value="False">
+              <Setter TargetName="PART_DropDown" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="Mode" Value="Overflow">
+              <Setter TargetName="dropDownPath" Property="Data" Value="{StaticResource OverflowArrow}" />
+              <Setter TargetName="dropDownPath" Property="Fill" Value="Transparent" />
+              <Setter TargetName="dropDownPath" Property="Stroke" Value="Black" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="PART_DropDown" Property="RenderPressed" Value="True" />
+              <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+              <Setter TargetName="PART_DropDown" Property="RenderMouseOver" Value="True" />
+              <Setter TargetName="button" Property="RenderMouseOver" Value="True" />
+            </Trigger>
+            <Trigger Property="IsDropDownVisible" Value="False">
+              <Setter TargetName="PART_DropDown" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition SourceName="PART_DropDown" Property="IsMouseOver" Value="True" />
+                <Condition Property="EnableVisualButtonStyle" Value="True" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="button" Property="MouseOverBackground" Value="{StaticResource GradientBorderBrush}" />
+              <Setter TargetName="button" Property="Foreground" Value="{DynamicResource GrayBrush1}" />
+            </MultiTrigger>
+            <Trigger Property="IsButtonVisible" Value="False">
+              <Setter TargetName="button" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsDropDownPressed" Value="True" />
+                <Condition Property="Mode" Value="Breadcrumb" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="dropDownPath" Property="Data" Value="{StaticResource DownArrow}" />
+              <Setter TargetName="button" Property="RenderPressed" Value="True" />
+            </MultiTrigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type local:AeroChrome}">
+    <Setter Property="MouseOverBackground" Value="{DynamicResource GrayBrush8}" />
+    <Setter Property="MousePressedBackground" Value="{StaticResource mousePressedBtnBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource borderBrush}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:AeroChrome}">
+          <Grid Margin="{TemplateBinding Padding}">
+            <Border
+              x:Name="mouseOverBtn"
+              Background="{TemplateBinding MouseOverBackground}"
+              BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}"
+              Opacity="0"
+              SnapsToDevicePixels="True">
+              <Border
+                x:Name="innerButton"
+                BorderBrush="Black"
+                BorderThickness="0"
+                SnapsToDevicePixels="True" />
+            </Border>
+            <Border
+              x:Name="mouseDownBtn"
+              Background="{TemplateBinding MousePressedBackground}"
+              BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}"
+              Opacity="0"
+              SnapsToDevicePixels="True">
+              <Border
+                x:Name="innerButton2"
+                BorderBrush="{StaticResource borderShadowBrush}"
+                BorderThickness="1.2,1.2,0,0"
+                SnapsToDevicePixels="False" />
+            </Border>
+            <ContentPresenter
+              x:Name="content"
+              Margin="4,2,4,2"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="{TemplateBinding Content}"
+              ContentTemplate="{TemplateBinding ContentTemplate}" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="RenderMouseOver" Value="True">
+              <Setter TargetName="mouseOverBtn" Property="Opacity" Value="1" />
+              <!--<Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation
+                      Storyboard.TargetName="mouseOverBtn"
+                      Storyboard.TargetProperty="Opacity"
+                      To="1"
+                      Duration="0:0:0.25" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation
+                      Storyboard.TargetName="mouseOverBtn"
+                      Storyboard.TargetProperty="Opacity"
+                      To="0"
+                      Duration="0:0:0.25" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>-->
+
+            </Trigger>
+            <Trigger Property="RenderPressed" Value="True">
+              <Setter TargetName="mouseDownBtn" Property="Opacity" Value="1" />
+              <Setter TargetName="content" Property="Margin" Value="5,3,3,1" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>
