@@ -109,6 +109,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ImageListEx.cs" />
     <Compile Include="Interop\IListView.cs" />
+    <Compile Include="QueueEx.cs" />
     <Compile Include="TooltipDataTemplateSelector.cs" />
     <Compile Include="ThreadSafeListWithLock.cs" />
     <Compile Include="ListViewEditor.cs" />
