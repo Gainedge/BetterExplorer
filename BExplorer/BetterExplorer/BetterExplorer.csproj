@@ -81,7 +81,7 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <ApplicationIcon>Explorer flat colors.ico</ApplicationIcon>
+    <ApplicationIcon>Explorer.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -740,6 +740,10 @@
       <Project>{37fd53f7-8a8f-4427-8ff4-6299e2933a7e}</Project>
       <Name>TaskDialog</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\toggle-switch-control\WPF\ToggleSwitch\ToggleSwitch.csproj">
+      <Project>{f9426059-27db-45f0-9012-b1234965fbe0}</Project>
+      <Name>ToggleSwitch</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\UsbEject\UsbEject.csproj">
       <Project>{ae269158-dfa5-4dd7-8afc-f45faf2b958c}</Project>
       <Name>UsbEject</Name>
@@ -1217,7 +1221,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

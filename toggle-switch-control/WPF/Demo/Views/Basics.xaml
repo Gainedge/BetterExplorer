@@ -1,0 +1,57 @@
+﻿<UserControl 
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+     xmlns:ToggleSwitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch"
+     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+     x:Class="Demo.Basics">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="A toggle switch is similar to a toggle button, but provides more dynamic checked states." TextWrapping="Wrap" Margin="0,0,0,10" />
+        <ToggleSwitch:HorizontalToggleSwitch
+            Grid.Column="2"
+            IsChecked="True"
+            VerticalAlignment="Top"
+            Margin="0,0,0,10"
+            HorizontalAlignment="Left"/>
+        <TextBlock Text="The checked &amp; unchecked regions of a toggle switch are fully customizable." Grid.Row="1" Margin="0,10" TextWrapping="Wrap"/>
+        <ToggleSwitch:HorizontalToggleSwitch
+            Grid.Column="2"
+            Grid.Row="1" 
+            IsChecked="True"
+            Margin="0,10"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left" >
+            <ToggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+                <Grid>
+                    <Path Data="M0,0 L25,25" Stroke="White" Stretch="UniformToFill" StrokeThickness="6"/>
+                    <Path Data="M0,25 L25,0" Stroke="White" Stretch="UniformToFill" StrokeThickness="6" />
+                </Grid>
+            </ToggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+            <ToggleSwitch:HorizontalToggleSwitch.CheckedContent>
+                <Path Fill="White" Stretch="UniformToFill" Data="M 21.7,52.2 L 74.4,0 L 74.4,18.667 L 22,70.708 L 0.,49 L 0,29.8 L 21.7,52.2 Z" />
+            </ToggleSwitch:HorizontalToggleSwitch.CheckedContent>
+        </ToggleSwitch:HorizontalToggleSwitch>
+        <TextBlock Text="Switch elasticity determines how far the switch needs to be dragged before it snaps to the opposite side." TextWrapping="Wrap" Grid.Row="2" Margin="0,10,0,0" />
+        <ToggleSwitch:HorizontalToggleSwitch
+            Elasticity="{Binding Value, ElementName=Slider}"
+            IsChecked="True"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Margin="0,10,0,0"
+            Grid.Column="2"
+            Grid.Row="2" />
+        <Slider x:Name="Slider" Grid.Column="3" Grid.Row="2" Margin="10,0,0,0" Maximum="1" LargeChange="0.1" SmallChange="0.05" Value="0.5" Width="88" HorizontalAlignment="Left" Style="{DynamicResource SliderStyle}" />
+        <Line Stroke="#70595C64" Grid.Column="1" Grid.RowSpan="3" Y2="165" StrokeThickness="1" Margin="20,0" StrokeDashArray="1"/>
+    </Grid>
+</UserControl>

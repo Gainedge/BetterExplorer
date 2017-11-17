@@ -1336,7 +1336,7 @@ namespace wyDay.Controls
 
         void RefreshTextRect()
         {
-            textRect = new Rectangle(new Point(20, 0), TextRenderer.MeasureText(Text, Font, Size, TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix));
+            textRect = new Rectangle(new Point(24, 1), TextRenderer.MeasureText(Text, Font, Size, TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix));
 
             expandedWidth = textRect.Width + textRect.X;
 

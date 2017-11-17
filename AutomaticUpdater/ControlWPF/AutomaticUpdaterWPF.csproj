@@ -120,6 +120,15 @@
     <Compile Include="AutomaticUpdater.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ucSpinnerCogs.xaml.cs">
+      <DependentUpon>ucSpinnerCogs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ucSpinnerDotCircle.xaml.cs">
+      <DependentUpon>ucSpinnerDotCircle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ucTail.xaml.cs">
+      <DependentUpon>ucTail.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Control\Properties\AssemblyInfo.cs">
@@ -165,6 +174,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ucSpinnerCogs.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ucSpinnerDotCircle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ucTail.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\update-working-g.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\spinning-progress.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

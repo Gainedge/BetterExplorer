@@ -398,13 +398,13 @@ namespace wyDay.Controls
 
             // Create the interop host control.
          
-            MinWidth = 16;
-            Width = 16;
+            MinWidth = 20;
+            Width = 20;
 
-            MinHeight = 16;
-            Height = 16;
+            MinHeight = 20;
+            Height = 20;
 
-            //ani.Size = new System.Drawing.Size(16, 16);
+            //ani.Size = new System.Drawing.Size(20, 20);
             //ani.Location = new System.Drawing.Point(0, 0);
 
             ani.Rows = 5;
@@ -921,8 +921,8 @@ namespace wyDay.Controls
         #region Animation
 
         // calculate the expanded width based on the changing text
-        int expandedWidth = 16;
-        const int collapsedWidth = 16;
+        int expandedWidth = 20;
+        const int collapsedWidth = 20;
 
         const int maxTimeTicks = 30;
         int totalTimeTicks;
@@ -1304,7 +1304,7 @@ namespace wyDay.Controls
                 BeginAniOpen();
             }
 
-            AnimateImage(@"pack://application:,,,/AutomaticUpdaterWPF;Component/Resources/update-working.png", false);
+            AnimateImage(@"pack://application:,,,/AutomaticUpdaterWPF;Component/Resources/update-working-g.png", false);
         }
 
         public BitmapImage ToWpfBitmap(Bitmap bitmap)
@@ -1369,11 +1369,11 @@ namespace wyDay.Controls
         {
             if (DesignMode && Animate)
             {
-                Width = 16;
-                Height = 16;
+                Width = 20;
+                Height = 20;
             }
             else
-                Height = Math.Max(16, formattedText == null ? 0 : formattedText.Height);
+                Height = Math.Max(20, formattedText == null ? 0 : formattedText.Height);
 
             // WPF is a sloppy mess, it lets controls and text flop over the edge. Insanity.
             Clip = new RectangleGeometry(new Rect(0, 0, Width, Height));
@@ -1388,11 +1388,11 @@ namespace wyDay.Controls
             //TODO: split this Design drawing logic into a separate assembly
             if (DesignMode)
             {
-                dc.DrawImage(GetBitmapSource(Properties.Resources.update_notify), new Rect(0, 0, 16, 16));
+                dc.DrawImage(GetBitmapSource(Properties.Resources.update_notify), new Rect(0, 0, 20, 20));
             }
 
             // Draw the formatted text string to the DrawingContext of the control.
-            dc.DrawText(formattedText, new System.Windows.Point(20, 0));
+            dc.DrawText(formattedText, new System.Windows.Point(24, 1));
         }
 
         void contextMenu_Closed(object sender, RoutedEventArgs e)

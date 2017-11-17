@@ -1,0 +1,109 @@
+﻿<UserControl 
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+     xmlns:ToggleSwitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch" 
+    x:Class="Demo.Styling">
+
+    <StackPanel>
+        <TextBlock Text="A variety of styles can be achieved by simply choosing different color brushes, or by modifying the control template into a unique style." TextWrapping="Wrap" Margin="0,0,0,15"/>
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel HorizontalAlignment="Left" Grid.Row="1">
+                <TextBlock Text="iPhone" HorizontalAlignment="Left" />
+                <ToggleSwitch:HorizontalToggleSwitch
+                    Style="{StaticResource iPhoneToggleSwitchStyle}" 
+                    IsChecked="True" 
+                    Margin="0,5,0,10" 
+                    HorizontalAlignment="Left" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1">
+                <TextBlock Text="Carbon" HorizontalAlignment="Left" />
+                <ToggleSwitch:HorizontalToggleSwitch 
+                    ThumbTemplate="{StaticResource SimpleThumbTemplate}"
+                    FontSize="12"
+                    BorderBrush="#FF6A6A6A"
+                    UncheckedForeground="White" 
+                    UncheckedContent="Off" 
+                    CheckedContent="On" 
+                    IsChecked="True" Margin="0,5,0,10" HorizontalAlignment="Left">
+                    <ToggleSwitch:HorizontalToggleSwitch.ThumbBrush>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFB3B5B7" Offset="1"/>
+                            <GradientStop Color="#FFEDEEEE"/>
+                        </LinearGradientBrush>
+                    </ToggleSwitch:HorizontalToggleSwitch.ThumbBrush>
+                    <ToggleSwitch:HorizontalToggleSwitch.UncheckedBackground>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFE1E2E2"/>
+                            <GradientStop Color="#FF555555"/>
+                        </LinearGradientBrush>
+                    </ToggleSwitch:HorizontalToggleSwitch.UncheckedBackground>
+                    <ToggleSwitch:HorizontalToggleSwitch.CheckedBackground>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF6E97B7" Offset="1"/>
+                            <GradientStop Color="#FF46738A"/>
+                        </LinearGradientBrush>
+                    </ToggleSwitch:HorizontalToggleSwitch.CheckedBackground>
+                </ToggleSwitch:HorizontalToggleSwitch>
+            </StackPanel>
+            <StackPanel Grid.Column="2" HorizontalAlignment="Left" Grid.Row="1">
+                <TextBlock Text="OS X" HorizontalAlignment="Left" />
+                <ToggleSwitch:HorizontalToggleSwitch 
+                    CheckedContent="ON" 
+                    UncheckedContent="OFF"
+                    Style="{StaticResource SafariSwitchStyle}" Margin="0,5,0,10" HorizontalAlignment="Left" />
+            </StackPanel>
+            <StackPanel Grid.Row="2" HorizontalAlignment="Left">
+                <TextBlock Text="iOS 5" HorizontalAlignment="Left" Margin="0,15,0,5" />
+                <ToggleSwitch:HorizontalToggleSwitch
+                    Style="{StaticResource iOS5ToggleSwitchStyle}" 
+                    IsChecked="True" HorizontalAlignment="Left" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left">
+                <TextBlock Text="Metro" HorizontalAlignment="Left" Margin="0,15,0,5" />
+                <ToggleSwitch:HorizontalToggleSwitch
+                    BorderBrush="#FF1F1F1F"
+                    Width="78" 
+                    UncheckedBackground="#FF333430" 
+                    UncheckedForeground="#FF999999" 
+                    ThumbSize="38" 
+                    Style="{StaticResource MetroToggleSwitchStyle}" IsChecked="True" HorizontalAlignment="Left">
+                    <ToggleSwitch:HorizontalToggleSwitch.CheckedBackground>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF3EB3EC"/>
+                            <GradientStop Color="#FF349BE6" Offset="1"/>
+                        </LinearGradientBrush>
+                    </ToggleSwitch:HorizontalToggleSwitch.CheckedBackground>
+                    <ToggleSwitch:HorizontalToggleSwitch.ThumbBrush>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF4D4E48"/>
+                            <GradientStop Color="#FF333430" Offset="1"/>
+                            <GradientStop Color="#FF333330" Offset="0.021"/>
+                        </LinearGradientBrush>
+                    </ToggleSwitch:HorizontalToggleSwitch.ThumbBrush>
+                </ToggleSwitch:HorizontalToggleSwitch>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left">
+                <TextBlock Text="Brushed metal" HorizontalAlignment="Left" Margin="0,15,0,5" />
+                <ToggleSwitch:HorizontalToggleSwitch 
+                    Style="{StaticResource LightBulbToggleSwitchStyle}" HorizontalAlignment="Left">
+                    <ToggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+                        <Image Source="../Images/lightOff.png" Height="32" Margin="0,-8,0,0" />
+                    </ToggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+                    <ToggleSwitch:HorizontalToggleSwitch.CheckedContent>
+                        <Image Source="../Images/lightOn.png" Height="32" Margin="4,-8,0,0" />
+                    </ToggleSwitch:HorizontalToggleSwitch.CheckedContent>
+                </ToggleSwitch:HorizontalToggleSwitch>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

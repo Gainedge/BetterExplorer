@@ -173,42 +173,14 @@ namespace BetterExplorer {
 
       //// loads current Ribbon color theme
       try {
-        var owner = Current.MainWindow;
-          
-        //if (owner != null) {
-        //  owner.Resources.BeginInit();
-
-        //  //if (owner.Resources.MergedDictionaries.Count > 0) {
-        //  //  owner.Resources.MergedDictionaries.RemoveAt(0);
-        //  //}
-
-        //  //if (string.IsNullOrEmpty(Settings.BESettings.CurrentTheme) == false) {
-        //  //  owner.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri(Settings.BESettings.CurrentTheme) });
-        //  //}
-
-        //  owner.Resources.EndInit();
-        //}
-
-        //Current.Resources.BeginInit();
-
-        //Current.Resources.MergedDictionaries.RemoveAt(1);
-
         switch (Settings.BESettings.CurrentTheme) {
-          case "Blue":
-          case "Silver":
-          case "Black":
-          case "Green":
+          case "Dark":
             ThemeManager.ChangeAppTheme(this, "BaseDark");
-            break;
-          case "Metro":
-            ThemeManager.ChangeAppTheme(this, "BaseLight");
             break;
           default:
             ThemeManager.ChangeAppTheme(this, "BaseLight");
             break;
         }
-
-        //Current.Resources.EndInit();
       }
       catch (Exception ex) {
         // MessageBox.Show(String.Format("An error occurred while trying to load the theme data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "RibbonTheme Error - " + ex.ToString());

@@ -1,0 +1,9 @@
+﻿<ResourceDictionary
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+     xmlns:my="clr-namespace:System;assembly=mscorlib" >
+
+    <FontFamily x:Key="HeaderFontFamily">/Demo;component/Fonts/#Helvetica Neue LT Com</FontFamily>
+    <FontFamily x:Key="ContentFontFamily">Segoe UI, Lucida Sans Unicode, Verdana</FontFamily>
+    <my:Double x:Key="NavigationFontSize">32</my:Double>
+</ResourceDictionary>

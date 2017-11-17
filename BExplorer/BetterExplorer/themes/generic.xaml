@@ -1,11 +1,10 @@
 ﻿<ResourceDictionary
-	 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	 xmlns:local="clr-namespace:BetterExplorer"
-	 xmlns:odc="clr-namespace:Odyssey.Controls;assembly=Odyssey"
-	 xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-	 xmlns:controls="clr-namespace:CustomControls;assembly=StarRatingControl"
-		>
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+  xmlns:controls="clr-namespace:CustomControls;assembly=StarRatingControl"
+  xmlns:local="clr-namespace:BetterExplorer"
+  xmlns:odc="clr-namespace:Odyssey.Controls;assembly=Odyssey">
   <!--<SolidColorBrush x:Key="NotTabItemNormalBackground" Color="#FFF5F5F5"/>
 	<ControlTemplate x:Key="HorizontalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
 		<Grid x:Name="Bg"
@@ -212,7 +211,8 @@
 	<SolidColorBrush x:Key="TabItemDisabledBackground" Color="#F4F4F4"/>
 	<SolidColorBrush x:Key="TabItemDisabledBorderBrush" Color="#FFC9C7BA"/>
 
-	--><!--<Style TargetType="{x:Type local:ClosableTabItem}" >
+	-->
+  <!--<Style TargetType="{x:Type local:ClosableTabItem}" >
 		<Style.Resources>
 			<LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
 				<GradientStop Color="#F3F3F3" Offset="0"/>
@@ -276,7 +276,7 @@
 					<Grid UseLayoutRounding="True">
 						<Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1,1,1,0" >
 							<DockPanel x:Name="ContentPanel" SnapsToDevicePixels="True">
-																<Image x:Name="Icon" DockPanel.Dock="Left" Width="19" Height="16" 
+																<Image x:Name="Icon" DockPanel.Dock="Left" Width="19" Height="16"
 																																		HorizontalAlignment="Right" VerticalAlignment="Center" Source="{Binding Path=(TabIcon),
 																																		 RelativeSource={RelativeSource FindAncestor,
 																																			 AncestorType={x:Type local:ClosableTabItem}}}"/>
@@ -361,7 +361,8 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>--><!--
+	</Style>-->
+  <!--
 
 	<LinearGradientBrush x:Key="mouseOverBtnBrush" StartPoint="0,0" EndPoint="0,1">
 		<GradientStop Color="#FFEAF6FD" Offset="0"/>
@@ -388,12 +389,14 @@
 	<Geometry x:Key="DownArrow">M0,3 L7,3 3.5,7 z</Geometry>
 	<Geometry x:Key="OverflowArrow">F1 M7,0 L4,3 7,6 M3,0 L0,3 3,6</Geometry>
 
-	--><!--DropDownButtonTemplate--><!--
+	-->
+  <!--  DropDownButtonTemplate  -->
+  <!--
 	<ControlTemplate TargetType="{x:Type ToggleButton}" x:Key="DropDownButtonTemplate">
 		<odc:AeroChrome  SnapsToDevicePixels="True" Focusable="False" x:Name="chrome"
 						BorderBrush="{StaticResource borderBrush}"
 						BorderThickness="1"
-						RenderMouseOver="{TemplateBinding IsMouseOver}" 
+						RenderMouseOver="{TemplateBinding IsMouseOver}"
 						RenderPressed="{TemplateBinding IsPressed}" >
 			<odc:AeroChrome.Content>
 				<Path x:Name="arrow" Data="{StaticResource DownArrow}" SnapsToDevicePixels="True" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="Black" Focusable="False"/>
@@ -406,15 +409,17 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	--><!--ButtonTemplate--><!--
+	-->
+  <!--  ButtonTemplate  -->
+  <!--
 	<ControlTemplate TargetType="{x:Type Button}" x:Key="ButtonTemplate">
 		<Border Margin="-1,-1,0,-1" BorderBrush="{StaticResource borderBrush}" BorderThickness="1" Background="Transparent" SnapsToDevicePixels="True" Focusable="False">
 			<odc:AeroChrome  SnapsToDevicePixels="True" x:Name="chrome" Focusable="False"
 						BorderBrush="{StaticResource borderBrush}"
 						BorderThickness="1"
 						 Margin="-1"
-						RenderMouseOver="{TemplateBinding IsMouseOver}" 
-						RenderPressed="{TemplateBinding IsPressed}" 
+						RenderMouseOver="{TemplateBinding IsMouseOver}"
+						RenderPressed="{TemplateBinding IsPressed}"
 						Content="{TemplateBinding Content}"/>
 		</Border>
 		<ControlTemplate.Triggers>
@@ -424,7 +429,9 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	--><!--BreadcrumbItem--><!--
+	-->
+  <!--  BreadcrumbItem  -->
+  <!--
 	<Style TargetType="{x:Type odc:BreadcrumbItem}">
 		<Setter Property="Focusable" Value="False"/>
 		<Setter Property="BorderBrush" Value="{StaticResource borderBrush}"/>
@@ -435,7 +442,7 @@
 														BorderBrush="{TemplateBinding BorderBrush}"
 														BorderThickness="{TemplateBinding BorderThickness}">
 						<DockPanel>
-							<odc:BreadcrumbButton x:Name="PART_Header" 
+							<odc:BreadcrumbButton x:Name="PART_Header"
 																										DataContext="{Binding}"
 																										IsImageVisible="{TemplateBinding IsRoot}"
 																										IsButtonVisible="{TemplateBinding IsButtonVisible}"
@@ -460,9 +467,9 @@
 		</Setter>
 	</Style>
 
-	<ControlTemplate x:Key="progressBarTemplate" TargetType="ProgressBar" 
-										 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-										 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+	<ControlTemplate x:Key="progressBarTemplate" TargetType="ProgressBar"
+										 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+										 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 										 xmlns:s="clr-namespace:System;assembly=mscorlib">
 		<Grid Name="Background" SnapsToDevicePixels="True">
 			<Rectangle Name="PART_Track" Margin="1,1,1,1" />
@@ -558,7 +565,9 @@
 	</ControlTemplate>
 
 
-	--><!--BreadcrumbBar--><!--
+	-->
+  <!--  BreadcrumbBar  -->
+  <!--
 	<Style TargetType="{x:Type odc:BreadcrumbBar}">
 		<Setter Property="MinHeight" Value="23"/>
 		<Setter Property="Background" Value="#A0FFFFFF"/>
@@ -591,10 +600,10 @@
 									<ColumnDefinition Width="Auto"/>
 									<ColumnDefinition Width="Auto"/>
 								</Grid.ColumnDefinitions>
-								<ProgressBar x:Name="progress" Grid.Column="0" Grid.ColumnSpan="4" 
-																						 Maximum="{Binding ProgressMaximum,RelativeSource={RelativeSource TemplatedParent}}" 
-																						 Minimum="{Binding ProgressMinimum,RelativeSource={RelativeSource TemplatedParent}}" 
-																						 Value="{Binding ProgressValue,RelativeSource={RelativeSource TemplatedParent}}" 
+								<ProgressBar x:Name="progress" Grid.Column="0" Grid.ColumnSpan="4"
+																						 Maximum="{Binding ProgressMaximum,RelativeSource={RelativeSource TemplatedParent}}"
+																						 Minimum="{Binding ProgressMinimum,RelativeSource={RelativeSource TemplatedParent}}"
+																						 Value="{Binding ProgressValue,RelativeSource={RelativeSource TemplatedParent}}"
 																						 Background="Transparent"
 																						 BorderThickness="0"
 																						 Template="{StaticResource progressBarTemplate}"/>
@@ -613,18 +622,18 @@
 													IsDropDownPressed="{Binding IsOverflowPressed,RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" >
 								</odc:BreadcrumbButton>
 								<ContentPresenter x:Name="container" Grid.Column="1" Content="{Binding RootItem,RelativeSource={RelativeSource TemplatedParent}}"/>
-								<ToggleButton x:Name="dropDown" Grid.Column="2" 
+								<ToggleButton x:Name="dropDown" Grid.Column="2"
 																							Focusable="False"
 																							Width="16"
 																							Visibility="Collapsed"
 																							FocusVisualStyle="{x:Null}"
-																							Template="{StaticResource DropDownButtonTemplate}" 
+																							Template="{StaticResource DropDownButtonTemplate}"
 																		ClickMode="Press"
 																							IsChecked="{Binding IsDropDownOpen,RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}"
 																							Margin="-1"
-																							BorderThickness="1"  
+																							BorderThickness="1"
 																							BorderBrush="{StaticResource borderBrush}" />
-								<ComboBox x:Name="PART_ComboBox"                                             
+								<ComboBox x:Name="PART_ComboBox"
 																					Visibility="Hidden"
 																					Margin="0,0,0,0"
 																					IsEditable="True"
@@ -648,7 +657,9 @@
 					</Border>
 					<ControlTemplate.Triggers>
 						<Trigger Property="Visibility" Value="Visible" SourceName="PART_ComboBox">
-							--><!--hide the breadcrumb container and root button  if the combobox is visible, otherwise a breadcrumb button could get the focus on mouseover: --><!--
+							-->
+  <!--  hide the breadcrumb container and root button  if the combobox is visible, otherwise a breadcrumb button could get the focus on mouseover:  -->
+  <!--
 							<Setter Property="Visibility" Value="Hidden" TargetName="container"/>
 							<Setter Property="Visibility" Value="Hidden" TargetName="PART_Root"/>
 						</Trigger>
@@ -680,7 +691,9 @@
 		</Setter>
 	</Style>
 
-	--><!--BreadcrumbButton--><!--
+	-->
+  <!--  BreadcrumbButton  -->
+  <!--
 	<Style TargetType="{x:Type odc:BreadcrumbButton}">
 		<Setter Property="BorderThickness" Value="1"/>
 		<Setter Property="BorderBrush" Value="Transparent"/>
@@ -699,8 +712,8 @@
 																					Visibility="Visible"
 																					x:Name="button"
 																					Focusable="False"
-																					Margin="-1"                                         
-																					BorderThickness="1"       
+																					Margin="-1"
+																					BorderThickness="1"
 																					 RenderPressed="{TemplateBinding IsPressed}"
 																					RenderMouseOver="{TemplateBinding IsMouseOver}">
 							<odc:AeroChrome.Content>
@@ -711,7 +724,9 @@
 							</odc:AeroChrome.Content>
 						</odc:AeroChrome>
 
-						--><!--Content="{TemplateBinding Header}"/>--><!--
+						-->
+  <!--  Content="{TemplateBinding Header}"/>  -->
+  <!--
 						<odc:AeroChrome Grid.Column="1" x:Name="PART_DropDown"
 																					Focusable="False"
 																					MinWidth="16"
@@ -719,13 +734,13 @@
 																					BorderThickness="1"
 																					 RenderPressed="{TemplateBinding IsDropDownPressed}"
 																					RenderMouseOver="{TemplateBinding IsMouseOver}"
-																					ContentTemplate="{TemplateBinding DropDownContentTemplate}" 
+																					ContentTemplate="{TemplateBinding DropDownContentTemplate}"
 																					>
 							<odc:AeroChrome.Content>
 								<Path x:Name="dropDownPath" Fill="Black" Data="{StaticResource RightArrow}" SnapsToDevicePixels="True"  HorizontalAlignment="Center"/>
 							</odc:AeroChrome.Content>
 							<odc:AeroChrome.ContextMenu>
-								<ContextMenu x:Name="PART_Menu"                                                
+								<ContextMenu x:Name="PART_Menu"
 																							IsTextSearchEnabled="True"
 																								 HorizontalOffset="-14"
 																							 ItemContainerStyle="{x:Null}"
@@ -840,24 +855,24 @@
 						<Border x:Name="mouseOverBtn"
 																		Opacity="0"
 																		Background="{TemplateBinding MouseOverBackground}"
-																		BorderBrush="{TemplateBinding BorderBrush}" 
-																		BorderThickness="{TemplateBinding BorderThickness}" 
+																		BorderBrush="{TemplateBinding BorderBrush}"
+																		BorderThickness="{TemplateBinding BorderThickness}"
 																		SnapsToDevicePixels="True">
 							<Border x:Name="innerButton" SnapsToDevicePixels="True"
 																				BorderThickness="1"
 																				BorderBrush="White"/>
 						</Border>
-						<Border x:Name="mouseDownBtn" 
+						<Border x:Name="mouseDownBtn"
 																		Opacity="0"
 																		Background="{TemplateBinding MousePressedBackground}"
-																		BorderBrush="{TemplateBinding BorderBrush}" 
-																		BorderThickness="{TemplateBinding BorderThickness}" 
+																		BorderBrush="{TemplateBinding BorderBrush}"
+																		BorderThickness="{TemplateBinding BorderThickness}"
 																		SnapsToDevicePixels="True">
 							<Border x:Name="innerButton2" SnapsToDevicePixels="False"
 																				BorderThickness="1.2,1.2,0,0"
 																				BorderBrush="{StaticResource borderShadowBrush}"/>
 						</Border>
-						<ContentPresenter Content="{TemplateBinding Content}" 
+						<ContentPresenter Content="{TemplateBinding Content}"
 																					x:Name="content"
 																					VerticalAlignment="Center"
 																					HorizontalAlignment="Center"
@@ -910,7 +925,9 @@
 		</Setter>
 	</Style>
 
-	--><!--RatingItem style--><!--
+	-->
+  <!--  RatingItem style  -->
+  <!--
 	<Style TargetType="{x:Type controls:RatingItem}">
 		<Setter Property="Template">
 			<Setter.Value>

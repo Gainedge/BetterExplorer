@@ -7,6 +7,7 @@
   xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
   xmlns:Previewer="clr-namespace:WpfDocumentPreviewer;assembly=WpfDocumentPreviewer"
   xmlns:Ribbon="clr-namespace:Fluent;assembly=Fluent"
+  xmlns:borders="clr-namespace:ToggleSwitch.Borders;assembly=ToggleSwitch"
   xmlns:console="clr-namespace:ConsoleControl;assembly=ConsoleControl"
   xmlns:controls="clr-namespace:BetterExplorerControls;assembly=BetterExplorerControls"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -17,7 +18,9 @@
   xmlns:odc="clr-namespace:Odyssey.Controls;assembly=Odyssey"
   xmlns:shell="clr-namespace:BExplorer.Shell;assembly=BExplorerShell"
   xmlns:tabcontrol="clr-namespace:Wpf.Controls;assembly=Wpf.TabControl"
+  xmlns:toggleswitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch"
   xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+  xmlns:utils="clr-namespace:ToggleSwitch.Utils;assembly=ToggleSwitch"
   Title="Better Explorer"
   MinWidth="640"
   MinHeight="480"
@@ -41,6 +44,379 @@
       <DataTemplate DataType="{x:Type shell:ShellItem}">
         <TextBlock Text="{Binding DisplayName}" />
       </DataTemplate>
+      <ControlTemplate x:Key="SafariThumbControlTemplate" TargetType="Thumb">
+        <Grid Background="Transparent">
+          <borders:OuterGlowBorder
+            Background="Transparent"
+            BorderThickness="0"
+            CornerRadius="2"
+            IsTabStop="False"
+            OuterGlowColor="Black"
+            OuterGlowOpacity="0.15"
+            OuterGlowSize="4"
+            ShadowCornerRadius="4">
+            <Grid>
+              <borders:ClippingBorder
+                x:Name="Background"
+                Background="{TemplateBinding Background}"
+                BorderBrush="#FF656565"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="2"
+                IsTabStop="False" />
+              <borders:ClippingBorder
+                x:Name="BackgroundAnimation"
+                Background="Black"
+                BorderBrush="Black"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="2"
+                IsTabStop="False"
+                Opacity="0" />
+              <Rectangle
+                x:Name="DisabledVisualElement"
+                Fill="White"
+                IsHitTestVisible="false"
+                Opacity="0"
+                RadiusX="2"
+                RadiusY="2" />
+              <Rectangle
+                x:Name="FocusVisualElement"
+                Margin="1"
+                IsHitTestVisible="false"
+                Opacity="0"
+                RadiusX="2"
+                RadiusY="2"
+                StrokeThickness="1" />
+            </Grid>
+          </borders:OuterGlowBorder>
+          <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+              <VisualState x:Name="Normal" />
+              <VisualState x:Name="MouseOver">
+                <Storyboard>
+                  <DoubleAnimation
+                    Storyboard.TargetName="BackgroundAnimation"
+                    Storyboard.TargetProperty="Opacity"
+                    To="0.05"
+                    Duration="0" />
+                </Storyboard>
+              </VisualState>
+              <VisualState x:Name="Pressed">
+                <Storyboard>
+                  <DoubleAnimation
+                    Storyboard.TargetName="BackgroundAnimation"
+                    Storyboard.TargetProperty="Opacity"
+                    To="0.25"
+                    Duration="0" />
+                </Storyboard>
+              </VisualState>
+              <VisualState x:Name="Disabled">
+                <Storyboard>
+                  <DoubleAnimation
+                    Storyboard.TargetName="DisabledVisualElement"
+                    Storyboard.TargetProperty="Opacity"
+                    To=".55"
+                    Duration="0" />
+                </Storyboard>
+              </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="FocusStates">
+              <VisualState x:Name="Focused">
+                <Storyboard>
+                  <DoubleAnimation
+                    Storyboard.TargetName="FocusVisualElement"
+                    Storyboard.TargetProperty="Opacity"
+                    To="0.05"
+                    Duration="0" />
+                </Storyboard>
+              </VisualState>
+              <VisualState x:Name="Unfocused" />
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="CheckStates">
+              <VisualState x:Name="Unchecked" />
+              <VisualState x:Name="Checked" />
+            </VisualStateGroup>
+          </VisualStateManager.VisualStateGroups>
+        </Grid>
+      </ControlTemplate>
+      <ControlTemplate x:Key="EngravedContentTemplate" TargetType="ContentControl">
+        <toggleswitch:DropShadowTextBlock
+          Margin="{TemplateBinding Padding}"
+          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+          Cursor="{TemplateBinding Cursor}"
+          DropShadowAngle="90"
+          DropShadowColor="#FFF7F7F7"
+          DropShadowDistance="1"
+          DropShadowOpacity="0.3"
+          Focusable="False"
+          FontFamily="{TemplateBinding FontFamily}"
+          FontSize="{TemplateBinding FontSize}"
+          FontStyle="{TemplateBinding FontStyle}"
+          FontWeight="{TemplateBinding FontWeight}"
+          Foreground="{TemplateBinding Foreground}"
+          IsTabStop="False"
+          Text="{TemplateBinding Content}" />
+      </ControlTemplate>
+      <ControlTemplate x:Key="HorizontalThumbTemplate" TargetType="Thumb">
+        <Grid Background="Transparent">
+          <borders:OuterGlowBorder
+            Background="Transparent"
+            BorderThickness="0"
+            CornerRadius="4"
+            OuterGlowColor="Black"
+            OuterGlowOpacity="0.15"
+            OuterGlowSize="4"
+            ShadowCornerRadius="8">
+            <Grid>
+              <borders:ClippingBorder
+                x:Name="Background"
+                Background="White"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="4">
+                <Border
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="#FFEBEBEB"
+                  BorderThickness="1"
+                  CornerRadius="3">
+                  <Path
+                    x:Name="path"
+                    Margin="7,5"
+                    Data="M3.6,2.6 L10,2.6 L10,6.6 L3.6,6.6 z M10,0 L15.5,4.6 L10,9.4 z"
+                    Fill="#AA767676"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    StrokeThickness="0">
+                    <Path.RenderTransform>
+                      <ScaleTransform />
+                    </Path.RenderTransform>
+                  </Path>
+                </Border>
+              </borders:ClippingBorder>
+              <borders:ClippingBorder
+                x:Name="BackgroundAnimation"
+                Background="Black"
+                BorderBrush="Black"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="4"
+                Opacity="0" />
+              <Rectangle
+                x:Name="FocusVisualElement"
+                Margin="1"
+                IsHitTestVisible="True"
+                Opacity="0"
+                RadiusX="4"
+                RadiusY="4"
+                StrokeThickness="1" />
+              <Rectangle
+                x:Name="DisabledVisualElement"
+                Fill="#FFFFFFFF"
+                IsHitTestVisible="False"
+                Opacity="0"
+                RadiusX="4"
+                RadiusY="4" />
+            </Grid>
+          </borders:OuterGlowBorder>
+          <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+              <VisualState x:Name="Normal" />
+              <VisualState x:Name="MouseOver">
+                <Storyboard>
+                  <DoubleAnimation
+                    Storyboard.TargetName="BackgroundAnimation"
+                    Storyboard.TargetProperty="Opacity"
+                    To="0.05"
+                    Duration="0" />
+                </Storyboard>
+              </VisualState>
+              <VisualState x:Name="Pressed">
+                <Storyboard>
+                  <DoubleAnimation
+                    Storyboard.TargetName="BackgroundAnimation"
+                    Storyboard.TargetProperty="Opacity"
+                    To="0.25"
+                    Duration="0" />
+                </Storyboard>
+              </VisualState>
+              <VisualState x:Name="Disabled">
+                <Storyboard>
+                  <DoubleAnimation
+                    Storyboard.TargetName="DisabledVisualElement"
+                    Storyboard.TargetProperty="Opacity"
+                    To=".55"
+                    Duration="0" />
+                </Storyboard>
+              </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="FocusStates">
+              <VisualState x:Name="Focused">
+                <Storyboard>
+                  <DoubleAnimation
+                    Storyboard.TargetName="FocusVisualElement"
+                    Storyboard.TargetProperty="Opacity"
+                    To="0.05"
+                    Duration="0" />
+                </Storyboard>
+              </VisualState>
+              <VisualState x:Name="Unfocused" />
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="CheckStates">
+              <VisualState x:Name="Unchecked" />
+              <VisualState x:Name="Checked">
+                <Storyboard>
+                  <DoubleAnimation
+                    Storyboard.TargetName="path"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                    To="-1"
+                    Duration="0" />
+                </Storyboard>
+              </VisualState>
+            </VisualStateGroup>
+          </VisualStateManager.VisualStateGroups>
+        </Grid>
+      </ControlTemplate>
+      <Style x:Key="SafariSwitchStyle" TargetType="toggleswitch:HorizontalToggleSwitch">
+        <Setter Property="Width" Value="130" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="BorderBrush" Value="#FF6C6C6C" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="0,4" />
+        <Setter Property="UncheckedForeground" Value="#FF3C3C3C" />
+        <Setter Property="CheckedForeground" Value="#FF3C3C3C" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="ThumbSize" Value="30" />
+        <Setter Property="ContentTemplate" Value="{StaticResource EngravedContentTemplate}" />
+        <Setter Property="ThumbTemplate" Value="{StaticResource HorizontalThumbTemplate}" />
+        <Setter Property="Background">
+          <Setter.Value>
+            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+              <GradientStop Offset="0" Color="#FF656565" />
+              <GradientStop Offset="1" Color="#FFA5A5A5" />
+              <GradientStop Offset="0.095" Color="#FF797979" />
+            </LinearGradientBrush>
+          </Setter.Value>
+        </Setter>
+        <Setter Property="ThumbBrush">
+          <Setter.Value>
+            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+              <GradientStop Offset="1" Color="#FFE1E1E1" />
+              <GradientStop Color="#FFFBFBFB" />
+            </LinearGradientBrush>
+          </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="toggleswitch:HorizontalToggleSwitch">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <utils:ActualSizePropertyProxy
+                  x:Name="ActualSizeProxy"
+                  Element="{Binding Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                  IsHitTestVisible="False"
+                  Visibility="Collapsed" />
+                <ContentControl
+                  x:Name="OffLabel"
+                  Grid.Column="0"
+                  Margin="0,0,6,0"
+                  VerticalAlignment="Center"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  Content="{TemplateBinding UncheckedContent}"
+                  Cursor="Hand"
+                  Focusable="False"
+                  FontFamily="{TemplateBinding FontFamily}"
+                  FontSize="{TemplateBinding FontSize}"
+                  FontStyle="{TemplateBinding FontStyle}"
+                  FontWeight="{TemplateBinding FontWeight}"
+                  Foreground="{TemplateBinding UncheckedForeground}"
+                  IsTabStop="False" />
+                <borders:ClippingBorder
+                  x:Name="SwitchRoot"
+                  Grid.Column="1"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="2"
+                  Cursor="Hand"
+                  IsTabStop="False">
+                  <Canvas
+                    x:Name="SwitchTrack"
+                    Height="{TemplateBinding Height}"
+                    Margin="0,-1,0,0"
+                    Cursor="Hand">
+                    <Thumb
+                      x:Name="SwitchThumb"
+                      Width="{TemplateBinding ThumbSize}"
+                      Height="{Binding ActualHeightValue, ElementName=ActualSizeProxy}"
+                      HorizontalAlignment="Left"
+                      Background="{TemplateBinding ThumbBrush}"
+                      Cursor="Hand"
+                      IsTabStop="False"
+                      Template="{StaticResource SafariThumbControlTemplate}" />
+                  </Canvas>
+                </borders:ClippingBorder>
+                <ContentControl
+                  x:Name="OnLabel"
+                  Grid.Column="2"
+                  Margin="6,0,0,0"
+                  VerticalAlignment="Center"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  Content="{TemplateBinding CheckedContent}"
+                  Cursor="Hand"
+                  Focusable="False"
+                  FontFamily="{TemplateBinding FontFamily}"
+                  FontSize="{TemplateBinding FontSize}"
+                  FontStyle="{TemplateBinding FontStyle}"
+                  FontWeight="{TemplateBinding FontWeight}"
+                  Foreground="{TemplateBinding CheckedForeground}"
+                  IsTabStop="False" />
+                <Border
+                  x:Name="DisabledOverlay"
+                  Grid.Column="1"
+                  Height="27"
+                  Background="#AAEEEEEE"
+                  CornerRadius="4"
+                  Visibility="Collapsed" />
+                <VisualStateManager.VisualStateGroups>
+                  <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="Disabled">
+                      <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DisabledOverlay" Storyboard.TargetProperty="(UIElement.Visibility)">
+                          <DiscreteObjectKeyFrame KeyTime="0">
+                            <DiscreteObjectKeyFrame.Value>
+                              <Visibility>Visible</Visibility>
+                            </DiscreteObjectKeyFrame.Value>
+                          </DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
+                      </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="MouseOver" />
+                    <VisualState x:Name="Pressed" />
+                  </VisualStateGroup>
+                  <VisualStateGroup x:Name="CheckStates">
+                    <VisualStateGroup.Transitions>
+                      <VisualTransition GeneratedDuration="0:0:0.10" To="Unchecked" />
+                      <VisualTransition GeneratedDuration="0:0:0.10" To="Checked" />
+                    </VisualStateGroup.Transitions>
+                    <VisualState x:Name="Checked" />
+                    <VisualState x:Name="Unchecked" />
+                    <VisualState x:Name="DraggingChecked" />
+                    <VisualState x:Name="DraggingUnchecked" />
+                  </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+              </Grid>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
       <Style
         x:Key="TextBoxStyle1"
         BasedOn="{x:Null}"
@@ -106,7 +482,7 @@
     <ni:TaskbarIcon
       x:Name="beNotifyIcon"
       Grid.ColumnSpan="2"
-      IconSource="Explorer flat colors.ico"
+      IconSource="Explorer.ico"
       MenuActivation="RightClick"
       PopupActivation="DoubleClick"
       ToolTipText="{DynamicResource beNotifyIcon_ToolTipText}"
@@ -237,12 +613,14 @@
                   VerticalAlignment="Top"
                   Content="{DynamicResource btnUpdateCheckHCP}"
                   FontSize="12"
-                  FontWeight="Bold" />
+                  FontWeight="Bold"
+                  Foreground="{DynamicResource BlackBrush}" />
                 <TextBlock
                   Height="50"
                   Margin="110,75,10,0"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
+                  Foreground="{DynamicResource BlackBrush}"
                   Text="{DynamicResource btnUpdateCheckICP}"
                   TextWrapping="Wrap" />
                 <Ribbon:Button
@@ -266,12 +644,14 @@
                   VerticalAlignment="Top"
                   Content="{DynamicResource btnOpenWebsiteHCP}"
                   FontSize="12"
-                  FontWeight="Bold" />
+                  FontWeight="Bold"
+                  Foreground="{DynamicResource BlackBrush}" />
                 <TextBlock
                   Height="50"
                   Margin="110,170,10,0"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
+                  Foreground="{DynamicResource BlackBrush}"
                   Text="{DynamicResource btnOpenWebsiteICP}"
                   TextWrapping="Wrap" />
                 <Ribbon:Button
@@ -312,13 +692,15 @@
                   VerticalAlignment="Top"
                   Content="{DynamicResource lbeBugtracker}"
                   FontSize="12"
-                  FontWeight="Bold" />
+                  FontWeight="Bold"
+                  Foreground="{DynamicResource BlackBrush}" />
                 <TextBlock
                   x:Name="txtBugtracker"
                   Height="50"
                   Margin="110,265,10,0"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
+                  Foreground="{DynamicResource BlackBrush}"
                   Text="{DynamicResource txtBugtracker}"
                   TextWrapping="Wrap" />
                 <Separator Grid.Column="0" HorizontalAlignment="Right" />
@@ -339,12 +721,13 @@
                   <StackPanel Margin="1,0,0,1">
                     <Controls:AutomaticUpdater
                       x:Name="autoUpdater"
-                      Margin="0,15,50,10"
+                      Margin="0,15,30,10"
                       HorizontalAlignment="Left"
                       Panel.ZIndex="100"
                       Animate="True"
                       DaysBetweenChecks="7"
                       Focusable="False"
+                      Foreground="{DynamicResource BlackBrush}"
                       KeepExpanded="True"
                       UpdateType="OnlyCheck" />
                     <Label
@@ -353,6 +736,7 @@
                       Content="{DynamicResource stUpdateNotAvailableCP}"
                       FontSize="14"
                       FontWeight="ExtraBold"
+                      Foreground="{DynamicResource BlackBrush}"
                       Visibility="Collapsed" />
                     <Ribbon:SeparatorTabItem
                       Margin="0,-30,50,0"
@@ -362,11 +746,13 @@
                     <Label
                       Margin="0,2,50,0"
                       Content="{DynamicResource lblBetterExText}"
-                      FontWeight="Bold" />
+                      FontWeight="Bold"
+                      Foreground="{DynamicResource BlackBrush}" />
                     <TextBlock
                       Width="500"
                       Margin="3,2,53,0"
                       HorizontalAlignment="Left"
+                      Foreground="{DynamicResource BlackBrush}"
                       Text="{DynamicResource lblBetterExInfo}"
                       TextWrapping="Wrap" />
                     <Ribbon:SeparatorTabItem
@@ -376,42 +762,48 @@
                     <Label
                       Margin="0,2,50,0"
                       Content="{DynamicResource lblDevelopersHeader}"
-                      FontWeight="Bold" />
+                      FontWeight="Bold"
+                      Foreground="{DynamicResource BlackBrush}" />
                     <Label
                       Margin="20,0,40,0"
                       Content="Dimitar Tsenev"
                       FontSize="14"
                       FontStyle="Italic"
-                      FontWeight="Bold" />
+                      FontWeight="Bold"
+                      Foreground="{DynamicResource BlackBrush}" />
                     <Label
                       Margin="20,0,40,0"
                       Content="Timo Kunze"
                       FontSize="14"
                       FontStyle="Italic"
-                      FontWeight="DemiBold" />
+                      FontWeight="DemiBold"
+                      Foreground="{DynamicResource BlackBrush}" />
                     <Label
                       Margin="20,0,40,0"
                       Content="Aaron Campf"
                       FontSize="14"
                       FontStyle="Italic"
-                      FontWeight="DemiBold" />
+                      FontWeight="DemiBold"
+                      Foreground="{DynamicResource BlackBrush}" />
                     <Label
                       Margin="20,0,40,0"
                       Content="Markus Lang"
                       FontSize="14"
                       FontStyle="Normal"
-                      FontWeight="Normal" />
+                      FontWeight="Normal"
+                      Foreground="{DynamicResource BlackBrush}" />
                     <Label
                       Margin="20,0,40,0"
                       Content="Jayke R. Huempfner (JaykeBird)"
                       FontSize="14"
                       FontStyle="Normal"
-                      FontWeight="Normal" />
+                      FontWeight="Normal"
+                      Foreground="{DynamicResource BlackBrush}" />
                     <!--<Label Margin="20,0,40,0"
-							 Content="Alexey Barkalov"
-							 FontSize="14"
-							 FontStyle="Italic"
-							 FontWeight="Bold" />-->
+							                 Content="Alexey Barkalov"
+							                 FontSize="14"
+							                 FontStyle="Italic"
+							                 FontWeight="Bold" />-->
                     <Ribbon:SeparatorTabItem
                       Margin="0,20,50,0"
                       Header="{DynamicResource lblAboutBEHeader}"
@@ -420,22 +812,27 @@
                       x:Name="verNumber"
                       Margin="20,0,50,0"
                       Content="Version Info Data Put Here"
-                      FontSize="12" />
+                      FontSize="12"
+                      Foreground="{DynamicResource BlackBrush}" />
                     <Label
                       x:Name="lblArchitecture"
                       Margin="20,0,0,0"
                       Content="32-bit Version"
-                      FontSize="12" />
-                    <Label Margin="20,0,0,0" Content="© 2016. All right reserved." />
+                      FontSize="12"
+                      Foreground="{DynamicResource BlackBrush}" />
+                    <Label
+                      Margin="20,0,0,0"
+                      Content="© 2016. All right reserved."
+                      Foreground="{DynamicResource BlackBrush}" />
                     <Ribbon:SeparatorTabItem
                       Margin="0,20,50,0"
                       Header="Credits"
                       Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                    <Label Content="Fluent Ribbon Control Suite (fluent.codeplex.com)" />
+                    <Label Content="Fluent Ribbon Control Suite (fluent.codeplex.com)" Foreground="{DynamicResource BlackBrush}" />
                     <!--  <Label Content="Qttabbar - a great utility for Windows Explorer"/>  -->
-                    <Label Content="7-Zip - archiving utility (www.7-zip.org)" />
-                    <Label Content="7ZipSharp - a wrapper of 7Zip for .NET" />
-                    <Label Content="Some icons are property of Microsoft® Corporation. All right reserved." />
+                    <Label Content="7-Zip - archiving utility (www.7-zip.org)" Foreground="{DynamicResource BlackBrush}" />
+                    <Label Content="7ZipSharp - a wrapper of 7Zip for .NET" Foreground="{DynamicResource BlackBrush}" />
+                    <Label Content="Some icons are property of Microsoft® Corporation. All right reserved." Foreground="{DynamicResource BlackBrush}" />
                   </StackPanel>
                 </ScrollViewer>
 
@@ -980,59 +1377,33 @@
                   Ribbon:KeyTip.Keys="R"
                   Header="{DynamicResource tabRibbonCP}">
                   <Grid Margin="20,5,0,0">
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="Auto" />
+                      <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
                     <Ribbon:SeparatorTabItem
                       VerticalAlignment="Top"
                       Header="{DynamicResource sepRibbonColorCP}"
                       Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
                     <StackPanel
-                      x:Name="RibbonStack"
-                      Height="100"
-                      MaxHeight="100"
-                      Margin="5,20,0,0"
+                      Height="60"
+                      Margin="6,20,0,0"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
-                      Focusable="True"
                       Orientation="Horizontal">
-                      <Ribbon:ToggleButton
-                        x:Name="btnSilver"
-                        Ribbon:KeyTip.Keys="S"
-                        Click="btnSilver_Click"
-                        Foreground="Black"
-                        GroupName="RSkin"
-                        Header="{DynamicResource btnSilverCP}"
-                        IsChecked="False"
-                        LargeIcon="Images\SilverTheme.png"
-                        SizeDefinition="Large" />
-                      <Ribbon:ToggleButton
-                        x:Name="btnBlue"
-                        Ribbon:KeyTip.Keys="B"
-                        Click="btnBlue_Click"
-                        Foreground="Black"
-                        GroupName="RSkin"
-                        Header="{DynamicResource btnBlueCP}"
-                        IsChecked="False"
-                        LargeIcon="Images\BlueTheme.png"
-                        SizeDefinition="Large" />
-                      <Ribbon:ToggleButton
-                        x:Name="btnBlack"
-                        Ribbon:KeyTip.Keys="L"
-                        Click="btnBlack_Click"
-                        Foreground="Black"
-                        GroupName="RSkin"
-                        Header="{DynamicResource btnBlackCP}"
-                        IsChecked="False"
-                        LargeIcon="Images\BlackTheme.png"
-                        SizeDefinition="Large" />
-                      <Ribbon:ToggleButton
-                        x:Name="btnMetro"
-                        Ribbon:KeyTip.Keys="G"
-                        Click="btnGreen_Click"
-                        Foreground="Black"
-                        GroupName="RSkin"
-                        Header="Metro White"
-                        IsChecked="False"
-                        LargeIcon="Images\SilverTheme.png"
-                        SizeDefinition="Large" />
+                      <toggleswitch:HorizontalToggleSwitch
+                        x:Name="btnTheme"
+                        Grid.Row="1"
+                        Margin="0,20,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Checked="BtnTheme_OnChecked"
+                        CheckedContent="Dark"
+                        CheckedForeground="{DynamicResource BlackBrush}"
+                        Style="{StaticResource SafariSwitchStyle}"
+                        Unchecked="BtnTheme_OnUnchecked"
+                        UncheckedContent="Light"
+                        UncheckedForeground="{DynamicResource BlackBrush}" />
                     </StackPanel>
                     <Ribbon:SeparatorTabItem
                       Margin="0,100,0,0"

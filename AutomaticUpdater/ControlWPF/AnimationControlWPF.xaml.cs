@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
 using System.Threading;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace wyDay.Controls
 {
@@ -150,45 +142,51 @@ namespace wyDay.Controls
         public void StartAnimation()
         {
             //if the timer isn't already running
-            if (aniTimer.Enabled)
-                return;
+            //if (aniTimer.Enabled)
+            //    return;
 
-            aniTimer.Start();
+            //aniTimer.Start();
 
-            if (staticImage)
-                ptsArray[3][3] = .05f;
-            else
-                columnOn++;
+            //if (staticImage)
+            //    ptsArray[3][3] = .05f;
+            //else
+            //    columnOn++;
 
             Refresh();
         }
 
         public void StopAnimation()
         {
-            aniTimer.Stop();
-            columnOn = 1;
-            rowOn = 1;
+            //aniTimer.Stop();
+            //columnOn = 1;
+            //rowOn = 1;
             Refresh();
-            ptsArray[3][3] = 0; //reset to complete transparency
+            //ptsArray[3][3] = 0; //reset to complete transparency
         }
 
         public void Refresh()
         {
             if (staticImage)
             {
-                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
-                          (ThreadStart)(() =>
-                          {
-                              imgAni.Source = new ImageSourceConverter().ConvertFromString(m_BaseImage) as ImageSource;// m_BaseImage;
+              
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render,
+                          (ThreadStart)(() => {
+                            this.ctrlCircle.Visibility = Visibility.Collapsed;
+                            this.imgAni.Visibility = Visibility.Visible;
+                            imgAni.Source = new ImageSourceConverter().ConvertFromString(m_BaseImage) as ImageSource;// m_BaseImage;
+                           
                           }));
             }
             else
             {
-                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render,
                           (ThreadStart)(() =>
                           {
-                              var y = new ImageSourceConverter().ConvertFromString(m_BaseImage) as BitmapSource;
-                              imgAni.Source = CutImage(new ImageSourceConverter().ConvertFromString(m_BaseImage) as BitmapSource, (columnOn - 1) * (int)frameWidth, (rowOn - 1) * (int)frameHeight);
+                            this.imgAni.Visibility = Visibility.Collapsed;
+                            this.ctrlCircle.Visibility = Visibility.Visible;
+                              //var y = new ImageSourceConverter().ConvertFromString(@"pack://application:,,,/AutomaticUpdaterWPF;Component/Resources/spinning-progress.gif") as BitmapSource;
+                              //ImageBehavior.SetAnimatedSource(this.imgAni, y);
+                              ////imgAni.Source = CutImage(new ImageSourceConverter().ConvertFromString(m_BaseImage) as BitmapSource, (columnOn - 1) * (int)frameWidth, (rowOn - 1) * (int)frameHeight);
                           }));
             }
         }
@@ -200,7 +198,7 @@ namespace wyDay.Controls
 
             PngBitmapEncoder jEncoder = new PngBitmapEncoder();
 
-            jEncoder.Frames.Add(BitmapFrame.Create(new CroppedBitmap(img, new Int32Rect(x, y, 16, 16))));  //the croppedBitmap is a CroppedBitmap object 
+            jEncoder.Frames.Add(BitmapFrame.Create(new CroppedBitmap(img, new Int32Rect(x, y, 20, 20))));  //the croppedBitmap is a CroppedBitmap object 
             jEncoder.Save(mStream); 
  
             BitmapImage image = new BitmapImage(); 

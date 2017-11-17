@@ -166,9 +166,9 @@
 
   <!--  Style for the Toggle Button which displays a context menu listing all the Tab Headers  -->
   <Style x:Key="DropDownToggleButtonStyle" TargetType="{x:Type ToggleButton}">
-    <Setter Property="Background" Value="{Binding Path=NotTabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
-    <Setter Property="BorderBrush" Value="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
-    <Setter Property="Foreground" Value="{StaticResource TabGrayTextBrush}" />
+    <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabControl.Content.Background}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.Foreground}" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="Template">
       <Setter.Value>
@@ -178,8 +178,11 @@
             Background="{TemplateBinding Background}"
             BorderBrush="{TemplateBinding BorderBrush}"
             BorderThickness="1"
-            CornerRadius="3,3,0,0">
-            <Border x:Name="innerBorder" CornerRadius="3,3,0,0">
+            CornerRadius="1,1,0,0">
+            <Border
+              x:Name="innerBorder"
+              BorderThickness="0"
+              CornerRadius="1,1,0,0">
               <Grid
                 Margin="0,1,0,0"
                 HorizontalAlignment="Center"
@@ -199,22 +202,22 @@
           </Border>
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="true">
-              <Setter Property="Background" Value="{Binding Path=TabItemMouseOverBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
-              <Setter Property="Foreground" Value="Black" />
+              <Setter Property="Background" Value="{DynamicResource GrayBrush8}" />
+              <Setter Property="Foreground" Value="{DynamicResource GrayBrush1}" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
-              <Setter Property="Background" Value="{Binding Path=TabItemMouseOverBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
-              <Setter TargetName="innerBorder" Property="Background" Value="#11000000" />
-              <Setter TargetName="innerBorder" Property="BorderBrush" Value="#66000000" />
-              <Setter Property="Foreground" Value="Black" />
+              <Setter Property="Background" Value="{DynamicResource GrayBrush8}" />
+              <Setter TargetName="innerBorder" Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.ScreenTip.BorderBrush}" />
+              <Setter TargetName="innerBorder" Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}" />
+              <Setter Property="Foreground" Value="{DynamicResource GrayBrush1}" />
               <Setter TargetName="innerBorder" Property="Margin" Value="-1" />
-              <Setter TargetName="innerBorder" Property="CornerRadius" Value="3,3,0,0" />
-              <Setter TargetName="innerBorder" Property="BorderThickness" Value="1,2,1,0" />
+              <Setter TargetName="innerBorder" Property="CornerRadius" Value="1,1,0,0" />
+              <!--<Setter TargetName="innerBorder" Property="BorderThickness" Value="1,2,1,0" />-->
             </Trigger>
 
             <DataTrigger Binding="{Binding Path=TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" Value="Bottom">
-              <Setter TargetName="outerBorder" Property="CornerRadius" Value="0,0,3,3" />
-              <Setter TargetName="innerBorder" Property="CornerRadius" Value="0,0,3,3" />
+              <Setter TargetName="outerBorder" Property="CornerRadius" Value="0,0,1,1" />
+              <Setter TargetName="innerBorder" Property="CornerRadius" Value="0,0,1,1" />
             </DataTrigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

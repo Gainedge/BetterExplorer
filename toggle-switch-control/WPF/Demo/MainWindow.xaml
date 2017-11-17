@@ -1,0 +1,32 @@
+﻿<Window x:Class="Demo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:Demo="clr-namespace:Demo"
+        Title="Toggle Switch Demo - WPF" 
+        Height="380" 
+        Width="640" 
+        DataContext="{StaticResource DemoViewModel}"
+        ResizeMode="NoResize" 
+        Background="#FFFAFAFA">
+    <Grid>
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel x:Name="LinksStackPanel" Orientation="Horizontal">
+                <RadioButton Style="{StaticResource LinkStyle}" x:Name="Basics" Content="BASICS" Margin="0,0,25,0" IsChecked="True" />
+                <RadioButton Style="{StaticResource LinkStyle}" x:Name="Styling" Content="STYLING"/>
+                <RadioButton Style="{StaticResource LinkStyle}" x:Name="Events" Content="EVENTS"/>
+                <RadioButton Style="{StaticResource LinkStyle}" x:Name="Extending" Content="EXTENDING" Margin="25,0,0,0"/>
+            </StackPanel>
+            <Grid Grid.Row="1" Margin="0,36,0,0">
+                <Demo:Basics Visibility="{Binding ElementName=Basics, Path=IsChecked, Converter={StaticResource VisibilityConverter}}"/>
+                <Demo:Styling Visibility="{Binding ElementName=Styling, Path=IsChecked, Converter={StaticResource VisibilityConverter}}"/>
+                <Demo:Events Visibility="{Binding ElementName=Events, Path=IsChecked, Converter={StaticResource VisibilityConverter}}"/>
+                <Demo:Extending Visibility="{Binding ElementName=Extending, Path=IsChecked, Converter={StaticResource VisibilityConverter}}"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

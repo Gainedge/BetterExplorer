@@ -1378,20 +1378,8 @@ namespace BetterExplorer {
       RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
 
       switch (BESettings.CurrentTheme) {
-        case "Blue":
-          this.btnBlue.IsChecked = true;
-          break;
-        case "Silver":
-          this.btnSilver.IsChecked = true;
-          break;
-        case "Black":
-          this.btnBlack.IsChecked = true;
-          break;
-        case "Metro":
-          this.btnMetro.IsChecked = true;
-          break;
-        default:
-          this.btnBlue.IsChecked = true;
+        case "Dark":
+          this.btnTheme.IsChecked = true;
           break;
       }
 
@@ -1736,14 +1724,7 @@ namespace BetterExplorer {
       BESettings.LastWindowPosLeft = this.Left;
       BESettings.LastWindowPosTop = this.Top;
 
-      if (this.btnBlue.IsChecked == true)
-        BESettings.CurrentTheme = "Blue";
-      else if (this.btnSilver.IsChecked == true)
-        BESettings.CurrentTheme = "Silver";
-      else if (this.btnBlack.IsChecked == true)
-        BESettings.CurrentTheme = "Black";
-      else if (this.btnMetro.IsChecked == true)
-        BESettings.CurrentTheme = "Metro";
+      BESettings.CurrentTheme = this.btnTheme.IsChecked == true ? "Dark" : "Light";
 
       switch (this.WindowState) {
         case WIN.WindowState.Maximized:
@@ -1840,14 +1821,8 @@ namespace BetterExplorer {
 
     public void ChangeRibbonTheme(string themeName, bool IsMetro = false) => this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
       switch (themeName) {
-        case "Blue":
-        case "Silver":
-        case "Black":
-        case "Green":
+        case "Dark":
           ThemeManager.ChangeAppTheme(Application.Current, "BaseDark");
-          break;
-        case "Metro":
-          ThemeManager.ChangeAppTheme(Application.Current, "BaseLight");
           break;
         default:
           ThemeManager.ChangeAppTheme(Application.Current, "BaseLight");
@@ -1856,26 +1831,6 @@ namespace BetterExplorer {
       Settings.BESettings.CurrentTheme = themeName;
       Settings.BESettings.SaveSettings();
     }));
-
-    private void btnSilver_Click(object sender, RoutedEventArgs e) {
-      this.ChangeRibbonTheme("Silver");
-      this.KeepBackstageOpen = true;
-    }
-
-    private void btnBlue_Click(object sender, RoutedEventArgs e) {
-      this.ChangeRibbonTheme("Blue");
-      this.KeepBackstageOpen = true;
-    }
-
-    private void btnBlack_Click(object sender, RoutedEventArgs e) {
-      this.ChangeRibbonTheme("Black");
-      this.KeepBackstageOpen = true;
-    }
-
-    private void btnGreen_Click(object sender, RoutedEventArgs e) {
-      this.ChangeRibbonTheme("Metro", true);
-      this.KeepBackstageOpen = true;
-    }
 
     #endregion
 
@@ -3680,14 +3635,6 @@ namespace BetterExplorer {
       this.NavigationController(Destination);
     }
 
-    /*
-      private string RemoveLastEmptySeparator(string path) {
-        path = path.Trim();
-        if (path.EndsWith(@"\")) path = path.Remove(path.Length - 1, 1);
-        return path;
-      }
-    */
-
     #endregion
 
     #region Misc
@@ -3697,8 +3644,7 @@ namespace BetterExplorer {
       this.DataContext = this;
 
       this.LVItemsColorCol = new ObservableCollectionEx<LVItemColor>();
-      this.CommandBindings.AddRange(new[]
-      {
+      this.CommandBindings.AddRange(new[] {
             new CommandBinding(AppCommands.RoutedNavigateBack, this.leftNavBut_Click),
             new CommandBinding(AppCommands.RoutedNavigateFF, this.rightNavBut_Click),
             new CommandBinding(AppCommands.RoutedNavigateUp, this.btnUpLevel_Click),
@@ -3714,7 +3660,6 @@ namespace BetterExplorer {
                     this.Close();
                     return;
                 }
-
                 int CurSelIndex = this.tcMain.SelectedIndex;
                 this.tcMain.SelectedItem = this.tcMain.SelectedIndex == 0 ? this.tcMain.Items[1] : this.tcMain.Items[CurSelIndex - 1];
                 this.tcMain.Items.RemoveAt(CurSelIndex);
@@ -3724,15 +3669,8 @@ namespace BetterExplorer {
       // loads current Ribbon color theme
       try {
         switch (Settings.BESettings.CurrentTheme) {
-          case "Blue":
-          case "Silver":
-          case "Black":
-          case "Green":
+          case "Dark":
             ThemeManager.ChangeAppTheme(Application.Current, "BaseDark");
-            break;
-          case "Metro":
-            ThemeManager.ChangeAppTheme(Application.Current, "BaseLight");
-            //Do nothing since Metro should be already loaded in App.Startup
             break;
           default:
             ThemeManager.ChangeAppTheme(Application.Current, "BaseLight");
@@ -4194,5 +4132,14 @@ namespace BetterExplorer {
 
     #endregion
 
+    private void BtnTheme_OnChecked(Object sender, RoutedEventArgs e) {
+      this.ChangeRibbonTheme("Dark");
+      this.KeepBackstageOpen = true;
+    }
+
+    private void BtnTheme_OnUnchecked(Object sender, RoutedEventArgs e) {
+      this.ChangeRibbonTheme("Light");
+      this.KeepBackstageOpen = true;
+    }
   }
 }

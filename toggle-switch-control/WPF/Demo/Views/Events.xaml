@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="Demo.Events" 
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+     xmlns:ToggleSwitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Databinding to the IsChecked property enables programmatic control over the toggle switch." TextWrapping="Wrap" Margin="0,0,0,10"/>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,10">
+            <ToggleSwitch:HorizontalToggleSwitch x:Name="HorizontalToggleSwitch" ThumbTemplate="{StaticResource GroovedThumbTemplate}" />
+            <CheckBox IsChecked="{Binding IsChecked, ElementName=HorizontalToggleSwitch, Mode=TwoWay}" Content="IsChecked" Margin="20,0,0,0" VerticalAlignment="Center" />
+        </StackPanel>
+        <TextBlock Text="Custom behavior can be created by responding to state-change events." Grid.Row="1" TextWrapping="Wrap" Margin="0,10,0,0"/>
+        <ToggleSwitch:HorizontalToggleSwitch
+            IsChecked="{Binding RestartToggleChecked, Mode=TwoWay}" Elasticity="0.75"
+            ThumbTemplate="{StaticResource RestartThumbTemplate}" 
+            CheckedContent="Restarting"
+            UncheckedContent="Online" Width="120" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0" >
+            <ToggleSwitch:HorizontalToggleSwitch.CheckedBackground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFC80000" Offset="1"/>
+                    <GradientStop Color="#FFB00000"/>
+                </LinearGradientBrush>
+            </ToggleSwitch:HorizontalToggleSwitch.CheckedBackground>
+            <ToggleSwitch:HorizontalToggleSwitch.UncheckedBackground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF5EAD09" Offset="1"/>
+                    <GradientStop Color="#FF478108"/>
+                </LinearGradientBrush>
+            </ToggleSwitch:HorizontalToggleSwitch.UncheckedBackground>
+        </ToggleSwitch:HorizontalToggleSwitch>
+        <Line Stroke="#70595C64" Grid.Column="1" Grid.RowSpan="3" Y2="100" StrokeThickness="1" Margin="20,0" StrokeDashArray="1"/>
+    </Grid>
+</UserControl>
