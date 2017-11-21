@@ -1,86 +1,95 @@
-﻿<UserControl x:Class="BetterExplorerControls.DetailsPane"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 Width="834"
-			 Height="100"
-			 BorderBrush="Black"
-			 BorderThickness="0,0,0,0.7"
-			 mc:Ignorable="d">
-	<Grid Width="Auto" Height="Auto">
-		<Grid.Background>
-			<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-				<GradientStop Offset="0.53" Color="#FFD9EDFF" />
-				<GradientStop Offset="0.445" Color="#FFC0DEFF" />
-				<GradientStop Offset="0" Color="#BEDAF9" />
-			</LinearGradientBrush>
-		</Grid.Background>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition  Width="*" />
-			<ColumnDefinition  Width="*" />
-			<ColumnDefinition  Width="*" />
-			<ColumnDefinition  Width="*" />
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Image x:Name="icon"
-			Grid.Column="0"
-			Grid.RowSpan="3"
-			Height="Auto"
-			Margin="0"
-			HorizontalAlignment="Stretch"
-			Stretch="None" />
-		<TextBlock x:Name="txtDisplayName" 
-			Grid.Column="1"
-			Margin="0"
-			HorizontalAlignment="Stretch"
-			Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}"
-			TextTrimming="CharacterEllipsis"/>
-		<TextBlock x:Name="txtFileType"
-			Grid.Column="1"
-			Grid.Row="1"
-			Margin="0"
-			HorizontalAlignment="Stretch"
-			Text="{Binding FileType, UpdateSourceTrigger=PropertyChanged}"
-			TextTrimming="CharacterEllipsis" />
-		<TextBlock x:Name="txtFileSize"
-			Grid.Column="2"
-			Grid.Row="0"
-			Margin="0"
-			HorizontalAlignment="Stretch"
-			Text="{Binding FileSize, UpdateSourceTrigger=PropertyChanged}"
-			TextTrimming="CharacterEllipsis" />
-		<TextBlock x:Name="txtFileCreated"
-			Grid.Column="2"
-			Grid.Row="1"
-			Margin="0"
-			HorizontalAlignment="Stretch"
-			Text="{Binding FileCreated, UpdateSourceTrigger=PropertyChanged}"
-			TextTrimming="CharacterEllipsis" />
-		<TextBlock x:Name="txtFileModified"
-			Grid.Column="2"
-			Grid.Row="2"
-			Margin="0"
-			HorizontalAlignment="Stretch"
-			Text="{Binding FileModified, UpdateSourceTrigger=PropertyChanged}"
-			TextTrimming="CharacterEllipsis" />
-		<TextBlock x:Name="txtOpenWith"
-			Grid.Column="3"
-			Grid.Row="0"
-			Margin="0"
-			HorizontalAlignment="Stretch"
-			Text="{Binding FileModified, UpdateSourceTrigger=PropertyChanged}"
-			TextTrimming="CharacterEllipsis" />
-		<TextBlock x:Name="txtPath"
-			Grid.Column="3"
-			Grid.Row="1"
-			Margin="0"
-			HorizontalAlignment="Stretch"
-			Text="{Binding FileModified, UpdateSourceTrigger=PropertyChanged}"
-			TextTrimming="CharacterEllipsis" />
-	</Grid>
+﻿<UserControl
+  x:Class="BetterExplorerControls.DetailsPane"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Width="834"
+  Height="100"
+  BorderBrush="Black"
+  BorderThickness="0,0,0,0.7"
+  mc:Ignorable="d">
+  <Grid Width="Auto" Height="Auto">
+    <Grid.Background>
+      <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Offset="0.53" Color="#FFD9EDFF" />
+        <GradientStop Offset="0.445" Color="#FFC0DEFF" />
+        <GradientStop Offset="0" Color="#BEDAF9" />
+      </LinearGradientBrush>
+    </Grid.Background>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Image
+      x:Name="icon"
+      Grid.RowSpan="3"
+      Grid.Column="0"
+      Height="Auto"
+      Margin="0"
+      HorizontalAlignment="Stretch"
+      Stretch="None" />
+    <TextBlock
+      x:Name="txtDisplayName"
+      Grid.Column="1"
+      Margin="0"
+      HorizontalAlignment="Stretch"
+      Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}"
+      TextTrimming="CharacterEllipsis" />
+    <TextBlock
+      x:Name="txtFileType"
+      Grid.Row="1"
+      Grid.Column="1"
+      Margin="0"
+      HorizontalAlignment="Stretch"
+      Text="{Binding FileType, UpdateSourceTrigger=PropertyChanged}"
+      TextTrimming="CharacterEllipsis" />
+    <TextBlock
+      x:Name="txtFileSize"
+      Grid.Row="0"
+      Grid.Column="2"
+      Margin="0"
+      HorizontalAlignment="Stretch"
+      Text="{Binding FileSize, UpdateSourceTrigger=PropertyChanged}"
+      TextTrimming="CharacterEllipsis" />
+    <TextBlock
+      x:Name="txtFileCreated"
+      Grid.Row="1"
+      Grid.Column="2"
+      Margin="0"
+      HorizontalAlignment="Stretch"
+      Text="{Binding FileCreated, UpdateSourceTrigger=PropertyChanged}"
+      TextTrimming="CharacterEllipsis" />
+    <TextBlock
+      x:Name="txtFileModified"
+      Grid.Row="2"
+      Grid.Column="2"
+      Margin="0"
+      HorizontalAlignment="Stretch"
+      Text="{Binding FileModified, UpdateSourceTrigger=PropertyChanged}"
+      TextTrimming="CharacterEllipsis" />
+    <TextBlock
+      x:Name="txtOpenWith"
+      Grid.Row="0"
+      Grid.Column="3"
+      Margin="0"
+      HorizontalAlignment="Stretch"
+      Text="{Binding FileModified, UpdateSourceTrigger=PropertyChanged}"
+      TextTrimming="CharacterEllipsis" />
+    <TextBlock
+      x:Name="txtPath"
+      Grid.Row="1"
+      Grid.Column="3"
+      Margin="0"
+      HorizontalAlignment="Stretch"
+      Text="{Binding FileModified, UpdateSourceTrigger=PropertyChanged}"
+      TextTrimming="CharacterEllipsis" />
+  </Grid>
 </UserControl>

@@ -614,13 +614,13 @@
                   Content="{DynamicResource btnUpdateCheckHCP}"
                   FontSize="12"
                   FontWeight="Bold"
-                  Foreground="{DynamicResource BlackBrush}" />
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                 <TextBlock
                   Height="50"
                   Margin="110,75,10,0"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
-                  Foreground="{DynamicResource BlackBrush}"
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                   Text="{DynamicResource btnUpdateCheckICP}"
                   TextWrapping="Wrap" />
                 <Ribbon:Button
@@ -645,13 +645,13 @@
                   Content="{DynamicResource btnOpenWebsiteHCP}"
                   FontSize="12"
                   FontWeight="Bold"
-                  Foreground="{DynamicResource BlackBrush}" />
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                 <TextBlock
                   Height="50"
                   Margin="110,170,10,0"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
-                  Foreground="{DynamicResource BlackBrush}"
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                   Text="{DynamicResource btnOpenWebsiteICP}"
                   TextWrapping="Wrap" />
                 <Ribbon:Button
@@ -693,14 +693,14 @@
                   Content="{DynamicResource lbeBugtracker}"
                   FontSize="12"
                   FontWeight="Bold"
-                  Foreground="{DynamicResource BlackBrush}" />
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                 <TextBlock
                   x:Name="txtBugtracker"
                   Height="50"
                   Margin="110,265,10,0"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
-                  Foreground="{DynamicResource BlackBrush}"
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                   Text="{DynamicResource txtBugtracker}"
                   TextWrapping="Wrap" />
                 <Separator Grid.Column="0" HorizontalAlignment="Right" />
@@ -727,7 +727,7 @@
                       Animate="True"
                       DaysBetweenChecks="7"
                       Focusable="False"
-                      Foreground="{DynamicResource BlackBrush}"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       KeepExpanded="True"
                       UpdateType="OnlyCheck" />
                     <Label
@@ -736,7 +736,7 @@
                       Content="{DynamicResource stUpdateNotAvailableCP}"
                       FontSize="14"
                       FontWeight="ExtraBold"
-                      Foreground="{DynamicResource BlackBrush}"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Visibility="Collapsed" />
                     <Ribbon:SeparatorTabItem
                       Margin="0,-30,50,0"
@@ -747,12 +747,12 @@
                       Margin="0,2,50,0"
                       Content="{DynamicResource lblBetterExText}"
                       FontWeight="Bold"
-                      Foreground="{DynamicResource BlackBrush}" />
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <TextBlock
                       Width="500"
                       Margin="3,2,53,0"
                       HorizontalAlignment="Left"
-                      Foreground="{DynamicResource BlackBrush}"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Text="{DynamicResource lblBetterExInfo}"
                       TextWrapping="Wrap" />
                     <Ribbon:SeparatorTabItem
@@ -763,42 +763,42 @@
                       Margin="0,2,50,0"
                       Content="{DynamicResource lblDevelopersHeader}"
                       FontWeight="Bold"
-                      Foreground="{DynamicResource BlackBrush}" />
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <Label
                       Margin="20,0,40,0"
                       Content="Dimitar Tsenev"
                       FontSize="14"
                       FontStyle="Italic"
                       FontWeight="Bold"
-                      Foreground="{DynamicResource BlackBrush}" />
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <Label
                       Margin="20,0,40,0"
                       Content="Timo Kunze"
                       FontSize="14"
                       FontStyle="Italic"
                       FontWeight="DemiBold"
-                      Foreground="{DynamicResource BlackBrush}" />
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <Label
                       Margin="20,0,40,0"
                       Content="Aaron Campf"
                       FontSize="14"
                       FontStyle="Italic"
                       FontWeight="DemiBold"
-                      Foreground="{DynamicResource BlackBrush}" />
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <Label
                       Margin="20,0,40,0"
                       Content="Markus Lang"
                       FontSize="14"
                       FontStyle="Normal"
                       FontWeight="Normal"
-                      Foreground="{DynamicResource BlackBrush}" />
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <Label
                       Margin="20,0,40,0"
                       Content="Jayke R. Huempfner (JaykeBird)"
                       FontSize="14"
                       FontStyle="Normal"
                       FontWeight="Normal"
-                      Foreground="{DynamicResource BlackBrush}" />
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <!--<Label Margin="20,0,40,0"
 							                 Content="Alexey Barkalov"
 							                 FontSize="14"
@@ -813,26 +813,26 @@
                       Margin="20,0,50,0"
                       Content="Version Info Data Put Here"
                       FontSize="12"
-                      Foreground="{DynamicResource BlackBrush}" />
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <Label
                       x:Name="lblArchitecture"
                       Margin="20,0,0,0"
                       Content="32-bit Version"
                       FontSize="12"
-                      Foreground="{DynamicResource BlackBrush}" />
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <Label
                       Margin="20,0,0,0"
-                      Content="© 2016. All right reserved."
-                      Foreground="{DynamicResource BlackBrush}" />
+                      Content="© 2017. All right reserved."
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <Ribbon:SeparatorTabItem
                       Margin="0,20,50,0"
                       Header="Credits"
                       Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                    <Label Content="Fluent Ribbon Control Suite (fluent.codeplex.com)" Foreground="{DynamicResource BlackBrush}" />
+                    <Label Content="Fluent Ribbon Control Suite (https://github.com/fluentribbon/Fluent.Ribbon)" Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <!--  <Label Content="Qttabbar - a great utility for Windows Explorer"/>  -->
-                    <Label Content="7-Zip - archiving utility (www.7-zip.org)" Foreground="{DynamicResource BlackBrush}" />
-                    <Label Content="7ZipSharp - a wrapper of 7Zip for .NET" Foreground="{DynamicResource BlackBrush}" />
-                    <Label Content="Some icons are property of Microsoft® Corporation. All right reserved." Foreground="{DynamicResource BlackBrush}" />
+                    <Label Content="7-Zip - archiving utility (www.7-zip.org)" Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+                    <Label Content="7ZipSharp - a wrapper of 7Zip for .NET" Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+                    <Label Content="Some icons are property of Microsoft® Corporation. All right reserved." Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                   </StackPanel>
                 </ScrollViewer>
 
@@ -843,6 +843,7 @@
                 <Ribbon:SeparatorTabItem Header="{DynamicResource sepGeneral}" />
                 <TabItem
                   Ribbon:KeyTip.Keys="S"
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                   Header="{DynamicResource tabShell}"
                   IsSelected="True">
                   <StackPanel
@@ -871,6 +872,7 @@
                           Ribbon:KeyTip.Keys="S"
                           BorderBrush="Black"
                           BorderThickness="1"
+                          Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                           CanAddToQuickAccessToolBar="True"
                           Click="btnSetCurrentasStartup_Click"
                           Header="Libraries">
@@ -883,7 +885,10 @@
                           </Ribbon:Button.ToolTip>
                         </Ribbon:Button>
                       </Border>
-                      <Label Margin="3,0,0,0" Content="{DynamicResource btnSetCurrentasStartupDesc}" />
+                      <Label
+                        Margin="3,0,0,0"
+                        Content="{DynamicResource btnSetCurrentasStartupDesc}"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     </StackPanel>
                     <Label x:Name="paddinglbl1" Content="         " />
                     <Ribbon:SeparatorTabItem
@@ -895,6 +900,7 @@
                         x:Name="chkIsDefault"
                         Ribbon:KeyTip.Keys="V"
                         Checked="chkIsDefault_CheckChanged"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Header="{DynamicResource chkIsDefault}"
                         Unchecked="chkIsDefault_CheckChanged">
                         <Ribbon:CheckBox.ToolTip>
@@ -915,6 +921,7 @@
                       x:Name="chkIsTerraCopyEnabled"
                       Ribbon:KeyTip.Keys="T"
                       Checked="chkIsTerraCopyEnabled_CheckChanged"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Header="{DynamicResource chkIsTerraCopyEnabled}"
                       Unchecked="chkIsTerraCopyEnabled_CheckChanged">
                       <Ribbon:CheckBox.ToolTip>
@@ -943,6 +950,7 @@
                       x:Name="chkIsCFO"
                       Ribbon:KeyTip.Keys="C"
                       Click="chkIsCFO_Click"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Header="{DynamicResource chkIsCFO}"
                       IsEnabled="False">
                       <Ribbon:CheckBox.ToolTip>
@@ -958,6 +966,7 @@
                       x:Name="chkIsRestoreTabs"
                       Ribbon:KeyTip.Keys="R"
                       Checked="chkIsRestoreTabs_CheckChanged"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Header="{DynamicResource cbIsResttoreCP}"
                       Unchecked="chkIsRestoreTabs_CheckChanged">
                       <Ribbon:CheckBox.ToolTip>
@@ -989,6 +998,7 @@
                       x:Name="chkTraditionalNameGrouping"
                       Ribbon:KeyTip.Keys="TNR"
                       Checked="chkTraditionalNameGrouping_CheckChanged"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Header="Traditional Name Grouping"
                       Unchecked="chkTraditionalNameGrouping_CheckChanged">
                       <Ribbon:CheckBox.ToolTip>
@@ -1007,6 +1017,7 @@
                       x:Name="chkLogHistory"
                       Ribbon:KeyTip.Keys="L"
                       Checked="chkLogHistory_CheckChanged"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Header="{DynamicResource chkLogHistoryCP}"
                       Unchecked="chkLogHistory_CheckChanged"
                       Visibility="Collapsed">
@@ -1041,12 +1052,16 @@
                 </TabItem>
                 <TabItem
                   Ribbon:KeyTip.Keys="L"
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                   Header="{DynamicResource tabLanguageCP}"
                   Visibility="Visible">
                   <StackPanel Margin="20,5,0,0" Orientation="Vertical">
                     <Ribbon:SeparatorTabItem Header="{DynamicResource sepLanguageCP}" />
-                    <Label Content="{DynamicResource lblLanguageCP}" />
-                    <Label Content="{DynamicResource lblLanguageCP_2}" Visibility="Collapsed" />
+                    <Label Content="{DynamicResource lblLanguageCP}" Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+                    <Label
+                      Content="{DynamicResource lblLanguageCP_2}"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
+                      Visibility="Collapsed" />
                     <!--  <TextBox Name="txtLocale" HorizontalAlignment="Left" Margin="0,5,0,0" Width="100" Height="23" />  -->
                     <!--  <Button Name="btnchangeLocale" Content="Change Locale" Width="90" HorizontalAlignment="Left" Margin="0,5,0,0" HorizontalContentAlignment="Center" Height="22" Click="btnchangeLocale_Click" />  -->
                     <!--  <Label Content="Supported codes:" Margin="0,5,0,0" />  -->
@@ -1267,6 +1282,7 @@
                 <TabItem
                   HorizontalContentAlignment="Left"
                   Ribbon:KeyTip.Keys="U"
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                   Header="{DynamicResource tabUpdateCP}">
                   <Grid Margin="20,5,0,0">
                     <Ribbon:SeparatorTabItem
@@ -1278,6 +1294,7 @@
                       Margin="5,30,0,0"
                       VerticalAlignment="Top"
                       Checked="CheckBox_Checked"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Header="Check for updates"
                       Unchecked="CheckBox_Unchecked" />
                     <Ribbon:CheckBox
@@ -1285,10 +1302,12 @@
                       Margin="5,50,0,0"
                       VerticalAlignment="Top"
                       Click="chkUpdateStartupCheck_Click"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Header="{DynamicResource chkAutoCheck}" />
                     <TextBlock
                       Margin="5,80,0,0"
                       VerticalAlignment="Top"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Text="When an update is available:"
                       Visibility="Collapsed" />
                     <StackPanel
@@ -1303,6 +1322,7 @@
                     <TextBlock
                       Margin="5,80,0,0"
                       VerticalAlignment="Top"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Text="{DynamicResource txtCheckHowOften}" />
                     <StackPanel
                       Margin="5,100,0,0"
@@ -1311,16 +1331,19 @@
                       <Ribbon:RadioButton
                         x:Name="rbDaily"
                         Click="rbCheckInterval_Click"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         GroupName="uasi"
                         Header="{DynamicResource chkEveryday}" />
                       <Ribbon:RadioButton
                         x:Name="rbWeekly"
                         Click="rbCheckInterval_Click"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         GroupName="uasi"
                         Header="{DynamicResource chkEveryweek}" />
                       <Ribbon:RadioButton
                         x:Name="rbMonthly"
                         Click="rbCheckInterval_Click"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         GroupName="uasi"
                         Header="{DynamicResource chkEverymonth}" />
                     </StackPanel>
@@ -1334,6 +1357,7 @@
                       Margin="5,200,0,0"
                       VerticalAlignment="Top"
                       Click="UpdateTypeCheck_Click"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       GroupName="uach"
                       Header="{DynamicResource chkReleasesChannel}" />
                     <Ribbon:RadioButton
@@ -1341,6 +1365,7 @@
                       Margin="5,220,0,0"
                       VerticalAlignment="Top"
                       Click="UpdateTypeCheck_Click"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       GroupName="uach"
                       Header="{DynamicResource chkDevChannel}" />
                     <TextBlock
@@ -1348,6 +1373,7 @@
                       Margin="15,240,0,0"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Text="{DynamicResource txtTestBuildWarning}" />
                     <Expander
                       Width="250"
@@ -1375,6 +1401,7 @@
                 <TabItem
                   HorizontalContentAlignment="Left"
                   Ribbon:KeyTip.Keys="R"
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                   Header="{DynamicResource tabRibbonCP}">
                   <Grid Margin="20,5,0,0">
                     <Grid.RowDefinitions>
@@ -1399,11 +1426,11 @@
                         VerticalAlignment="Top"
                         Checked="BtnTheme_OnChecked"
                         CheckedContent="Dark"
-                        CheckedForeground="{DynamicResource BlackBrush}"
+                        CheckedForeground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Style="{StaticResource SafariSwitchStyle}"
                         Unchecked="BtnTheme_OnUnchecked"
                         UncheckedContent="Light"
-                        UncheckedForeground="{DynamicResource BlackBrush}" />
+                        UncheckedForeground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     </StackPanel>
                     <Ribbon:SeparatorTabItem
                       Margin="0,100,0,0"
@@ -1414,6 +1441,7 @@
                       Margin="10,135,0,0"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Text="{DynamicResource lblAutoSwitchCP}" />
                     <StackPanel
                       Height="150"
@@ -1424,36 +1452,43 @@
                       <Ribbon:CheckBox
                         x:Name="chkFolder"
                         Checked="chkFolder_CheckChanged"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Header="{DynamicResource ctgFolderToolsCP}"
                         Unchecked="chkFolder_CheckChanged" />
                       <Ribbon:CheckBox
                         x:Name="chkDrive"
                         Checked="chkDrive_CheckChanged"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Header="{DynamicResource ctbDriveToolsCP}"
                         Unchecked="chkDrive_CheckChanged" />
                       <Ribbon:CheckBox
                         x:Name="chkArchive"
                         Checked="chkArchive_CheckChanged"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Header="{DynamicResource ctbArchiveToolsCP}"
                         Unchecked="chkArchive_CheckChanged" />
                       <Ribbon:CheckBox
                         x:Name="chkApp"
                         Checked="chkApp_CheckChanged"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Header="{DynamicResource ctbApplicationsCP}"
                         Unchecked="chkApp_CheckChanged" />
                       <Ribbon:CheckBox
                         x:Name="chkImage"
                         Checked="chkImage_CheckChanged"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Header="{DynamicResource ctbImageToolsCP}"
                         Unchecked="chkImage_CheckChanged" />
                       <Ribbon:CheckBox
                         x:Name="chkLibrary"
                         Checked="chkLibrary_CheckChanged"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Header="{DynamicResource ctbLibrariesCP}"
                         Unchecked="chkLibrary_CheckChanged" />
                       <Ribbon:CheckBox
                         x:Name="chkVirtualTools"
                         Checked="chkVirtualTools_CheckChanged"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Header="Virtual Disk Tools"
                         Unchecked="chkVirtualTools_CheckChanged" />
                     </StackPanel>
@@ -1468,12 +1503,14 @@
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
                       Click="chkRibbonMinimizedGlass_Click"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Header="Enable glass when ribbon is minimized." />
                   </Grid>
                 </TabItem>
                 <TabItem
                   HorizontalContentAlignment="Left"
                   Ribbon:KeyTip.Keys="P"
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                   Header="{DynamicResource tabPanesItemsCP}">
                   <Grid Margin="20,5,0,0">
                     <StackPanel
@@ -1486,6 +1523,7 @@
                           x:Name="chkTreeExpand"
                           Ribbon:KeyTip.Keys="T"
                           Checked="chkTreeExpand_CheckChanged"
+                          Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                           Header="{DynamicResource chkTreeExpandCP}"
                           IsEnabled="False"
                           Unchecked="chkTreeExpand_CheckChanged">
@@ -1509,6 +1547,7 @@
                         Margin="0,0,0,10"
                         Ribbon:KeyTip.Keys="H"
                         Checked="chkIsFlyout_CheckChanged"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Header="{DynamicResource chkIsFlyout}"
                         Unchecked="chkIsFlyout_CheckChanged"
                         Visibility="Collapsed">
@@ -1526,6 +1565,7 @@
                         Margin="0,0,0,10"
                         Ribbon:KeyTip.Keys="V"
                         Checked="chkOverwriteImages_Checked"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Header="{DynamicResource chkEditOverwrite}"
                         Unchecked="chkOverwriteImages_Checked">
                         <Ribbon:CheckBox.ToolTip>
@@ -1573,7 +1613,7 @@
                           Ribbon:KeyTip.Keys="RFS"
                           Click="btnResetFolderSettings_OnClick"
                           CornerRadius="2"
-                          Foreground="Black"
+                          Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                           Header="Reset DB"
                           Icon="Images\open16.png"
                           IsDefinitive="True"
@@ -1585,6 +1625,7 @@
                 <TabItem
                   HorizontalContentAlignment="Left"
                   Ribbon:KeyTip.Keys="T"
+                  Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                   Header="{DynamicResource tabTabsCP}">
                   <Grid Margin="20,5,0,0">
                     <Ribbon:SeparatorTabItem
@@ -1598,6 +1639,7 @@
                         Margin="5,5,0,0"
                         Ribbon:KeyTip.Keys="TT"
                         Checked="FolderTabs_Placement"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         GroupName="tba"
                         Header="{DynamicResource chkTabBarTopCP}" />
                       <Ribbon:RadioButton
@@ -1605,6 +1647,7 @@
                         Margin="5,5,0,0"
                         Ribbon:KeyTip.Keys="TB"
                         Checked="FolderTabs_Placement"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         GroupName="tba"
                         Header="{DynamicResource chkTabBarBottomCP}" />
                     </StackPanel>
@@ -1630,6 +1673,7 @@
                         BorderBrush="Black"
                         BorderThickness="1"
                         Click="miTabManager_Click"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Header="{DynamicResource btnShowTabManagerCP}"
                         Icon="Images\open16.png" />
                     </Border>
@@ -1637,6 +1681,7 @@
                       Margin="5,165,0,0"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Text="{DynamicResource lblDefSavedTabsLocCP}"
                       Visibility="Collapsed" />
                     <StackPanel
@@ -1654,6 +1699,7 @@
                         Width="Auto"
                         Height="22"
                         Padding="5,0,5,0"
+                        Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                         Ribbon:KeyTip.Keys="T"
                         BorderBrush="Black"
                         BorderThickness="1"
@@ -1665,6 +1711,7 @@
                       Margin="10,210,0,0"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                       Text="{DynamicResource lblSavedTabsWarningCP}" />
                     <Ribbon:SeparatorTabItem
                       Margin="0,240,0,0"
