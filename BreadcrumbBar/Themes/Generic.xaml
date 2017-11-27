@@ -12,13 +12,11 @@
     <GradientStop Offset="1" Color="{DynamicResource Gray2}" />
   </LinearGradientBrush>-->
 
-  <SolidColorBrush x:Key="mousePressedBtnBrush" Color="{DynamicResource Gray8}" />
   <LinearGradientBrush x:Key="GradientBorderBrush" StartPoint="0,0" EndPoint="0,1">
-    <GradientStop Offset="0" Color="{DynamicResource Gray6}" />
-    <GradientStop Offset="1" Color="{DynamicResource Gray6}" />
+    <GradientStop Offset="0" Color="{DynamicResource Gray8}" />
+    <GradientStop Offset="1" Color="{DynamicResource Gray8}" />
   </LinearGradientBrush>
-  <SolidColorBrush x:Key="borderBrush" Color="{DynamicResource Gray6}" />
-  <SolidColorBrush x:Key="borderShadowBrush" Color="#60777777" />
+
   <BooleanToVisibilityConverter x:Key="boolToVisible" />
   <ImageSourceConverter x:Key="imgConverter" />
 
@@ -30,7 +28,7 @@
   <ControlTemplate x:Key="DropDownButtonTemplate" TargetType="{x:Type ToggleButton}">
     <local:AeroChrome
       x:Name="chrome"
-      BorderBrush="{StaticResource borderBrush}"
+      BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}"
       BorderThickness="1"
       Focusable="False"
       RenderMouseOver="{TemplateBinding IsMouseOver}"
@@ -42,7 +40,7 @@
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
           Data="{StaticResource DownArrow}"
-          Fill="Black"
+          Fill="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
           Focusable="False"
           SnapsToDevicePixels="True" />
       </local:AeroChrome.Content>
@@ -59,14 +57,14 @@
     <Border
       Margin="-1,-1,0,-1"
       Background="Transparent"
-      BorderBrush="{StaticResource borderBrush}"
+      BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}"
       BorderThickness="1"
       Focusable="False"
       SnapsToDevicePixels="True">
       <local:AeroChrome
         x:Name="chrome"
         Margin="-1"
-        BorderBrush="{StaticResource borderBrush}"
+        BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}"
         BorderThickness="1"
         Content="{TemplateBinding Content}"
         Focusable="False"
@@ -84,7 +82,7 @@
   <!--  BreadcrumbItem  -->
   <Style TargetType="{x:Type local:BreadcrumbItem}">
     <Setter Property="Focusable" Value="False" />
-    <Setter Property="BorderBrush" Value="{StaticResource borderBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:BreadcrumbItem}">
@@ -224,8 +222,8 @@
   <!--  BreadcrumbBar  -->
   <Style TargetType="{x:Type local:BreadcrumbBar}">
     <Setter Property="MinHeight" Value="23" />
-    <Setter Property="Background" Value="White" />
-    <Setter Property="BorderBrush" Value="{DynamicResource GrayBrush6}" />
+    <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabControl.Content.Background}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:BreadcrumbBar}">
@@ -235,7 +233,7 @@
               <Setter Property="MinWidth" Value="21" />
               <Setter Property="BorderThickness" Value="1" />
               <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-              <Setter Property="BorderBrush" Value="Black" />
+              <Setter Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}" />
               <Setter Property="Focusable" Value="{Binding Focusable, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BreadcrumbBar}}}" />
             </Style>
             <Style TargetType="{x:Type local:BreadcrumbButton}">
@@ -243,13 +241,13 @@
             </Style>
           </ControlTemplate.Resources>
           <Border
-            Background="White"
+            Background="{TemplateBinding Background}"
             BorderBrush="{TemplateBinding BorderBrush}"
             BorderThickness="{TemplateBinding BorderThickness}"
             Focusable="False"
             SnapsToDevicePixels="True">
             <Border
-              BorderBrush="White"
+              BorderBrush="{TemplateBinding Background}"
               BorderThickness="{TemplateBinding BorderThickness}"
               Focusable="False"
               SnapsToDevicePixels="True">
@@ -293,7 +291,7 @@
                   Grid.Column="2"
                   Width="16"
                   Margin="-1"
-                  BorderBrush="{StaticResource borderBrush}"
+                  BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}"
                   BorderThickness="1"
                   ClickMode="Press"
                   FocusVisualStyle="{x:Null}"
@@ -353,9 +351,9 @@
   <Style TargetType="{x:Type local:BreadcrumbButton}">
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="BorderBrush" Value="Transparent" />
-    <Setter Property="Background" Value="{DynamicResource GrayBrush8}" />
+    <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-    <Setter Property="Foreground" Value="Black" />
+    <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
     <Setter Property="Template">
 
       <Setter.Value>
@@ -406,7 +404,7 @@
                   x:Name="dropDownPath"
                   HorizontalAlignment="Center"
                   Data="{StaticResource RightArrow}"
-                  Fill="Black"
+                  Fill="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
                   SnapsToDevicePixels="True" />
               </local:AeroChrome.Content>
               <local:AeroChrome.ContextMenu>
@@ -511,11 +509,11 @@
             <Trigger Property="Mode" Value="Overflow">
               <Setter TargetName="dropDownPath" Property="Data" Value="{StaticResource OverflowArrow}" />
               <Setter TargetName="dropDownPath" Property="Fill" Value="Transparent" />
-              <Setter TargetName="dropDownPath" Property="Stroke" Value="Black" />
+              <Setter TargetName="dropDownPath" Property="Stroke" Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
               <Setter TargetName="PART_DropDown" Property="RenderPressed" Value="True" />
-              <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+              <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocused" Value="True">
               <Setter TargetName="PART_DropDown" Property="RenderMouseOver" Value="True" />
@@ -525,15 +523,15 @@
               <Setter TargetName="PART_DropDown" Property="Visibility" Value="Collapsed" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+              <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
             </Trigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>
                 <Condition SourceName="PART_DropDown" Property="IsMouseOver" Value="True" />
                 <Condition Property="EnableVisualButtonStyle" Value="True" />
               </MultiTrigger.Conditions>
-              <Setter TargetName="button" Property="MouseOverBackground" Value="{StaticResource GradientBorderBrush}" />
-              <Setter TargetName="button" Property="Foreground" Value="{DynamicResource GrayBrush1}" />
+              <Setter TargetName="button" Property="MouseOverBackground" Value="{DynamicResource DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+              <Setter TargetName="button" Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
             </MultiTrigger>
             <Trigger Property="IsButtonVisible" Value="False">
               <Setter TargetName="button" Property="Visibility" Value="Collapsed" />
@@ -553,9 +551,9 @@
   </Style>
 
   <Style TargetType="{x:Type local:AeroChrome}">
-    <Setter Property="MouseOverBackground" Value="{DynamicResource GrayBrush8}" />
-    <Setter Property="MousePressedBackground" Value="{StaticResource mousePressedBtnBrush}" />
-    <Setter Property="BorderBrush" Value="{StaticResource borderBrush}" />
+    <Setter Property="MouseOverBackground" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+    <Setter Property="MousePressedBackground" Value="{DynamicResource GrayBrush7}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:AeroChrome}">
@@ -569,7 +567,7 @@
               SnapsToDevicePixels="True">
               <Border
                 x:Name="innerButton"
-                BorderBrush="Black"
+                BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}"
                 BorderThickness="0"
                 SnapsToDevicePixels="True" />
             </Border>
@@ -582,7 +580,7 @@
               SnapsToDevicePixels="True">
               <Border
                 x:Name="innerButton2"
-                BorderBrush="{StaticResource borderShadowBrush}"
+                BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="1.2,1.2,0,0"
                 SnapsToDevicePixels="False" />
             </Border>

@@ -8,8 +8,8 @@
   xmlns:my="urn:fluent-ribbon"
   Height="24"
   d:DesignWidth="250"
-  Background="White"
-  BorderBrush="#FFCECECE"
+  Background="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabControl.Content.Background}"
+  BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}"
   BorderThickness="1"
   Focusable="True"
   mc:Ignorable="d">
@@ -22,7 +22,7 @@
       BorderBrush="{x:Null}"
       BorderThickness="0"
       TextChanged="textBox1_TextChanged"
-      Watermark="{StaticResource txtSearchLabel}" />
+      Watermark="{DynamicResource txtSearchLabel}" />
     <my:DropDownButton
       Name="SFilters"
       Width="30"
@@ -37,18 +37,45 @@
       Icon="Images\filter16.png"
       SizeDefinition="Small"
       ToolTip="Filters" />
-    <my:Button
-      Name="SStartEnd"
-      Width="24"
+    <Button
+      x:Name="SStartEnd"
+      Width="25"
       Height="22"
       HorizontalAlignment="Right"
-      Background="Transparent"
-      CanAddToQuickAccessToolBar="False"
-      Click="SStartEnd_Click"
-      Header="Search"
-      Icon="Images\search.png"
-      IsEnabled="False"
-      SizeDefinition="Small"
-      ToolTip="Search" />
+      VerticalAlignment="Top"
+      Click="SStartEnd_Click">
+      <Button.Template>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Grid Background="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabControl.Content.Background}">
+            <Path x:Name="btnSearchPath" Stretch="Fill" Fill="{DynamicResource GrayBrush2}"
+                  Data="M44,12 C32,12 22,22 22,34 22,46 32,56 44,56 56,56 66,46 66,34 66,22 56,12 44,12z M44,0 C63,0 78,15 78,34 78,53 63,68 44,68 40,68 36.5,67.5 33,66 L32.5,66 14,90 0,79.5 18,55.5 17,55 C13,49 10,42 10,34 10,15 25,0 44,0z"
+                  HorizontalAlignment="Right" Width="22" Height="22"
+                  RenderTransformOrigin=".5,.5">
+              <Path.RenderTransform>
+                <TransformGroup>
+                  <RotateTransform Angle="0" />
+                  <TranslateTransform X="-3" />
+                  <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
+                </TransformGroup>
+              </Path.RenderTransform>
+            </Path>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="btnSearchPath" Property="Fill" Value="{DynamicResource GrayBrush3}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="False">
+              <Setter TargetName="btnSearchPath" Property="Fill" Value="{DynamicResource GrayBrush2}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="btnSearchPath" Property="Fill" Value="{DynamicResource GrayBrush3}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="btnSearchPath" Property="Opacity" Value="0.5" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Button.Template>
+    </Button>
   </Grid>
 </UserControl>
