@@ -557,6 +557,7 @@
           x:Name="backstage"
           Ribbon:KeyTip.Keys="F"
           Background="DarkOrange"
+          Header="Menu"
           Focusable="False"
           FontStretch="Expanded"
           FontStyle="Normal"
@@ -3792,7 +3793,7 @@
           <Grid Background="{DynamicResource WhiteBrush}">
             <Path
               x:Name="btnUpPath"
-              Width="22"
+              Width="25"
               Height="22"
               Margin="0,0,0,0"
               HorizontalAlignment="Right"
@@ -3803,20 +3804,20 @@
               <Path.RenderTransform>
                 <TransformGroup>
                   <RotateTransform Angle="270" />
-                  <ScaleTransform ScaleX="0.6" ScaleY="0.7" />
+                  <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
                 </TransformGroup>
               </Path.RenderTransform>
             </Path>
           </Grid>
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter TargetName="btnUpPath" Property="Fill" Value="{DynamicResource GrayBrush3}" />
+              <Setter TargetName="btnUpPath" Property="Fill" Value="{DynamicResource BlackBrush}" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="False">
               <Setter TargetName="btnUpPath" Property="Fill" Value="{DynamicResource GrayBrush2}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-              <Setter TargetName="btnUpPath" Property="Fill" Value="{DynamicResource GrayBrush3}" />
+              <Setter TargetName="btnUpPath" Property="Fill" Value="{DynamicResource BlackBrush}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter TargetName="btnUpPath" Property="Opacity" Value="0.5" />
@@ -3855,7 +3856,7 @@
                 Data="{StaticResource arrowCircle}"
                 Fill="{DynamicResource GrayBrush2}"
                 RenderTransformOrigin=".5,.5"
-                Stretch="Fill" />
+                Stretch="Fill" Visibility="Collapsed"/>
               <Path
                 x:Name="btnBackPath"
                 Width="25"
@@ -3876,16 +3877,16 @@
             </Grid>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="btnBackPath" Property="Fill" Value="{DynamicResource GrayBrush3}" />
-                <Setter TargetName="btnBackPathCircle" Property="Fill" Value="{DynamicResource GrayBrush3}" />
+                <Setter TargetName="btnBackPath" Property="Fill" Value="{DynamicResource BlackBrush}" />
+                <Setter TargetName="btnBackPathCircle" Property="Fill" Value="{DynamicResource BlackBrush}" />
               </Trigger>
               <Trigger Property="IsMouseOver" Value="False">
                 <Setter TargetName="btnBackPath" Property="Fill" Value="{DynamicResource GrayBrush2}" />
                 <Setter TargetName="btnBackPathCircle" Property="Fill" Value="{DynamicResource GrayBrush2}" />
               </Trigger>
               <Trigger Property="IsPressed" Value="True">
-                <Setter TargetName="btnBackPath" Property="Fill" Value="{DynamicResource GrayBrush3}" />
-                <Setter TargetName="btnBackPathCircle" Property="Fill" Value="{DynamicResource GrayBrush3}" />
+                <Setter TargetName="btnBackPath" Property="Fill" Value="{DynamicResource BlackBrush}" />
+                <Setter TargetName="btnBackPathCircle" Property="Fill" Value="{DynamicResource BlackBrush}" />
               </Trigger>
               <Trigger Property="IsEnabled" Value="False">
                 <Setter TargetName="btnBackPath" Property="Opacity" Value="0.5" />
@@ -3908,8 +3909,8 @@
             <Grid Background="{DynamicResource WhiteBrush}">
               <Path
                 x:Name="btnFFPath"
-                Width="22"
-                Height="22"
+                Width="25"
+                Height="25"
                 Margin="0,0,0,0"
                 HorizontalAlignment="Center"
                 Data="{StaticResource arrow}"
@@ -3919,20 +3920,20 @@
                 <Path.RenderTransform>
                   <TransformGroup>
                     <RotateTransform Angle="0" />
-                    <ScaleTransform ScaleX="0.7" ScaleY="0.6" />
+                    <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
                   </TransformGroup>
                 </Path.RenderTransform>
               </Path>
             </Grid>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="btnFFPath" Property="Fill" Value="{DynamicResource GrayBrush3}" />
+                <Setter TargetName="btnFFPath" Property="Fill" Value="{DynamicResource BlackBrush}" />
               </Trigger>
               <Trigger Property="IsMouseOver" Value="False">
                 <Setter TargetName="btnFFPath" Property="Fill" Value="{DynamicResource GrayBrush2}" />
               </Trigger>
               <Trigger Property="IsPressed" Value="True">
-                <Setter TargetName="btnFFPath" Property="Fill" Value="{DynamicResource GrayBrush3}" />
+                <Setter TargetName="btnFFPath" Property="Fill" Value="{DynamicResource BlackBrush}" />
               </Trigger>
               <Trigger Property="IsEnabled" Value="False">
                 <Setter TargetName="btnFFPath" Property="Opacity" Value="0.5" />

@@ -8,295 +8,363 @@ using BExplorer.Shell;
 
 namespace BetterExplorer {
 
-	/// <summary>
-	/// Interaction logic for ConditionalSelectForm.xaml
-	/// </summary>
-	public partial class ConditionalSelectForm : Window {
-		private System.Globalization.CultureInfo ci;
-		public bool CancelAction = true;
-		public ConditionalSelectData csd;
+  /// <summary>
+  /// Interaction logic for ConditionalSelectForm.xaml
+  /// </summary>
+  public partial class ConditionalSelectForm : Window {
+    private System.Globalization.CultureInfo ci;
+    public bool CancelAction = true;
+    public ConditionalSelectData csd;
 
-		private ConditionalSelectForm() {
-			InitializeComponent();
+    private ConditionalSelectForm() {
+      this.InitializeComponent();
 
-			dcquery.SelectedDate = DateTime.Today;
-			dmquery.SelectedDate = DateTime.Today;
-			daquery.SelectedDate = DateTime.Today;
-			sizequery1.Text = "0";
-			sizequery2.Text = "0";
-			namequery.Text = (FindResource("txtFilename") as string);
-			ci = System.Threading.Thread.CurrentThread.CurrentCulture;
-		}
+      this.dcquery.SelectedDate = DateTime.Today;
+      this.dmquery.SelectedDate = DateTime.Today;
+      this.daquery.SelectedDate = DateTime.Today;
+      this.sizequery1.Text = "0";
+      this.sizequery2.Text = "0";
+      this.namequery.Text = (this.FindResource("txtFilename") as string);
+      this.ci = System.Threading.Thread.CurrentThread.CurrentCulture;
+    }
 
-		public static void Open(ShellView ShellListView) {
-			var csf = new ConditionalSelectForm();
-			csf.ShowDialog();
-			if (!csf.CancelAction) {
-				csf.ConditionallySelectFiles(csf.csd, ShellListView);
-			}
-		}
+    public static void Open(ShellView ShellListView) {
+      var csf = new ConditionalSelectForm();
+      csf.ShowDialog();
+      if (!csf.CancelAction) {
+        csf.ConditionallySelectFiles(csf.csd, ShellListView);
+      }
+    }
 
-		private void ConditionallySelectFiles(ConditionalSelectData csd, ShellView ShellListView) {
-			if (csd == null) return;
+    private void ConditionallySelectFiles(ConditionalSelectData csdItem, ShellView shellListView) {
+      if (csdItem == null) {
+        return;
+      }
 
-			//The following items are added
-			var Matches_Name = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
-			var Matches_Size = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
-			var Matches_DateCreated = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
-			var Matches_DateLastModified = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
-			var Matches_LastAccessed = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
+      //The following items are added
+      var matches_Name = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
+      var matches_Size = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
+      var matches_DateCreated = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
+      var matches_DateLastModified = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
+      var matches_LastAccessed = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
 
-			ShellListView.DeSelectAllItems();
+      shellListView.DeSelectAllItems();
 
-			if (csd.FilterByFileName) {
-				foreach (var item in ShellListView.Items) {
-					var data = new FileInfo(item.ParsingName);
-					string ToFind = csd.FileNameData.matchCase ? data.Name : data.Name.ToLowerInvariant();
+      if (csdItem.FilterByFileName) {
+        foreach (var item in shellListView.Items) {
+          var data = new FileInfo(item.ParsingName);
+          string ToFind = csdItem.FileNameData.matchCase ? data.Name : data.Name.ToLowerInvariant();
 
-					switch (csd.FileNameData.filter) {
-						case ConditionalSelectParameters.FileNameFilterTypes.Contains:
-							if (ToFind.Contains(csd.FileNameData.matchCase ? csd.FileNameData.query : csd.FileNameData.query.ToLowerInvariant())) Matches_Name.Add(item);
-							break;
-						case ConditionalSelectParameters.FileNameFilterTypes.StartsWith:
-							if (ToFind.StartsWith(csd.FileNameData.query)) Matches_Name.Add(item);
-							break;
-						case ConditionalSelectParameters.FileNameFilterTypes.EndsWith:
-							if (ToFind.EndsWith(csd.FileNameData.query)) Matches_Name.Add(item);
-							break;
-						case ConditionalSelectParameters.FileNameFilterTypes.Equals:
-							if (ToFind == csd.FileNameData.query) Matches_Name.Add(item);
-							break;
-						case ConditionalSelectParameters.FileNameFilterTypes.DoesNotContain:
-							if (!ToFind.Contains(csd.FileNameData.query)) Matches_Name.Add(item);
-							break;
-						case ConditionalSelectParameters.FileNameFilterTypes.NotEqualTo:
-							if (ToFind != csd.FileNameData.query) Matches_Name.Add(item);
-							break;
-						default:
-							break;
-					}
-				}
-			}
-			else {
-				//Matches_Name.AddRange(shells.Where((x) => !Directory.Exists(x.ParsingName)));
-			}
+          switch (csdItem.FileNameData.filter) {
+            case ConditionalSelectParameters.FileNameFilterTypes.Contains:
+              if (ToFind.Contains(csdItem.FileNameData.matchCase ? csdItem.FileNameData.query : csdItem.FileNameData.query.ToLowerInvariant())) {
+                matches_Name.Add(item);
+              }
 
-			if (csd.FilterByFileSize) {
-				foreach (var item in Matches_Name) {
-					var data = new FileInfo(item.ParsingName);
-					switch (csd.FileSizeData.filter) {
-						case ConditionalSelectParameters.FileSizeFilterTypes.LargerThan:
-							if (data.Length > csd.FileSizeData.query1) Matches_Size.Add(item);
-							break;
+              break;
+            case ConditionalSelectParameters.FileNameFilterTypes.StartsWith:
+              if (ToFind.StartsWith(csdItem.FileNameData.query)) {
+                matches_Name.Add(item);
+              }
 
-						case ConditionalSelectParameters.FileSizeFilterTypes.SmallerThan:
-							if (data.Length < csd.FileSizeData.query1) Matches_Size.Add(item);
-							break;
+              break;
+            case ConditionalSelectParameters.FileNameFilterTypes.EndsWith:
+              if (ToFind.EndsWith(csdItem.FileNameData.query)) {
+                matches_Name.Add(item);
+              }
 
-						case ConditionalSelectParameters.FileSizeFilterTypes.Equals:
-							if (data.Length == csd.FileSizeData.query1) Matches_Size.Add(item);
-							break;
+              break;
+            case ConditionalSelectParameters.FileNameFilterTypes.Equals:
+              if (ToFind == csdItem.FileNameData.query) {
+                matches_Name.Add(item);
+              }
 
-						case ConditionalSelectParameters.FileSizeFilterTypes.Between:
-							long largebound, smallbound;
-							if (csd.FileSizeData.query2 > csd.FileSizeData.query1) {
-								smallbound = csd.FileSizeData.query1;
-								largebound = csd.FileSizeData.query2;
-							}
-							else if (csd.FileSizeData.query2 < csd.FileSizeData.query1) {
-								smallbound = csd.FileSizeData.query2;
-								largebound = csd.FileSizeData.query1;
-							}
-							else {
-								if (data.Length == csd.FileSizeData.query1) Matches_Size.Add(item);
-								break;
-							}
+              break;
+            case ConditionalSelectParameters.FileNameFilterTypes.DoesNotContain:
+              if (!ToFind.Contains(csdItem.FileNameData.query)) {
+                matches_Name.Add(item);
+              }
 
-							if (data.Length > smallbound && data.Length < largebound) Matches_Size.Add(item);
-							break;
+              break;
+            case ConditionalSelectParameters.FileNameFilterTypes.NotEqualTo:
+              if (ToFind != csdItem.FileNameData.query) {
+                matches_Name.Add(item);
+              }
 
-						case ConditionalSelectParameters.FileSizeFilterTypes.NotEqualTo:
-							if (data.Length != csd.FileSizeData.query1) Matches_Size.Add(item);
-							break;
+              break;
+            default:
+              break;
+          }
+        }
+      } else {
+        //Matches_Name.AddRange(shells.Where((x) => !Directory.Exists(x.ParsingName)));
+      }
 
-						case ConditionalSelectParameters.FileSizeFilterTypes.NotBetween:
-							long largebound2, smallbound2;
-							if (csd.FileSizeData.query2 > csd.FileSizeData.query1) {
-								smallbound2 = csd.FileSizeData.query1;
-								largebound2 = csd.FileSizeData.query2;
-							}
-							else if (csd.FileSizeData.query2 < csd.FileSizeData.query1) {
-								smallbound2 = csd.FileSizeData.query2;
-								largebound2 = csd.FileSizeData.query1;
-							}
-							else {
-								// they are the same, use Unequal code
-								if (data.Length != csd.FileSizeData.query1) Matches_Size.Add(item);
-								break;
-							}
+      if (csdItem.FilterByFileSize) {
+        foreach (var item in shellListView.Items.Where(w => !w.IsFolder && w.IsFileSystem)) {
+          var data = new FileInfo(item.ParsingName);
+          switch (csdItem.FileSizeData.filter) {
+            case ConditionalSelectParameters.FileSizeFilterTypes.LargerThan:
+              if (data.Length > csdItem.FileSizeData.query1) {
+                matches_Size.Add(item);
+              }
 
-							if (data.Length < smallbound2 || data.Length > largebound2) Matches_Size.Add(item);
-							break;
+              break;
 
-						default:
-							break;
-					}
-				}
-			}
-			else {
-				Matches_Size.AddRange(Matches_Name);
-			}
+            case ConditionalSelectParameters.FileSizeFilterTypes.SmallerThan:
+              if (data.Length < csdItem.FileSizeData.query1) {
+                matches_Size.Add(item);
+              }
 
-			if (csd.FilterByDateCreated) 
-				Matches_DateCreated.AddRange(!csd.FilterByDateCreated ? Matches_Size : DateFilter(Matches_Size, csd.DateCreatedData, x => x.CreationTimeUtc));
+              break;
 
-			if (csd.FilterByDateModified) 
-				Matches_DateLastModified.AddRange(!csd.FilterByDateModified ? Matches_Size : DateFilter(Matches_DateCreated, csd.DateModifiedData, x => x.LastWriteTimeUtc));
+            case ConditionalSelectParameters.FileSizeFilterTypes.Equals:
+              if (data.Length == csdItem.FileSizeData.query1) {
+                matches_Size.Add(item);
+              }
 
-			if (csd.FilterByDateAccessed) 
-				Matches_LastAccessed.AddRange(!csd.FilterByDateAccessed ? Matches_DateLastModified : DateFilter(Matches_DateLastModified, csd.DateAccessedData, x => x.LastAccessTimeUtc));
+              break;
 
-			ShellListView.SelectItems(
-				Matches_Name.
-				Union(Matches_Size).
-				Union(Matches_Size).
-				Union(Matches_DateCreated).
-				Union(Matches_DateLastModified).
-				Union(Matches_LastAccessed
-			).ToArray());
-			ShellListView.Focus();
-		}
+            case ConditionalSelectParameters.FileSizeFilterTypes.Between:
+              long largebound, smallbound;
+              if (csdItem.FileSizeData.query2 > csdItem.FileSizeData.query1) {
+                smallbound = csdItem.FileSizeData.query1;
+                largebound = csdItem.FileSizeData.query2;
+              } else if (csdItem.FileSizeData.query2 < csdItem.FileSizeData.query1) {
+                smallbound = csdItem.FileSizeData.query2;
+                largebound = csdItem.FileSizeData.query1;
+              } else {
+                if (data.Length == csdItem.FileSizeData.query1) {
+                  matches_Size.Add(item);
+                }
 
-		private List<BExplorer.Shell._Plugin_Interfaces.IListItemEx> DateFilter(List<BExplorer.Shell._Plugin_Interfaces.IListItemEx> shells, ConditionalSelectParameters.DateParameters filter, Func<FileInfo, DateTime> GetDate) {
-			var outshells = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
+                break;
+              }
 
-			foreach (var item in shells) {
-				var Date = GetDate(new FileInfo(item.ParsingName));
+              if (data.Length > smallbound && data.Length < largebound) {
+                matches_Size.Add(item);
+              }
 
-				switch (filter.filter) {
-					case ConditionalSelectParameters.DateFilterTypes.EarlierThan:
-						if (DateTime.Compare(Date, filter.queryDate) < 0) outshells.Add(item);
-						break;
+              break;
 
-					case ConditionalSelectParameters.DateFilterTypes.LaterThan:
-						if (DateTime.Compare(Date, filter.queryDate) > 0) outshells.Add(item);
-						break;
+            case ConditionalSelectParameters.FileSizeFilterTypes.NotEqualTo:
+              if (data.Length != csdItem.FileSizeData.query1) {
+                matches_Size.Add(item);
+              }
 
-					case ConditionalSelectParameters.DateFilterTypes.Equals:
-						if (DateTime.Compare(Date, filter.queryDate) == 0) outshells.Add(item);
-						break;
+              break;
 
-					default:
-						break;
-				}
-			}
+            case ConditionalSelectParameters.FileSizeFilterTypes.NotBetween:
+              long largebound2, smallbound2;
+              if (csdItem.FileSizeData.query2 > csdItem.FileSizeData.query1) {
+                smallbound2 = csdItem.FileSizeData.query1;
+                largebound2 = csdItem.FileSizeData.query2;
+              } else if (csdItem.FileSizeData.query2 < csdItem.FileSizeData.query1) {
+                smallbound2 = csdItem.FileSizeData.query2;
+                largebound2 = csdItem.FileSizeData.query1;
+              } else {
+                // they are the same, use Unequal code
+                if (data.Length != csdItem.FileSizeData.query1) {
+                  matches_Size.Add(item);
+                }
 
-			return outshells;
-		}
+                break;
+              }
 
-		private void sizecheck_Checked(object sender, RoutedEventArgs e) {
-			if (!this.IsLoaded) return;
-			this.sizefilter.IsEnabled = true;
-			this.sizequery1.IsEnabled = true;
-			this.sizequery2.IsEnabled = true;
-			this.sizebox1.IsEnabled = true;
-			var i = (ConditionalSelectComboBoxItem)sizefilter.SelectedItem;
-			if (i.IdentifyingName == "Between" || i.IdentifyingName == "NotBetween") {
-				this.sizequery2.IsEnabled = true;
-				this.sizebox2.IsEnabled = true;
-			}
-			else {
-				this.sizequery2.IsEnabled = false;
-				this.sizebox2.IsEnabled = false;
-			}
-		}
+              if (data.Length < smallbound2 || data.Length > largebound2) {
+                matches_Size.Add(item);
+              }
 
-		private void sizecheck_Unchecked(object sender, RoutedEventArgs e) {
-			if (!this.IsLoaded) return;
-			this.sizefilter.IsEnabled = false;
-			this.sizequery1.IsEnabled = false;
-			this.sizequery2.IsEnabled = false;
-			this.sizebox1.IsEnabled = false;
-			this.sizebox2.IsEnabled = false;
-		}
+              break;
 
-		private void sizefilter_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			if (!this.IsLoaded) return;
-			ConditionalSelectComboBoxItem i = (ConditionalSelectComboBoxItem)e.AddedItems[0];
-			if (i.IdentifyingName == "Between" || i.IdentifyingName == "NotBetween") {
-				this.sizequery2.IsEnabled = true;
-				this.sizebox2.IsEnabled = true;
-			}
-			else {
-				this.sizequery2.IsEnabled = false;
-				this.sizebox2.IsEnabled = false;
-			}
-		}
+            default:
+              break;
+          }
+        }
+      } else {
+        matches_Size.AddRange(matches_Name);
+      }
 
-		private void namecheck_CheckChanged(object sender, RoutedEventArgs e) {
-			if (!this.IsLoaded) return;
-			this.namefilter.IsEnabled = e.RoutedEvent.Name == "Checked";
-			this.namequery.IsEnabled = e.RoutedEvent.Name == "Checked";
-			this.namecase.IsEnabled = e.RoutedEvent.Name == "Checked";
-		}
+      if (csdItem.FilterByDateCreated) {
+        matches_DateCreated.AddRange(!csdItem.FilterByDateCreated ? matches_Size : this.DateFilter(shellListView.Items, csdItem.DateCreatedData, x => x.CreationTimeUtc));
+      }
 
-		private void dccheck_CheckChanged(object sender, RoutedEventArgs e) {
-			if (!this.IsLoaded) return;
-			this.dcfilter.IsEnabled = e.RoutedEvent.Name == "Checked";
-			this.dcquery.IsEnabled = e.RoutedEvent.Name == "Checked"; ;
-		}
+      if (csdItem.FilterByDateModified) {
+        matches_DateLastModified.AddRange(!csdItem.FilterByDateModified ? matches_Size : this.DateFilter(shellListView.Items, csdItem.DateModifiedData, x => x.LastWriteTimeUtc));
+      }
 
-		private void dmcheck_CheckChanged(object sender, RoutedEventArgs e) {
-			if (!this.IsLoaded) return;
-			this.dmfilter.IsEnabled = e.RoutedEvent.Name == "Checked";
-			this.dmquery.IsEnabled = e.RoutedEvent.Name == "Checked";
-		}
+      if (csdItem.FilterByDateAccessed) {
+        matches_LastAccessed.AddRange(!csdItem.FilterByDateAccessed ? matches_DateLastModified : this.DateFilter(shellListView.Items, csdItem.DateAccessedData, x => x.LastAccessTimeUtc));
+      }
 
-		private void dacheck_CheckChanged(object sender, RoutedEventArgs e) {
-			if (!this.IsLoaded) return;
-			this.dafilter.IsEnabled = e.RoutedEvent.Name == "Checked";
-			this.daquery.IsEnabled = e.RoutedEvent.Name == "Checked";
-		}
+      shellListView.SelectItems(
+        matches_Name.
+        Union(matches_Size).
+        Union(matches_Size).
+        Union(matches_DateCreated).
+        Union(matches_DateLastModified).
+        Union(matches_LastAccessed
+      ).ToArray());
+      shellListView.Focus(false, true);
+    }
 
-		private void button2_Click(object sender, RoutedEventArgs e) {
-			CancelAction = false;
-			var fnf = (ConditionalSelectParameters.FileNameFilterTypes)Enum.Parse(typeof(ConditionalSelectParameters.FileNameFilterTypes), ((ConditionalSelectComboBoxItem)namefilter.SelectedItem).IdentifyingName);
-			var fsf = (ConditionalSelectParameters.FileSizeFilterTypes)Enum.Parse(typeof(ConditionalSelectParameters.FileSizeFilterTypes), ((ConditionalSelectComboBoxItem)sizefilter.SelectedItem).IdentifyingName);
-			var sd1 = (FriendlySizeConverter.FileSizeMeasurements)Enum.Parse(typeof(FriendlySizeConverter.FileSizeMeasurements), ((ConditionalSelectComboBoxItem)sizebox1.SelectedItem).IdentifyingName);
-			var sd2 = (FriendlySizeConverter.FileSizeMeasurements)Enum.Parse(typeof(FriendlySizeConverter.FileSizeMeasurements), ((ConditionalSelectComboBoxItem)sizebox2.SelectedItem).IdentifyingName);
-			var dcf = (ConditionalSelectParameters.DateFilterTypes)Enum.Parse(typeof(ConditionalSelectParameters.DateFilterTypes), ((ConditionalSelectComboBoxItem)dcfilter.SelectedItem).IdentifyingName);
-			var dmf = (ConditionalSelectParameters.DateFilterTypes)Enum.Parse(typeof(ConditionalSelectParameters.DateFilterTypes), ((ConditionalSelectComboBoxItem)dmfilter.SelectedItem).IdentifyingName);
-			var daf = (ConditionalSelectParameters.DateFilterTypes)Enum.Parse(typeof(ConditionalSelectParameters.DateFilterTypes), ((ConditionalSelectComboBoxItem)dafilter.SelectedItem).IdentifyingName);
+    private List<BExplorer.Shell._Plugin_Interfaces.IListItemEx> DateFilter(List<BExplorer.Shell._Plugin_Interfaces.IListItemEx> shells, ConditionalSelectParameters.DateParameters filter, Func<FileInfo, DateTime> GetDate) {
+      var outshells = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
 
-			var Part1 = FriendlySizeConverter.GetByteLength(Convert.ToDouble(sizequery1.Text.Replace(",", ci.NumberFormat.NumberDecimalSeparator).Replace(".", ci.NumberFormat.NumberDecimalSeparator)), sd1);
-			var Part2 = FriendlySizeConverter.GetByteLength(Convert.ToDouble(sizequery2.Text.Replace(",", ci.NumberFormat.NumberDecimalSeparator).Replace(".", ci.NumberFormat.NumberDecimalSeparator)), sd2);
+      foreach (var item in shells) {
+        var Date = GetDate(new FileInfo(item.ParsingName));
 
-			csd = new ConditionalSelectData(
-				new ConditionalSelectParameters.FileNameParameters(namequery.Text, fnf, namecase.IsChecked.Value),
-				new ConditionalSelectParameters.FileSizeParameters(Part1, Part2, fsf),
-				new ConditionalSelectParameters.DateParameters(dcquery.SelectedDate.Value.Date, dcf),
-				new ConditionalSelectParameters.DateParameters(dmquery.SelectedDate.Value.Date, dmf),
-				new ConditionalSelectParameters.DateParameters(daquery.SelectedDate.Value.Date, daf),
-				namecheck.IsChecked.Value, sizecheck.IsChecked.Value, dccheck.IsChecked.Value, dmcheck.IsChecked.Value, dacheck.IsChecked.Value);
-			this.Close();
-		}
+        switch (filter.filter) {
+          case ConditionalSelectParameters.DateFilterTypes.EarlierThan:
+            if (DateTime.Compare(Date, filter.queryDate) < 0) {
+              outshells.Add(item);
+            }
 
-		private void button1_Click(object sender, RoutedEventArgs e) {
-			CancelAction = true;
-			this.Close();
-		}
+            break;
 
-		private void namequery_IsKeyboardFocusedChanged(object sender, DependencyPropertyChangedEventArgs e) {
-			if (namequery.IsKeyboardFocused) {
-				if (namequery.Text == (FindResource("txtFilename") as string)) {
-					namequery.Text = "";
-				}
-			}
-			else {
-				if (namequery.Text == "") {
-					namequery.Text = (FindResource("txtFilename") as string);
-				}
-			}
-		}
-	}
+          case ConditionalSelectParameters.DateFilterTypes.LaterThan:
+            if (DateTime.Compare(Date, filter.queryDate) > 0) {
+              outshells.Add(item);
+            }
+
+            break;
+
+          case ConditionalSelectParameters.DateFilterTypes.Equals:
+            if (DateTime.Compare(Date, filter.queryDate) == 0) {
+              outshells.Add(item);
+            }
+
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      return outshells;
+    }
+
+    private void sizecheck_Checked(object sender, RoutedEventArgs e) {
+      if (!this.IsLoaded) {
+        return;
+      }
+
+      this.sizefilter.IsEnabled = true;
+      this.sizequery1.IsEnabled = true;
+      this.sizequery2.IsEnabled = true;
+      this.sizebox1.IsEnabled = true;
+      var i = (ConditionalSelectComboBoxItem) this.sizefilter.SelectedItem;
+      if (i.IdentifyingName == "Between" || i.IdentifyingName == "NotBetween") {
+        this.sizequery2.IsEnabled = true;
+        this.sizebox2.IsEnabled = true;
+      } else {
+        this.sizequery2.IsEnabled = false;
+        this.sizebox2.IsEnabled = false;
+      }
+    }
+
+    private void sizecheck_Unchecked(object sender, RoutedEventArgs e) {
+      if (!this.IsLoaded) {
+        return;
+      }
+
+      this.sizefilter.IsEnabled = false;
+      this.sizequery1.IsEnabled = false;
+      this.sizequery2.IsEnabled = false;
+      this.sizebox1.IsEnabled = false;
+      this.sizebox2.IsEnabled = false;
+    }
+
+    private void sizefilter_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+      if (!this.IsLoaded) {
+        return;
+      }
+
+      ConditionalSelectComboBoxItem i = (ConditionalSelectComboBoxItem)e.AddedItems[0];
+      if (i.IdentifyingName == "Between" || i.IdentifyingName == "NotBetween") {
+        this.sizequery2.IsEnabled = true;
+        this.sizebox2.IsEnabled = true;
+      } else {
+        this.sizequery2.IsEnabled = false;
+        this.sizebox2.IsEnabled = false;
+      }
+    }
+
+    private void namecheck_CheckChanged(object sender, RoutedEventArgs e) {
+      if (!this.IsLoaded) {
+        return;
+      }
+
+      this.namefilter.IsEnabled = e.RoutedEvent.Name == "Checked";
+      this.namequery.IsEnabled = e.RoutedEvent.Name == "Checked";
+      this.namecase.IsEnabled = e.RoutedEvent.Name == "Checked";
+    }
+
+    private void dccheck_CheckChanged(object sender, RoutedEventArgs e) {
+      if (!this.IsLoaded) {
+        return;
+      }
+
+      this.dcfilter.IsEnabled = e.RoutedEvent.Name == "Checked";
+      this.dcquery.IsEnabled = e.RoutedEvent.Name == "Checked";
+      ;
+    }
+
+    private void dmcheck_CheckChanged(object sender, RoutedEventArgs e) {
+      if (!this.IsLoaded) {
+        return;
+      }
+
+      this.dmfilter.IsEnabled = e.RoutedEvent.Name == "Checked";
+      this.dmquery.IsEnabled = e.RoutedEvent.Name == "Checked";
+    }
+
+    private void dacheck_CheckChanged(object sender, RoutedEventArgs e) {
+      if (!this.IsLoaded) {
+        return;
+      }
+
+      this.dafilter.IsEnabled = e.RoutedEvent.Name == "Checked";
+      this.daquery.IsEnabled = e.RoutedEvent.Name == "Checked";
+    }
+
+    private void button2_Click(object sender, RoutedEventArgs e) {
+      this.CancelAction = false;
+      var fnf = (ConditionalSelectParameters.FileNameFilterTypes)Enum.Parse(typeof(ConditionalSelectParameters.FileNameFilterTypes), ((ConditionalSelectComboBoxItem) this.namefilter.SelectedItem).IdentifyingName);
+      var fsf = (ConditionalSelectParameters.FileSizeFilterTypes)Enum.Parse(typeof(ConditionalSelectParameters.FileSizeFilterTypes), ((ConditionalSelectComboBoxItem) this.sizefilter.SelectedItem).IdentifyingName);
+      var sd1 = (FriendlySizeConverter.FileSizeMeasurements)Enum.Parse(typeof(FriendlySizeConverter.FileSizeMeasurements), ((ConditionalSelectComboBoxItem) this.sizebox1.SelectedItem).IdentifyingName);
+      var sd2 = (FriendlySizeConverter.FileSizeMeasurements)Enum.Parse(typeof(FriendlySizeConverter.FileSizeMeasurements), ((ConditionalSelectComboBoxItem) this.sizebox2.SelectedItem).IdentifyingName);
+      var dcf = (ConditionalSelectParameters.DateFilterTypes)Enum.Parse(typeof(ConditionalSelectParameters.DateFilterTypes), ((ConditionalSelectComboBoxItem) this.dcfilter.SelectedItem).IdentifyingName);
+      var dmf = (ConditionalSelectParameters.DateFilterTypes)Enum.Parse(typeof(ConditionalSelectParameters.DateFilterTypes), ((ConditionalSelectComboBoxItem) this.dmfilter.SelectedItem).IdentifyingName);
+      var daf = (ConditionalSelectParameters.DateFilterTypes)Enum.Parse(typeof(ConditionalSelectParameters.DateFilterTypes), ((ConditionalSelectComboBoxItem) this.dafilter.SelectedItem).IdentifyingName);
+
+      var Part1 = FriendlySizeConverter.GetByteLength(Convert.ToDouble(this.sizequery1.Text.Replace(",", this.ci.NumberFormat.NumberDecimalSeparator).Replace(".", this.ci.NumberFormat.NumberDecimalSeparator)), sd1);
+      var Part2 = FriendlySizeConverter.GetByteLength(Convert.ToDouble(this.sizequery2.Text.Replace(",", this.ci.NumberFormat.NumberDecimalSeparator).Replace(".", this.ci.NumberFormat.NumberDecimalSeparator)), sd2);
+
+      this.csd = new ConditionalSelectData(
+        new ConditionalSelectParameters.FileNameParameters(this.namequery.Text, fnf, this.namecase.IsChecked.Value),
+        new ConditionalSelectParameters.FileSizeParameters(Part1, Part2, fsf),
+        new ConditionalSelectParameters.DateParameters(this.dcquery.SelectedDate.Value.Date, dcf),
+        new ConditionalSelectParameters.DateParameters(this.dmquery.SelectedDate.Value.Date, dmf),
+        new ConditionalSelectParameters.DateParameters(this.daquery.SelectedDate.Value.Date, daf), this.namecheck.IsChecked.Value, this.sizecheck.IsChecked.Value, this.dccheck.IsChecked.Value, this.dmcheck.IsChecked.Value, this.dacheck.IsChecked.Value);
+      this.Close();
+    }
+
+    private void button1_Click(object sender, RoutedEventArgs e) {
+      this.CancelAction = true;
+      this.Close();
+    }
+
+    private void namequery_IsKeyboardFocusedChanged(object sender, DependencyPropertyChangedEventArgs e) {
+      if (this.namequery.IsKeyboardFocused) {
+        if (this.namequery.Text == (this.FindResource("txtFilename") as string)) {
+          this.namequery.Text = "";
+        }
+      } else {
+        if (this.namequery.Text == "") {
+          this.namequery.Text = (this.FindResource("txtFilename") as string);
+        }
+      }
+    }
+  }
 }
