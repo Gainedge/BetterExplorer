@@ -227,6 +227,7 @@ namespace BExplorer.Shell.Interop {
 		INTERRUPT = 0x80000000,
 	}
 
+  [Flags]
 	public enum SHCNRF {
 		InterruptLevel = 0x0001,
 		ShellLevel = 0x0002,
