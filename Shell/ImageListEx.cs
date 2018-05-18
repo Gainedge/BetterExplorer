@@ -402,6 +402,7 @@ namespace BExplorer.Shell {
           Int32 index = 0;
           if (!ThreadRun_Helper(this._OverlayQueue, false, ref index))
             continue;
+          //Thread.Sleep(9);
           var shoTemp = this._ShellViewEx.Items[index];
           var sho = FileSystemListItem.ToFileSystemItem(shoTemp.ParentHandle, shoTemp.PIDL);
 
@@ -430,6 +431,7 @@ namespace BExplorer.Shell {
         var sho = this._ShellViewEx.Items[index];
         if (!sho.IsIconLoaded) {
           try {
+            //Thread.Sleep(10);
             //var temp = FileSystemListItem.ToFileSystemItem(sho.ParentHandle, sho.ParsingName.ToShellParsingName());
             var icon = sho.GetHBitmap(this._CurrentSize, false, true);
             var shieldOverlay = 0;
@@ -460,6 +462,7 @@ namespace BExplorer.Shell {
         if (!ThreadRun_Helper(this._ThumbnailsForCacheLoad, true, ref index))
           continue;
         if (this._ThumbnailsForCacheLoad.Count() > 1 || !this._IsSupressedTumbGeneration) {
+          //Thread.Sleep(12);
           var sho = this._ShellViewEx.Items[index];
           if (sho.IsNeedRefreshing | !sho.IsThumbnailLoaded) {
             var addornerType = this.GetAddornerType(sho);
@@ -493,6 +496,7 @@ namespace BExplorer.Shell {
         var index = this._RedrawQueue.Dequeue();
         if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero)
           continue;
+        Thread.Sleep(10);
         this._ShellViewEx.RedrawItem(index);
       }
     }

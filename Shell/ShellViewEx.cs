@@ -22,6 +22,7 @@
   using DPoint = System.Drawing.Point;
   using F = System.Windows.Forms;
   using SQLite = System.Data.SQLite;
+  using System.Collections.Concurrent;
 
   #region Substructures and classes
 
@@ -292,6 +293,7 @@
 
     public ImageListEx LargeImageList;
     public ImageListEx SmallImageList;
+    private ConcurrentDictionary<Int32, Int32> CurrentlyUpdatingItems = new ConcurrentDictionary<Int32, Int32>();
 
     /// <summary>Returns the currently selected item and removes any items in <see cref="_SelectedIndexes"/> not in <see cref="Items"/>  </summary>
     public List<IListItemEx> SelectedItems {
@@ -1374,6 +1376,7 @@
         this.RefreshItem(this._LastDropHighLightedItemIndex);
         this._LastDropHighLightedItemIndex = -1;
       } catch {
+        // ignored
       }
 
       DropTarget.Create.DragLeave();
@@ -1581,7 +1584,7 @@
 
             case WNM.LVN_GETDISPINFOW:
               var nmlv = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
-              if (this.Items.Count == 0 || this.Items.Count - 1 < nmlv.item.iItem) {
+              if (this.Items.Count == 0 || this.Items.Count - 1 < nmlv.item.iItem || nmlv.item.mask == LVIF.LVIF_INDENT) {
                 break;
               }
 
@@ -2336,6 +2339,11 @@
     /// <param name="index">The index of the item you want to refresh</param>
     /// <param name="isForceRedraw">If <c>True</c> Resets everything in the Item to indicate that it needs to be refreshed/reloaded</param>
     public void RefreshItem(Int32 index, Boolean isForceRedraw = false) {
+      if (this.CurrentlyUpdatingItems.ContainsKey(index)) {
+        return;
+      }
+
+      this.CurrentlyUpdatingItems.TryAdd(index, 0);
       if (isForceRedraw) {
         try {
           this._ResetEvent.Set();
@@ -3808,6 +3816,7 @@
         Thread.Sleep(delay);
       }
 
+      Thread.Sleep(8);
       var itemBounds = new User32.RECT() { Left = 1 };
       var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
       User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
@@ -4136,6 +4145,8 @@
             }
           }
 
+          var ind = -1;
+          this.CurrentlyUpdatingItems.TryRemove(index, out ind);
           m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
         } else {
           m.Result = IntPtr.Zero;
