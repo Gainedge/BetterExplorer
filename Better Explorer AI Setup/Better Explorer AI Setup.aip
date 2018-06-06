@@ -267,7 +267,7 @@
     <ROW File="SQLite.Interop.dll_1" Component_="SQLite.Interop.dll_1" FileName="SQLITE~1.DLL|SQLite.Interop.dll" Attributes="0" SourcePath="..\Deploy\x86\SQLite.Interop.dll" SelfReg="false" NextFile="AeroWizard.dll"/>
     <ROW File="Settings.dll" Component_="Settings.dll" FileName="Settings.dll" Attributes="0" SourcePath="..\Deploy\Settings.dll" SelfReg="false" NextFile="Settings.sqlite"/>
     <ROW File="Settings.sqlite" Component_="client.wyc" FileName="SETTIN~1.SQL|Settings.sqlite" Attributes="0" SourcePath="..\Deploy\Settings.sqlite" SelfReg="false" NextFile="System.Net.Http.dll"/>
-    <ROW File="Settings.sqlite_1" Component_="Settings.sqlite" FileName="SETTIN~1.SQL|Settings.sqlite" Version="65535.65535.65535.65535" Attributes="0" SourcePath="C:\Users\Dimitar Tsenev\AppData\Roaming\BExplorer\Settings.sqlite" SelfReg="false" NextFile="WpfAnimatedGif.dll"/>
+    <ROW File="Settings.sqlite_1" Component_="Settings.sqlite" FileName="SETTIN~1.SQL|Settings.sqlite" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\BExplorer\BetterExplorer\Settings.sqlite" SelfReg="false" NextFile="WpfAnimatedGif.dll"/>
     <ROW File="Settings.xml" Component_="client.wyc" FileName="Settings.xml" Attributes="0" SourcePath="..\Deploy\Settings.xml" SelfReg="false" NextFile="SevenZipSharp.xml"/>
     <ROW File="SevenZipSharp.dll" Component_="SevenZipSharp.dll" FileName="SEVENZ~1.DLL|SevenZipSharp.dll" Attributes="0" SourcePath="..\Deploy\SevenZipSharp.dll" SelfReg="false" NextFile="StarRatingControl.dll"/>
     <ROW File="SevenZipSharp.dll.config" Component_="client.wyc" FileName="SEVENZ~1.CON|SevenZipSharp.dll.config" Attributes="0" SourcePath="..\Deploy\SevenZipSharp.dll.config" SelfReg="false" NextFile="System.Data.SQLite.dll.config"/>
