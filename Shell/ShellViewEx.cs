@@ -2423,7 +2423,7 @@
       var view = this;
       var thread = new Thread(() => {
         var dataObject = F.Clipboard.GetDataObject();
-        var dropEffect = dataObject.ToDropEffect();
+        var dropEffect = dataObject.GetDropEffect();
         if (dataObject != null && dataObject.GetDataPresent("Shell IDList Array")) {
           var shellItemArray = dataObject.ToShellItemArray();
           var items = shellItemArray.ToArray();
@@ -2440,9 +2440,7 @@
 
             fo.PerformOperations();
             Marshal.ReleaseComObject(shellItemArray);
-          } catch (SecurityException) {
-            throw;
-          }
+          } catch { }
         } else if (dataObject != null && dataObject.GetDataPresent("FileDrop")) {
           var items = ((String[])dataObject.GetData("FileDrop")).Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
           try {
@@ -2458,9 +2456,9 @@
             }
 
             fo.PerformOperations();
-          } catch (SecurityException) {
-            throw;
-          }
+          } catch { }
+        } else {
+          return;
         }
         this.LargeImageList.SupressThumbnailGeneration(false);
       });

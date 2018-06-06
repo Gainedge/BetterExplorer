@@ -78,7 +78,7 @@
       this.CheckedFroChilds.Clear();
       var favoritesItem = Utilities.WindowsVersion == WindowsVersions.Windows10
         ? FileSystemListItem.ToFileSystemItem(IntPtr.Zero, "shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}")
-        : FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Favorites).Pidl);
+        : FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Links).Pidl);
       var favoritesRoot = new TreeNode(favoritesItem.DisplayName);
       favoritesRoot.Tag = favoritesItem;
       favoritesRoot.ImageIndex = favoritesItem.GetSystemImageListIndex(favoritesItem.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
@@ -608,23 +608,24 @@
         IShellItemArray items = null;
         if (dataObject.GetDataPresent("FileDrop")) {
           // TODO: Fix FileDorp option
-          // items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
-        } else {
+          //items = ((String[])dataObject.GetData("FileDrop")).Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
+          //items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
+        } else if (dataObject.GetDataPresent("Shell IDList Array")) {
           items = dataObject.ToShellItemArray();
+        } else {
+          return;
         }
 
         try {
           var fo = new IIFileOperation(handle);
-          if (dataObject.ToDropEffect() == System.Windows.DragDropEffects.Copy) {
+          if (dataObject.GetDropEffect() == System.Windows.DragDropEffects.Copy) {
             fo.CopyItems(items, selectedItem);
           } else {
             fo.MoveItems(items, selectedItem);
           }
 
           fo.PerformOperations();
-        } catch (SecurityException) {
-          throw;
-        }
+        } catch { }
       });
 
       thread.SetApartmentState(ApartmentState.STA);

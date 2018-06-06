@@ -1280,18 +1280,30 @@ namespace BetterExplorer {
     private void SetUpFavoritesMenu() {
       this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
         this.btnFavorites.Visibility = Visibility.Visible;
+        var favoritesItem = BExplorer.Shell.Utilities.WindowsVersion == WindowsVersions.Windows10
+        ? FileSystemListItem.ToFileSystemItem(IntPtr.Zero, "shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}")
+        : FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Links).Pidl);
 
-        var OpenFavorites = new MenuItem() { Header = "Open Favorites" };
-        var Path = ((ShellItem)KnownFolders.Links).FileSystemPath;
-        OpenFavorites.Click += (x, y) => Process.Start(Path);
+        var openFavorites = new MenuItem() { Header = "Open Favorites" };
+        openFavorites.Click += (x, y) => this.tcMain.NewTab(favoritesItem, true);
 
-        this.btnFavorites.Items.Add(OpenFavorites);
+        this.btnFavorites.Items.Add(openFavorites);
         this.btnFavorites.Items.Add(new Separator());
 
-        foreach (ShellItem item in KnownFolders.Links.Where(w => !w.IsHidden)) {
-          item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-          item.Thumbnail.CurrentSize = new WIN.Size(16, 16);
-          this.btnFavorites.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.Thumbnail.BitmapSource, onClick: this.mif_Click));
+        foreach (var item in favoritesItem.Where(w => !w.IsHidden && (w.IsFolder || w.IsLink)).OrderBy(o => o.DisplayName)) {
+          if (item.IsLink) {
+            var link = new ShellLink(item.ParsingName);
+            var targetItem = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, link.TargetPIDL);
+            if (targetItem.IsFolder) {
+              this.btnFavorites.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default), onClick: this.mif_Click));
+            }
+
+            targetItem.Dispose();
+            link.Dispose();
+          } else {
+            this.btnFavorites.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default),
+              onClick: this.mif_Click));
+          }
         }
       }));
     }
@@ -2100,12 +2112,14 @@ namespace BetterExplorer {
       this._IsShouldRiseViewChanged = false;
       if (this._ShellListView == null)
         return;
-      else if (sender == this.btnSbDetails)
+      else if (sender == this.btnSbDetails) {
         this._ShellListView.View = ShellViewStyle.Details;
-      else if (sender == this.btnSbIcons)
+      } else if (sender == this.btnSbIcons) {
         this._ShellListView.View = ShellViewStyle.Medium;
-      else if (sender == this.btnSbTiles)
+      } else if (sender == this.btnSbTiles) {
         this._ShellListView.View = ShellViewStyle.Tile;
+      }
+
       this._IsShouldRiseViewChanged = true;
     }
 
@@ -3742,7 +3756,12 @@ namespace BetterExplorer {
       this.Dispatcher.BeginInvoke(DispatcherPriority.Background,
           (ThreadStart)(() => {
             this._IsShouldRiseViewChanged = false;
-            this.zoomSlider.Value = e.ThumbnailSize;
+            if (e.ThumbnailSize <= 48 && e.CurrentView != ShellViewStyle.Medium) {
+              this.zoomSlider.IsEnabled = false;
+            } else {
+              this.zoomSlider.Value = e.ThumbnailSize;
+              this.zoomSlider.IsEnabled = true;
+            }
 
             this.btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
             this.btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;

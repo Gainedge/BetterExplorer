@@ -603,7 +603,7 @@ namespace BExplorer.Shell {
       return shellItemArray;
     }
 
-    public static System.Windows.DragDropEffects ToDropEffect(this IDataObject dataObject) {
+    public static System.Windows.DragDropEffects GetDropEffect(this IDataObject dataObject) {
       var dragDropEffect = System.Windows.DragDropEffects.Copy;
       if (dataObject.GetDataPresent("Preferred DropEffect")) {
         object data = dataObject.GetData("Preferred DropEffect", true);
