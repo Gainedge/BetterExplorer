@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="13.4" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
+  <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
+    <ROW Name="HiddenItems" Value="MsiJavaComponent;MultipleInstancesComponent;AutorunComponent;ScheduledTasksComponent;GameUxComponent;FirewallExceptionComponent;UserAccountsComponent;SqlConnectionComponent;SharePointSlnComponent;SilverlightSlnComponent;AppXAppDetailsComponent;AppXCapabilitiesComponent;AppXDependenciesComponent;AppXProductDetailsComponent;AppXVisualAssetsComponent;AppXAppDeclarationsComponent;AppXUriRulesComponent"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiValidationComponent">
+    <ROW Table="File" Column="Sequence" MinValue="1" MaxValue="2147483647" Description="Sequence with respect to the media images; order must track cabinet order." Options="0" ColumnType="3" ColumnIndex="7" ColumnSize="4" MsiKey="File#Sequence"/>
+    <ROW Table="Media" Column="LastSequence" MinValue="0" MaxValue="2147483647" Description="File sequence number for the last file for this media." Options="0" ColumnType="3" ColumnIndex="1" ColumnSize="4" MsiKey="Media#LastSequence"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_ARP_SIZE" Value="5000"/>
+    <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
+    <ROW Property="AI_BackgroundColor" Value="lightblue" MultiBuildValue="ExeBuild:lightcoral" MsiKey="AI_BackgroundColor"/>
+    <ROW Property="AI_CF_FrameBottomLeft" Value="frame_bottom_left.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameBottomLeftInactive" Value="frame_bottom_left_inactive.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameBottomMid" Value="frame_bottom_mid.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameBottomMidInactive" Value="frame_bottom_mid_inactive.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameBottomRight" Value="frame_bottom_right.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameBottomRightInactive" Value="frame_bottom_right_inactive.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameCaption" Value="frame_caption.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameCaptionInactive" Value="frame_caption_inactive.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameLeft" Value="frame_left.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameLeftInactive" Value="frame_left_inactive.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameRight" Value="frame_right.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameRightInactive" Value="frame_right_inactive.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameTopLeft" Value="frame_top_left.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameTopLeftInactive" Value="frame_top_left_inactive.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameTopMid" Value="frame_top_mid.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameTopMidInactive" Value="frame_top_mid_inactive.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameTopRight" Value="frame_top_right.bmp" Type="1"/>
+    <ROW Property="AI_CF_FrameTopRightInactive" Value="frame_top_right_inactive.bmp" Type="1"/>
+    <ROW Property="AI_CF_SysCloseDown" Value="sys_close_down.bmp" Type="1"/>
+    <ROW Property="AI_CF_SysCloseHot" Value="sys_close_hot.bmp" Type="1"/>
+    <ROW Property="AI_CF_SysCloseInactive" Value="sys_close_inactive.bmp" Type="1"/>
+    <ROW Property="AI_CF_SysCloseNormal" Value="sys_close_normal.bmp" Type="1"/>
+    <ROW Property="AI_CF_SysMinDown" Value="sys_min_down.bmp" Type="1"/>
+    <ROW Property="AI_CF_SysMinHot" Value="sys_min_hot.bmp" Type="1"/>
+    <ROW Property="AI_CF_SysMinInactive" Value="sys_min_inactive.bmp" Type="1"/>
+    <ROW Property="AI_CF_SysMinNormal" Value="sys_min_normal.bmp" Type="1"/>
+    <ROW Property="AI_CF_TYPE" Value="0" MultiBuildValue="ExeBuild:1" Type="4"/>
+    <ROW Property="AI_EXTERNALUIUNINSTALLERNAME" MultiBuildValue="OfflineUpdateBuild_1:aiui#ExeBuild:aiui"/>
+    <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
+    <ROW Property="AI_FrameBtnsColor" Value="powderblue" MultiBuildValue="ExeBuild:brown" MsiKey="AI_FrameBtnsColor"/>
+    <ROW Property="AI_FrameColor" Value="powderblue" MultiBuildValue="ExeBuild:brown" MsiKey="AI_FrameColor"/>
+    <ROW Property="AI_ImagesColor" Value="powderblue" MultiBuildValue="ExeBuild:brown" MsiKey="AI_ImagesColor"/>
+    <ROW Property="AI_MINRAM" MultiBuildValue="OfflineUpdateBuild_1:512" ValueLocId="-"/>
+    <ROW Property="AI_PREDEF_LCONDS_PROPS" Value="AI_DETECTED_COLOR_QUALITY;AI_DETECTED_PHYSICAL_MEMORY;AI_DETECTED_SCREEN_RESOLUTION_X;AI_DETECTED_SCREEN_RESOLUTION_Y"/>
+    <ROW Property="AI_PRODUCTNAME_ARP" Value="Better Explorer"/>
+    <ROW Property="AI_REQUIRED_COLOR_QUALITY" MultiBuildValue="ExeBuild:32" ValueLocId="-"/>
+    <ROW Property="AI_REQUIRED_PHYSICAL_MEMORY" MultiBuildValue="ExeBuild:2048" ValueLocId="-"/>
+    <ROW Property="AI_REQUIRED_SCREEN_RESOLUTION_X" MultiBuildValue="ExeBuild:1024" ValueLocId="-"/>
+    <ROW Property="AI_REQUIRED_SCREEN_RESOLUTION_Y" MultiBuildValue="ExeBuild:768" ValueLocId="-"/>
+    <ROW Property="AI_SHORTCUTSREG" Value="0|0|0|0|"/>
+    <ROW Property="AI_UNINSTALLER" Value="msiexec.exe"/>
+    <ROW Property="ALLUSERS" Value="1"/>
+    <ROW Property="ARPCOMMENTS" Value="A windows explorer replacement with advanced features" ValueLocId="*"/>
+    <ROW Property="ARPCONTACT" Value="Dimitar Tsenev"/>
+    <ROW Property="ARPHELPLINK" Value="http://bugs.gainedge.org/public/betterexplorer"/>
+    <ROW Property="ARPPRODUCTICON" Value="BetterExplorer.exe" Type="8"/>
+    <ROW Property="ARPSIZE" Value="15000"/>
+    <ROW Property="ARPSYSTEMCOMPONENT" Value="1"/>
+    <ROW Property="ARPURLINFOABOUT" Value="http://gainedge.org/better-explorer"/>
+    <ROW Property="ARPURLUPDATEINFO" Value="http://update.gainedge.org/better-explorer"/>
+    <ROW Property="AppLogoIcon" Value="applogoicon" MultiBuildValue="ExeBuild:Explorer256.ico_1" Type="1" MsiKey="AppLogoIcon"/>
+    <ROW Property="CTRLS" Value="2"/>
+    <ROW Property="Manufacturer" Value="Gainedge.org"/>
+    <ROW Property="ProductCode" Value="1026:{97001540-9903-4986-B79A-58DC39CD2DED} 1031:{0366708C-7A12-49DF-963F-AC51ED0A4A67} 1033:{DFB3B89D-BD9D-4CFE-A4E9-E69674095FAC} 1041:{179521A9-D595-43CF-852F-1B0C940105BC} 1049:{02A2819E-6FFE-4C01-8907-5D199B4EC2D9} " Type="16"/>
+    <ROW Property="ProductLanguage" Value="1033"/>
+    <ROW Property="ProductName" Value="Better Explorer"/>
+    <ROW Property="ProductVersion" Value="2.5.3.10001" Type="32"/>
+    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
+    <ROW Property="UpgradeCode" Value="{5E93AAAE-AC44-47F5-BFC8-330F951A30F4}"/>
+    <ROW Property="WIMinVersion" MultiBuildValue="OfflineUpdateBuild_1:4.05" ValueLocId="-"/>
+    <ROW Property="WindowsType9X" MultiBuildValue="OfflineUpdateBuild_1:Windows 9x/ME#ExeBuild:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsType9XDisplay" MultiBuildValue="OfflineUpdateBuild_1:Windows 9x/ME#ExeBuild:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT" MultiBuildValue="OfflineUpdateBuild_1:Windows XP x86 Service Pack 3, Windows Server 2003 x86 Service Pack 2, Windows Vista x86, Windows Vista x86 Service Pack 1, Windows Vista x86 Service Pack 2, Windows Server 2008 x86#ExeBuild:Windows XP x86 Service Pack 3, Windows Server 2003 x86 Service Pack 2, Windows Vista x86, Windows Vista x86 Service Pack 1, Windows Vista x86 Service Pack 2, Windows Server 2008 x86" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40" MultiBuildValue="OfflineUpdateBuild_1:Windows NT 4.0#ExeBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40Display" MultiBuildValue="OfflineUpdateBuild_1:Windows NT 4.0#ExeBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50" MultiBuildValue="OfflineUpdateBuild_1:Windows 2000#ExeBuild:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50Display" MultiBuildValue="OfflineUpdateBuild_1:Windows 2000#ExeBuild:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5X" MultiBuildValue="OfflineUpdateBuild_1:Windows XP/2003 RTM, Windows XP/2003 SP1, Windows XP SP2 x86#ExeBuild:Windows XP/2003 RTM, Windows XP/2003 SP1, Windows XP SP2 x86" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="OfflineUpdateBuild_1:Windows XP/2003 RTM, Windows XP/2003 SP1, Windows XP SP2 x86#ExeBuild:Windows XP/2003 RTM, Windows XP/2003 SP1, Windows XP SP2 x86" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT64" MultiBuildValue="OfflineUpdateBuild_1:Windows XP x64 Service Pack 2, Windows Server 2003 x64 Service Pack 2, Windows Vista x64, Windows Vista x64 Service Pack 1, Windows Vista x64 Service Pack 2, Windows Server 2008 x64, Windows Server 2008 R2 x64, Windows Server 2008 R2 x64 Service Pack 1, Windows Server 2012 x64, Windows Server 2012 R2 x64#ExeBuild:Windows XP x64 Service Pack 2, Windows Server 2003 x64 Service Pack 2, Windows Vista x64, Windows Vista x64 Service Pack 1, Windows Vista x64 Service Pack 2, Windows Server 2008 x64, Windows Server 2008 R2 x64, Windows Server 2008 R2 x64 Service Pack 1, Windows Server 2012 x64, Windows Server 2012 R2 x64" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT64Display" MultiBuildValue="OfflineUpdateBuild_1:Windows XP x64 Service Pack 2, Windows Server 2003 x64 Service Pack 2, Windows Vista x64, Windows Server 2008 x64, Windows Server 2008 R2 x64, Windows Server 2012 x64, Windows Server 2012 R2 x64#ExeBuild:Windows XP x64 Service Pack 2, Windows Server 2003 x64 Service Pack 2, Windows Vista x64, Windows Server 2008 x64, Windows Server 2008 R2 x64, Windows Server 2012 x64, Windows Server 2012 R2 x64" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNTDisplay" MultiBuildValue="OfflineUpdateBuild_1:Windows XP x86 Service Pack 3, Windows Server 2003 x86 Service Pack 2, Windows Vista x86, Windows Server 2008 x86#ExeBuild:Windows XP x86 Service Pack 3, Windows Server 2003 x86 Service Pack 2, Windows Vista x86, Windows Server 2008 x86" ValueLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+    <ROW Directory="Alias_Dir" Directory_Parent="Badges_Dir" DefaultDir="Alias"/>
+    <ROW Directory="AppDataFolder" Directory_Parent="TARGETDIR" DefaultDir="AppDat~1|AppDataFolder" IsPseudoRoot="1"/>
+    <ROW Directory="BExplorer_Dir" Directory_Parent="AppDataFolder" DefaultDir="BEXPLO~1|BExplorer" DirectoryOptions="3"/>
+    <ROW Directory="Badges_Dir" Directory_Parent="APPDIR" DefaultDir="Badges"/>
+    <ROW Directory="BetterExplorer_Dir" Directory_Parent="Gainedge_Dir" DefaultDir="BETTER~1|Better Explorer"/>
+    <ROW Directory="CommonAppDataFolder" Directory_Parent="TARGETDIR" DefaultDir="Common~1|CommonAppDataFolder" IsPseudoRoot="1"/>
+    <ROW Directory="Gainedge_Dir" Directory_Parent="ProgramMenuFolder" DefaultDir="Gainedge"/>
+    <ROW Directory="InternetExplorer_Dir" Directory_Parent="Microsoft_Dir" DefaultDir="Intern~1|Internet Explorer"/>
+    <ROW Directory="Microsoft_Dir" Directory_Parent="AppDataFolder" DefaultDir="Micros~1|Microsoft"/>
+    <ROW Directory="ProgramMenuFolder" Directory_Parent="TARGETDIR" DefaultDir="PROGRA~1|ProgramMenuFolder" IsPseudoRoot="1"/>
+    <ROW Directory="QuickLaunch_Dir" Directory_Parent="InternetExplorer_Dir" DefaultDir="QuickL~1|Quick Launch"/>
+    <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
+    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+    <ROW Directory="UbuntuHuman_Dir" Directory_Parent="Badges_Dir" DefaultDir="UBUNTU~1|Ubuntu Human"/>
+    <ROW Directory="regid.201207.betterexplorer.com_Dir" Directory_Parent="CommonAppDataFolder" DefaultDir="regid2~1.com|regid.2012-07.better-explorer.com"/>
+    <ROW Directory="x64_Dir" Directory_Parent="APPDIR" DefaultDir="x64"/>
+    <ROW Directory="x86_Dir" Directory_Parent="APPDIR" DefaultDir="x86"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="AIShRegAnswer" ComponentId="{F7166FEB-5E08-4D41-A296-E641424EEEE9}" Directory_="APPDIR" Attributes="4" KeyPath="AIShRegAnswer"/>
+    <ROW Component="AI_CustomARPName" ComponentId="{0F950940-7EAD-4977-A993-1D22B9D5D2D7}" Directory_="APPDIR" Attributes="4" KeyPath="DisplayName" Options="1"/>
+    <ROW Component="AI_ExePath" ComponentId="{C3B2CAE6-2882-4483-8D5F-B517A1BA3DD6}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
+    <ROW Component="AeroWizard.dll" ComponentId="{87F04D88-DABF-4240-8ACB-C2C25AF6BCE8}" Directory_="APPDIR" Attributes="0" KeyPath="AeroWizard.dll"/>
+    <ROW Component="AliasBadgeRedux.ico" ComponentId="{F0597CFD-988A-494E-B3B4-E8B908E7092E}" Directory_="Alias_Dir" Attributes="0" KeyPath="AliasBadgeRedux.ico" Type="0"/>
+    <ROW Component="AutoSwitchApplicationTools" ComponentId="{E90E49AB-8C1C-4344-A200-F013C3324A89}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchApplicationTools"/>
+    <ROW Component="AutoSwitchArchiveTools" ComponentId="{624DC389-681A-4C77-BB10-19CA0BD9E349}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchArchiveTools"/>
+    <ROW Component="AutoSwitchDriveTools" ComponentId="{45AEAD7D-8761-48CA-B71B-E11F471F1854}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchDriveTools"/>
+    <ROW Component="AutoSwitchFolderTools" ComponentId="{440BB3AD-DCBC-43F0-8B85-3B8B6E621458}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchFolderTools"/>
+    <ROW Component="AutoSwitchImageTools" ComponentId="{4555AE3F-1628-4DB9-87A3-CBFA3CD01DEB}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchImageTools"/>
+    <ROW Component="AutoSwitchLibraryTools" ComponentId="{AB7313B8-6768-4BF7-B3D2-77D117F8E978}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchLibraryTools"/>
+    <ROW Component="AutoSwitchVirtualDriveTools" ComponentId="{B56A48BE-7E3D-4079-9620-4904C7E66840}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchVirtualDriveTools"/>
+    <ROW Component="AutomaticUpdaterWPF.dll" ComponentId="{BEAD0315-C4B1-43A8-B6AD-A10C54F7F8AD}" Directory_="APPDIR" Attributes="0" KeyPath="AutomaticUpdaterWPF.dll"/>
+    <ROW Component="BEHelper.dll" ComponentId="{EE3E0318-4119-4562-95A1-6DA4ADDEDB16}" Directory_="APPDIR" Attributes="0" KeyPath="BEHelper.dll"/>
+    <ROW Component="BExplorerShell.dll" ComponentId="{677325E2-CD7F-4D74-8CFB-BF170F398A74}" Directory_="APPDIR" Attributes="0" KeyPath="BExplorerShell.dll"/>
+    <ROW Component="BetterExplorer" ComponentId="{1EE56D12-660B-45C8-ADF0-BBA7CFB79A24}" Directory_="BetterExplorer_Dir" Attributes="0"/>
+    <ROW Component="BetterExplorer.exe" ComponentId="{4CBFCB38-C021-4080-A37B-3DD301A660E2}" Directory_="APPDIR" Attributes="0" KeyPath="BetterExplorer.exe"/>
+    <ROW Component="BetterExplorerControls.dll" ComponentId="{D959F19F-26C6-4F60-A7B6-D063124B0A55}" Directory_="APPDIR" Attributes="0" KeyPath="BetterExplorerControls.dll"/>
+    <ROW Component="BetterExplorerOperations.exe" ComponentId="{E712ED1E-6806-422C-AF43-C0582CB3D838}" Directory_="APPDIR" Attributes="0" KeyPath="BetterExplorerOperations.exe"/>
+    <ROW Component="BetterExplorerShell.exe" ComponentId="{E5B5E653-15C9-4A1F-8BCC-1DBB8F442C9B}" Directory_="APPDIR" Attributes="0" KeyPath="BetterExplorerShell.exe"/>
+    <ROW Component="BouncyCastle.Crypto.dll" ComponentId="{7C6B0B42-ACFB-420D-9A5E-6824203A7EFB}" Directory_="APPDIR" Attributes="0" KeyPath="BouncyCastle.Crypto.dll"/>
+    <ROW Component="ConsoleControl.dll" ComponentId="{4D9EC5CF-DA2C-42C8-8D26-548FB20A507A}" Directory_="APPDIR" Attributes="0" KeyPath="ConsoleControl.dll"/>
+    <ROW Component="ControlzEx.dll" ComponentId="{83E1455D-1894-4B3E-BCDF-AF3E5BA34C14}" Directory_="APPDIR" Attributes="0" KeyPath="ControlzEx.dll"/>
+    <ROW Component="CurrentTheme" ComponentId="{D2A2918B-3D53-4E95-AF6D-5447002EEB3A}" Directory_="APPDIR" Attributes="260" KeyPath="CurrentTheme"/>
+    <ROW Component="Fluent.dll" ComponentId="{B87B20ED-1245-4D76-8391-546C9D85F785}" Directory_="APPDIR" Attributes="0" KeyPath="Fluent.dll"/>
+    <ROW Component="Google.Apis.Auth.PlatformServices.dll" ComponentId="{45C21CDD-1332-4CDE-A580-0935CE2EAE7D}" Directory_="APPDIR" Attributes="0" KeyPath="Google.Apis.Auth.PlatformServices.dll"/>
+    <ROW Component="Google.Apis.Auth.dll" ComponentId="{BD248394-1EC0-4547-A4AB-0D3C16F95727}" Directory_="APPDIR" Attributes="0" KeyPath="Google.Apis.Auth.dll"/>
+    <ROW Component="Google.Apis.Core.dll" ComponentId="{B52FA748-B7F6-482A-8050-43DEDFA39454}" Directory_="APPDIR" Attributes="0" KeyPath="Google.Apis.Core.dll"/>
+    <ROW Component="Google.Apis.Drive.v2.dll" ComponentId="{E6831DD4-6C72-46B8-98AA-C624B641B6F7}" Directory_="APPDIR" Attributes="0" KeyPath="Google.Apis.Drive.v2.dll"/>
+    <ROW Component="Google.Apis.PlatformServices.dll" ComponentId="{C8EF1191-30B7-4385-B88A-53CCD2C5AD96}" Directory_="APPDIR" Attributes="0" KeyPath="Google.Apis.PlatformServices.dll"/>
+    <ROW Component="Google.Apis.dll" ComponentId="{C61C119F-7BDF-490A-8E83-02DA7FAAC26A}" Directory_="APPDIR" Attributes="0" KeyPath="Google.Apis.dll"/>
+    <ROW Component="Hardcodet.Wpf.TaskbarNotification.dll" ComponentId="{55DBADDB-CE1B-44BF-A3DF-36578239EF5D}" Directory_="APPDIR" Attributes="0" KeyPath="Hardcodet.Wpf.TaskbarNotification.dll"/>
+    <ROW Component="ImDiskNet.dll" ComponentId="{40BCC06F-4CB0-405C-93EE-529D1D04C366}" Directory_="APPDIR" Attributes="0" KeyPath="ImDiskNet.dll"/>
+    <ROW Component="Interop.Shell32.dll" ComponentId="{6C7BBC25-385A-4852-8B5E-641A6D1DB53C}" Directory_="APPDIR" Attributes="0" KeyPath="Interop.Shell32.dll"/>
+    <ROW Component="IsConsoleShown" ComponentId="{5D8F620E-EF13-4B79-BAA9-0B96AFE7284A}" Directory_="APPDIR" Attributes="260" KeyPath="IsConsoleShown"/>
+    <ROW Component="IsRestoreTabs" ComponentId="{4DB6235F-5DB3-4ED0-9C2B-3A8ADEC124FA}" Directory_="APPDIR" Attributes="260" KeyPath="IsRestoreTabs"/>
+    <ROW Component="IsRibonMinimized" ComponentId="{0BAADA77-CE39-4E49-838B-D1C4762E1D76}" Directory_="APPDIR" Attributes="260" KeyPath="IsRibonMinimized"/>
+    <ROW Component="LastWindowHeight" ComponentId="{F60AEF0D-4AAA-4508-BEFD-37F263D0B536}" Directory_="APPDIR" Attributes="260" KeyPath="LastWindowHeight"/>
+    <ROW Component="LastWindowPosLeft" ComponentId="{6ED5884B-1BCF-4526-A304-27DC3D06CA16}" Directory_="APPDIR" Attributes="260" KeyPath="LastWindowPosLeft"/>
+    <ROW Component="LastWindowPosTop" ComponentId="{714B589C-866F-4F27-BA41-3141068313E5}" Directory_="APPDIR" Attributes="260" KeyPath="LastWindowPosTop"/>
+    <ROW Component="LastWindowState" ComponentId="{DF282B67-FF39-4CF2-A2B5-09A019B2105C}" Directory_="APPDIR" Attributes="260" KeyPath="LastWindowState"/>
+    <ROW Component="LastWindowWidth" ComponentId="{4053F4A5-072E-4E27-8F5A-8E2CF6A4AA57}" Directory_="APPDIR" Attributes="260" KeyPath="LastWindowWidth"/>
+    <ROW Component="LaunchExplorerFlags" ComponentId="{F269727B-0194-4119-A477-4C44BFED8959}" Directory_="APPDIR" Attributes="4" KeyPath="LaunchExplorerFlags"/>
+    <ROW Component="MUIVerb" ComponentId="{A103AFDD-BB49-47E4-A75F-19D1169CFA96}" Directory_="APPDIR" Attributes="4" KeyPath="MUIVerb"/>
+    <ROW Component="Microsoft.Threading.Tasks.Extensions.Des" ComponentId="{FE88B5FD-7F0C-4C64-A317-25B4635EE3A9}" Directory_="APPDIR" Attributes="0" KeyPath="Microsoft.Threading.Tasks.Extensions.Desktop.dll"/>
+    <ROW Component="Microsoft.Threading.Tasks.Extensions.dll" ComponentId="{D38872D4-A592-485F-87F3-DFB45F1670B8}" Directory_="APPDIR" Attributes="0" KeyPath="Microsoft.Threading.Tasks.Extensions.dll"/>
+    <ROW Component="Microsoft.Threading.Tasks.dll" ComponentId="{77664054-BBEF-4723-9BBF-DB8A5D9F43E8}" Directory_="APPDIR" Attributes="0" KeyPath="Microsoft.Threading.Tasks.dll"/>
+    <ROW Component="MultiSelectModel" ComponentId="{4822E532-38E8-44F8-8FB7-798CD6ECF795}" Directory_="APPDIR" Attributes="4" KeyPath="MultiSelectModel"/>
+    <ROW Component="NAppUpdate.Framework.dll" ComponentId="{26E593F5-5D58-4C53-8BD9-978855AE7099}" Directory_="APPDIR" Attributes="0" KeyPath="NAppUpdate.Framework.dll"/>
+    <ROW Component="NLog.dll" ComponentId="{B68B7C72-E38A-4A1E-8219-5BE358D2E2CB}" Directory_="APPDIR" Attributes="0" KeyPath="NLog.dll"/>
+    <ROW Component="Newtonsoft.Json.dll" ComponentId="{4F1BB2E4-85FE-494E-AFBC-960E9F9155E1}" Directory_="APPDIR" Attributes="0" KeyPath="Newtonsoft.Json.dll"/>
+    <ROW Component="Odyssey.dll" ComponentId="{BAA2B542-43F6-4A65-B844-E6BC62B0EE87}" Directory_="APPDIR" Attributes="0" KeyPath="Odyssey.dll"/>
+    <ROW Component="OpenedTabs" ComponentId="{AF65F772-4F80-4B41-8A29-2093F2946092}" Directory_="APPDIR" Attributes="260" KeyPath="OpenedTabs"/>
+    <ROW Component="ProductInformation" ComponentId="{07669A9E-8CFC-46D3-B9D0-7BA938C986C8}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
+    <ROW Component="QuickLaunch" ComponentId="{3AED8571-2349-4DD6-BF5F-20B6C4B04BAD}" Directory_="QuickLaunch_Dir" Attributes="0"/>
+    <ROW Component="RTLMode" ComponentId="{86A4B6FB-3C16-4138-97D1-7760D7BF6F53}" Directory_="APPDIR" Attributes="260" KeyPath="RTLMode"/>
+    <ROW Component="RateBar.dll" ComponentId="{3192AC69-D4E7-446A-A542-708F72ABAB46}" Directory_="APPDIR" Attributes="0" KeyPath="RateBar.dll"/>
+    <ROW Component="SQLite.Interop.dll" ComponentId="{80A4C256-C160-4D24-91A5-64B4E544FA93}" Directory_="x64_Dir" Attributes="256" KeyPath="SQLite.Interop.dll"/>
+    <ROW Component="SQLite.Interop.dll_1" ComponentId="{BEDB0598-9A2F-430A-BFEF-8D025AC04C45}" Directory_="x86_Dir" Attributes="0" KeyPath="SQLite.Interop.dll_1"/>
+    <ROW Component="Settings.sqlite" ComponentId="{FB6D21F7-1709-4DB9-B78A-F0522DC2CF74}" Directory_="BExplorer_Dir" Attributes="0" KeyPath="Settings.sqlite_1" Type="0"/>
+    <ROW Component="SevenZipSharp.dll" ComponentId="{02660379-3312-4ACA-A3FF-C7F7427489F3}" Directory_="APPDIR" Attributes="0" KeyPath="SevenZipSharp.dll"/>
+    <ROW Component="ShowCheckboxes" ComponentId="{BE91DA31-1F60-4BED-9DB7-7867140E1FF0}" Directory_="APPDIR" Attributes="4" KeyPath="ShowCheckboxes"/>
+    <ROW Component="StarRatingControl.dll" ComponentId="{58568D9D-3CAF-41EB-A77A-63D9EE408AE1}" Directory_="APPDIR" Attributes="0" KeyPath="StarRatingControl.dll"/>
+    <ROW Component="System.Data.SQLite.dll" ComponentId="{D4FDD37E-4B65-453F-983B-A10290518EA4}" Directory_="APPDIR" Attributes="0" KeyPath="System.Data.SQLite.dll"/>
+    <ROW Component="System.Net.Http.Extensions.dll" ComponentId="{79D88436-1C2A-424C-A45C-775E31293954}" Directory_="APPDIR" Attributes="0" KeyPath="System.Net.Http.Extensions.dll"/>
+    <ROW Component="System.Net.Http.Primitives.dll" ComponentId="{64B3D798-67ED-4030-9730-22DE6E88C925}" Directory_="APPDIR" Attributes="0" KeyPath="System.Net.Http.Primitives.dll"/>
+    <ROW Component="System.Windows.Interactivity.dll" ComponentId="{63289C5F-0AD3-4B87-929A-76C761D86587}" Directory_="APPDIR" Attributes="0" KeyPath="System.Windows.Interactivity.dll"/>
+    <ROW Component="TAFactory.IconPack.dll" ComponentId="{F1FB9DE8-A687-4AF1-8B92-BA12D59AC9BD}" Directory_="APPDIR" Attributes="0" KeyPath="TAFactory.IconPack.dll"/>
+    <ROW Component="TabBarAlignment" ComponentId="{34A87B12-6A96-404D-81F5-66C728C7BFD8}" Directory_="APPDIR" Attributes="260" KeyPath="TabBarAlignment"/>
+    <ROW Component="TaskDialog.dll" ComponentId="{E271A6EA-EA4D-477E-8751-9B2BA18AB8BD}" Directory_="APPDIR" Attributes="0" KeyPath="TaskDialog.dll"/>
+    <ROW Component="UsbEject.dll" ComponentId="{F1108B8D-092C-45DB-8D49-8E7D7C7C6E55}" Directory_="APPDIR" Attributes="0" KeyPath="UsbEject.dll"/>
+    <ROW Component="WPFLocalizeExtension.dll" ComponentId="{7D44ED4F-05D9-4F77-8FAA-B84466388315}" Directory_="APPDIR" Attributes="0" KeyPath="WPFLocalizeExtension.dll"/>
+    <ROW Component="Wpf.TabControl.dll" ComponentId="{B4341AF3-6BFC-4DF6-B52B-69447929E346}" Directory_="APPDIR" Attributes="0" KeyPath="Wpf.TabControl.dll"/>
+    <ROW Component="WpfDocumentPreviewer.dll" ComponentId="{E7E378A2-8DD8-4420-9050-33732950C0AA}" Directory_="APPDIR" Attributes="0" KeyPath="WpfDocumentPreviewer.dll"/>
+    <ROW Component="Xceed.Wpf.Toolkit.dll" ComponentId="{608B268E-0F16-46BD-BA0C-F4190B9426AC}" Directory_="APPDIR" Attributes="0" KeyPath="Xceed.Wpf.Toolkit.dll"/>
+    <ROW Component="Zlib.Portable.dll" ComponentId="{72DD752D-1101-4CB2-9C75-7CEA9357D63A}" Directory_="APPDIR" Attributes="0" KeyPath="Zlib.Portable.dll"/>
+    <ROW Component="_" ComponentId="{C56ED991-3BEA-4752-843A-59BCE2D61325}" Directory_="APPDIR" Attributes="20" KeyPath="_"/>
+    <ROW Component="__1" ComponentId="{054F790B-EE57-4829-9D4A-6207E8809A48}" Directory_="APPDIR" Attributes="4" KeyPath="__1"/>
+    <ROW Component="__38" ComponentId="{41BE555E-28D7-4B86-8828-6F699D0AA532}" Directory_="APPDIR" Attributes="20" KeyPath="__38"/>
+    <ROW Component="__39" ComponentId="{252AE021-49A9-4DD8-9E45-91EB16718C15}" Directory_="APPDIR" Attributes="20" KeyPath="__39"/>
+    <ROW Component="client.wyc" ComponentId="{707E86BD-9FE0-4118-B04E-1E44AE591677}" Directory_="APPDIR" Attributes="0" KeyPath="client.wyc" Type="0"/>
+    <ROW Component="ico_2" ComponentId="{C62AB882-248F-4327-B780-AC6922FDC8D4}" Directory_="UbuntuHuman_Dir" Attributes="0" KeyPath="ico_20" Type="0"/>
+    <ROW Component="regid.201207.betterexplorer.com" ComponentId="{CDF00F28-9E44-4C9D-BAB1-EF0FDF244781}" Directory_="regid.201207.betterexplorer.com_Dir" Attributes="0"/>
+    <ROW Component="wyUpdate.exe" ComponentId="{8072825C-4CD0-4F88-8297-E1AC02EE3725}" Directory_="APPDIR" Attributes="0" KeyPath="wyUpdate.exe"/>
+    <ROW Component="x64" ComponentId="{F2F0E970-8215-4D80-BA68-F9854E48FC17}" Directory_="x64_Dir" Attributes="0"/>
+    <ROW Component="x86" ComponentId="{FECD33E6-ED88-490F-A129-CC4B101582A6}" Directory_="x86_Dir" Attributes="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+    <ROW Feature="Feature" Title="Make Better Explorer Default Viewer" Description="Description" Display="0" Level="0" Directory_="APPDIR" Attributes="0" Components="AIShRegAnswer AI_CustomARPName AI_ExePath LaunchExplorerFlags MUIVerb MultiSelectModel _ __1 __38 __39 regid.201207.betterexplorer.com"/>
+    <ROW Feature="MainFeature" Title="Core Files" Description="Description" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_CustomARPName AI_ExePath AeroWizard.dll AliasBadgeRedux.ico AutoSwitchApplicationTools AutoSwitchArchiveTools AutoSwitchDriveTools AutoSwitchFolderTools AutoSwitchImageTools AutoSwitchLibraryTools AutoSwitchVirtualDriveTools AutomaticUpdaterWPF.dll BEHelper.dll BExplorerShell.dll BetterExplorer BetterExplorer.exe BetterExplorerControls.dll BetterExplorerOperations.exe BetterExplorerShell.exe BouncyCastle.Crypto.dll ConsoleControl.dll ControlzEx.dll CurrentTheme Fluent.dll Google.Apis.Auth.PlatformServices.dll Google.Apis.Auth.dll Google.Apis.Core.dll Google.Apis.Drive.v2.dll Google.Apis.PlatformServices.dll Google.Apis.dll Hardcodet.Wpf.TaskbarNotification.dll ImDiskNet.dll Interop.Shell32.dll IsConsoleShown IsRestoreTabs IsRibonMinimized LastWindowHeight LastWindowPosLeft LastWindowPosTop LastWindowState LastWindowWidth Microsoft.Threading.Tasks.Extensions.Des Microsoft.Threading.Tasks.Extensions.dll Microsoft.Threading.Tasks.dll NAppUpdate.Framework.dll NLog.dll Newtonsoft.Json.dll Odyssey.dll OpenedTabs ProductInformation QuickLaunch RTLMode RateBar.dll SQLite.Interop.dll SQLite.Interop.dll_1 Settings.sqlite SevenZipSharp.dll ShowCheckboxes StarRatingControl.dll System.Data.SQLite.dll System.Net.Http.Extensions.dll System.Net.Http.Primitives.dll System.Windows.Interactivity.dll TAFactory.IconPack.dll TabBarAlignment TaskDialog.dll UsbEject.dll WPFLocalizeExtension.dll Wpf.TabControl.dll WpfDocumentPreviewer.dll Xceed.Wpf.Toolkit.dll Zlib.Portable.dll client.wyc ico_2 wyUpdate.exe x64 x86"/>
+    <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="AeroWizard.dll" Component_="AeroWizard.dll" FileName="AEROWI~1.DLL|AeroWizard.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\AeroWizard.dll" SelfReg="false" NextFile="AutomaticUpdaterWPF.dll"/>
+    <ROW File="AliasBadgeRedux.ico" Component_="AliasBadgeRedux.ico" FileName="ALIASB~1.ICO|Alias Badge Redux.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Alias\Alias Badge Redux.ico" SelfReg="false" NextFile="DropBadgeRedux.ico"/>
+    <ROW File="AutomaticUpdaterWPF.dll" Component_="AutomaticUpdaterWPF.dll" FileName="AUTOMA~1.DLL|AutomaticUpdaterWPF.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\AutomaticUpdaterWPF.dll" SelfReg="false" NextFile="BEHelper.dll"/>
+    <ROW File="BEHelper.dll" Component_="BEHelper.dll" FileName="BEHelper.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\BEHelper.dll" SelfReg="false" NextFile="BetterExplorer.exe"/>
+    <ROW File="BExplorerShell.dll" Component_="BExplorerShell.dll" FileName="BEXPLO~1.DLL|BExplorerShell.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\BExplorerShell.dll" SelfReg="false" NextFile="BExplorerShell.pdb"/>
+    <ROW File="BExplorerShell.pdb" Component_="BExplorerShell.dll" FileName="BEXPLO~1.PDB|BExplorerShell.pdb" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\BExplorerShell.pdb" SelfReg="false" NextFile="client.wyc"/>
+    <ROW File="BetterExplorer.exe" Component_="BetterExplorer.exe" FileName="BETTER~1.EXE|BetterExplorer.exe" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\BetterExplorer.exe" SelfReg="false" NextFile="BetterExplorerControls.dll" DigSign="true"/>
+    <ROW File="BetterExplorer.exe.config" Component_="client.wyc" FileName="BETTER~1.CON|BetterExplorer.exe.config" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\BetterExplorer.exe.config" SelfReg="false" NextFile="ImDiskNet.xml"/>
+    <ROW File="BetterExplorerControls.dll" Component_="BetterExplorerControls.dll" FileName="BETTER~1.DLL|BetterExplorerControls.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\BetterExplorerControls.dll" SelfReg="false" NextFile="BetterExplorerOperations.exe"/>
+    <ROW File="BetterExplorerOperations.exe" Component_="BetterExplorerOperations.exe" FileName="BETTER~2.EXE|BetterExplorerOperations.exe" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\BetterExplorerOperations.exe" SelfReg="false" NextFile="BetterExplorerShell.exe" DigSign="true"/>
+    <ROW File="BetterExplorerShell.exe" Component_="BetterExplorerShell.exe" FileName="BETTER~3.EXE|BetterExplorerShell.exe" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\BetterExplorerShell.exe" SelfReg="false" NextFile="BExplorerShell.dll" DigSign="true"/>
+    <ROW File="BouncyCastle.Crypto.dll" Component_="BouncyCastle.Crypto.dll" FileName="BOUNCY~1.DLL|BouncyCastle.Crypto.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\BouncyCastle.Crypto.dll" SelfReg="false" NextFile="Google.Apis.Auth.dll"/>
+    <ROW File="ConsoleControl.dll" Component_="ConsoleControl.dll" FileName="CONSOL~1.DLL|ConsoleControl.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\ConsoleControl.dll" SelfReg="false" NextFile="ControlzEx.dll"/>
+    <ROW File="ControlzEx.dll" Component_="ControlzEx.dll" FileName="CONTRO~1.DLL|ControlzEx.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\ControlzEx.dll" SelfReg="false" NextFile="Fluent.dll"/>
+    <ROW File="DropBadgeRedux.ico" Component_="AliasBadgeRedux.ico" FileName="DROPBA~1.ICO|Drop Badge Redux.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Alias\Drop Badge Redux.ico" SelfReg="false" NextFile="LockedBadgeRedux.ico"/>
+    <ROW File="Fluent.dll" Component_="Fluent.dll" FileName="Fluent.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Fluent.dll" SelfReg="false" NextFile="Hardcodet.Wpf.TaskbarNotification.dll"/>
+    <ROW File="Google.Apis.Auth.PlatformServices.dll" Component_="Google.Apis.Auth.PlatformServices.dll" FileName="GOOGLE~2.DLL|Google.Apis.Auth.PlatformServices.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Google.Apis.Auth.PlatformServices.dll" SelfReg="false" NextFile="Google.Apis.Core.dll"/>
+    <ROW File="Google.Apis.Auth.dll" Component_="Google.Apis.Auth.dll" FileName="GOOGLE~1.DLL|Google.Apis.Auth.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Google.Apis.Auth.dll" SelfReg="false" NextFile="Google.Apis.Auth.PlatformServices.dll"/>
+    <ROW File="Google.Apis.Core.dll" Component_="Google.Apis.Core.dll" FileName="GOOGLE~3.DLL|Google.Apis.Core.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Google.Apis.Core.dll" SelfReg="false" NextFile="Google.Apis.dll"/>
+    <ROW File="Google.Apis.Drive.v2.dll" Component_="Google.Apis.Drive.v2.dll" FileName="GOOGLE~5.DLL|Google.Apis.Drive.v2.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Google.Apis.Drive.v2.dll" SelfReg="false" NextFile="Google.Apis.PlatformServices.dll"/>
+    <ROW File="Google.Apis.PlatformServices.dll" Component_="Google.Apis.PlatformServices.dll" FileName="GOOGLE~6.DLL|Google.Apis.PlatformServices.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Google.Apis.PlatformServices.dll" SelfReg="false" NextFile="Microsoft.Threading.Tasks.dll"/>
+    <ROW File="Google.Apis.dll" Component_="Google.Apis.dll" FileName="GOOGLE~4.DLL|Google.Apis.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Google.Apis.dll" SelfReg="false" NextFile="Google.Apis.Drive.v2.dll"/>
+    <ROW File="Hardcodet.Wpf.TaskbarNotification.dll" Component_="Hardcodet.Wpf.TaskbarNotification.dll" FileName="HARDCO~1.DLL|Hardcodet.Wpf.TaskbarNotification.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Hardcodet.Wpf.TaskbarNotification.dll" SelfReg="false" NextFile="ImDiskNet.dll"/>
+    <ROW File="ImDiskNet.dll" Component_="ImDiskNet.dll" FileName="IMDISK~1.DLL|ImDiskNet.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\ImDiskNet.dll" SelfReg="false" NextFile="Interop.Shell32.dll"/>
+    <ROW File="ImDiskNet.xml" Component_="client.wyc" FileName="IMDISK~1.XML|ImDiskNet.xml" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\ImDiskNet.xml" SelfReg="false" NextFile="NLog.config"/>
+    <ROW File="Interop.Shell32.dll" Component_="Interop.Shell32.dll" FileName="INTERO~1.DLL|Interop.Shell32.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Interop.Shell32.dll" SelfReg="false" NextFile="NAppUpdate.Framework.dll"/>
+    <ROW File="LockedBadgeRedux.ico" Component_="AliasBadgeRedux.ico" FileName="LOCKED~1.ICO|Locked Badge Redux.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Alias\Locked Badge Redux.ico" SelfReg="false" NextFile="PrivateBadgeRedux.ico"/>
+    <ROW File="Microsoft.Threading.Tasks.Extensions.Desktop.dll" Component_="Microsoft.Threading.Tasks.Extensions.Des" FileName="MICROS~2.DLL|Microsoft.Threading.Tasks.Extensions.Desktop.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Microsoft.Threading.Tasks.Extensions.Desktop.dll" SelfReg="false" NextFile="Microsoft.Threading.Tasks.Extensions.dll"/>
+    <ROW File="Microsoft.Threading.Tasks.Extensions.dll" Component_="Microsoft.Threading.Tasks.Extensions.dll" FileName="MICROS~3.DLL|Microsoft.Threading.Tasks.Extensions.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Microsoft.Threading.Tasks.Extensions.dll" SelfReg="false" NextFile="Newtonsoft.Json.dll"/>
+    <ROW File="Microsoft.Threading.Tasks.dll" Component_="Microsoft.Threading.Tasks.dll" FileName="MICROS~1.DLL|Microsoft.Threading.Tasks.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Microsoft.Threading.Tasks.dll" SelfReg="false" NextFile="Microsoft.Threading.Tasks.Extensions.Desktop.dll"/>
+    <ROW File="NAppUpdate.Framework.dll" Component_="NAppUpdate.Framework.dll" FileName="NAPPUP~1.DLL|NAppUpdate.Framework.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\NAppUpdate.Framework.dll" SelfReg="false" NextFile="NLog.dll"/>
+    <ROW File="NLog.config" Component_="client.wyc" FileName="NLOG~1.CON|NLog.config" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\NLog.config" SelfReg="false" NextFile="Odyssey.xml"/>
+    <ROW File="NLog.dll" Component_="NLog.dll" FileName="NLog.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\NLog.dll" SelfReg="false" NextFile="Odyssey.dll"/>
+    <ROW File="Newtonsoft.Json.dll" Component_="Newtonsoft.Json.dll" FileName="NEWTON~1.DLL|Newtonsoft.Json.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Newtonsoft.Json.dll" SelfReg="false" NextFile="System.Net.Http.Extensions.dll"/>
+    <ROW File="Odyssey.dll" Component_="Odyssey.dll" FileName="Odyssey.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Odyssey.dll" SelfReg="false" NextFile="RateBar.dll"/>
+    <ROW File="Odyssey.xml" Component_="client.wyc" FileName="Odyssey.xml" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Odyssey.xml" SelfReg="false" NextFile="Settings.xml"/>
+    <ROW File="PrivateBadgeRedux.ico" Component_="AliasBadgeRedux.ico" FileName="PRIVAT~1.ICO|Private Badge Redux.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Alias\Private Badge Redux.ico" SelfReg="false" NextFile="ReadOnlyBadgeRedux.ico"/>
+    <ROW File="RateBar.dll" Component_="RateBar.dll" FileName="RateBar.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\RateBar.dll" SelfReg="false" NextFile="SevenZipSharp.dll"/>
+    <ROW File="ReadOnlyBadgeRedux.ico" Component_="AliasBadgeRedux.ico" FileName="READON~1.ICO|Read Only Badge Redux.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Alias\Read Only Badge Redux.ico" SelfReg="false" NextFile="ico_20"/>
+    <ROW File="SQLite.Interop.dll" Component_="SQLite.Interop.dll" FileName="SQLITE~1.DLL|SQLite.Interop.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\x64\SQLite.Interop.dll" SelfReg="false" NextFile="SQLite.Interop.dll_1"/>
+    <ROW File="SQLite.Interop.dll_1" Component_="SQLite.Interop.dll_1" FileName="SQLITE~1.DLL|SQLite.Interop.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\x86\SQLite.Interop.dll" SelfReg="false" NextFile="AeroWizard.dll"/>
+    <ROW File="Settings.sqlite_1" Component_="Settings.sqlite" FileName="SETTIN~1.SQL|Settings.sqlite" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\Settings.sqlite" SelfReg="false"/>
+    <ROW File="Settings.xml" Component_="client.wyc" FileName="Settings.xml" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Settings.xml" SelfReg="false" NextFile="SevenZipSharp.xml"/>
+    <ROW File="SevenZipSharp.dll" Component_="SevenZipSharp.dll" FileName="SEVENZ~1.DLL|SevenZipSharp.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\SevenZipSharp.dll" SelfReg="false" NextFile="StarRatingControl.dll"/>
+    <ROW File="SevenZipSharp.xml" Component_="client.wyc" FileName="SEVENZ~1.XML|SevenZipSharp.xml" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\SevenZipSharp.xml" SelfReg="false" NextFile="System.Data.SQLite.xml"/>
+    <ROW File="StarRatingControl.dll" Component_="StarRatingControl.dll" FileName="STARRA~1.DLL|StarRatingControl.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\StarRatingControl.dll" SelfReg="false" NextFile="System.Data.SQLite.dll"/>
+    <ROW File="System.Data.SQLite.dll" Component_="System.Data.SQLite.dll" FileName="SYSTEM~1.DLL|System.Data.SQLite.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\System.Data.SQLite.dll" SelfReg="false" NextFile="System.Windows.Interactivity.dll"/>
+    <ROW File="System.Data.SQLite.xml" Component_="client.wyc" FileName="SYSTEM~1.XML|System.Data.SQLite.xml" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\System.Data.SQLite.xml" SelfReg="false" NextFile="AliasBadgeRedux.ico"/>
+    <ROW File="System.Net.Http.Extensions.dll" Component_="System.Net.Http.Extensions.dll" FileName="SYSTEM~3.DLL|System.Net.Http.Extensions.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\System.Net.Http.Extensions.dll" SelfReg="false" NextFile="System.Net.Http.Primitives.dll"/>
+    <ROW File="System.Net.Http.Primitives.dll" Component_="System.Net.Http.Primitives.dll" FileName="SYSTEM~4.DLL|System.Net.Http.Primitives.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\System.Net.Http.Primitives.dll" SelfReg="false" NextFile="TaskDialog.dll"/>
+    <ROW File="System.Windows.Interactivity.dll" Component_="System.Windows.Interactivity.dll" FileName="SYSTEM~2.DLL|System.Windows.Interactivity.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\System.Windows.Interactivity.dll" SelfReg="false" NextFile="TAFactory.IconPack.dll"/>
+    <ROW File="TAFactory.IconPack.dll" Component_="TAFactory.IconPack.dll" FileName="TAFACT~1.DLL|TAFactory.IconPack.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\TAFactory.IconPack.dll" SelfReg="false" NextFile="UsbEject.dll"/>
+    <ROW File="TaskDialog.dll" Component_="TaskDialog.dll" FileName="TASKDI~1.DLL|TaskDialog.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\TaskDialog.dll" SelfReg="false" NextFile="Zlib.Portable.dll"/>
+    <ROW File="UsbEject.dll" Component_="UsbEject.dll" FileName="UsbEject.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\UsbEject.dll" SelfReg="false" NextFile="Wpf.TabControl.dll"/>
+    <ROW File="WPFLocalizeExtension.dll" Component_="WPFLocalizeExtension.dll" FileName="WPFLOC~1.DLL|WPFLocalizeExtension.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\WPFLocalizeExtension.dll" SelfReg="false" NextFile="wyUpdate.exe"/>
+    <ROW File="Wpf.TabControl.dll" Component_="Wpf.TabControl.dll" FileName="WPFTAB~1.DLL|Wpf.TabControl.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Wpf.TabControl.dll" SelfReg="false" NextFile="WpfDocumentPreviewer.dll"/>
+    <ROW File="WpfDocumentPreviewer.dll" Component_="WpfDocumentPreviewer.dll" FileName="WPFDOC~1.DLL|WpfDocumentPreviewer.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\WpfDocumentPreviewer.dll" SelfReg="false" NextFile="WPFLocalizeExtension.dll"/>
+    <ROW File="Xceed.Wpf.Toolkit.dll" Component_="Xceed.Wpf.Toolkit.dll" FileName="XCEEDW~1.DLL|Xceed.Wpf.Toolkit.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Xceed.Wpf.Toolkit.dll" SelfReg="false" NextFile="BetterExplorer.exe.config"/>
+    <ROW File="Zlib.Portable.dll" Component_="Zlib.Portable.dll" FileName="ZLIBPO~1.DLL|Zlib.Portable.dll" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Zlib.Portable.dll" SelfReg="false" NextFile="video_addorner.png"/>
+    <ROW File="client.wyc" Component_="client.wyc" FileName="client.wyc" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\client.wyc" SelfReg="false" NextFile="ConsoleControl.dll"/>
+    <ROW File="ico_20" Component_="ico_2" FileName="1.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Ubuntu Human\1.ico" SelfReg="false" NextFile="ico_21"/>
+    <ROW File="ico_21" Component_="ico_2" FileName="10.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Ubuntu Human\10.ico" SelfReg="false" NextFile="ico_22"/>
+    <ROW File="ico_22" Component_="ico_2" FileName="2.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Ubuntu Human\2.ico" SelfReg="false" NextFile="ico_23"/>
+    <ROW File="ico_23" Component_="ico_2" FileName="3.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Ubuntu Human\3.ico" SelfReg="false" NextFile="ico_24"/>
+    <ROW File="ico_24" Component_="ico_2" FileName="4.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Ubuntu Human\4.ico" SelfReg="false" NextFile="ico_25"/>
+    <ROW File="ico_25" Component_="ico_2" FileName="5.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Ubuntu Human\5.ico" SelfReg="false" NextFile="ico_26"/>
+    <ROW File="ico_26" Component_="ico_2" FileName="6.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Ubuntu Human\6.ico" SelfReg="false" NextFile="ico_27"/>
+    <ROW File="ico_27" Component_="ico_2" FileName="7.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Ubuntu Human\7.ico" SelfReg="false" NextFile="ico_28"/>
+    <ROW File="ico_28" Component_="ico_2" FileName="8.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Ubuntu Human\8.ico" SelfReg="false" NextFile="ico_29"/>
+    <ROW File="ico_29" Component_="ico_2" FileName="9.ico" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\Badges\Ubuntu Human\9.ico" SelfReg="false" NextFile="BouncyCastle.Crypto.dll"/>
+    <ROW File="video_addorner.png" Component_="client.wyc" FileName="VIDEO_~1.PNG|video_addorner.png" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\video_addorner.png" SelfReg="false" NextFile="video_addorner_wide.png"/>
+    <ROW File="video_addorner_wide.png" Component_="client.wyc" FileName="VIDEO_~2.PNG|video_addorner_wide.png" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\video_addorner_wide.png" SelfReg="false" NextFile="Settings.sqlite_1"/>
+    <ROW File="wyUpdate.exe" Component_="wyUpdate.exe" FileName="wyUpdate.exe" Attributes="0" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\wyUpdate.exe" SelfReg="false" NextFile="Xceed.Wpf.Toolkit.dll" DigSign="true"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
+    <ROW BootstrOptKey="GlobalOptions" GeneralOptions="h" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" EulaPath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\License.rtf" EulaPathLocId="*"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="ExeBuild" BuildName="ExeBuild" BuildOrder="2" BuildType="1" PackageFolder="ExeBuildSetupFiles" PackageFileName="BetterExplorer" Languages="en;bg;de;ja;ru" LangOpt="1" InstallationType="2" CabsLocation="1" CompressCabs="false" UseLzma="true" LzmaMethod="2" LzmaCompressionLevel="2" PackageType="1" FilesInsideExe="true" ExeIconPath="..\..\Personal Files\Icons\software-box-with-disc-red.ico" CreateMd5="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName] [|ProductVersion]\install" ExtUI="true" Options="9" UseLargeSchema="true" Unicode="true" MsiPackageType="AI_ALL" UACExecutionLevel="2"/>
+    <ROW BuildKey="OfflineUpdateBuild_1" BuildName="WebUpdate" BuildOrder="1" BuildType="1" PackageFolder="OutputWeb" PackageFileName="be" Languages="en;bg;de;ja;ru" LangOpt="1" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExeIconPath="ExeBuildSetupFiles\BetterExplorer.exe" MainAppUrl="http://update.explorer.gainedge.org/setup/RC1/be.msi" ExtUI="true" UseLargeSchema="true" Unicode="true" ExeName="BetterExplorerWebSetup" MsiPackageType="AI_ALL"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_bg.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_de.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_ja.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_ru.ail"/>
+    <ROW Path="dictionary.ail" Options="1"/>
+    <ATTRIBUTE name="TranslateSegments" value="8116002816"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+    <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
+    <ROW Fragment="FolderDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\FolderDlg.aip"/>
+    <ROW Fragment="LicenseAgreementDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\LicenseAgreementDlg.aip"/>
+    <ROW Fragment="MaintenanceTypeDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\MaintenanceTypeDlg.aip"/>
+    <ROW Fragment="MaintenanceWelcomeDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\MaintenanceWelcomeDlg.aip"/>
+    <ROW Fragment="SequenceDialogs.aip" Path="&lt;AI_THEMES&gt;azure\fragments\SequenceDialogs.aip"/>
+    <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
+    <ROW Fragment="ShortcutsDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\ShortcutsDlg.aip"/>
+    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;azure\fragments\UI.aip"/>
+    <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
+    <ROW Fragment="VerifyRemoveDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\VerifyRemoveDlg.aip"/>
+    <ROW Fragment="VerifyRepairDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\VerifyRepairDlg.aip"/>
+    <ROW Fragment="WelcomeDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\WelcomeDlg.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
+    <ROW Action="AI_DeleteLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_DeleteRLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_ExtractFiles" Description="Extracting files from archive" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
+    <ROW Action="AI_ExtractLzma" Description="Extracting files from archive" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
+    <ROW Action="AI_XmlCommit" Description="Committing XML file configurations." Template="Committing XML file configurations." DescriptionLocId="ActionText.Description.AI_XmlCommit" TemplateLocId="ActionText.Template.AI_XmlCommit"/>
+    <ROW Action="AI_XmlConfig" Description="Executing XML file configurations" Template="Configuring XML file: &quot;[1]&quot;" DescriptionLocId="ActionText.Description.AI_XmlConfig" TemplateLocId="ActionText.Template.AI_XmlConfig"/>
+    <ROW Action="AI_XmlInstall" Description="Generating actions to configure XML files" DescriptionLocId="ActionText.Description.AI_XmlInstall"/>
+    <ROW Action="AI_XmlRemove" Description="Executing XML file configurations" Template="Configuring XML file: &quot;[1]&quot;" DescriptionLocId="ActionText.Description.AI_XmlRemove" TemplateLocId="ActionText.Template.AI_XmlRemove"/>
+    <ROW Action="AI_XmlRollback" Description="Rolling back XML file configurations." Template="Rolling back XML file configurations." DescriptionLocId="ActionText.Description.AI_XmlRollback" TemplateLocId="ActionText.Template.AI_XmlRollback"/>
+    <ROW Action="AI_XmlUninstall" Description="Generating actions to configure XML files" DescriptionLocId="ActionText.Description.AI_XmlUninstall"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiAppSearchComponent">
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_CU" Builds="ExeBuild"/>
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_LM" Builds="ExeBuild"/>
+    <ROW Property="AI_SHORTCUTSREG" Signature_="AI_ShRegOptionMachine"/>
+    <ROW Property="AI_SHORTCUTSREG" Signature_="AI_ShRegOptionUser"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="Explorer256.ico_1" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\Explorer256.ico"/>
+    <ROW Name="ExternalUICleaner.dll" SourcePath="&lt;AI_CUSTACTS&gt;ExternalUICleaner.dll"/>
+    <ROW Name="Prereq.dll" SourcePath="&lt;AI_CUSTACTS&gt;Prereq.dll"/>
+    <ROW Name="SoftwareDetector.dll" SourcePath="&lt;AI_CUSTACTS&gt;SoftwareDetector.dll"/>
+    <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+    <ROW Name="frame_bottom_left.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_bottom_left.bmp"/>
+    <ROW Name="frame_bottom_left_inactive.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_bottom_left_inactive.bmp"/>
+    <ROW Name="frame_bottom_mid.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_bottom_mid.bmp"/>
+    <ROW Name="frame_bottom_mid_inactive.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_bottom_mid_inactive.bmp"/>
+    <ROW Name="frame_bottom_right.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_bottom_right.bmp"/>
+    <ROW Name="frame_bottom_right_inactive.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_bottom_right_inactive.bmp"/>
+    <ROW Name="frame_caption.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_caption.bmp"/>
+    <ROW Name="frame_caption_inactive.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_caption_inactive.bmp"/>
+    <ROW Name="frame_left.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_left.bmp"/>
+    <ROW Name="frame_left_inactive.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_left_inactive.bmp"/>
+    <ROW Name="frame_right.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_right.bmp"/>
+    <ROW Name="frame_right_inactive.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_right_inactive.bmp"/>
+    <ROW Name="frame_top_left.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_top_left.bmp"/>
+    <ROW Name="frame_top_left_inactive.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_top_left_inactive.bmp"/>
+    <ROW Name="frame_top_mid.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_top_mid.bmp"/>
+    <ROW Name="frame_top_mid_inactive.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_top_mid_inactive.bmp"/>
+    <ROW Name="frame_top_right.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_top_right.bmp"/>
+    <ROW Name="frame_top_right_inactive.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;frame_top_right_inactive.bmp"/>
+    <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
+    <ROW Name="sys_close_down.bmp" SourcePath="&lt;AI_FRAME_BTNS&gt;sys_close_down.bmp"/>
+    <ROW Name="sys_close_hot.bmp" SourcePath="&lt;AI_FRAME_BTNS&gt;sys_close_hot.bmp"/>
+    <ROW Name="sys_close_inactive.bmp" SourcePath="&lt;AI_FRAME_BTNS&gt;sys_close_inactive.bmp"/>
+    <ROW Name="sys_close_normal.bmp" SourcePath="&lt;AI_FRAME_BTNS&gt;sys_close_normal.bmp"/>
+    <ROW Name="sys_min_down.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;sys_min_down.bmp"/>
+    <ROW Name="sys_min_hot.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;sys_min_hot.bmp"/>
+    <ROW Name="sys_min_inactive.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;sys_min_inactive.bmp"/>
+    <ROW Name="sys_min_normal.bmp" SourcePath="&lt;AI_FRAME_COLOR&gt;sys_min_normal.bmp"/>
+    <ROW Name="xmlCfg.dll" SourcePath="&lt;AI_CUSTACTS&gt;xmlCfg.dll"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
+    <ROW Dialog_="LicenseAgreementDlg" Control="AgreementText" Type="ScrollableText" X="55" Y="110" Width="372" Height="180" Attributes="3" Property="EulaRead" Text="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\License.rtf" Order="800" TextLocId="-" MsiKey="LicenseAgreementDlg#AgreementText"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="LicenseAgreementDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="ShortcutsDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="ShortcutsDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="197"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="ShortcutsDlg" Condition="AI_INSTALL" Ordering="201"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="ShortcutsDlg" Condition="AI_INSTALL" Ordering="201"/>
+    <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="LicenseAgreementDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="99"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_MAINT" Ordering="101"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_MAINT" Ordering="198"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="202"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="ChangeButton" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="501"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceWelcomeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RemoveButton" Event="NewDialog" Argument="VerifyRemoveDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="601"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RepairButton" Event="NewDialog" Argument="VerifyRepairDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="601"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="1"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Repair" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="399" Options="1"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Remove" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="299" Options="1"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_PATCH" Ordering="201"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="199"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="203"/>
+    <ROW Dialog_="ResumeDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_RESUME" Ordering="299"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
+    <ROW Directory_="QuickLaunch_Dir" Component_="QuickLaunch" ManualDelete="false"/>
+    <ROW Directory_="regid.201207.betterexplorer.com_Dir" Component_="regid.201207.betterexplorer.com" ManualDelete="false"/>
+    <ROW Directory_="BetterExplorer_Dir" Component_="BetterExplorer" ManualDelete="false"/>
+    <ROW Directory_="x64_Dir" Component_="x64" ManualDelete="true"/>
+    <ROW Directory_="x86_Dir" Component_="x86" ManualDelete="true"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>
+    <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH_ORIGINAL" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="AI_ExtractFiles" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DATA_SETTER_1" Type="51" Source="AI_DEL_EMPTY_SHORTCUTDIR" Target="[SHORTCUTDIR]"/>
+    <ROW Action="AI_DATA_SETTER_4" Type="51" Source="CustomActionData" Target="[~]"/>
+    <ROW Action="AI_DATA_SETTER_5" Type="51" Source="CustomActionData" Target="[~]"/>
+    <ROW Action="AI_DELETE_SHORTCUTS" Type="1" Source="aicustact.dll" Target="DeleteShortcuts"/>
+    <ROW Action="AI_DEL_EMPTY_SHORTCUTDIR" Type="3073" Source="aicustact.dll" Target="DeleteEmptyDirectory" AdditionalSeq="AI_DATA_SETTER_1"/>
+    <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
+    <ROW Action="AI_DeleteCadLzma" Type="51" Source="AI_DeleteLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteLzma" Type="1025" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_DeleteRCadLzma" Type="51" Source="AI_DeleteRLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteRLzma" Type="1281" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_DetectSoftware" Type="257" Source="SoftwareDetector.dll" Target="OnDetectSoftware"/>
+    <ROW Action="AI_DetectVM2" Type="1" Source="aicustact.dll" Target="IsRunningOnVM"/>
+    <ROW Action="AI_DoRemoveExternalUIStub" Type="3585" Source="ExternalUICleaner.dll" Target="DoRemoveExternalUIStub" WithoutSeq="true"/>
+    <ROW Action="AI_DpiContentScale" Type="1" Source="aicustact.dll" Target="DpiContentScale"/>
+    <ROW Action="AI_EnableDebugLog" Type="321" Source="aicustact.dll" Target="EnableDebugLog"/>
+    <ROW Action="AI_EstimateExtractFiles" Type="1" Source="Prereq.dll" Target="EstimateExtractFiles"/>
+    <ROW Action="AI_ExtractCadLzma" Type="51" Source="AI_ExtractLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_ExtractFiles" Type="1025" Source="Prereq.dll" Target="ExtractSourceFiles" AdditionalSeq="AI_DATA_SETTER"/>
+    <ROW Action="AI_ExtractLzma" Type="1025" Source="lzmaextractor.dll" Target="ExtractLZMAFiles"/>
+    <ROW Action="AI_FindExeLzma" Type="1" Source="lzmaextractor.dll" Target="FindEXE"/>
+    <ROW Action="AI_GetArpIconPath" Type="1" Source="aicustact.dll" Target="GetArpIconPath"/>
+    <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
+    <ROW Action="AI_LaunchApp" Type="1" Source="aicustact.dll" Target="[APPDIR]BetterExplorer.exe"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_REDIRECT_32BIT_FOLDER" Type="51" Source="AI_Bin32_Dir" Target="[APPDIR]"/>
+    <ROW Action="AI_REDIRECT_32BIT_SH_FOLDER" Type="51" Source="AI_Sh32_Dir" Target="[SHORTCUTDIR]"/>
+    <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH" Target="[AI_SETUPEXEPATH_ORIGINAL]"/>
+    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_RemoveExternalUIStub" Type="1" Source="ExternalUICleaner.dll" Target="RemoveExternalUIStub"/>
+    <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
+    <ROW Action="AI_RunFinishActions" Type="1" Source="aicustact.dll" Target="RunFinishActions" WithoutSeq="true"/>
+    <ROW Action="AI_SETPROGRAMFILES" Type="51" Source="AI_ProgramFiles" Target="[ProgramFilesFolder]"/>
+    <ROW Action="AI_SETPROGRAMFILES64" Type="51" Source="AI_ProgramFiles" Target="[ProgramFiles64Folder]"/>
+    <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
+    <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="AI_XmlCommit" Type="11777" Source="xmlCfg.dll" Target="OnXmlCommit" WithoutSeq="true"/>
+    <ROW Action="AI_XmlConfig" Type="11265" Source="xmlCfg.dll" Target="OnXmlConfig" WithoutSeq="true"/>
+    <ROW Action="AI_XmlInstall" Type="1" Source="xmlCfg.dll" Target="OnXmlInstall" AdditionalSeq="AI_DATA_SETTER_4"/>
+    <ROW Action="AI_XmlRemove" Type="11265" Source="xmlCfg.dll" Target="OnXmlRemove" WithoutSeq="true"/>
+    <ROW Action="AI_XmlRollback" Type="11521" Source="xmlCfg.dll" Target="OnXmlRollback" WithoutSeq="true"/>
+    <ROW Action="AI_XmlUninstall" Type="1" Source="xmlCfg.dll" Target="OnXmlUninstall" AdditionalSeq="AI_DATA_SETTER_5"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="OfflineUpdateBuild_1:[AI_ProgramFiles][ProductName]#ExeBuild:[AI_ProgramFiles][Manufacturer]\[ProductName]"/>
+    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
+    <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
+    <ROW Name="BetterExplorer.exe" SourcePath="..\BetterExplorerPluginsRework\BExplorer\BetterExplorer\bin\Debug\BetterExplorer.exe" Index="0"/>
+    <ROW Name="SystemFoldermsiexec.exe" SourcePath="&lt;AI_RES&gt;uninstall.ico" Index="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
+    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="747"/>
+    <ROW Action="AI_STORE_LOCATION" Condition="(Not Installed) OR REINSTALL" Sequence="1502"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
+    <ROW Action="AI_REDIRECT_32BIT_FOLDER" Condition="NOT VersionNT64 AND NOT AI_Disable32BitRedirection" Sequence="702"/>
+    <ROW Action="AI_REDIRECT_32BIT_SH_FOLDER" Condition="NOT VersionNT64 AND NOT AI_Disable32BitRedirection" Sequence="701"/>
+    <ROW Action="AI_SETPROGRAMFILES64" Condition="VersionNT64" Sequence="748"/>
+    <ROW Action="AI_SETPROGRAMFILES" Condition="NOT VersionNT64" Sequence="749"/>
+    <ROW Action="AI_AppSearchEx" Sequence="103"/>
+    <ROW Action="AI_DetectVM2" Condition="1" Sequence="399" Builds="OfflineUpdateBuild_1"/>
+    <ROW Action="AI_RemoveExternalUIStub" Condition="(REMOVE=&quot;ALL&quot;) AND ((VersionNT &gt; 500) OR((VersionNT = 500) AND (ServicePackLevel &gt;= 4)))" Sequence="1501"/>
+    <ROW Action="AI_DELETE_SHORTCUTS" Condition="NOT (REMOVE=&quot;ALL&quot;)" Sequence="1402"/>
+    <ROW Action="AI_DEL_EMPTY_SHORTCUTDIR" Condition="NOT (REMOVE=&quot;ALL&quot;)" Sequence="6384"/>
+    <ROW Action="AI_DATA_SETTER_1" Condition="NOT (REMOVE=&quot;ALL&quot;)" Sequence="6383"/>
+    <ROW Action="PublishProduct" Sequence="6382" SeqType="0" MsiKey="PublishProduct"/>
+    <ROW Action="AI_XmlInstall" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5102"/>
+    <ROW Action="AI_DATA_SETTER_4" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5101"/>
+    <ROW Action="AI_XmlUninstall" Condition="(REMOVE)" Sequence="3102"/>
+    <ROW Action="AI_DATA_SETTER_5" Condition="(REMOVE)" Sequence="3101"/>
+    <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Sequence="99" Builds="ExeBuild"/>
+    <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Condition="AI_SETUPEXEPATH_ORIGINAL" Sequence="102" Builds="ExeBuild"/>
+    <ROW Action="AI_DeleteCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="199" Builds="ExeBuild"/>
+    <ROW Action="AI_DeleteRCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="198" Builds="ExeBuild"/>
+    <ROW Action="AI_ExtractCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="197" Builds="ExeBuild"/>
+    <ROW Action="AI_FindExeLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="196" Builds="ExeBuild"/>
+    <ROW Action="AI_ExtractLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1549" Builds="ExeBuild"/>
+    <ROW Action="AI_DeleteRLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1548" Builds="ExeBuild"/>
+    <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="6597" Builds="ExeBuild"/>
+    <ROW Action="AI_ExtractFiles" Sequence="3998" Builds="ExeBuild"/>
+    <ROW Action="AI_DATA_SETTER" Sequence="3997"/>
+    <ROW Action="AI_EstimateExtractFiles" Sequence="3999" Builds="ExeBuild"/>
+    <ROW Action="AI_GetArpIconPath" Sequence="1401"/>
+    <ROW Action="AI_EnableDebugLog" Sequence="51"/>
+    <ROW Action="AI_DetectSoftware" Sequence="101"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="747"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="53"/>
+    <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Sequence="99"/>
+    <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Condition="AI_SETUPEXEPATH_ORIGINAL" Sequence="103"/>
+    <ROW Action="AI_SETPROGRAMFILES64" Condition="VersionNT64" Sequence="748"/>
+    <ROW Action="AI_SETPROGRAMFILES" Condition="NOT VersionNT64" Sequence="749"/>
+    <ROW Action="AI_AppSearchEx" Sequence="102"/>
+    <ROW Action="AI_DetectVM2" Condition="1" Sequence="399" Builds="OfflineUpdateBuild_1"/>
+    <ROW Action="AI_DpiContentScale" Sequence="52"/>
+    <ROW Action="AI_EnableDebugLog" Sequence="51"/>
+    <ROW Action="AI_DetectSoftware" Sequence="101"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
+    <ROW Condition="( Version9X OR ( NOT VersionNT64 ) OR ( VersionNT64 AND ((VersionNT64 &lt;&gt; 502) OR (ServicePackLevel &lt;&gt; 2) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 502) OR (ServicePackLevel &lt;&gt; 2) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 600) OR (ServicePackLevel &lt;&gt; 0) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 600) OR (ServicePackLevel &lt;&gt; 1) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 600) OR (ServicePackLevel &lt;&gt; 2) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 601) OR (ServicePackLevel &lt;&gt; 0) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 601) OR (ServicePackLevel &lt;&gt; 1) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 602) OR (ServicePackLevel &lt;&gt; 0) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 603) OR (ServicePackLevel &lt;&gt; 0) OR (MsiNTProductType = 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT64Display]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT64" IsPredefined="true" Builds="OfflineUpdateBuild_1;ExeBuild"/>
+    <ROW Condition="( Version9X OR VersionNT64 OR ( VersionNT AND ((VersionNT &lt;&gt; 501) OR (ServicePackLevel &lt;&gt; 3)) AND ((VersionNT &lt;&gt; 502) OR (ServicePackLevel &lt;&gt; 2)) AND ((VersionNT &lt;&gt; 600) OR (ServicePackLevel &lt;&gt; 0) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT &lt;&gt; 600) OR (ServicePackLevel &lt;&gt; 1) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT &lt;&gt; 600) OR (ServicePackLevel &lt;&gt; 2) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT &lt;&gt; 600) OR (MsiNTProductType = 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNTDisplay]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT" IsPredefined="true" Builds="OfflineUpdateBuild_1;ExeBuild"/>
+    <ROW Condition="(AI_DETECTED_SCREEN_RESOLUTION_X &gt;= AI_REQUIRED_SCREEN_RESOLUTION_X) AND (AI_DETECTED_SCREEN_RESOLUTION_Y &gt;= AI_REQUIRED_SCREEN_RESOLUTION_Y)" Description="[ProductName] cannot be installed on systems with screen resolution smaller than [AI_REQUIRED_SCREEN_RESOLUTION_X] x [AI_REQUIRED_SCREEN_RESOLUTION_Y]." DescriptionLocId="AI.LaunchCondition.Resolution" IsPredefined="true" Builds="ExeBuild"/>
+    <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT40Display]" DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="OfflineUpdateBuild_1;ExeBuild"/>
+    <ROW Condition="(VersionNT &lt;&gt; 500)" Description="[ProductName] cannot be installed on [WindowsTypeNT50Display]." DescriptionLocId="AI.LaunchCondition.NoNT50" IsPredefined="true" Builds="OfflineUpdateBuild_1;ExeBuild"/>
+    <ROW Condition="(VersionNT64 OR ((VersionNT &lt;&gt; 501) OR (ServicePackLevel = 3))) AND ((VersionNT &lt;&gt; 502) OR (ServicePackLevel = 2))" Description="[ProductName] cannot be installed on [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="OfflineUpdateBuild_1;ExeBuild"/>
+    <ROW Condition="AI_DETECTED_COLOR_QUALITY &gt;= AI_REQUIRED_COLOR_QUALITY" Description="[ProductName] cannot be installed on systems with color quality lower than [AI_REQUIRED_COLOR_QUALITY] bits." DescriptionLocId="AI.LaunchCondition.ColorDepth" IsPredefined="true" Builds="ExeBuild"/>
+    <ROW Condition="AI_DETECTED_PHYSICAL_MEMORY &gt;= AI_REQUIRED_PHYSICAL_MEMORY" Description="[ProductName] cannot be installed on systems with less physical memory than [AI_REQUIRED_PHYSICAL_MEMORY] MB." DescriptionLocId="AI.LaunchCondition.RAM" IsPredefined="true" Builds="ExeBuild"/>
+    <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]" DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="OfflineUpdateBuild_1;ExeBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
+    <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+    <ROW Signature_="AI_EXE_PATH_LM" Root="2" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+    <ROW Signature_="AI_ShRegOptionMachine" Root="2" Key="Software\Caphyon\Advanced Installer\Installs\[ProductCode]" Name="AIShRegAnswer" Type="2"/>
+    <ROW Signature_="AI_ShRegOptionUser" Root="1" Key="Software\Caphyon\Advanced Installer\Installs\[ProductCode]" Name="AIShRegAnswer" Type="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="AIShRegAnswer" Root="-1" Key="Software\Caphyon\Advanced Installer\Installs\[ProductCode]" Name="AIShRegAnswer" Value="[AI_SHORTCUTSREG]" Component_="AIShRegAnswer"/>
+    <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
+    <ROW Registry="AutoSwitchApplicationTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchApplicationTools" Value="#0" Component_="AutoSwitchApplicationTools"/>
+    <ROW Registry="AutoSwitchArchiveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchArchiveTools" Value="#1" Component_="AutoSwitchArchiveTools"/>
+    <ROW Registry="AutoSwitchDriveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchDriveTools" Value="#1" Component_="AutoSwitchDriveTools"/>
+    <ROW Registry="AutoSwitchFolderTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchFolderTools" Value="#0" Component_="AutoSwitchFolderTools"/>
+    <ROW Registry="AutoSwitchImageTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchImageTools" Value="#1" Component_="AutoSwitchImageTools"/>
+    <ROW Registry="AutoSwitchLibraryTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchLibraryTools" Value="#1" Component_="AutoSwitchLibraryTools"/>
+    <ROW Registry="AutoSwitchVirtualDriveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchVirtualDriveTools" Value="#0" Component_="AutoSwitchVirtualDriveTools"/>
+    <ROW Registry="Comments" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Comments" Value="[ARPCOMMENTS]" Component_="AI_CustomARPName"/>
+    <ROW Registry="Contact" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Contact" Value="[ARPCONTACT]" Component_="AI_CustomARPName"/>
+    <ROW Registry="CurrentTheme" Root="1" Key="Software\BExplorer" Name="CurrentTheme" Value="Blue" Component_="CurrentTheme"/>
+    <ROW Registry="DisplayIcon" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayIcon" Value="[ARP_ICON_PATH]" Component_="AI_CustomARPName"/>
+    <ROW Registry="DisplayName" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayName" Value="[AI_PRODUCTNAME_ARP]" Component_="AI_CustomARPName"/>
+    <ROW Registry="DisplayVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayVersion" Value="[ProductVersion]" Component_="AI_CustomARPName"/>
+    <ROW Registry="EstimatedSize" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="EstimatedSize" Value="##[AI_ARP_SIZE]" Component_="AI_CustomARPName"/>
+    <ROW Registry="HelpLink" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpLink" Value="[ARPHELPLINK]" Component_="AI_CustomARPName"/>
+    <ROW Registry="HelpTelephone" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpTelephone" Value="[ARPHELPTELEPHONE]" Component_="AI_CustomARPName"/>
+    <ROW Registry="InstallLocation" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="InstallLocation" Value="[APPDIR]" Component_="AI_CustomARPName"/>
+    <ROW Registry="IsConsoleShown" Root="1" Key="Software\BExplorer" Name="IsConsoleShown" Value="#0" Component_="IsConsoleShown"/>
+    <ROW Registry="IsRestoreTabs" Root="1" Key="Software\BExplorer" Name="IsRestoreTabs" Value="#1" Component_="IsRestoreTabs"/>
+    <ROW Registry="IsRibonMinimized" Root="1" Key="Software\BExplorer" Name="IsRibonMinimized" Value="False" Component_="IsRibonMinimized"/>
+    <ROW Registry="LastWindowHeight" Root="1" Key="Software\BExplorer" Name="LastWindowHeight" Value="1026" Component_="LastWindowHeight"/>
+    <ROW Registry="LastWindowPosLeft" Root="1" Key="Software\BExplorer" Name="LastWindowPosLeft" Value="0" Component_="LastWindowPosLeft"/>
+    <ROW Registry="LastWindowPosTop" Root="1" Key="Software\BExplorer" Name="LastWindowPosTop" Value="0" Component_="LastWindowPosTop"/>
+    <ROW Registry="LastWindowState" Root="1" Key="Software\BExplorer" Name="LastWindowState" Value="#2" Component_="LastWindowState"/>
+    <ROW Registry="LastWindowWidth" Root="1" Key="Software\BExplorer" Name="LastWindowWidth" Value="1696" Component_="LastWindowWidth"/>
+    <ROW Registry="LaunchExplorerFlags" Root="0" Key="Folder\shell\opennewwindow" Name="LaunchExplorerFlags" Value="#1" Component_="LaunchExplorerFlags"/>
+    <ROW Registry="MUIVerb" Root="0" Key="Folder\shell\opennewwindow" Name="MUIVerb" Value="@shell32.dll,-8517" Component_="MUIVerb"/>
+    <ROW Registry="MultiSelectModel" Root="0" Key="Folder\shell\opennewwindow" Name="MultiSelectModel" Value="Document" Component_="MultiSelectModel"/>
+    <ROW Registry="OpenedTabs" Root="1" Key="Software\BExplorer" Name="OpenedTabs" Component_="OpenedTabs"/>
+    <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
+    <ROW Registry="Publisher" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Publisher" Value="[Manufacturer]" Component_="AI_CustomARPName"/>
+    <ROW Registry="RTLMode" Root="1" Key="Software\BExplorer" Name="RTLMode" Value="false" Component_="RTLMode"/>
+    <ROW Registry="ShowCheckboxes" Root="1" Key="Software\BExplorer" Name="ShowCheckboxes" Value="#0" Component_="ShowCheckboxes"/>
+    <ROW Registry="TabBarAlignment" Root="1" Key="Software\BExplorer" Name="TabBarAlignment" Value="top" Component_="TabBarAlignment"/>
+    <ROW Registry="URLInfoAbout" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLInfoAbout" Value="[ARPURLINFOABOUT]" Component_="AI_CustomARPName"/>
+    <ROW Registry="URLUpdateInfo" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLUpdateInfo" Value="[ARPURLUPDATEINFO]" Component_="AI_CustomARPName"/>
+    <ROW Registry="UninstallPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallPath" Value="[AI_UNINSTALLER] /i [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
+    <ROW Registry="UninstallString" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallString" Value="[AI_UNINSTALLER] /i [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
+    <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
+    <ROW Registry="VersionMajor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMajor" Value="#2" Component_="AI_CustomARPName"/>
+    <ROW Registry="VersionMinor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMinor" Value="#0" Component_="AI_CustomARPName"/>
+    <ROW Registry="_" Root="0" Key="Folder\shell\openinbetterexplorer" Value="Open In Better Explorer" Component_="_"/>
+    <ROW Registry="__1" Root="0" Key="Folder\shell" Value="openinbetterexplorer" Component_="__1"/>
+    <ROW Registry="__38" Root="0" Key="Folder\shell\openinbetterexplorer\command" Value="[APPDIR]BetterExplorerShell.exe &quot;%1&quot;" Component_="__38"/>
+    <ROW Registry="__39" Root="0" Key="Folder\shell\opennewwindow\command" Value="[APPDIR]BetterExplorerShell.exe &quot;%1&quot;" Component_="__39"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRemoveRegComponent">
+    <ROW RemoveRegistry="DelegateExecute" Root="0" Key="Folder\shell\opennewwindow\command" Name="DelegateExecute" Component_="AIShRegAnswer"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
+    <ROW Shortcut="Uninstall" Directory_="BetterExplorer_Dir" Name="UNINST~1|Uninstall" Component_="AIShRegAnswer" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]" Hotkey="0" Icon_="SystemFoldermsiexec.exe" IconIndex="0" ShowCmd="1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
+    <ATTRIBUTE name="UsedTheme" value="azure"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMax="[|ProductVersion]" Attributes="1025" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MultipleInstancesComponent">
+    <ATTRIBUTE name="DynamicInstances" value="OfflineUpdateBuild_1:#ExeBuild:"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.PreReqComponent">
+    <ROW PrereqKey="BB9062A4604BB61146D7C9AA49D" DisplayName=".NET Framework 4.6.1 (web installer)" SetupFileUrl="http://download.microsoft.com/download/3/5/9/35980F81-60F4-4DE3-88FC-8F962B97253B/NDP461-KB3102438-Web.exe" Location="1" ExactSize="1424328" WinNTVersions="Windows XP x86 Service Pack 3, Windows Server 2003 x86 Service Pack 2, Windows Vista x86, Windows Vista x86 Service Pack 1, Windows Vista x86 Service Pack 2, Windows Server 2008 x86, Windows 7 x86" WinNT64Versions="Windows XP x64 Service Pack 2, Windows Server 2003 x64 Service Pack 2, Windows Vista x64, Windows Vista x64 Service Pack 1, Windows Vista x64 Service Pack 2, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64" Operator="1" NoUiComLine="/q /norestart" Options="xy" MD5="4d1bb86d0eee168e1da91a36350c1c21" TargetName=".NET Framework 4.6.1"/>
+    <ROW PrereqKey="EEDF697C58FF44AEA12537BBFB266D19" DisplayName=".NET Framework 4.6 (web installer)" SetupFileUrl="http://download.microsoft.com/download/1/4/A/14A6C422-0D3C-4811-A31F-5EF91A83C368/NDP46-KB3045560-Web.exe" Location="1" ExactSize="1497400" WinNTVersions="Windows XP x86 Service Pack 3, Windows Server 2003 x86 Service Pack 2, Windows Vista x86, Windows Vista x86 Service Pack 1, Windows 7 x86, Windows 10 x86" WinNT64Versions="Windows XP x64 Service Pack 2, Windows Server 2003 x64 Service Pack 2, Windows Vista x64, Windows Vista x64 Service Pack 1, Windows 7 x64, Windows Server 2008 R2 x64, Windows 10 x64" Operator="1" NoUiComLine="/q /norestart" Options="xy" MD5="58d88886a42aeb5d17e8b232c2697899" TargetName=".NET Framework 4.6"/>
+    <ATTRIBUTE name="PrereqsOrder" value="EEDF697C58FF44AEA12537BBFB266D19 BB9062A4604BB61146D7C9AA49D"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
+    <ROW SearchKey="BB9062A4604BB61146D7C9AA49DRelease" Prereq="BB9062A4604BB61146D7C9AA49D" SearchType="9" SearchString="HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\Release" RefContent="G394253" Order="1" Property="PreReqSearch_BB9062A4604BB61146D7C9AA49D"/>
+    <ROW SearchKey="EEDF697C58FF44AEA12537BBFB266D19Release" Prereq="EEDF697C58FF44AEA12537BBFB266D19" SearchType="9" SearchString="HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\Release" RefContent="G393296" Order="1" Property="PreReqSearch_EEDF697C58FF44AEA12537BBFB266D19"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.SoftwareIdentificationComponent">
+    <ATTRIBUTE name="LocalFile" value="regid.199509.com.example_ProductName.swidtag"/>
+    <ATTRIBUTE name="SystemFile" value="regid.199509.com.example_ProductName.swidtag_1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.XmlAttributeComponent">
+    <ROW XmlAttribute="xmlnsds" XmlElement="swidsoftware_identification_tag" Name="xmlns:ds" Flags="14" Order="0" Value="http://www.w3.org/2000/09/xmldsig#"/>
+    <ROW XmlAttribute="xmlnsswid" XmlElement="swidsoftware_identification_tag" Name="xmlns:swid" Flags="14" Order="1" Value="http://standards.iso.org/iso/19770/-2/2008/schema.xsd"/>
+    <ROW XmlAttribute="xmlnsxsi" XmlElement="swidsoftware_identification_tag" Name="xmlns:xsi" Flags="14" Order="2" Value="http://www.w3.org/2001/XMLSchema-instance"/>
+    <ROW XmlAttribute="xsischemaLocation" XmlElement="swidsoftware_identification_tag" Name="xsi:schemaLocation" Flags="14" Order="3" Value="http://standards.iso.org/iso/19770/-2/2008/schema.xsd software_identification_tag.xsd"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.XmlElementComponent">
+    <ROW XmlElement="swidbuild" ParentElement="swidnumeric" Name="swid:build" Condition="1" Order="2" Flags="14" Text="3"/>
+    <ROW XmlElement="swidentitlement_required_indicator" ParentElement="swidsoftware_identification_tag" Name="swid:entitlement_required_indicator" Condition="1" Order="0" Flags="14" Text="false"/>
+    <ROW XmlElement="swidmajor" ParentElement="swidnumeric" Name="swid:major" Condition="1" Order="0" Flags="14" Text="2"/>
+    <ROW XmlElement="swidminor" ParentElement="swidnumeric" Name="swid:minor" Condition="1" Order="1" Flags="14" Text="5"/>
+    <ROW XmlElement="swidname" ParentElement="swidproduct_version" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[ProductVersion]"/>
+    <ROW XmlElement="swidname_1" ParentElement="swidsoftware_creator" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[Manufacturer]"/>
+    <ROW XmlElement="swidname_2" ParentElement="swidsoftware_licensor" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[Manufacturer]"/>
+    <ROW XmlElement="swidname_3" ParentElement="swidtag_creator" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[Manufacturer]"/>
+    <ROW XmlElement="swidnumeric" ParentElement="swidproduct_version" Name="swid:numeric" Condition="1" Order="1" Flags="14"/>
+    <ROW XmlElement="swidproduct_title" ParentElement="swidsoftware_identification_tag" Name="swid:product_title" Condition="1" Order="1" Flags="14" Text="[ProductName]"/>
+    <ROW XmlElement="swidproduct_version" ParentElement="swidsoftware_identification_tag" Name="swid:product_version" Condition="1" Order="2" Flags="14"/>
+    <ROW XmlElement="swidregid" ParentElement="swidsoftware_creator" Name="swid:regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com"/>
+    <ROW XmlElement="swidregid_1" ParentElement="swidsoftware_licensor" Name="swid:regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com"/>
+    <ROW XmlElement="swidregid_2" ParentElement="swidtag_creator" Name="swid:regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com"/>
+    <ROW XmlElement="swidreview" ParentElement="swidnumeric" Name="swid:review" Condition="1" Order="3" Flags="14" Text="10001"/>
+    <ROW XmlElement="swidsoftware_creator" ParentElement="swidsoftware_identification_tag" Name="swid:software_creator" Condition="1" Order="3" Flags="14"/>
+    <ROW XmlElement="swidsoftware_id" ParentElement="swidsoftware_identification_tag" Name="swid:software_id" Condition="1" Order="5" Flags="14"/>
+    <ROW XmlElement="swidsoftware_identification_tag" Name="swid:software_identification_tag" Condition="1" Order="0" Flags="14"/>
+    <ROW XmlElement="swidsoftware_licensor" ParentElement="swidsoftware_identification_tag" Name="swid:software_licensor" Condition="1" Order="4" Flags="14"/>
+    <ROW XmlElement="swidtag_creator" ParentElement="swidsoftware_identification_tag" Name="swid:tag_creator" Condition="1" Order="6" Flags="14"/>
+    <ROW XmlElement="swidtag_creator_regid" ParentElement="swidsoftware_id" Name="swid:tag_creator_regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com"/>
+    <ROW XmlElement="swidunique_id" ParentElement="swidsoftware_id" Name="swid:unique_id" Condition="1" Order="0" Flags="14" Text="90679b50-5449-4f15-b34d-a8ebaec99827"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.XmlFileComponent">
+    <ROW XmlFile="regid.199509.com.example_ProductName.swidtag" FileName="regid2~1.swi|regid.2012-07.better-explorer.com_90679b50-5449-4f15-b34d-a8ebaec99827.swidtag" DirProperty="APPDIR" Component="ProductInformation" RootElement="swidsoftware_identification_tag" Flags="25" Version="1.0" Encoding="UTF-8" IndentUnits="2"/>
+    <ROW XmlFile="regid.199509.com.example_ProductName.swidtag_1" FileName="regid2~1.swi|regid.2012-07.better-explorer.com_90679b50-5449-4f15-b34d-a8ebaec99827.swidtag" DirProperty="regid.201207.betterexplorer.com_Dir" Component="ProductInformation" RootElement="swidsoftware_identification_tag" Flags="25" Version="1.0" Encoding="UTF-8" IndentUnits="2"/>
+  </COMPONENT>
+</DOCUMENT>

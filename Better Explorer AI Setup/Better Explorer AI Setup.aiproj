@@ -15,8 +15,6 @@
     <RootNamespace>Better Explorer AI Setup</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'ExeBuild' " />
-  <PropertyGroup Condition=" '$(Configuration)' == 'WebUpdate' " />
-  <PropertyGroup Condition=" '$(Configuration)' == 'All' " />
   <ItemGroup>
     <Compile Include="Better Explorer AI Setup.aip">
       <SubType>Code</SubType>
