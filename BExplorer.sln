@@ -1417,7 +1417,6 @@ Global
 		{A563DBE3-9C87-474D-9FA8-D7483E5FA8E7}.CodeAnalysisDebug|x86.ActiveCfg = ExeBuild
 		{A563DBE3-9C87-474D-9FA8-D7483E5FA8E7}.CodeAnalysisDebug|x86.Build.0 = ExeBuild
 		{A563DBE3-9C87-474D-9FA8-D7483E5FA8E7}.Debug|Any CPU.ActiveCfg = ExeBuild
-		{A563DBE3-9C87-474D-9FA8-D7483E5FA8E7}.Debug|Any CPU.Build.0 = ExeBuild
 		{A563DBE3-9C87-474D-9FA8-D7483E5FA8E7}.Debug|Mixed Platforms.ActiveCfg = ExeBuild
 		{A563DBE3-9C87-474D-9FA8-D7483E5FA8E7}.Debug|Mixed Platforms.Build.0 = ExeBuild
 		{A563DBE3-9C87-474D-9FA8-D7483E5FA8E7}.Debug|Win32.ActiveCfg = ExeBuild
