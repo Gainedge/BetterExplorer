@@ -38,7 +38,6 @@ namespace BetterExplorer {
         }));
 
       Settings.BESettings.LastUpdateCheck = DateTime.Now;
-      Settings.BESettings.SaveSettings();
     }
 
     /// <summary>

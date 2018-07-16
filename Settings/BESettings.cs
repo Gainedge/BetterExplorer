@@ -78,12 +78,11 @@ namespace Settings {
 
         StartupLocation = rksRoot?.GetValue("StartUpLoc", "shell:::{031E4825-7B94-4DC3-B131-E946B44C8DD5}").ToString();
         UpdateCheckType = (int)rksRoot.GetValue("UpdateCheckType", 0);
-        CurrentTheme = (string)rksRoot.GetValue("CurrentTheme", "Blue");
+        CurrentTheme = (string)rksRoot.GetValue("CurrentTheme", "Light");
         IsUpdateCheck = rksRoot.GetValue("CheckForUpdates", "False").ToBoolean();
         IsUpdateCheckStartup = rksRoot.GetValue("CheckForUpdatesStartup", "False").ToBoolean();
         UpdateCheckInterval = (int)rksRoot.GetValue("CheckInterval", 7);
         LastUpdateCheck = DateTime.FromBinary(Convert.ToInt64(rksRoot.GetValue("LastUpdateCheck", DateTime.Now.ToBinary())));
-        //LastUpdateCheck = DateTime.Parse(rksRoot.GetValue("LastUpdateCheck", DateTime.Now.ToString()).ToString());
         IsConsoleShown = rksRoot.GetValue("IsConsoleShown", "False").ToBoolean();
         EnableActionLog = rksRoot.GetValue("IsConsoleShown", "False").ToBoolean();
         IsGlassOnRibonMinimized = rksRoot.GetValue("RibbonMinimizedGlass", "False").ToBoolean();
@@ -100,7 +99,7 @@ namespace Settings {
         SearchBarWidth = Convert.ToDouble(rksRoot.GetValue("SearchBarWidth", 220));
         OverwriteImageWhileEditing = rksRoot.GetValue("OverwriteImageWhileEditing", "False").ToBoolean();
         SavedTabsDirectory = rksRoot.GetValue("SavedTabsDirectory", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\").ToString();
-        OpenedTabs = rksRoot.GetValue("OpenedTabs").ToString();
+        OpenedTabs = rksRoot.GetValue("OpenedTabs")?.ToString() ?? String.Empty;
         LastWindowWidth = Convert.ToDouble(rksRoot.GetValue("LastWindowWidth", 640));
         LastWindowHeight = Convert.ToDouble(rksRoot.GetValue("LastWindowHeight", 480));
         LastWindowPosLeft = Convert.ToDouble(rksRoot.GetValue("LastWindowPosLeft", 0));

@@ -10,10 +10,6 @@ namespace BetterExplorer {
   public static class Utilities {
 
     static Utilities() {
-      RegistryKey rk = Registry.CurrentUser;
-      RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-      if (rks == null)
-        rks = rk.CreateSubKey(@"Software\BExplorer");
     }
 
     #region File Extensions

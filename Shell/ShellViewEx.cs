@@ -1,4 +1,6 @@
-﻿namespace BExplorer.Shell {
+﻿using BExplorer.Shell.VirtualGroups;
+
+namespace BExplorer.Shell {
   using System;
   using System.Collections.Generic;
   using System.ComponentModel;

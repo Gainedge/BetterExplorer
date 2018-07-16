@@ -165,12 +165,6 @@ namespace BetterExplorer {
         File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.sqlite"), Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite"));
       }
 
-      RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true);
-      if (rks == null) {
-        rk.CreateSubKey(@"Software\BExplorer");
-        rks = rk.OpenSubKey(@"Software\BExplorer", true);
-      }
-
       //// loads current Ribbon color theme
       try {
         switch (Settings.BESettings.CurrentTheme) {
@@ -187,11 +181,7 @@ namespace BetterExplorer {
         MessageBox.Show(
           $"An error occurred while trying to load the theme data from the Registry. \n\r \n\rRibbonTheme Error - {ex}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/",
           ex.Message);
-      } finally {
-        rks?.Close();
-      }
-
-      rk.Close();
+      } 
 
       if (e.Args.Any()) {
         dmi = e.Args.Length >= 1;

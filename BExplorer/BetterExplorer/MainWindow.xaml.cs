@@ -119,7 +119,6 @@ namespace BetterExplorer {
 
     private void btnConsolePane_Click(object sender, RoutedEventArgs e) {
       Settings.BESettings.IsConsoleShown = this.btnConsolePane.IsChecked.Value;
-      Settings.BESettings.SaveSettings();
       if (this.btnConsolePane.IsChecked.Value) {
         this.rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
         this.rCommandPrompt.MinHeight = 100;
@@ -1189,7 +1188,6 @@ namespace BetterExplorer {
         return;
 
       Settings.BESettings.IsUpdateCheck = true;
-      Settings.BESettings.SaveSettings();
       this.updateCheckTimer.Start();
     }
 
@@ -1198,7 +1196,6 @@ namespace BetterExplorer {
         return;
 
       Settings.BESettings.IsUpdateCheck = false;
-      Settings.BESettings.SaveSettings();
     }
 
     private void rbCheckInterval_Click(object sender, RoutedEventArgs e) {
@@ -1208,18 +1205,14 @@ namespace BetterExplorer {
         Settings.BESettings.UpdateCheckInterval = 30;
       else
         Settings.BESettings.UpdateCheckInterval = 7;
-
-      Settings.BESettings.SaveSettings();
     }
 
     private void chkUpdateStartupCheck_Click(object sender, RoutedEventArgs e) {
       Settings.BESettings.IsUpdateCheckStartup = this.chkUpdateStartupCheck.IsChecked.Value;
-      Settings.BESettings.SaveSettings();
     }
 
     private void UpdateTypeCheck_Click(object sender, RoutedEventArgs e) {
       Settings.BESettings.UpdateCheckType = this.rbReleases.IsChecked.Value ? 0 : 1;
-      Settings.BESettings.SaveSettings();
     }
 
     #endregion
@@ -1385,9 +1378,7 @@ namespace BetterExplorer {
     }
 
     private void LoadRegistryRelatedSettings() {
-      BESettings.LoadSettings();
       RegistryKey rk = Registry.CurrentUser;
-      RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
 
       switch (BESettings.CurrentTheme) {
         case "Dark":
@@ -1496,13 +1487,9 @@ namespace BetterExplorer {
         this.chkIsDefault.IsEnabled = false;
       }
 
-      var rkfe = Registry.CurrentUser;
       var rksfe = rk.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", RegistryKeyPermissionCheck.ReadSubTree);
       this.chkTreeExpand.IsChecked = (int)rksfe.GetValue("NavPaneExpandToCurrentFolder", 0) == 1;
       rksfe.Close();
-      rkfe.Close();
-
-      rks.Close();
       rk.Close();
 
 
@@ -1841,7 +1828,6 @@ namespace BetterExplorer {
           break;
       }
       Settings.BESettings.CurrentTheme = themeName;
-      Settings.BESettings.SaveSettings();
     }));
 
     #endregion
@@ -2298,7 +2284,6 @@ namespace BetterExplorer {
       e.Handled = true;
       if (this.IsLoaded) {
         BESettings.Locale = ((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode;
-        BESettings.SaveSettings();
         ((App)Application.Current).SelectCulture(((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
 
         if (this._ShellListView.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
@@ -2458,19 +2443,15 @@ namespace BetterExplorer {
 
     private void chkIsRestoreTabs_CheckChanged(object sender, RoutedEventArgs e) {
       BESettings.IsRestoreTabs = e.RoutedEvent.Name == "Checked";
-      BESettings.SaveSettings();
     }
     private void gridSplitter1_DragCompleted(object sender, DragCompletedEventArgs e) {
       BESettings.SearchBarWidth = this.SearchBarColumn.Width.Value;
-      BESettings.SaveSettings();
     }
     private void SearchBarReset_Click(object sender, RoutedEventArgs e) {
       BESettings.SearchBarWidth = this.SearchBarColumn.Width.Value;
-      BESettings.SaveSettings();
     }
     private void chkIsCFO_Click(object sender, RoutedEventArgs e) {
       BESettings.IsCustomFO = this.chkIsCFO.IsChecked.Value == true;
-      BESettings.SaveSettings();
     }
 
     private Process Rename_CheckChanged_Helper() {
@@ -2541,20 +2522,17 @@ namespace BetterExplorer {
       //btnSetCurrentasStartup.Icon = ShellListView.CurrentFolder.Thumbnail.BitmapSource;
 
       BESettings.StartupLocation = CurrentLocString;
-      BESettings.SaveSettings();
     }
 
     private void chkIsFlyout_CheckChanged(object sender, RoutedEventArgs e) {
       if (!this.isOnLoad) {
         BESettings.IsFileOpExEnabled = e.RoutedEvent.Name == "Checked";
-        BESettings.SaveSettings();
       }
     }
 
     private void chkIsTerraCopyEnabled_CheckChanged(object sender, RoutedEventArgs e) {
       if (!this.isOnLoad) {
         BESettings.IsFileOpExEnabled = e.RoutedEvent.Name == "Checked";
-        BESettings.SaveSettings();
       }
     }
 
@@ -2565,12 +2543,10 @@ namespace BetterExplorer {
 
     private void chkOverwriteImages_Checked(object sender, RoutedEventArgs e) {
       BESettings.OverwriteImageWhileEditing = e.RoutedEvent.Name == "Checked";
-      BESettings.SaveSettings();
     }
 
     private void chkRibbonMinimizedGlass_Click(object sender, RoutedEventArgs e) {
       BESettings.IsGlassOnRibonMinimized = this.chkRibbonMinimizedGlass.IsChecked.Value == true;
-      BESettings.SaveSettings();
 
       if (!this.TheRibbon.IsMinimized) {
       } else if (this.chkRibbonMinimizedGlass.IsChecked.Value) {
@@ -2585,7 +2561,6 @@ namespace BetterExplorer {
     private void chkLogHistory_CheckChanged(object sender, RoutedEventArgs e) {
       BESettings.EnableActionLog = e.RoutedEvent.Name == "Checked";
       BESettings.EnableActionLog = e.RoutedEvent.Name == "Checked";
-      BESettings.SaveSettings();
     }
 
     private void btnShowLogs_Click(object sender, RoutedEventArgs e) {
@@ -2608,11 +2583,9 @@ namespace BetterExplorer {
       } else if (e.RoutedEvent.Name == "Checked") {
         this.TreeGrid.ColumnDefinitions[0].Width = new GridLength(200);
         BESettings.IsNavigationPaneEnabled = true;
-        BESettings.SaveSettings();
       } else {
         this.TreeGrid.ColumnDefinitions[0].Width = new GridLength(1);
         BESettings.IsNavigationPaneEnabled = false;
-        BESettings.SaveSettings();
       }
     }
 
@@ -2627,13 +2600,11 @@ namespace BetterExplorer {
         }
 
         BESettings.IsPreviewPaneEnabled = true;
-        BESettings.SaveSettings();
       } else {
         this.clPreview.Width = new GridLength(0);
         this.clPreviewSplitter.Width = new GridLength(0);
         this.Previewer.FileName = null;
         BESettings.IsPreviewPaneEnabled = false;
-        BESettings.SaveSettings();
       }
     }
 
@@ -2643,12 +2614,10 @@ namespace BetterExplorer {
         this.rPreviewPane.Height = new GridLength(BESettings.InfoPaneHeight);
         this.rPreviewPaneSplitter.Height = new GridLength(1);
         BESettings.IsInfoPaneEnabled = true;
-        BESettings.SaveSettings();
       } else {
         this.rPreviewPane.Height = new GridLength(0);
         this.rPreviewPaneSplitter.Height = new GridLength(0);
         BESettings.IsInfoPaneEnabled = false;
-        BESettings.SaveSettings();
       }
     }
 
@@ -3059,7 +3028,6 @@ namespace BetterExplorer {
       ctf.InitialDirectory = new DirectoryInfo(BESettings.SavedTabsDirectory).Parent.FullName;
       if (ctf.ShowDialog()) {
         BESettings.SavedTabsDirectory = ctf.FileName + "\\";
-        BESettings.SaveSettings();
         this.txtDefSaveTabs.Text = ctf.FileName + "\\";
       }
     }
@@ -3705,14 +3673,7 @@ namespace BetterExplorer {
       // gets values from registry to be applied after initialization
       //bool rtlset = Convert.ToString(rks.GetValue("RTLMode", "notset")) != "notset";
 
-      RegistryKey rk = Registry.CurrentUser;
-      RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-
-      string RTLMode = Convert.ToString(rks.GetValue("RTLMode", "notset")); //TODO: Find out how to remove this properly, I'm not exactly sure now it works!!
-
-      rks.Close();
-      rk.Close();
-
+      var rtlMode = BESettings.RTLMode;
 
       //Main Initialization routine
       this.InitializeComponent();
@@ -3720,14 +3681,14 @@ namespace BetterExplorer {
       // sets up ComboBox to select the current UI language
       this.TranslationComboBox.SelectedItem = this.TranslationComboBox.Items.OfType<TranslationComboBoxItem>().FirstOrDefault(x => x.LocaleCode == BESettings.Locale);
 
-      if (RTLMode == "notset") {
-        RTLMode = (this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL.ToString();
+      if (!rtlMode) {
+        rtlMode = (this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL;
       }
 
       this.SearchBarColumn.Width = new GridLength(BESettings.SearchBarWidth);
 
       // prepares RTL mode
-      this.FlowDirection = RTLMode.ToLower() == "true" ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+      this.FlowDirection = rtlMode ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 
       // sets tab bar alignment
       if (BESettings.TabBarAlignment == "top")
@@ -4144,7 +4105,6 @@ namespace BetterExplorer {
 
     private void chkTraditionalNameGrouping_CheckChanged(Object sender, RoutedEventArgs e) {
       BESettings.IsTraditionalNameGrouping = e.RoutedEvent.Name == "Checked";
-      BESettings.SaveSettings();
     }
 
     private void btnResetFolderSettings_OnClick(object sender, RoutedEventArgs e) => this._ShellListView.ResetFolderSettings();
