@@ -46,6 +46,7 @@ namespace Wpf.Controls {
     public GiveFeedbackEventHandler newt_GiveFeedback;
     public MouseEventHandler newt_PreviewMouseMove;
     public MouseButtonEventHandler newt_PreviewMouseDown;
+    public Boolean ShouldNavigateOnSelection { get; set; }
 
     /// <summary>An <see cref="Action">Action</see> that is fired after a new tab is created</summary> 
     public Action ConstructMoveToCopyToMenu;
@@ -62,8 +63,8 @@ namespace Wpf.Controls {
     private ToggleButton _toggleButton;
     private ButtonBase _addNewButton;
 
-	/// <summary>Determines if the underlying list if fixed in size</summary>
-	private bool IsFixedSize {
+  /// <summary>Determines if the underlying list if fixed in size</summary>
+  private bool IsFixedSize {
       get {
         var items = GetItems() as IList;
         return items == null || items.IsFixedSize;
@@ -290,9 +291,9 @@ namespace Wpf.Controls {
     //public event EventHandler<NewTabItemEventArgs> NewTabItem;
     public event EventHandler<TabClickEventArgs> OnTabClicked;
     /*
-		private event EventHandler<TabItemCancelEventArgs> TabItemClosing;
-		private event EventHandler<TabItemEventArgs> TabItemClosed;
-		*/
+    private event EventHandler<TabItemCancelEventArgs> TabItemClosing;
+    private event EventHandler<TabItemEventArgs> TabItemClosed;
+    */
 
     /// <summary>
     /// Raises the <see cref="OnTabClicked"/> event if and only if <paramref name="tab"/> is not nothing
@@ -318,7 +319,6 @@ namespace Wpf.Controls {
     /// <returns></returns>
     public TabItem NewTab(IListItemEx DefPath, bool IsNavigate) {
       this.IsInTabDragDrop = false;
-      SelectNewTabOnCreate = false;
       var newt = new TabItem(DefPath) {
         Header = DefPath.DisplayName,
         Icon = DefPath.ThumbnailSource(16, BExplorer.Shell.Interop.ShellThumbnailFormatOption.IconOnly, BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default),
@@ -337,9 +337,7 @@ namespace Wpf.Controls {
       //TODO: Try to remove this Try Catch
       try {
         Items.Add(newt);
-        //IsSelectionHandled = false;
         if (IsNavigate) {
-          SelectNewTabOnCreate = true;
           this.SelectedItem = newt;
         }
       } catch (Exception) {
@@ -359,9 +357,9 @@ namespace Wpf.Controls {
     /// <returns></returns>
     public TabItem NewTab(string Location, bool IsNavigate = false) => NewTab(FileSystemListItem.ToFileSystemItem(IntPtr.Zero, Location.ToShellParsingName()), IsNavigate);
 
-	/// <summary>
-	/// Creates a new tab starting at the libraries folder
-	/// </summary>
+  /// <summary>
+  /// Creates a new tab starting at the libraries folder
+  /// </summary>
     public void NewTab() {
       IListItemEx DefPath;
       if (StartUpLocation.StartsWith("::") && !StartUpLocation.Contains(@"\"))
@@ -410,11 +408,11 @@ namespace Wpf.Controls {
       if (this.SelectedItem == null && !isCloseLastTab)
         this.SelectedItem = this.Items.OfType<TabItem>().ToArray()[this.Items.OfType<TabItem>().Count() - 1];
     }
-	
-	/// <summary>
-	/// Clones the tab and If <see cref="AddNewTabToEnd"/> Then adds at the end else inserts after the <see cref="SelectedIndex">currently selected item's index</see>
-	/// </summary>
-	/// <param name="theTab"></param>
+  
+  /// <summary>
+  /// Clones the tab and If <see cref="AddNewTabToEnd"/> Then adds at the end else inserts after the <see cref="SelectedIndex">currently selected item's index</see>
+  /// </summary>
+  /// <param name="theTab"></param>
     public void CloneTabItem(TabItem theTab) {
       int i = this.SelectedIndex;
       var newt = new TabItem(theTab.ShellObject) {
@@ -434,10 +432,10 @@ namespace Wpf.Controls {
       ConstructMoveToCopyToMenu();
     }
 
-	/// <summary>
-	/// Closes all tabs but the provided one using <see cref="RemoveTabItem"/>
-	/// </summary>
-	/// <param name="tabItem">The Tab you want to keep</param>
+  /// <summary>
+  /// Closes all tabs but the provided one using <see cref="RemoveTabItem"/>
+  /// </summary>
+  /// <param name="tabItem">The Tab you want to keep</param>
     public void CloseAllTabsButThis(TabItem tabItem) {
       foreach (TabItem tab in this.Items.OfType<TabItem>().Where(x => x != tabItem)) {
         this.RemoveTabItem(tab);
@@ -561,7 +559,7 @@ namespace Wpf.Controls {
       }
       base.OnPreviewKeyDown(e);
     }	
-	
+  
     protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e) {
       base.OnItemsChanged(e);
       //if (e.Action == NotifyCollectionChangedAction.Add && !SelectNewTabOnCreate) {
@@ -612,7 +610,8 @@ namespace Wpf.Controls {
     }
 
     public TabControl() {
-      Loaded +=
+      this.ShouldNavigateOnSelection = false;
+      this.Loaded +=
         delegate {
           SetAddNewButtonVisibility();
           SetTabItemsCloseButtonVisibility();
@@ -721,7 +720,7 @@ namespace Wpf.Controls {
 
       ButtonBase button = this.Template.FindName("PART_NewTabButton", this) as ButtonBase;
       if (button == null)
-				return;
+        return;
       else if (IsFixedSize)
         button.Visibility = Visibility.Collapsed;
       else

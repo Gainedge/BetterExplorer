@@ -223,10 +223,10 @@ namespace BExplorer.Shell {
         using (var g = Graphics.FromHdc(hdc)) {
           if (this._ShellViewEx.ShowCheckboxes && this._ShellViewEx.View != ShellViewStyle.Details && this._ShellViewEx.View != ShellViewStyle.List) {
             /*						
-						var lvi = new LVITEMINDEX();
-						lvi.iItem = index;
-						lvi.iGroup = this._ShellViewEx.GetGroupIndex(index);
-						*/
+            var lvi = new LVITEMINDEX();
+            lvi.iItem = index;
+            lvi.iGroup = this._ShellViewEx.GetGroupIndex(index);
+            */
             var iGroup = this._ShellViewEx.GetGroupIndex(index);
             var lvItem = new LVITEM() {iItem = index, iGroupId = iGroup, iGroup = iGroup, mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED};
             var lvItemImageMask = new LVITEM() {iItem = index, iGroupId = iGroup, iGroup = iGroup, mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_STATEIMAGEMASK};
@@ -312,16 +312,16 @@ namespace BExplorer.Shell {
         } else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
           if (!sho.IsIconLoaded) {
             /*
-						if (sho.IsNetworkPath || this._ShellViewEx.IsSearchNavigating) {
-							Task.Run(() => {
-								this._IconsForRetreval.Enqueue(index);
-							});
-						} else {
-							Task.Run(() => {
-								this._IconsForRetreval.Enqueue(index);
-							});
-						}
-						*/
+            if (sho.IsNetworkPath || this._ShellViewEx.IsSearchNavigating) {
+              Task.Run(() => {
+                this._IconsForRetreval.Enqueue(index);
+              });
+            } else {
+              Task.Run(() => {
+                this._IconsForRetreval.Enqueue(index);
+              });
+            }
+            */
             //Task.Run(() => {
             this._IconsForRetreval.Enqueue(index);
             //});
@@ -362,16 +362,16 @@ namespace BExplorer.Shell {
       Int32 width2, height2;
       if (addornerType == 2) {
         var addorner = new Bitmap(width + 7, height + 7, PixelFormat.Format32bppPArgb);
-        LinearGradientBrush gb = new LinearGradientBrush(new System.Drawing.Point(0, 0), new System.Drawing.Point(0, this._CurrentSize), Color.White, Color.WhiteSmoke);
-        addorner = Gdi32.RoundCorners(addorner, 0, gb);
+        LinearGradientBrush gb = new LinearGradientBrush(new System.Drawing.Point(0, 0), new System.Drawing.Point(0, this._CurrentSize), Color.WhiteSmoke, Color.WhiteSmoke);
+        addorner = Gdi32.RoundCorners(addorner, 0, gb, Pens.LightGray);
         gb.Dispose();
         var hAddorner = addorner.GetHbitmap();
 
         Gdi32.ConvertPixelByPixel(hAddorner, out width2, out height2);
-        Gdi32.NativeDraw(hdc, hAddorner, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width2) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height2) / 2, width2, height2, isGhosted);
+        Gdi32.NativeDraw(hdc, hAddorner, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width2) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height2), width2, height2, isGhosted);
         Gdi32.DeleteObject(hAddorner);
         addorner.Dispose();
-        Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width2) / 2 + 3, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height2) / 2 + 3, width, height, isGhosted);
+        Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width2) / 2 + 3, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height2) + 3, width, height, isGhosted);
       } else if (addornerType == 3) {
         var isWide = (height / (Double) width) < 0.6;
         var hAddorner = isWide ? this._VideAddornerWide.GetHBitmap(this._CurrentSize, true, true) : this._VideAddorner.GetHBitmap(this._CurrentSize, true, true);

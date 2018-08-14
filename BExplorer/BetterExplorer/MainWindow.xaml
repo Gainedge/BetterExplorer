@@ -803,10 +803,10 @@
                       FontWeight="Normal"
                       Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
                     <!--<Label Margin="20,0,40,0"
-							                 Content="Alexey Barkalov"
-							                 FontSize="14"
-							                 FontStyle="Italic"
-							                 FontWeight="Bold" />-->
+                               Content="Alexey Barkalov"
+                               FontSize="14"
+                               FontStyle="Italic"
+                               FontWeight="Bold" />-->
                     <Ribbon:SeparatorTabItem
                       Margin="0,20,50,0"
                       Header="{DynamicResource lblAboutBEHeader}"
@@ -938,16 +938,16 @@
                     </Ribbon:CheckBox>
                     <Label x:Name="paddinglbl7" Content="         " />
                     <!--
-						<Ribbon:CheckBox Name="chkIsCompartibleRename" Header="{DynamicResource chkIsCompartibleRename}" Ribbon:KeyTip.Keys="R" Checked="chkIsCompartibleRename_Checked" Unchecked="chkIsCompartibleRename_Unchecked">
-						<Ribbon:CheckBox.ToolTip>
-						<Ribbon:ScreenTip
-						Title="{DynamicResource chkIsCompartibleRenameHCP}"
-						Text="{DynamicResource chkIsCompartibleRenameICP}"
-						Width="250"
-						IsRibbonAligned ="false"/>
-						</Ribbon:CheckBox.ToolTip>
-						</Ribbon:CheckBox>
-						<Label Name="paddinglbl8" Content="         "/>
+            <Ribbon:CheckBox Name="chkIsCompartibleRename" Header="{DynamicResource chkIsCompartibleRename}" Ribbon:KeyTip.Keys="R" Checked="chkIsCompartibleRename_Checked" Unchecked="chkIsCompartibleRename_Unchecked">
+            <Ribbon:CheckBox.ToolTip>
+            <Ribbon:ScreenTip
+            Title="{DynamicResource chkIsCompartibleRenameHCP}"
+            Text="{DynamicResource chkIsCompartibleRenameICP}"
+            Width="250"
+            IsRibbonAligned ="false"/>
+            </Ribbon:CheckBox.ToolTip>
+            </Ribbon:CheckBox>
+            <Label Name="paddinglbl8" Content="         "/>
                     -->
                     <Ribbon:CheckBox
                       x:Name="chkIsCFO"
@@ -983,19 +983,19 @@
                     <!--  (This is a hidden setting. Use the "IsVistaStyleListView" Registry key to change this setting.)  -->
                     <Label Content="         " Visibility="Collapsed" />
                     <!--
-						<Ribbon:CheckBox x:Name="chkOldSysListView"
-						Checked="chkIsVistaStyleListView_Checked"
-						Ribbon:KeyTip.Keys="V"
-						Unchecked="chkIsVistaStyleListView_Unchecked" Header="{DynamicResource txtIsVistaStyleListView}"
-						Visibility="Collapsed">
-						<Ribbon:CheckBox.ToolTip>
-						<Ribbon:ScreenTip Title="{DynamicResource txtIsVistaStyleListView}"
-						Width="250"
-						IsRibbonAligned="false"
-						Text="{DynamicResource txtIsVistaStyleListViewTTX}" />
-						</Ribbon:CheckBox.ToolTip>
-						</Ribbon:CheckBox>
-					-->
+            <Ribbon:CheckBox x:Name="chkOldSysListView"
+            Checked="chkIsVistaStyleListView_Checked"
+            Ribbon:KeyTip.Keys="V"
+            Unchecked="chkIsVistaStyleListView_Unchecked" Header="{DynamicResource txtIsVistaStyleListView}"
+            Visibility="Collapsed">
+            <Ribbon:CheckBox.ToolTip>
+            <Ribbon:ScreenTip Title="{DynamicResource txtIsVistaStyleListView}"
+            Width="250"
+            IsRibbonAligned="false"
+            Text="{DynamicResource txtIsVistaStyleListViewTTX}" />
+            </Ribbon:CheckBox.ToolTip>
+            </Ribbon:CheckBox>
+          -->
                     <Label Content="         " />
                     <Ribbon:CheckBox
                       x:Name="chkTraditionalNameGrouping"
@@ -1272,14 +1272,14 @@
                     <TextBlock Text="Ukrainian: Venorme" />
                     <TextBlock Text="Vietnamese: 7on7off" />
                     <!--
-						<Ribbon:SeparatorTabItem Header="Remove Setting" Visibility="Hidden"/>
-						<TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" Margin="0,0,60,0" Visibility="Hidden"
-						Text="Because this build updates the Registry after installation, there would be a Registry error if
-						this build were deleted and BetterExplorer uninstalled. Therefore, until the next release and this Registry setting is set during installation,
-						this feature will be provided in case you wish to remove and uninstall BetterExplorer altogether. If you delete the Registry setting, it will be
-						re-applied next time you start BetterExplorer. Only use this if you plan on uninstalling BetterExplorer after this." />
-						<Button Name="btnRemoveLangSetting" Margin="0,5,0,0" Content="Remove This Setting" Click="btnRemoveLangSetting_Click" HorizontalAlignment="Left" Width="120" Visibility="Hidden"/>
-					-->
+            <Ribbon:SeparatorTabItem Header="Remove Setting" Visibility="Hidden"/>
+            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" Margin="0,0,60,0" Visibility="Hidden"
+            Text="Because this build updates the Registry after installation, there would be a Registry error if
+            this build were deleted and BetterExplorer uninstalled. Therefore, until the next release and this Registry setting is set during installation,
+            this feature will be provided in case you wish to remove and uninstall BetterExplorer altogether. If you delete the Registry setting, it will be
+            re-applied next time you start BetterExplorer. Only use this if you plan on uninstalling BetterExplorer after this." />
+            <Button Name="btnRemoveLangSetting" Margin="0,5,0,0" Content="Remove This Setting" Click="btnRemoveLangSetting_Click" HorizontalAlignment="Left" Width="120" Visibility="Hidden"/>
+          -->
                   </StackPanel>
                 </TabItem>
                 <TabItem
@@ -1723,61 +1723,61 @@
                       Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
 
                     <!--
-									<Ribbon:CheckBox x:Name="chkIsLastTabCloseApp"
-									 Height="22"
-									 Margin="7,275,0,0"
-									 VerticalAlignment="Top"
-									 Click="chkIsLastTabCloseApp_Click"
-									 Header="Closing last Tab closes Application" />
-									-->
+                  <Ribbon:CheckBox x:Name="chkIsLastTabCloseApp"
+                   Height="22"
+                   Margin="7,275,0,0"
+                   VerticalAlignment="Top"
+                   Click="chkIsLastTabCloseApp_Click"
+                   Header="Closing last Tab closes Application" />
+                  -->
 
                   </Grid>
                 </TabItem>
                 <!--
-					<TabItem Header="Accounts"
-					Ribbon:KeyTip.Keys="F">
-					<Grid Margin="20,5,0,0">
-					<Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
-					Header="Connected Accounts/Locations"
-					Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-					<Ribbon:Button x:Name="btnAddWebServer"
-					Height="88"
-					Margin="0,35,0,0"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Top"
-					Header="Add Server"
-					Icon="Images\add16.png"
-					IsDefinitive="True"
-					LargeIcon="Images\add32.png"
-					Ribbon:KeyTip.Keys="A"
-					Ribbon:KeyTip.AutoPlacement="False"
-					Ribbon:KeyTip.VerticalAlignment="Bottom"
-					Ribbon:KeyTip.HorizontalAlignment="Center"
-					Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddWebServer_Click">
-					</Ribbon:Button>
-					<Ribbon:Button x:Name="btnAddStorageService"
-					Height="88"
-					Margin="100,35,0,0"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Top"
-					Header="Add Account"
-					Icon="Images\add16.png"
-					IsDefinitive="True"
-					LargeIcon="Images\add32.png"
-					Ribbon:KeyTip.Keys="A"
-					Ribbon:KeyTip.AutoPlacement="False"
-					Ribbon:KeyTip.VerticalAlignment="Bottom"
-					Ribbon:KeyTip.HorizontalAlignment="Center"
-					Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddStorageService_Click" >
-					</Ribbon:Button>
-					<ScrollViewer Margin="20,135,20,20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
-					<StackPanel x:Name="pnlServers">
-					
-					</StackPanel>
-					</ScrollViewer>
-					</Grid>
-					</TabItem>
-				-->
+          <TabItem Header="Accounts"
+          Ribbon:KeyTip.Keys="F">
+          <Grid Margin="20,5,0,0">
+          <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
+          Header="Connected Accounts/Locations"
+          Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+          <Ribbon:Button x:Name="btnAddWebServer"
+          Height="88"
+          Margin="0,35,0,0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Top"
+          Header="Add Server"
+          Icon="Images\add16.png"
+          IsDefinitive="True"
+          LargeIcon="Images\add32.png"
+          Ribbon:KeyTip.Keys="A"
+          Ribbon:KeyTip.AutoPlacement="False"
+          Ribbon:KeyTip.VerticalAlignment="Bottom"
+          Ribbon:KeyTip.HorizontalAlignment="Center"
+          Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddWebServer_Click">
+          </Ribbon:Button>
+          <Ribbon:Button x:Name="btnAddStorageService"
+          Height="88"
+          Margin="100,35,0,0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Top"
+          Header="Add Account"
+          Icon="Images\add16.png"
+          IsDefinitive="True"
+          LargeIcon="Images\add32.png"
+          Ribbon:KeyTip.Keys="A"
+          Ribbon:KeyTip.AutoPlacement="False"
+          Ribbon:KeyTip.VerticalAlignment="Bottom"
+          Ribbon:KeyTip.HorizontalAlignment="Center"
+          Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddStorageService_Click" >
+          </Ribbon:Button>
+          <ScrollViewer Margin="20,135,20,20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
+          <StackPanel x:Name="pnlServers">
+          
+          </StackPanel>
+          </ScrollViewer>
+          </Grid>
+          </TabItem>
+        -->
               </TabControl>
             </Ribbon:BackstageTabItem>
             <Ribbon:Button
@@ -2122,12 +2122,12 @@
             Visibility="Visible" />
           <!--  This is the original properties button, hidden because the "Clear Properties" button does nothing right now  -->
           <!--
-			<Ribbon:SplitButton Header="{DynamicResource btnPropertiesCP}" Ribbon:KeyTip.Keys="PR" LargeIcon="Images\prop32.png" Icon="Images\prop16.png" Name="btnProperties" Click="btnProperties_Click" Visibility="Collapsed" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed">
-			<Ribbon:MenuItem Header="{DynamicResource btnPropertiesCP}" Name="btnProperties2" Click="btnProperties_Click" Ribbon:KeyTip.Keys="PD"/>
-			<Separator/>
-			<Ribbon:MenuItem Header="Clear Properties" Ribbon:KeyTip.Keys="CP"/>
-			</Ribbon:SplitButton>
-			-->
+      <Ribbon:SplitButton Header="{DynamicResource btnPropertiesCP}" Ribbon:KeyTip.Keys="PR" LargeIcon="Images\prop32.png" Icon="Images\prop16.png" Name="btnProperties" Click="btnProperties_Click" Visibility="Collapsed" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed">
+      <Ribbon:MenuItem Header="{DynamicResource btnPropertiesCP}" Name="btnProperties2" Click="btnProperties_Click" Ribbon:KeyTip.Keys="PD"/>
+      <Separator/>
+      <Ribbon:MenuItem Header="Clear Properties" Ribbon:KeyTip.Keys="CP"/>
+      </Ribbon:SplitButton>
+      -->
           <Ribbon:SplitButton
             x:Name="btnOpenWith"
             Ribbon:KeyTip.Keys="O"
@@ -3249,15 +3249,15 @@
                   <Ribbon:RibbonToolBarControlDefinition Target="imgSizeDisplay" />
                 </Ribbon:RibbonToolBarRow>
                 <!--
-					<Ribbon:RibbonToolBarRow>
-					<Ribbon:RibbonToolBarControlDefinition Target="imgWidth" />
-					<Ribbon:RibbonToolBarControlDefinition Target="imgdWidth" Width="50"/>
-					</Ribbon:RibbonToolBarRow>
-					<Ribbon:RibbonToolBarRow>
-					<Ribbon:RibbonToolBarControlDefinition Target="imgHeight" />
-					<Ribbon:RibbonToolBarControlDefinition Target="imgdHeight" Width="50"/>
-					</Ribbon:RibbonToolBarRow>
-				-->
+          <Ribbon:RibbonToolBarRow>
+          <Ribbon:RibbonToolBarControlDefinition Target="imgWidth" />
+          <Ribbon:RibbonToolBarControlDefinition Target="imgdWidth" Width="50"/>
+          </Ribbon:RibbonToolBarRow>
+          <Ribbon:RibbonToolBarRow>
+          <Ribbon:RibbonToolBarControlDefinition Target="imgHeight" />
+          <Ribbon:RibbonToolBarControlDefinition Target="imgdHeight" Width="50"/>
+          </Ribbon:RibbonToolBarRow>
+        -->
               </Ribbon:RibbonToolBarLayoutDefinition>
               <!--  Small Size of the RibbonToolBar  -->
               <Ribbon:RibbonToolBarLayoutDefinition Size="Small">
@@ -3309,13 +3309,13 @@
           Header="{DynamicResource tgImgViewCP}"
           IsLauncherVisible="False">
           <!--
-			<Ribbon:Button x:Name="btnSlideShow"
-			Header="{DynamicResource btnSlideShowCP}"
-			LargeIcon="Images\slideshow32.png"
-			Ribbon:KeyTip.Keys="H"
-			SizeDefinition="Large"
-			Visibility="Collapsed" />
-			-->
+      <Ribbon:Button x:Name="btnSlideShow"
+      Header="{DynamicResource btnSlideShowCP}"
+      LargeIcon="Images\slideshow32.png"
+      Ribbon:KeyTip.Keys="H"
+      SizeDefinition="Large"
+      Visibility="Collapsed" />
+      -->
           <Ribbon:SplitButton
             x:Name="btnWallpaper"
             Ribbon:KeyTip.Keys="W"
@@ -3524,12 +3524,12 @@
         Header="{DynamicResource tabSearchCP}"
         ReduceOrder="tsgKind,tsgKind,tsgOther,tsgOther,tsgKind,tsgOther">
         <!--
-			<Ribbon:RibbonGroupBox Header="Modifiers" IsLauncherVisible="False" Name="tsgModifiers">
-			<Ribbon:ToggleButton SizeDefinition="Middle" Header="AND" Tag="AND" GroupName="b1" Visibility="Collapsed"/>
-			<Ribbon:ToggleButton SizeDefinition="Middle" Header="OR" Tag="OR" GroupName="b1"/>
-			<Ribbon:ToggleButton SizeDefinition="Middle" Header="NOT" Tag="NOT" GroupName="b1"/>
-			</Ribbon:RibbonGroupBox>
-		-->
+      <Ribbon:RibbonGroupBox Header="Modifiers" IsLauncherVisible="False" Name="tsgModifiers">
+      <Ribbon:ToggleButton SizeDefinition="Middle" Header="AND" Tag="AND" GroupName="b1" Visibility="Collapsed"/>
+      <Ribbon:ToggleButton SizeDefinition="Middle" Header="OR" Tag="OR" GroupName="b1"/>
+      <Ribbon:ToggleButton SizeDefinition="Middle" Header="NOT" Tag="NOT" GroupName="b1"/>
+      </Ribbon:RibbonGroupBox>
+    -->
         <Ribbon:RibbonGroupBox
           x:Name="tsgKind"
           Header="{DynamicResource tsgKindCP}"
@@ -3769,12 +3769,12 @@
             LargeIcon="Images\jssearch32.png"
             SizeDefinition="Large,Middle,Middle" />
           <!--
-			<Ribbon:Button Header="Advanced Search"
-			Icon="Images\searchadv16.png"
-			LargeIcon="Images\searchadv32.png"
-			SizeDefinition="Large,Middle,Middle"
-			Visibility="Collapsed" />
-			-->
+      <Ribbon:Button Header="Advanced Search"
+      Icon="Images\searchadv16.png"
+      LargeIcon="Images\searchadv32.png"
+      SizeDefinition="Large,Middle,Middle"
+      Visibility="Collapsed" />
+      -->
         </Ribbon:RibbonGroupBox>
       </Ribbon:RibbonTabItem>
     </Ribbon:Ribbon>

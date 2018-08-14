@@ -15,6 +15,7 @@ using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using MenuItem = Fluent.MenuItem;
+using TabControl = Wpf.Controls.TabControl;
 
 namespace BetterExplorer {
   using Settings;
@@ -37,6 +38,7 @@ namespace BetterExplorer {
           this.NavigationController(sho);
         }
         else {
+          this.tcMain.ShouldNavigateOnSelection = true;
           this.SelectTab(this.tcMain.NewTab(sho, true));
         }
       }
@@ -59,7 +61,7 @@ namespace BetterExplorer {
           if (!isLastTab) {
             continue;
           }
-
+          this.tcMain.ShouldNavigateOnSelection = true;
           this.SelectTab(tab);
           this.bcbc.SetPathWithoutNavigate(str);
         }
@@ -214,15 +216,19 @@ namespace BetterExplorer {
     /// <param name="sender">the tab control itself</param>
     /// <param name="e">Event arguments</param>
     private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-      if (e.RemovedItems.Count > 0) {
-        var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
+      var tabControl = sender as TabControl;
+      if (tabControl.ShouldNavigateOnSelection) {
+        if (e.RemovedItems.Count > 0) {
+          var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
 
-        if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
-          tab.SelectedItems = this._ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+          if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
+            tab.SelectedItems = this._ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+          }
         }
-      }
-      if (e.AddedItems.Count > 0) {
-        this.SelectTab(e.AddedItems[0] as Wpf.Controls.TabItem);
+
+        if (e.AddedItems.Count > 0) {
+          this.SelectTab(e.AddedItems[0] as Wpf.Controls.TabItem);
+        }
       }
     }
 

@@ -2077,8 +2077,9 @@ namespace BExplorer.Shell {
       User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.HeaderDragDrop, (Int32)ListViewExtendedStyles.HeaderDragDrop);
       User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.LabelTip, (Int32)ListViewExtendedStyles.LabelTip);
       User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.InfoTip, (Int32)ListViewExtendedStyles.InfoTip);
-      User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.UnderlineHot, (Int32)ListViewExtendedStyles.UnderlineHot);
+      //User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.UnderlineHot, (Int32)ListViewExtendedStyles.UnderlineHot);
       User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.AutosizeColumns, (Int32)ListViewExtendedStyles.AutosizeColumns);
+      User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.FlatsB, (Int32)ListViewExtendedStyles.FlatsB);
 
       IntPtr iiListViewPrt = IntPtr.Zero;
       var iid = typeof(IListView).GUID;
@@ -2086,6 +2087,7 @@ namespace BExplorer.Shell {
       this._IIListView = (IListView)Marshal.GetTypedObjectForIUnknown(iiListViewPrt, typeof(IListView));
 
       this._IIListView.SetSelectionFlags(1, 1);
+      this._IIListView.SetTextBackgroundColor((IntPtr)(-1));//ColorTranslator.ToWin32(Color.White));
 
       this.Focus();
       User32.SetForegroundWindow(this.LVHandle);
@@ -2146,11 +2148,11 @@ namespace BExplorer.Shell {
       var reader = command1.ExecuteReader();
       var sql = reader.Read()
         ? @"UPDATE foldersettings
-							SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn,
-									 View = @View, LastSortedColumn = @LastSortedColumn, Columns = @Columns, IconSize = @IconSize
-							 WHERE Path = @Path"
+              SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn,
+                   View = @View, LastSortedColumn = @LastSortedColumn, Columns = @Columns, IconSize = @IconSize
+               WHERE Path = @Path"
         : @"INSERT into foldersettings (Path, LastSortOrder, LastGroupOrder, LastGroupCollumn, View, LastSortedColumn, Columns, IconSize)
-							VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn, @Columns, @IconSize)";
+              VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn, @Columns, @IconSize)";
 
       Int32[] orders = new Int32[this.Collumns.Count];
       User32.SendMessage(this.LVHandle, (UInt32)MSG.LVM_GETCOLUMNORDERARRAY, orders.Length, orders);
@@ -2313,7 +2315,7 @@ namespace BExplorer.Shell {
       }
     }
 
-    public Int32 GetGroupIndex(Int32 itemIndex) => itemIndex == -1 || itemIndex >= this.Items.Count ? -1 : this.Items[itemIndex].GroupIndex;
+    public Int32 GetGroupIndex(Int32 itemIndex) => this.IsGroupsEnabled ? itemIndex == -1 || itemIndex >= this.Items.Count ? -1 : this.Items[itemIndex].GroupIndex : -1;
 
     public void OpenShareUI() => Shell32.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(this.GetFirstSelectedItem().ParsingName.Replace(@"\\", @"\")));
 
@@ -2799,127 +2801,130 @@ namespace BExplorer.Shell {
         return;
       }
 
-      this.BeginInvoke(new MethodInvoker(() => this._IIListView.RemoveAllGroups()));
+      this.BeginInvoke(new MethodInvoker(() => {
+        this._IIListView.RemoveAllGroups();
+        this.Groups.Clear();
 
-      this.Groups.Clear();
-      if (col.CollumnType == typeof(String)) {
-        if (Settings.BESettings.IsTraditionalNameGrouping) {
-          var groups = this.Items.ToArray().GroupBy(k => k.DisplayName.ToUpperInvariant().First(), e => e).OrderBy(o => o.Key);
+        if (col.CollumnType == typeof(String)) {
+          if (Settings.BESettings.IsTraditionalNameGrouping) {
+            var groups = this.Items.ToArray().GroupBy(k => k.DisplayName.ToUpperInvariant().First(), e => e).OrderBy(o => o.Key);
+            var i = reversed ? groups.Count() - 1 : 0;
+            foreach (var group in groups) {
+              var groupItems = group.Select(s => s).ToArray();
+              groupItems.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
+              this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{group.Key.ToString()} ({groupItems.Count()})" });
+            }
+          } else {
+            var i = reversed ? 3 : 0;
+
+            Action<String, String, Boolean> addNameGroup = (String char1, String char2, Boolean isOthers) => {
+              var testgrn = new ListViewGroupEx();
+              if (isOthers) {
+                testgrn.Items = this.Items.Where(w => (w.DisplayName.ToUpperInvariant().First() < Char.Parse("A") || w.DisplayName.ToUpperInvariant().First() > Char.Parse("Z")) &&
+                                                      (w.DisplayName.ToUpperInvariant().First() < Char.Parse("0") || w.DisplayName.ToUpperInvariant().First() > Char.Parse("9"))).ToArray();
+              } else {
+                testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse(char1) && w.DisplayName.ToUpperInvariant().First() <= Char.Parse(char2)).ToArray();
+              }
+
+              testgrn.Header = isOthers ? char1 + $" ({testgrn.Items.Count()})" : char1 + " - " + char2 + $" ({testgrn.Items.Count()})";
+              testgrn.Index = reversed ? i-- : i++;
+              this.Groups.Add(testgrn);
+            };
+
+            addNameGroup("0", "9", false);
+            addNameGroup("A", "H", false);
+            addNameGroup("I", "P", false);
+            addNameGroup("Q", "Z", false);
+            addNameGroup("Others", String.Empty, true);
+          }
+        } else if (col.CollumnType == typeof(Int64)) {
+          var j = reversed ? 7 : 0;
+
+          // TODO: Upgrade next to use an Action<>
+
+          var uspec = new ListViewGroupEx();
+          uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
+          uspec.Header = $"Unspecified ({uspec.Items.Count()})";
+          uspec.Index = reversed ? j-- : j++;
+          this.Groups.Add(uspec);
+
+          var testgrn = new ListViewGroupEx();
+          testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) == 0 && !w.IsFolder).ToArray();
+          testgrn.Header = $"Empty ({testgrn.Items.Count()})";
+          testgrn.Index = reversed ? j-- : j++;
+          this.Groups.Add(testgrn);
+
+          var testgr = new ListViewGroupEx();
+          testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 10 * 1024).ToArray();
+          testgr.Header = $"Very Small ({testgr.Items.Count()})";
+          testgr.Index = reversed ? j-- : j++;
+          this.Groups.Add(testgr);
+
+          var testgr2 = new ListViewGroupEx();
+          testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 100 * 1024).ToArray();
+          testgr2.Header = $"Small ({testgr2.Items.Count()})";
+          testgr2.Index = reversed ? j-- : j++;
+          this.Groups.Add(testgr2);
+
+          var testgr3 = new ListViewGroupEx();
+          testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 1 * 1024 * 1024)
+            .ToArray();
+          testgr3.Header = $"Medium ({testgr3.Items.Count()})";
+          testgr3.Index = reversed ? j-- : j++;
+          this.Groups.Add(testgr3);
+
+          var testgr4 = new ListViewGroupEx();
+          testgr4.Items = this.Items
+            .Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 16 * 1024 * 1024).ToArray();
+          testgr4.Header = $"Big ({testgr4.Items.Count()})";
+          testgr4.Index = reversed ? j-- : j++;
+          this.Groups.Add(testgr4);
+
+          var testgr5 = new ListViewGroupEx();
+          testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 16 * 1024 * 1024 &&
+                                                Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 128 * 1024 * 1024).ToArray();
+          testgr5.Header = $"Huge ({testgr5.Items.Count()})";
+          testgr5.Index = reversed ? j-- : j++;
+          this.Groups.Add(testgr5);
+
+          var testgr6 = new ListViewGroupEx();
+          testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 128 * 1024 * 1024).ToArray();
+          testgr6.Header = $"Gigantic ({testgr6.Items.Count()})";
+          testgr6.Index = reversed ? j-- : j++;
+          this.Groups.Add(testgr6);
+        } else if (col.CollumnType == typeof(PerceivedType)) {
+          var groups = this.Items.GroupBy(k => k.GetPropertyValue(col.pkey, typeof(String)).Value, e => e).OrderBy(o => o.Key);
           var i = reversed ? groups.Count() - 1 : 0;
-          foreach (var group in groups) {
+          foreach (var group in groups.ToArray()) {
             var groupItems = group.Select(s => s).ToArray();
-            groupItems.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
-            this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{group.Key.ToString()} ({groupItems.Count()})" });
+            this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{((PerceivedType)group.Key).ToString()} ({groupItems.Count()})" });
           }
         } else {
-          var i = reversed ? 3 : 0;
-
-          Action<String, String, Boolean> addNameGroup = (String char1, String char2, Boolean isOthers) => {
-            var testgrn = new ListViewGroupEx();
-            if (isOthers) {
-              testgrn.Items = this.Items.Where(w => (w.DisplayName.ToUpperInvariant().First() < Char.Parse("A") || w.DisplayName.ToUpperInvariant().First() > Char.Parse("Z")) &&
-                                                    (w.DisplayName.ToUpperInvariant().First() < Char.Parse("0") || w.DisplayName.ToUpperInvariant().First() > Char.Parse("9"))).ToArray();
-            } else {
-              testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse(char1) && w.DisplayName.ToUpperInvariant().First() <= Char.Parse(char2)).ToArray();
-            }
-
-            testgrn.Header = isOthers ? char1 + $" ({testgrn.Items.Count()})" : char1 + " - " + char2 + $" ({testgrn.Items.Count()})";
-            testgrn.Index = reversed ? i-- : i++;
-            this.Groups.Add(testgrn);
-          };
-
-          addNameGroup("0", "9", false);
-          addNameGroup("A", "H", false);
-          addNameGroup("I", "P", false);
-          addNameGroup("Q", "Z", false);
-          addNameGroup("Others", String.Empty, true);
+          var groups = this.Items.GroupBy(k => k.GetPropertyValue(col.pkey, typeof(String)).Value, e => e).OrderBy(o => o.Key);
+          var i = reversed ? groups.Count() - 1 : 0;
+          foreach (var group in groups.ToArray()) {
+            var groupItems = group.Select(s => s).ToArray();
+            this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{group.Key.ToString()} ({groupItems.Count()})" });
+          }
         }
-      } else if (col.CollumnType == typeof(Int64)) {
-        var j = reversed ? 7 : 0;
 
-        // TODO: Upgrade next to use an Action<>
-
-        var uspec = new ListViewGroupEx();
-        uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
-        uspec.Header = $"Unspecified ({uspec.Items.Count()})";
-        uspec.Index = reversed ? j-- : j++;
-        this.Groups.Add(uspec);
-
-        var testgrn = new ListViewGroupEx();
-        testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) == 0 && !w.IsFolder).ToArray();
-        testgrn.Header = $"Empty ({testgrn.Items.Count()})";
-        testgrn.Index = reversed ? j-- : j++;
-        this.Groups.Add(testgrn);
-
-        var testgr = new ListViewGroupEx();
-        testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 10 * 1024).ToArray();
-        testgr.Header = $"Very Small ({testgr.Items.Count()})";
-        testgr.Index = reversed ? j-- : j++;
-        this.Groups.Add(testgr);
-
-        var testgr2 = new ListViewGroupEx();
-        testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 100 * 1024).ToArray();
-        testgr2.Header = $"Small ({testgr2.Items.Count()})";
-        testgr2.Index = reversed ? j-- : j++;
-        this.Groups.Add(testgr2);
-
-        var testgr3 = new ListViewGroupEx();
-        testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 1 * 1024 * 1024)
-          .ToArray();
-        testgr3.Header = $"Medium ({testgr3.Items.Count()})";
-        testgr3.Index = reversed ? j-- : j++;
-        this.Groups.Add(testgr3);
-
-        var testgr4 = new ListViewGroupEx();
-        testgr4.Items = this.Items
-          .Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 16 * 1024 * 1024).ToArray();
-        testgr4.Header = $"Big ({testgr4.Items.Count()})";
-        testgr4.Index = reversed ? j-- : j++;
-        this.Groups.Add(testgr4);
-
-        var testgr5 = new ListViewGroupEx();
-        testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 16 * 1024 * 1024 &&
-                                              Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) <= 128 * 1024 * 1024).ToArray();
-        testgr5.Header = $"Huge ({testgr5.Items.Count()})";
-        testgr5.Index = reversed ? j-- : j++;
-        this.Groups.Add(testgr5);
-
-        var testgr6 = new ListViewGroupEx();
-        testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(Int64)).Value) > 128 * 1024 * 1024).ToArray();
-        testgr6.Header = $"Gigantic ({testgr6.Items.Count()})";
-        testgr6.Index = reversed ? j-- : j++;
-        this.Groups.Add(testgr6);
-      } else if (col.CollumnType == typeof(PerceivedType)) {
-        var groups = this.Items.GroupBy(k => k.GetPropertyValue(col.pkey, typeof(String)).Value, e => e).OrderBy(o => o.Key);
-        var i = reversed ? groups.Count() - 1 : 0;
-        foreach (var group in groups.ToArray()) {
-          var groupItems = group.Select(s => s).ToArray();
-          this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{((PerceivedType)group.Key).ToString()} ({groupItems.Count()})" });
+        if (reversed) {
+          this.Groups.Reverse();
         }
-      } else {
-        var groups = this.Items.GroupBy(k => k.GetPropertyValue(col.pkey, typeof(String)).Value, e => e).OrderBy(o => o.Key);
-        var i = reversed ? groups.Count() - 1 : 0;
-        foreach (var group in groups.ToArray()) {
-          var groupItems = group.Select(s => s).ToArray();
-          this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{group.Key.ToString()} ({groupItems.Count()})" });
+
+        this._IIListView.SetItemCount(this.Items.Count, 0x2);
+        foreach (var group in this.Groups.ToArray()) {
+          group.Items.ToList().ForEach(e => e.GroupIndex = group.Index);
+          var nativeGroup = group.ToNativeListViewGroup();
+          var insertedPosition = -1;
+          this._IIListView.InsertGroup(-1, nativeGroup, out insertedPosition);
         }
-      }
 
-      if (reversed) {
-        this.Groups.Reverse();
-      }
+        this.LastGroupCollumn = col;
+        this.LastGroupOrder = reversed ? SortOrder.Descending : SortOrder.Ascending;
+        this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
+      }));
 
-      this.BeginInvoke(new MethodInvoker(() => { this._IIListView.SetItemCount(this.Items.Count, 0x2); }));
-      foreach (var group in this.Groups.ToArray()) {
-        group.Items.ToList().ForEach(e => e.GroupIndex = group.Index);
-        var nativeGroup = group.ToNativeListViewGroup();
-        var insertedPosition = -1;
-        this.BeginInvoke(new MethodInvoker(() => { this._IIListView.InsertGroup(-1, nativeGroup, out insertedPosition); }));
-      }
-
-      this.LastGroupCollumn = col;
-      this.LastGroupOrder = reversed ? SortOrder.Descending : SortOrder.Ascending;
-      this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
     }
 
     /// <summary>
@@ -4124,7 +4129,7 @@ namespace BExplorer.Shell {
     [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
     private void ProcessCustomDrawPostPaint(ref Message m, User32.NMLVCUSTOMDRAW nmlvcd, Int32 index, IntPtr hdc, IListItemEx sho, Color? textColor) {
       try {
-        if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0 && this._CurrentDrawIndex == -1) {
+        if (nmlvcd.clrTextBk == -1 && nmlvcd.dwItemType == 0 && this._CurrentDrawIndex == -1) {
           this._CurrentDrawIndex = index;
           var lvi = default(LVITEMINDEX);
           lvi.iItem = index;
@@ -4188,25 +4193,25 @@ namespace BExplorer.Shell {
             break;
 
           case CustomDraw.CDDS_ITEMPREPAINT:
-            if (nmlvcd.clrTextBk != 0) {
+            if (nmlvcd.clrTextBk == -1) {
               if ((nmlvcd.nmcd.uItemState & CDIS.DROPHILITED) == CDIS.DROPHILITED && index != this._LastDropHighLightedItemIndex) {
                 nmlvcd.nmcd.uItemState = CDIS.DEFAULT;
-                Marshal.StructureToPtr(nmlvcd, m.LParam, false);
               }
 
               if (index == this._LastDropHighLightedItemIndex) {
                 nmlvcd.nmcd.uItemState |= CDIS.DROPHILITED;
-                Marshal.StructureToPtr(nmlvcd, m.LParam, false);
               }
 
               if (textColor == null) {
                 m.Result = (IntPtr)(CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
               } else {
                 nmlvcd.clrText = (UInt32)ColorTranslator.ToWin32(textColor.Value);
-                Marshal.StructureToPtr(nmlvcd, m.LParam, false);
 
                 m.Result = (IntPtr)(CustomDraw.CDRF_NEWFONT | CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW);
               }
+
+              //nmlvcd.clrTextBk = -1;// (UInt32)ColorTranslator.ToWin32(Color.DimGray);
+              Marshal.StructureToPtr(nmlvcd, m.LParam, false);
             } else {
               m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
             }
