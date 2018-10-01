@@ -10,6 +10,7 @@ namespace BExplorer.Shell {
         var column = new LVCOLUMN() { cx = 75, iSubItem = 0, pszText = "Name", fmt = LVCFMT.LEFT };
         column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_MINWIDTH;
         User32.SendMessage(shellView.LVHandle, BExplorer.Shell.Interop.MSG.LVM_INSERTCOLUMN, 0, ref column);
+        
 
         var collumn = column.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 10 }, typeof(String), false, 200);
         collumn.ID = "A0";
@@ -21,7 +22,7 @@ namespace BExplorer.Shell {
           var column2 = new LVCOLUMN() { cx = 100, iSubItem = 1, pszText = "Type", fmt = LVCFMT.LEFT };
           column2.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_SUBITEM;
           User32.SendMessage(shellView.LVHandle, BExplorer.Shell.Interop.MSG.LVM_INSERTCOLUMN, 1, ref column2);
-
+          
           var columnType = column2.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 }, typeof(Type), false, 150);
           columnType.ID = "A182";
           shellView.Collumns.Add(columnType);
@@ -31,7 +32,7 @@ namespace BExplorer.Shell {
           var column3 = new LVCOLUMN() { cx = 100, iSubItem = 2, pszText = "Size", fmt = LVCFMT.RIGHT };
           column3.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_SUBITEM;
           User32.SendMessage(shellView.LVHandle, BExplorer.Shell.Interop.MSG.LVM_INSERTCOLUMN, 2, ref column3);
-
+          
           var columnSize = column3.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 12 }, typeof(long), false, 90);
           columnSize.ID = "A1";
           shellView.Collumns.Add(columnSize);
@@ -41,12 +42,13 @@ namespace BExplorer.Shell {
           var column4 = new LVCOLUMN() { cx = 100, iSubItem = 3, pszText = "Date Modified", fmt = LVCFMT.LEFT };
           column4.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_SUBITEM;
           User32.SendMessage(shellView.LVHandle, BExplorer.Shell.Interop.MSG.LVM_INSERTCOLUMN, 3, ref column4);
-
+          
           var columnDM = column4.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 14 }, typeof(DateTime), false, 150);
           columnDM.ID = "A3";
           shellView.Collumns.Add(columnDM);
         }
       }
+
     }
 
     /// <summary>

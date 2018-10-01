@@ -8,6 +8,20 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace BetterExplorer {
+  using BEHelper;
+  using BetterExplorer.UsbEject;
+  using BetterExplorerControls;
+  using BExplorer.Shell;
+  using BExplorer.Shell._Plugin_Interfaces;
+  using BExplorer.Shell.CommonFileDialogs;
+  using BExplorer.Shell.DropTargetHelper;
+  using BExplorer.Shell.Interop;
+  using Fluent;
+  using LTR.IO.ImDisk;
+  using Microsoft.Win32;
+  using Settings;
+  using SevenZip;
+  using Shell32;
   using System;
   using System.Collections.Generic;
   using System.Collections.Specialized;
@@ -35,20 +49,6 @@ namespace BetterExplorer {
   using System.Windows.Threading;
   using System.Xml;
   using System.Xml.Linq;
-  using BEHelper;
-  using BetterExplorer.UsbEject;
-  using BetterExplorerControls;
-  using BExplorer.Shell;
-  using BExplorer.Shell._Plugin_Interfaces;
-  using BExplorer.Shell.CommonFileDialogs;
-  using BExplorer.Shell.DropTargetHelper;
-  using BExplorer.Shell.Interop;
-  using Fluent;
-  using LTR.IO.ImDisk;
-  using Microsoft.Win32;
-  using Settings;
-  using SevenZip;
-  using Shell32;
   using TaskDialogInterop;
   using wyDay.Controls;
   using Clipboards = System.Windows.Forms.Clipboard;
@@ -342,6 +342,11 @@ namespace BetterExplorer {
       var mi = (sender as MenuItem);
       Collumns col = (Collumns)mi.Tag;
       this._ShellListView.SetColInView(col, !mi.IsChecked);
+      //if (mi.IsChecked) {
+      //  this.pnlShellViewControl.AddHeaderColumn(col);
+      //} else {
+      //  this.pnlShellViewControl.RemoveHeaderColumn(col);
+      //}
     }
 
     void miItem_Click(object sender, RoutedEventArgs e) {
@@ -1318,6 +1323,15 @@ namespace BetterExplorer {
       this._ShellListView.BeginItemLabelEdit += this.ShellListView_BeginItemLabelEdit;
       this._ShellListView.EndItemLabelEdit += this.ShellListView_EndItemLabelEdit;
       this._ShellListView.OnListViewCollumnsChanged += this._ShellListView_OnListViewCollumnsChanged;
+      //this._ShellListView.AfterCollumsPopulate += (sender, args) => {
+      //  if (args.Collumn != null) {
+      //    this.pnlShellViewControl.AddHeaderColumn(args.Collumn);
+      //  } else if (args.Collumns != null) {
+      //    this.pnlShellViewControl.AddHeaderColumns(args.Collumns);
+      //  } else {
+      //    this.pnlShellViewControl.ClearHeaderColumns();
+      //  }
+      //};
       this._ShellListView.BadgesData = this.Badges;
     }
 

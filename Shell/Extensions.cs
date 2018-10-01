@@ -31,25 +31,25 @@ namespace BExplorer.Shell {
   }
 
   /*
-	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-	public struct LVITEM2 {
-		public uint mask;
-		public int iItem;
-		public int iSubItem;
-		public uint state;
-		public uint stateMask;
-		public IntPtr pszText;
-		public int cchTextMax;
-		public int iImage;
-		public IntPtr lParam;
-		public int iIndent;
-		public int iGroupId;
-		public int cColumns;
-		public IntPtr puColumns;
-		public int piColFmt;
-		public int iGroup;
-	}
-	*/
+  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+  public struct LVITEM2 {
+    public uint mask;
+    public int iItem;
+    public int iSubItem;
+    public uint state;
+    public uint stateMask;
+    public IntPtr pszText;
+    public int cchTextMax;
+    public int iImage;
+    public IntPtr lParam;
+    public int iIndent;
+    public int iGroupId;
+    public int cColumns;
+    public IntPtr puColumns;
+    public int piColFmt;
+    public int iGroup;
+  }
+  */
 
   [StructLayout(LayoutKind.Sequential)]
   public struct NMHDR {
@@ -75,12 +75,12 @@ namespace BExplorer.Shell {
   }
 
   /*
-	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-	public struct NMLVDISPINFO2 {
-		public NMHDR hdr;
-		public LVITEM2 item;
-	}
-	*/
+  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+  public struct NMLVDISPINFO2 {
+    public NMHDR hdr;
+    public LVITEM2 item;
+  }
+  */
 
   public enum LVCF {
     LVCF_FMT = 0x1,
@@ -213,162 +213,162 @@ namespace BExplorer.Shell {
 
 
   /*
-	/// <SUMMARY> 
-	/// Inherited child for the class Graphics encapsulating 
-	/// additional functionality for curves and rounded rectangles. 
-	/// </SUMMARY> 
-	public class ExtendedGraphics {
-		private Graphics mGraphics;
-		public Graphics Graphics
-		{
-			get { return this.mGraphics; }
-			set { this.mGraphics = value; }
-		}
+  /// <SUMMARY> 
+  /// Inherited child for the class Graphics encapsulating 
+  /// additional functionality for curves and rounded rectangles. 
+  /// </SUMMARY> 
+  public class ExtendedGraphics {
+    private Graphics mGraphics;
+    public Graphics Graphics
+    {
+      get { return this.mGraphics; }
+      set { this.mGraphics = value; }
+    }
 
-		public ExtendedGraphics(Graphics graphics) {
-			this.Graphics = graphics;
-		}
-
-
-		#region Fills a Rounded Rectangle with integers. 
-		public void FillRoundRectangle(System.Drawing.Brush brush,
-						int x, int y,
-						int width, int height, int radius) {
-
-			float fx = Convert.ToSingle(x);
-			float fy = Convert.ToSingle(y);
-			float fwidth = Convert.ToSingle(width);
-			float fheight = Convert.ToSingle(height);
-			float fradius = Convert.ToSingle(radius);
-			this.FillRoundRectangle(brush, fx, fy,
-							fwidth, fheight, fradius);
-
-		}
-		#endregion
+    public ExtendedGraphics(Graphics graphics) {
+      this.Graphics = graphics;
+    }
 
 
-		#region Fills a Rounded Rectangle with continuous numbers.
-		public void FillRoundRectangle(System.Drawing.Brush brush,
-						float x, float y,
-						float width, float height, float radius) {
-			RectangleF rectangle = new RectangleF(x, y, width, height);
-			GraphicsPath path = this.GetRoundedRect(rectangle, radius);
-			this.Graphics.FillPath(brush, path);
-		}
-		#endregion
+    #region Fills a Rounded Rectangle with integers. 
+    public void FillRoundRectangle(System.Drawing.Brush brush,
+            int x, int y,
+            int width, int height, int radius) {
+
+      float fx = Convert.ToSingle(x);
+      float fy = Convert.ToSingle(y);
+      float fwidth = Convert.ToSingle(width);
+      float fheight = Convert.ToSingle(height);
+      float fradius = Convert.ToSingle(radius);
+      this.FillRoundRectangle(brush, fx, fy,
+              fwidth, fheight, fradius);
+
+    }
+    #endregion
 
 
-		#region Draws a Rounded Rectangle border with integers. 
-		public void DrawRoundRectangle(System.Drawing.Pen pen, int x, int y,
-						int width, int height, int radius) {
-			float fx = Convert.ToSingle(x);
-			float fy = Convert.ToSingle(y);
-			float fwidth = Convert.ToSingle(width);
-			float fheight = Convert.ToSingle(height);
-			float fradius = Convert.ToSingle(radius);
-			this.DrawRoundRectangle(pen, fx, fy, fwidth, fheight, fradius);
-		}
-		#endregion
+    #region Fills a Rounded Rectangle with continuous numbers.
+    public void FillRoundRectangle(System.Drawing.Brush brush,
+            float x, float y,
+            float width, float height, float radius) {
+      RectangleF rectangle = new RectangleF(x, y, width, height);
+      GraphicsPath path = this.GetRoundedRect(rectangle, radius);
+      this.Graphics.FillPath(brush, path);
+    }
+    #endregion
 
 
-		#region Draws a Rounded Rectangle border with continuous numbers. 
-		public void DrawRoundRectangle(System.Drawing.Pen pen,
-						float x, float y,
-						float width, float height, float radius) {
-			RectangleF rectangle = new RectangleF(x, y, width, height);
-			GraphicsPath path = this.GetRoundedRect(rectangle, radius);
-			this.Graphics.DrawPath(pen, path);
-		}
-		#endregion
+    #region Draws a Rounded Rectangle border with integers. 
+    public void DrawRoundRectangle(System.Drawing.Pen pen, int x, int y,
+            int width, int height, int radius) {
+      float fx = Convert.ToSingle(x);
+      float fy = Convert.ToSingle(y);
+      float fwidth = Convert.ToSingle(width);
+      float fheight = Convert.ToSingle(height);
+      float fradius = Convert.ToSingle(radius);
+      this.DrawRoundRectangle(pen, fx, fy, fwidth, fheight, fradius);
+    }
+    #endregion
 
 
-		#region Get the desired Rounded Rectangle path. 
-		private GraphicsPath GetRoundedRect(RectangleF baseRect,
-						 float radius) {
-			// if corner radius is less than or equal to zero, 
-			// return the original rectangle 
-			if (radius <= 0.0F) {
-				GraphicsPath mPath = new GraphicsPath();
-				mPath.AddRectangle(baseRect);
-				mPath.CloseFigure();
-				return mPath;
-			}
+    #region Draws a Rounded Rectangle border with continuous numbers. 
+    public void DrawRoundRectangle(System.Drawing.Pen pen,
+            float x, float y,
+            float width, float height, float radius) {
+      RectangleF rectangle = new RectangleF(x, y, width, height);
+      GraphicsPath path = this.GetRoundedRect(rectangle, radius);
+      this.Graphics.DrawPath(pen, path);
+    }
+    #endregion
 
-			// if the corner radius is greater than or equal to 
-			// half the width, or height (whichever is shorter) 
-			// then return a capsule instead of a lozenge 
-			if (radius >= (Math.Min(baseRect.Width, baseRect.Height)) / 2.0)
-				return GetCapsule(baseRect);
 
-			// create the arc for the rectangle sides and declare 
-			// a graphics path object for the drawing 
-			float diameter = radius * 2.0F;
-			SizeF sizeF = new SizeF(diameter, diameter);
-			RectangleF arc = new RectangleF(baseRect.Location, sizeF);
-			GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+    #region Get the desired Rounded Rectangle path. 
+    private GraphicsPath GetRoundedRect(RectangleF baseRect,
+             float radius) {
+      // if corner radius is less than or equal to zero, 
+      // return the original rectangle 
+      if (radius <= 0.0F) {
+        GraphicsPath mPath = new GraphicsPath();
+        mPath.AddRectangle(baseRect);
+        mPath.CloseFigure();
+        return mPath;
+      }
 
-			// top left arc 
-			path.AddArc(arc, 180, 90);
+      // if the corner radius is greater than or equal to 
+      // half the width, or height (whichever is shorter) 
+      // then return a capsule instead of a lozenge 
+      if (radius >= (Math.Min(baseRect.Width, baseRect.Height)) / 2.0)
+        return GetCapsule(baseRect);
 
-			//// top right arc 
-			//arc.X = baseRect.Right;// - diameter;
-			//path.AddArc(arc, 270, 0);
-			path.AddLine(baseRect.Left + radius, baseRect.Top, baseRect.Right, baseRect.Top);
-			path.AddLine(baseRect.Right, baseRect.Top, baseRect.Right, baseRect.Bottom);
-			// bottom right arc 
-			//arc.Y = baseRect.Bottom - diameter;
-			//path.AddArc(arc, 0, 90);
+      // create the arc for the rectangle sides and declare 
+      // a graphics path object for the drawing 
+      float diameter = radius * 2.0F;
+      SizeF sizeF = new SizeF(diameter, diameter);
+      RectangleF arc = new RectangleF(baseRect.Location, sizeF);
+      GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
 
-			path.AddLine(baseRect.Right, baseRect.Bottom, baseRect.Left + radius, baseRect.Bottom);
-			//path.AddLine(baseRect.Right, baseRect.Top, baseRect.Right, baseRect.Bottom);
+      // top left arc 
+      path.AddArc(arc, 180, 90);
 
-			// bottom left arc
-			//arc.X = baseRect.Left;
-			//path.AddArc(arc, 360, 90);
+      //// top right arc 
+      //arc.X = baseRect.Right;// - diameter;
+      //path.AddArc(arc, 270, 0);
+      path.AddLine(baseRect.Left + radius, baseRect.Top, baseRect.Right, baseRect.Top);
+      path.AddLine(baseRect.Right, baseRect.Top, baseRect.Right, baseRect.Bottom);
+      // bottom right arc 
+      //arc.Y = baseRect.Bottom - diameter;
+      //path.AddArc(arc, 0, 90);
 
-			path.AddLine(baseRect.Left, baseRect.Bottom - radius, baseRect.Left, baseRect.Top + radius);
+      path.AddLine(baseRect.Right, baseRect.Bottom, baseRect.Left + radius, baseRect.Bottom);
+      //path.AddLine(baseRect.Right, baseRect.Top, baseRect.Right, baseRect.Bottom);
 
-			path.CloseFigure();
-			return path;
-		}
-		#endregion
+      // bottom left arc
+      //arc.X = baseRect.Left;
+      //path.AddArc(arc, 360, 90);
 
-		#region Gets the desired Capsular path. 
-		private GraphicsPath GetCapsule(RectangleF baseRect) {
-			float diameter;
-			RectangleF arc;
-			GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
-			try {
-				if (baseRect.Width > baseRect.Height) {
-					// return horizontal capsule 
-					diameter = baseRect.Height;
-					SizeF sizeF = new SizeF(diameter, diameter);
-					arc = new RectangleF(baseRect.Location, sizeF);
-					path.AddArc(arc, 90, 180);
-					arc.X = baseRect.Right - diameter;
-					path.AddArc(arc, 270, 180);
-				} else if (baseRect.Width < baseRect.Height) {
-					// return vertical capsule 
-					diameter = baseRect.Width;
-					SizeF sizeF = new SizeF(diameter, diameter);
-					arc = new RectangleF(baseRect.Location, sizeF);
-					path.AddArc(arc, 180, 180);
-					arc.Y = baseRect.Bottom - diameter;
-					path.AddArc(arc, 0, 180);
-				} else {
-					// return circle 
-					path.AddEllipse(baseRect);
-				}
-			} catch {
-				path.AddEllipse(baseRect);
-			} finally {
-				path.CloseFigure();
-			}
-			return path;
-		}
-		#endregion
-	}
-	*/
+      path.AddLine(baseRect.Left, baseRect.Bottom - radius, baseRect.Left, baseRect.Top + radius);
+
+      path.CloseFigure();
+      return path;
+    }
+    #endregion
+
+    #region Gets the desired Capsular path. 
+    private GraphicsPath GetCapsule(RectangleF baseRect) {
+      float diameter;
+      RectangleF arc;
+      GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+      try {
+        if (baseRect.Width > baseRect.Height) {
+          // return horizontal capsule 
+          diameter = baseRect.Height;
+          SizeF sizeF = new SizeF(diameter, diameter);
+          arc = new RectangleF(baseRect.Location, sizeF);
+          path.AddArc(arc, 90, 180);
+          arc.X = baseRect.Right - diameter;
+          path.AddArc(arc, 270, 180);
+        } else if (baseRect.Width < baseRect.Height) {
+          // return vertical capsule 
+          diameter = baseRect.Width;
+          SizeF sizeF = new SizeF(diameter, diameter);
+          arc = new RectangleF(baseRect.Location, sizeF);
+          path.AddArc(arc, 180, 180);
+          arc.Y = baseRect.Bottom - diameter;
+          path.AddArc(arc, 0, 180);
+        } else {
+          // return circle 
+          path.AddEllipse(baseRect);
+        }
+      } catch {
+        path.AddEllipse(baseRect);
+      } finally {
+        path.CloseFigure();
+      }
+      return path;
+    }
+    #endregion
+  }
+  */
 
   public static class Extensions {
 
@@ -471,21 +471,21 @@ namespace BExplorer.Shell {
     }
 
     /*
-		public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this IListItemEx item, out IntPtr dataObjectPtr) {
-			var parent = item.Parent ?? item;
+    public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this IListItemEx item, out IntPtr dataObjectPtr) {
+      var parent = item.Parent ?? item;
 
-			IntPtr[] pidls = new IntPtr[1];
-			pidls[0] = item.ILPidl;
-			Guid IID_IDataObject = Ole32.IID_IDataObject;
-			parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, ref IID_IDataObject, 0, out dataObjectPtr);
+      IntPtr[] pidls = new IntPtr[1];
+      pidls[0] = item.ILPidl;
+      Guid IID_IDataObject = Ole32.IID_IDataObject;
+      parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, ref IID_IDataObject, 0, out dataObjectPtr);
 
-			System.Runtime.InteropServices.ComTypes.IDataObject dataObj =
-											(System.Runtime.InteropServices.ComTypes.IDataObject)
-																			Marshal.GetTypedObjectForIUnknown(dataObjectPtr, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
+      System.Runtime.InteropServices.ComTypes.IDataObject dataObj =
+                      (System.Runtime.InteropServices.ComTypes.IDataObject)
+                                      Marshal.GetTypedObjectForIUnknown(dataObjectPtr, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
 
-			return dataObj;
-		}
-		*/
+      return dataObj;
+    }
+    */
 
     /// <summary>
     /// Sets the <paramref name="row"/> and <paramref name="column"/> based on the row and column that the <paramref name="hitPoint">point</paramref> falls on
@@ -561,23 +561,23 @@ namespace BExplorer.Shell {
     }
 
     /*
-		public static IListItemEx[] ToIListItemArray(this IShellItemArray shellItemArray) {
-			var items = new List<IListItemEx>();
-			if (shellItemArray == null) return items.ToArray();
-			try {
-				uint itemCount = 0;
-				shellItemArray.GetCount(out itemCount);
-				for (uint index = 0; index < itemCount; index++) {
-					IShellItem iShellItem = null;
-					shellItemArray.GetItemAt(index, out iShellItem);
-					items.Add(FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, iShellItem));
-				}
-			} finally {
-				Marshal.ReleaseComObject(shellItemArray);
-			}
-			return items.ToArray();
-		}
-		*/
+    public static IListItemEx[] ToIListItemArray(this IShellItemArray shellItemArray) {
+      var items = new List<IListItemEx>();
+      if (shellItemArray == null) return items.ToArray();
+      try {
+        uint itemCount = 0;
+        shellItemArray.GetCount(out itemCount);
+        for (uint index = 0; index < itemCount; index++) {
+          IShellItem iShellItem = null;
+          shellItemArray.GetItemAt(index, out iShellItem);
+          items.Add(FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, iShellItem));
+        }
+      } finally {
+        Marshal.ReleaseComObject(shellItemArray);
+      }
+      return items.ToArray();
+    }
+    */
 
     /// <summary>
     /// Converts a <see cref="IDataObject"/> into an <see cref="IShellItemArray"/>
@@ -628,14 +628,14 @@ namespace BExplorer.Shell {
     public static extern int ILGetSize(IntPtr pidl);
 
     /*
-		public static void Clear(this ConcurrentBag<Tuple<int, PROPERTYKEY, object>> bag) {
-			Tuple<int, PROPERTYKEY, object> tmp = null;
-			while (!bag.IsEmpty) {
-				bag.TryTake(out tmp);
-				if (tmp != null) tmp = null;
-			}
-		}
-		*/
+    public static void Clear(this ConcurrentBag<Tuple<int, PROPERTYKEY, object>> bag) {
+      Tuple<int, PROPERTYKEY, object> tmp = null;
+      while (!bag.IsEmpty) {
+        bag.TryTake(out tmp);
+        if (tmp != null) tmp = null;
+      }
+    }
+    */
 
     public static MemoryStream CreateShellIDList(this IListItemEx[] items) {
       // first convert all files into pidls list
@@ -696,7 +696,7 @@ namespace BExplorer.Shell {
         library.Close();
         return false;
       } else {
-        return checkedItem?.Parent?.ParsingName == currentFolder.ParsingName;
+        return checkedItem?.Parent?.ParsingName == currentFolder?.ParsingName;
       }
     }
 
@@ -752,6 +752,14 @@ namespace BExplorer.Shell {
       } catch {
         return null;
       }
+    }
+
+    public static Color ToDrawingColor(this System.Windows.Media.Color color) {
+      return Color.FromArgb(color.A, color.R, color.G, color.B);
+    }
+
+    public static IntPtr ToWin32Color(this Color color) {
+      return (IntPtr)(UInt32)ColorTranslator.ToWin32(color);
     }
   }
 }

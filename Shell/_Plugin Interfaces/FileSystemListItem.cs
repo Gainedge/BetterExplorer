@@ -191,6 +191,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public bool IsShared => this.COM_Attribute_Check(SFGAO.SHARE);
 
+    public bool IsSlow => this.COM_Attribute_Check(SFGAO.ISSLOW);
+
     /// <summary>Is the parent a search folder?</summary>
     public bool IsParentSearchFolder { get; set; }
 
@@ -651,6 +653,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     public Int32 IconIndex { get; set; }
 
     public int GetUniqueID() => this.ParsingName.GetHashCode();
+
+    public Int32[] cColumns { get; set; }
 
     public Boolean IsRCWSet { get; set; }
 

@@ -233,5 +233,15 @@ namespace BExplorer.Shell.Interop {
         }
       }
     }
+
+    [DllImport("gdi32.dll",  EntryPoint = "GetTextExtentPoint32W")]      
+    public static extern int GetTextExtentPoint32(IntPtr hdc, [MarshalAs(UnmanagedType.LPWStr)] string str,  int len, ref Size size);
+
+
+    [DllImport("gdi32.dll")]
+    public static extern int SetTextColor(IntPtr hdc, int color);
+
+    [DllImport("gdi32.dll")]
+    public static extern uint SetBkColor(IntPtr hdc, IntPtr crColor);
   }
 }
