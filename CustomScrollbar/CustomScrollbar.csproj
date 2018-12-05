@@ -112,7 +112,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BetterExplorer\Settings\Settings.csproj">
+    <ProjectReference Include="..\Settings\Settings.csproj">
       <Project>{b40d0f31-9d30-4292-9717-bb21fc94c49c}</Project>
       <Name>Settings</Name>
     </ProjectReference>
