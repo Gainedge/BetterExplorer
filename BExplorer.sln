@@ -75,7 +75,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToggleSwitch", "toggle-swit
 EndProject
 Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "Better Explorer AI Setup", "Better Explorer AI Setup\Better Explorer AI Setup.aiproj", "{A563DBE3-9C87-474D-9FA8-D7483E5FA8E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomScrollbar", "..\TestApp\CustomControls\CustomScrollbar.csproj", "{5B85E2D7-2005-4496-B5D7-59C68A1EC91D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomScrollbar", "CustomScrollbar\CustomScrollbar.csproj", "{5B85E2D7-2005-4496-B5D7-59C68A1EC91D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

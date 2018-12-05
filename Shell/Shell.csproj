@@ -321,13 +321,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TestApp\CustomControls\CustomScrollbar.csproj">
-      <Project>{5b85e2d7-2005-4496-b5d7-59c68a1ec91d}</Project>
-      <Name>CustomScrollbar</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BEHelper\BEHelper.csproj">
       <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
       <Name>BEHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CustomScrollbar\CustomScrollbar.csproj">
+      <Project>{5b85e2d7-2005-4496-b5d7-59c68a1ec91d}</Project>
+      <Name>CustomScrollbar</Name>
     </ProjectReference>
     <ProjectReference Include="..\IconExtractor\IconExtractor.csproj">
       <Project>{fdfd4eeb-c202-4d93-a6e9-d8984a12d014}</Project>
