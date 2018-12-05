@@ -1,4 +1,4 @@
-﻿<Window x:Class="BetterExplorer.FolderSizeWindow"
+﻿<Ribbon:RibbonWindow x:Class="BetterExplorer.FolderSizeWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Ribbon="clr-namespace:Fluent;assembly=Fluent"
@@ -27,10 +27,10 @@
             </my:PieChartLayout.ColorSelector>
         </my:PieChartLayout>
         <ProgressBar Height="12" Name="progressBar1" VerticalAlignment="Bottom" />
-        <TextBlock HorizontalAlignment="Center" Name="textBlock1wfx" Text="Getting size of subfolders..." VerticalAlignment="Bottom" Margin="0,0,0,15" Foreground="White">
+        <TextBlock HorizontalAlignment="Center" Name="textBlock1wfx" Text="Getting size of subfolders..." VerticalAlignment="Bottom" Margin="0,0,0,15" Foreground="{DynamicResource BlackBrush}">
             <TextBlock.Effect><BlurEffect Radius="8.0" KernelType="Box"/></TextBlock.Effect>
         </TextBlock>
-        <TextBlock HorizontalAlignment="Center" Name="textBlock1" Text="Getting size of subfolders..."  VerticalAlignment="Bottom" Margin="0,0,0,15">
+        <TextBlock HorizontalAlignment="Center" Name="textBlock1" Text="Getting size of subfolders..." Foreground="{DynamicResource BlackBrush}" VerticalAlignment="Bottom" Margin="0,0,0,15">
         </TextBlock>
     </Grid>
-</Window>
+</Ribbon:RibbonWindow>

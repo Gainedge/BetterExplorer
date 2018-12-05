@@ -103,14 +103,13 @@
     <Compile Include="AssociationItem.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ImageListEx.cs" />
+    <Compile Include="Interop\IVisualProperties.cs" />
     <Compile Include="Interop\NativeWindowListener.cs" />
     <Compile Include="Interop\IListView.cs" />
     <Compile Include="QueueEx.cs" />
     <Compile Include="ShellViewControl.xaml.cs">
       <DependentUpon>ShellViewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Themes\ThemeColors.cs" />
-    <Compile Include="Themes\LVTheme.cs" />
     <Compile Include="TooltipDataTemplateSelector.cs" />
     <Compile Include="ThreadSafeListWithLock.cs" />
     <Compile Include="ListViewEditor.cs" />
@@ -322,6 +321,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\TestApp\CustomControls\CustomScrollbar.csproj">
+      <Project>{5b85e2d7-2005-4496-b5d7-59c68a1ec91d}</Project>
+      <Name>CustomScrollbar</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BEHelper\BEHelper.csproj">
       <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
       <Name>BEHelper</Name>

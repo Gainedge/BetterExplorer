@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace BExplorer.Shell {
+	using System.ComponentModel;
 
 	public static class Win32Api {
 		//[DllImport("shell32.dll", EntryPoint = "ExtractIconEx", CharSet = CharSet.Auto)]
@@ -577,6 +578,18 @@ public void Draw(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions o
 
 			var hresult = this._ImageList.Draw(ref param);
 			Marshal.ThrowExceptionForHR(hresult);
+		}
+
+		public IntPtr GetHIcon(int index) {
+			IntPtr hIcon;
+			var hresult = this._ImageList.GetIcon(index, ImageListDrawOptions.PreserveAlpha, out hIcon);
+			Marshal.ThrowExceptionForHR(hresult);
+			if (hIcon != IntPtr.Zero) {
+				return hIcon;
+			}
+			else {
+				throw new Win32Exception();
+			}
 		}
 
 		/// <summary>

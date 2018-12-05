@@ -37,6 +37,7 @@ namespace BetterExplorer {
 
 		protected override void Dispose(bool disposing) {
 			try {
+				
 				if (nextClipboardViewer != null && this.Handle != IntPtr.Zero)
 					ChangeClipboardChain(this.Handle, nextClipboardViewer);
 			}

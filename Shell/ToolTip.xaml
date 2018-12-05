@@ -70,15 +70,8 @@
 	</Window.Resources>
 	<Grid>
 		<theme:SystemDropShadowChrome Name="Shdw" theme:SystemDropShadowChrome.Color="#71000000" theme:SystemDropShadowChrome.CornerRadius="3" SnapsToDevicePixels="True" Margin="0,0,3,3">
-			<Border CornerRadius="3" Margin="1" Padding="3" BorderBrush="DarkGray" BorderThickness="1" >
-				<Border.Background>
-					<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-						<GradientStop Color="Snow" Offset="0.0"/>
-						<GradientStop Color="#FCFCFF" Offset="0.4"/>
-						<GradientStop Color="#FFFDFD" Offset="1.0"/>
-					</LinearGradientBrush>
-				</Border.Background>
-				<ContentControl x:Name="pnlContents" Content="{Binding CurrentItem}" ContentTemplateSelector="{StaticResource TooltipDataTemplateSelector}"></ContentControl>
+			<Border CornerRadius="3" Margin="1" Padding="3" BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}" BorderThickness="1" Background="{DynamicResource WhiteBrush}" >
+				<ContentControl x:Name="pnlContents" Content="{Binding CurrentItem}" ContentTemplateSelector="{StaticResource TooltipDataTemplateSelector}" Foreground="{DynamicResource BlackBrush}"></ContentControl>
 			</Border>
 		</theme:SystemDropShadowChrome>
 	</Grid>

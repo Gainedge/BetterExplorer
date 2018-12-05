@@ -1,6 +1,7 @@
 ﻿using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -537,6 +538,10 @@ namespace BExplorer.Shell {
       return hitLocationFound;
     }
 
+    public static System.Drawing.Point ToPoint(this IntPtr lparam) {
+      return new System.Drawing.Point(lparam.ToInt32() & 0xFFFF, lparam.ToInt32() >> 16);
+    }
+
     /// <summary>
     /// Converts an <see cref="IShellItemArray"/> into a IShellItem[]
     /// </summary>
@@ -753,13 +758,23 @@ namespace BExplorer.Shell {
         return null;
       }
     }
-
-    public static Color ToDrawingColor(this System.Windows.Media.Color color) {
-      return Color.FromArgb(color.A, color.R, color.G, color.B);
+    public static void Clear<T>(this ConcurrentQueue<T> queue) {
+      T item;
+      while (queue.TryDequeue(out item)) {
+        // do nothing
+      }
     }
 
-    public static IntPtr ToWin32Color(this Color color) {
-      return (IntPtr)(UInt32)ColorTranslator.ToWin32(color);
+    public static void DrawArrowHead(this Graphics gr, Pen pen, PointF p, float nx, float ny, float length) {
+      float ax = length * (-ny - nx);
+      float ay = length * (nx - ny);
+      PointF[] points =
+      {
+        new PointF(p.X + ax, p.Y + ay),
+        p,
+        new PointF(p.X - ay, p.Y + ax)
+      };
+      gr.DrawLines(pen, points);
     }
   }
 }

@@ -14,6 +14,8 @@ using System.Linq;
 using System.Windows.Interop;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
+  using System.Drawing;
+  using System.Windows.Media;
 
   /// <summary>
   /// A representation of items on a standard physical/local file system
@@ -65,15 +67,15 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     }
 
     public IExtractIconPWFlags GetIconType() {
-      if (this.Extension == ".exe" || this.Extension == ".com" || this.Extension == ".bat" || this.Extension == ".msi") {
-        return IExtractIconPWFlags.GIL_PERINSTANCE;
-      }
+      //if (this.Extension.ToLowerInvariant() == ".exe" || this.Extension.ToLowerInvariant() == ".com" || this.Extension.ToLowerInvariant() == ".bat" || this.Extension.ToLowerInvariant() == ".msi") {
+      //  return IExtractIconPWFlags.GIL_PERINSTANCE;
+      //}
 
       if (this.Parent == null) {
         return 0;
       }
 
-      if (this.IsFolder) {
+      //if (this.IsFolder) {
         IExtractIcon iextract = null;
         IShellFolder ishellfolder = null;
         StringBuilder str = null;
@@ -100,9 +102,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         } catch (Exception) {
           return 0;
         }
-      } else {
-        return IExtractIconPWFlags.GIL_PERCLASS;
-      }
+      //} else {
+      //  return IExtractIconPWFlags.GIL_PERCLASS;
+      //}
     }
 
     public IntPtr ILPidl => Shell32.ILFindLastID(this.PIDL);
@@ -418,7 +420,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       }
 
       var returnValue = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, System.Windows.Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()).Clone();
-
+      returnValue.Freeze();
       // delete HBitmap to avoid memory leaks
       Gdi32.DeleteObject(hBitmap);
       return returnValue;

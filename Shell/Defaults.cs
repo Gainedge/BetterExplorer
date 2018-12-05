@@ -362,14 +362,14 @@ namespace BExplorer.Shell {
     /// <param name="col">the column</param>
     /// <param name="isDetails"></param>
     /// <returns>resulting LVCOLUMN structure</returns>
-    public static LVCOLUMN ToNativeColumn(this Collumns col, bool isDetails = false) {
+    public static LVCOLUMN ToNativeColumn(this Collumns col, bool isDetails = false, Int32 width = -1) {
       LVCOLUMN column = new LVCOLUMN();
       column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_MINWIDTH | LVCF.LVCF_SUBITEM;
       if (isDetails)
-        column.cx = col.Width;
+        column.cx = width == -1 ? col.Width : width;
       column.pszText = col.Name;
-      column.iSubItem = 1;
-      column.fmt = col.CollumnType == typeof(long) ? LVCFMT.RIGHT : LVCFMT.LEFT;
+      column.iSubItem = col.Index;
+      column.fmt = col.CollumnType == typeof(long) ? (LVCFMT.RIGHT) : (LVCFMT.LEFT);
       if (isDetails)
         column.cxMin = col.MinWidth;
       return column;
@@ -379,7 +379,7 @@ namespace BExplorer.Shell {
     public static void SetColumnWidth(this Collumns col, ShellView shellViewEx) {
       var iiListView = shellViewEx.GetListViewInterface();
       var colWidth = 0;
-      iiListView.GetColumnWidth(col.Index, out colWidth);
+      iiListView.GetColumnWidth(shellViewEx.Collumns.IndexOf(col), out colWidth);
       col.Width = colWidth;
     }
 

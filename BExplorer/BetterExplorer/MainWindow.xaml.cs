@@ -1323,6 +1323,47 @@ namespace BetterExplorer {
       this._ShellListView.BeginItemLabelEdit += this.ShellListView_BeginItemLabelEdit;
       this._ShellListView.EndItemLabelEdit += this.ShellListView_EndItemLabelEdit;
       this._ShellListView.OnListViewCollumnsChanged += this._ShellListView_OnListViewCollumnsChanged;
+      //this._ShellListView.OnLVScroll += (sender, args) => {
+      //  if (this._IsScrollingManually) {
+      //    this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(() => {
+      //      if (args.ScrollInfo.nMax == 0 || args.ScrollInfo.nPage > args.ScrollInfo.nMax) {
+      //        this.sbLVVertical.Visibility = Visibility.Collapsed;
+      //      } else {
+
+      //        this.sbLVVertical.Visibility = Visibility.Visible;
+      //        //this.sbLVVertical.Minimum = args.ScrollInfo.nMin;
+      //        //this.sbLVVertical.Maximum = args.ScrollInfo.nMax - args.ScrollInfo.nPage;
+      //        //this.sbLVVertical.ViewportSize = this._ShellListView.View == ShellViewStyle.Details ? ((args.ScrollInfo.nPage * 16) * 0.01) : args.ScrollInfo.nPage - 20;
+      //        //this.sbLVVertical.LargeChange = this._ShellListView.View == ShellViewStyle.Details ? (int)args.ScrollInfo.nPage : 4 * (this._ShellListView.IconSize + 50);
+      //        //this.sbLVVertical.SmallChange = this._ShellListView.View == ShellViewStyle.Details ? 1 : 40;
+      //        //this._ScrollOldValue = args.ScrollInfo.nPos;
+      //        //this.sbLVVertical.Value = args.ScrollInfo.nPos;
+      //      }
+
+      //      this._IsScrollingManually = false;
+      //    }));
+      //    return;
+      //  }
+
+      //  var detailsItemHeight = 16;
+      //  this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(() => {
+
+      //    if (args.ScrollInfo.nMax == 0 || args.ScrollInfo.nPage > args.ScrollInfo.nMax) {
+      //      this.sbLVVertical.Visibility = Visibility.Collapsed;
+      //    } else {
+
+      //      this.sbLVVertical.Visibility = Visibility.Visible;
+      //      this.sbLVVertical.Minimum = 0;
+      //      this.sbLVVertical.Maximum = (args.ScrollInfo.nMax - args.ScrollInfo.nPage + 1);
+      //      this.sbLVVertical.ViewportSize = this._ShellListView.View == ShellViewStyle.Details ? (args.ScrollInfo.nPage) : args.ScrollInfo.nPage;
+      //      this.sbLVVertical.LargeChange = this._ShellListView.View == ShellViewStyle.Details ? (int)args.ScrollInfo.nPage : 4 * (this._ShellListView.IconSize + 50);
+      //      this.sbLVVertical.SmallChange = this._ShellListView.View == ShellViewStyle.Details ? 1 : this._ShellListView.IconSize + 50;
+      //      this.sbLVVertical.Value = args.ScrollInfo.nPos;
+      //      this._ScrollOldValue = this.sbLVVertical.Value;
+      //    }
+
+      //  }));
+      //};
       //this._ShellListView.AfterCollumsPopulate += (sender, args) => {
       //  if (args.Collumn != null) {
       //    this.pnlShellViewControl.AddHeaderColumn(args.Collumn);
@@ -1383,6 +1424,15 @@ namespace BetterExplorer {
           }
         });
         menu.AddItem(mnuItem);
+        menu.Closed += (o, args) => {
+          var rect = default(User32.RECT);
+
+          if (User32.SendMessage(this._ShellListView.LVHeaderHandle, 0x1200 + 7, e.ColumnIndex, ref rect) == IntPtr.Zero) {
+            throw new Win32Exception();
+          }
+
+          User32.InvalidateRect(this._ShellListView.LVHeaderHandle, ref rect, false);
+        };
       }
     }
 
@@ -1561,6 +1611,33 @@ namespace BetterExplorer {
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e) {
+      this.sbLVVertical.Track.Thumb.DragDelta += (o, args) => {
+        this._IsScrollingManually = true;
+        User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Ceiling(args.VerticalChange*(8.5)));
+        //args.Handled = true;
+        //this.sbLVVertical.Value = this.sbLVVertical.Value + args.VerticalChange;
+      };
+      this._ScrollDeferer.Interval = 100;
+      this._ScrollDeferer.Stop();
+      this._ScrollDeferer.Tick += (o, args) => {
+        this._ScrollDeferer.Stop();
+
+        this._IsScrollingManually = true;
+        var delta = this.sbLVVertical.Value - this._ScrollOldValue;
+
+        //User32.LockWindowUpdate(this._ShellListView.LVHandle);
+        if (Math.Abs(delta) > 0) {
+          //User32.LockWindowUpdate(this._ShellListView.LVHandle);
+          User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Round(delta * (this._ShellListView.View == ShellViewStyle.Details ? 1 : 1)));
+          this._ScrollOldValue = this.sbLVVertical.Value;
+          //User32.LockWindowUpdate(IntPtr.Zero);
+        } else {
+          User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Round(delta * (this._ShellListView.View == ShellViewStyle.Details ? 1 : 1)));
+          this._ScrollOldValue = this.sbLVVertical.Value;
+        }
+
+        //User32.LockWindowUpdate(IntPtr.Zero);
+      };
       this._ProgressTimer.Tick += (obj, args) => {
         if (this.bcbc.ProgressValue + 2 == this.bcbc.ProgressMaximum) {
           this.bcbc.ProgressMaximum = this.bcbc.ProgressMaximum + 2;
@@ -1824,7 +1901,6 @@ namespace BetterExplorer {
       foreach (var item in this.bcbc.DropDownItems.OfType<string>().Reverse().Take(15)) {
         Settings.Element("DropDownItems").Add(new XElement("Item", item));
       }
-
       //Settings.Save("Settings.xml");
     }
 
@@ -4133,6 +4209,58 @@ namespace BetterExplorer {
     private void BtnTheme_OnUnchecked(Object sender, RoutedEventArgs e) {
       this.ChangeRibbonTheme("Light");
       this.KeepBackstageOpen = true;
+    }
+
+    private Double _ScrollOldValue = 0d;
+    private Boolean _IsScrollingManually = false;
+    private System.Windows.Forms.Timer _ScrollDeferer = new System.Windows.Forms.Timer();
+
+    private void ScrollBar_OnScroll(Object sender, System.Windows.Controls.Primitives.ScrollEventArgs e) {
+      //this.Dispatcher.Invoke(DispatcherPriority.ApplicationIdle, (Action) (() => { }));
+      //this._IsScrollingManually = true;
+      ////User32.LockWindowUpdate(this._ShellListView.LVHandle);
+      //this._ShellListView.ScrollSyncEvent.Reset();
+
+      //// this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(() => {
+      ////var currentValue = this.sbLVVertical.Value / (this._ShellListView.View == ShellViewStyle.Details ? 16 : 1);
+      //var delta = this.sbLVVertical.Value - this._ScrollOldValue;
+      //var ratio = (this.sbLVVertical.Maximum / this.sbLVVertical.ViewportSize);
+      ////var newValue = (Int32) Math.Round(delta);
+      ////if (this._ShellListView.View == ShellViewStyle.Details) {
+      ////  User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, delta < 0 ? -16 : 16);
+      ////  this._ScrollOldValue = Math.Ceiling(e.NewValue);
+      ////} else if (this._ShellListView.View != ShellViewStyle.Details) {
+      //if (Math.Abs(delta) >= ratio) {
+      //User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Ceiling(delta*(16)));
+      ////this.sbLVVertical.Value = this._ScrollOldValue + Math.Round(delta);
+      //this._ScrollOldValue = this.sbLVVertical.Value;
+
+      //}
+      //}
+
+      //if (Math.Abs(delta) >= this.sbLVVertical.SmallChange) {
+      //User32.LockWindowUpdate(this._ShellListView.LVHandle);
+
+      //User32.LockWindowUpdate(IntPtr.Zero);
+
+      //}
+
+      //if (!this._ScrollDeferer.Enabled) {
+      //this._ScrollDeferer.Stop();
+      //this._ScrollDeferer.Start();
+      //if (e.ScrollEventType == ScrollEventType.EndScroll) {
+      //  //}
+      //  //}
+      //  this._ScrollDeferer.Stop();
+      //  this._IsScrollingManually = false;
+      //  this._ScrollOldValue = e.NewValue;
+      //  User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32) Math.Ceiling(delta) * (this._ShellListView.View == ShellViewStyle.Details ? 14 : 1));
+      //  //}));
+
+      //}
+
+
+
     }
   }
 }

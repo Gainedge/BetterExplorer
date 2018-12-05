@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace BExplorer.Shell.Interop {
 	[ComVisible(false)]
+	[Flags]
 	public enum LVCFMT {
 		LEFT = 0x0000,
 		RIGHT = 0x0001,

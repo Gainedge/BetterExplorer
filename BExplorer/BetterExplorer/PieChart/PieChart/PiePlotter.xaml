@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:b="clr-namespace:BetterExplorer.PieChart"
     xmlns:p="clr-namespace:BetterExplorer.PieChart"
-    xmlns:util="clr-namespace:BetterExplorer.PieChart">
+    xmlns:util="clr-namespace:BetterExplorer.PieChart" Background="Transparent">
     <UserControl.Resources>
         <util:FormattingConverter x:Key="formatter" />
         <util:FileSizeConverter x:Key="fsConverter"/>

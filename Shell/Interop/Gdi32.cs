@@ -229,6 +229,8 @@ namespace BExplorer.Shell.Interop {
 
           g.FillPath(backgroundColor, gp);
           g.DrawPath(borderColor, gp);
+          backgroundColor.Dispose();
+          borderColor.Dispose();
           return roundedImage;
         }
       }
@@ -243,5 +245,8 @@ namespace BExplorer.Shell.Interop {
 
     [DllImport("gdi32.dll")]
     public static extern uint SetBkColor(IntPtr hdc, IntPtr crColor);
+
+    [DllImport("gdi32.dll")]
+    public static extern int SetBkMode(IntPtr hdc, int iBkMode);
   }
 }

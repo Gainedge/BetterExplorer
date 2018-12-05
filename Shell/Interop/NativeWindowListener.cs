@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Permissions;
 
 namespace BExplorer.Shell.Interop {
   using System.Drawing;
@@ -14,17 +15,24 @@ namespace BExplorer.Shell.Interop {
       this.AttachedListView = attachedListView;
       var handle = (IntPtr)User32.SendMessage(this.AttachedListView.LVHandle, 
         (0x1000+31), IntPtr.Zero, IntPtr.Zero);
-      this.AssignHandle(this.AttachedListView.LVHeaderHandle);
+      this.AssignHandle(this.AttachedListView.LVHandle);
     }
 
     [System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
     protected override void WndProc(ref Message msg) {
       
       switch (msg.Msg) {
-        case (int)WM.WM_ERASEBKGND:
-          var gr = Graphics.FromHdc(msg.WParam);
-          gr.FillRectangle(Brushes.Black, 0, 0, this.AttachedListView.ClientRectangle.Width, 22);
-          gr.Dispose();
+        case (int)WM.WM_VSCROLL:
+            int style = (int)User32.GetWindowLong(this.AttachedListView.LVHandle, -16);
+            if ((style & 0x00200000L) == 0x00200000L)
+              User32.SetWindowLong(this.AttachedListView.LVHandle, -16, (long)style & ~0x00200000L);
+          break;
+        case 0x202:
+          var h = 1;
+          break;
+        case -12:
+          var nmhdr = (NMHDR)msg.GetLParam(typeof(NMHDR));
+
           break;
 
         default:

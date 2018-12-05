@@ -63,59 +63,59 @@ namespace BExplorer.Shell.Interop {
 		Videos
 	}
 
-  #endregion Shell Library Enums
+	#endregion Shell Library Enums
 
-  /// <summary>
-  /// Represents the different retrieval options for the thumbnail or icon,
-  /// such as extracting the thumbnail or icon from a file, 
-  /// from the cache only, or from memory only.
-  /// </summary>
-  public enum ShellThumbnailRetrievalOption {
-    /// <summary>
-    /// The default behavior loads a thumbnail. If there is no thumbnail for the current ShellItem,  
-    /// the icon is retrieved. The thumbnail or icon is extracted if it is not currently cached.
-    /// </summary>
-    Default,
+	/// <summary>
+	/// Represents the different retrieval options for the thumbnail or icon,
+	/// such as extracting the thumbnail or icon from a file, 
+	/// from the cache only, or from memory only.
+	/// </summary>
+	public enum ShellThumbnailRetrievalOption {
+		/// <summary>
+		/// The default behavior loads a thumbnail. If there is no thumbnail for the current ShellItem,  
+		/// the icon is retrieved. The thumbnail or icon is extracted if it is not currently cached.
+		/// </summary>
+		Default,
 
-    /// <summary>
-    /// The CacheOnly behavior returns a cached thumbnail if it is available. Allows access to the disk,
-    /// but only to retrieve a cached item. If no cached thumbnail is available, a cached per-instance icon is returned but  
-    /// a thumbnail or icon is not extracted.
-    /// </summary>
-    CacheOnly = SIIGBF.InCacheOnly,
+		/// <summary>
+		/// The CacheOnly behavior returns a cached thumbnail if it is available. Allows access to the disk,
+		/// but only to retrieve a cached item. If no cached thumbnail is available, a cached per-instance icon is returned but  
+		/// a thumbnail or icon is not extracted.
+		/// </summary>
+		CacheOnly = SIIGBF.InCacheOnly,
 
-    /// <summary>
-    /// The MemoryOnly behavior returns the item only if it is in memory. The disk is not accessed even if the item is cached. 
-    /// Note that this only returns an already-cached icon and can fall back to a per-class icon if 
-    /// an item has a per-instance icon that has not been cached yet. Retrieving a thumbnail, 
-    /// even if it is cached, always requires the disk to be accessed, so this method should not be 
-    /// called from the user interface (UI) thread without passing ShellThumbnailCacheOptions.MemoryOnly.
-    /// </summary>
-    MemoryOnly = SIIGBF.MemoryOnly,
-  }
+		/// <summary>
+		/// The MemoryOnly behavior returns the item only if it is in memory. The disk is not accessed even if the item is cached. 
+		/// Note that this only returns an already-cached icon and can fall back to a per-class icon if 
+		/// an item has a per-instance icon that has not been cached yet. Retrieving a thumbnail, 
+		/// even if it is cached, always requires the disk to be accessed, so this method should not be 
+		/// called from the user interface (UI) thread without passing ShellThumbnailCacheOptions.MemoryOnly.
+		/// </summary>
+		MemoryOnly = SIIGBF.MemoryOnly,
+	}
 
-  /// <summary>
-  /// Represents the format options for the thumbnails and icons.
-  /// </summary>    
-  public enum ShellThumbnailFormatOption {
-    /// <summary>
-    /// The default behavior loads a thumbnail. An HBITMAP for the icon of the item is retrieved if there is no thumbnail for the current Shell Item.
-    /// </summary>
-    Default,
+	/// <summary>
+	/// Represents the format options for the thumbnails and icons.
+	/// </summary>    
+	public enum ShellThumbnailFormatOption {
+		/// <summary>
+		/// The default behavior loads a thumbnail. An HBITMAP for the icon of the item is retrieved if there is no thumbnail for the current Shell Item.
+		/// </summary>
+		Default,
 
-    /// <summary>
-    /// The ThumbnailOnly behavior returns only the thumbnails, never the icon. Note that not all items have thumbnails 
-    /// so ShellThumbnailFormatOption.ThumbnailOnly can fail in these cases.
-    /// </summary>
-    ThumbnailOnly = SIIGBF.ThumbnailOnly,
+		/// <summary>
+		/// The ThumbnailOnly behavior returns only the thumbnails, never the icon. Note that not all items have thumbnails 
+		/// so ShellThumbnailFormatOption.ThumbnailOnly can fail in these cases.
+		/// </summary>
+		ThumbnailOnly = SIIGBF.ThumbnailOnly,
 
-    /// <summary>
-    /// The IconOnly behavior returns only the icon, never the thumbnail.
-    /// </summary>
-    IconOnly = SIIGBF.IconOnly,
-  }
+		/// <summary>
+		/// The IconOnly behavior returns only the icon, never the thumbnail.
+		/// </summary>
+		IconOnly = SIIGBF.IconOnly,
+	}
 
-  [Flags]
+	[Flags]
 	public enum TRANSFER_SOURCE_FLAGS {
 		TSF_NORMAL = 0,
 		TSF_FAIL_EXIST = 0,
@@ -272,7 +272,7 @@ namespace BExplorer.Shell.Interop {
 		Video = 4,
 	}
 
-	
+
 	public enum LVBKIF : int {
 		SOURCE_NONE = 0x00000000,
 
@@ -294,9 +294,9 @@ namespace BExplorer.Shell.Interop {
 
 		FLAG_ALPHABLEND = 0x20000000
 	}
-	
 
-	
+
+
 	public struct LVBKIMAGE {
 		public LVBKIF ulFlags;
 
@@ -310,7 +310,7 @@ namespace BExplorer.Shell.Interop {
 
 		public int yOffsetPercent;
 	};
-	
+
 
 	public struct PROPERTYKEY {
 		public Guid fmtid;
@@ -890,13 +890,30 @@ namespace BExplorer.Shell.Interop {
 		public uint flags;
 		public int iItem;
 		public int iSubItem;
+		public int iGroup;
 	}
 
-  public enum WindowsVersions {
-    Windows10,
-    Windows81,
-    Windows8,
-    Windows7
-  }
+	[StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+	public struct LVGROUPMETRICS {
+		public uint cbSize;
+		public uint mask;
+		public uint Left;
+		public uint Top;
+		public uint Right;
+		public uint Bottom;
+		public int crLeft;
+		public int crTop;
+		public int crRight;
+		public int crBottom;
+		public int crHeader;
+		public int crFooter;
+	}
+
+	public enum WindowsVersions {
+		Windows10,
+		Windows81,
+		Windows8,
+		Windows7
+	}
 
 }

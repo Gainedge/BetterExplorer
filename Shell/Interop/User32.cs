@@ -291,8 +291,50 @@ public enum MK {
     DROPHILITED = 0x1000,
   }
 
-  public class User32 {
+  [Serializable, StructLayout(LayoutKind.Sequential)]
+  public struct SCROLLINFO
+  {
+    public uint cbSize;
+    public uint fMask;
+    public int nMin;
+    public int nMax;
+    public uint nPage;
+    public int nPos;
+    public int nTrackPos;
+  }
 
+  public enum SBOrientation : int
+  {
+    SB_HORZ = 0x0,
+    SB_VERT = 0x1,
+    SB_CTL = 0x2,
+    SB_BOTH = 0x3
+  }
+
+  public enum ScrollInfoMask : uint
+  {
+    SIF_RANGE = 0x1,
+    SIF_PAGE = 0x2,
+    SIF_POS = 0x4,
+    SIF_DISABLENOSCROLL = 0x8,
+    SIF_TRACKPOS = 0x10,
+    SIF_ALL = (SIF_RANGE | SIF_PAGE | SIF_POS | SIF_TRACKPOS | SIF_DISABLENOSCROLL),
+  } 
+
+  public class User32 {
+    [DllImport("user32")]
+    public static extern short GetKeyState(int vKey);
+    [DllImport("user32.dll")]
+    public static extern bool LockWindowUpdate(IntPtr Handle);
+    [DllImport("user32.dll")]
+
+    public static extern bool ShowScrollBar(System.IntPtr hWnd, int wBar, bool bShow);
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GetScrollInfo(IntPtr hwnd, int fnBar, ref SCROLLINFO lpsi);
+
+    [DllImport("user32.dll")]
+    public static extern int SetScrollInfo(IntPtr hwnd, int fnBar, [In] ref SCROLLINFO lpsi, bool fRedraw);
     /// <summary>
     /// Retrieves the cursor's position, in screen coordinates.
     /// </summary>
@@ -584,6 +626,9 @@ public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
     [DllImport("User32.dll")]
     public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref LVGROUP2 lParam);
 
+    [DllImport("User32.dll")]
+    public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref LVGROUPMETRICS lParam);
+
     /*
 [DllImport("User32.dll")]
 public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, LVFINDINFO lParam);
@@ -591,6 +636,34 @@ public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, LVFINDINF
 
     [DllImport("User32.dll")]
     public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref LVHITTESTINFO lParam);
+
+    [DllImport("User32.dll")]
+    public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref HDHITTESTINFO lParam);
+
+    public enum HeaderControlHitTestFlags : uint
+    {
+      NOWHERE             = 0x0001,
+      ONHEADER            = 0x0002,
+      ONDIVIDER           = 0x0004,
+      ONDIVOPEN           = 0x0008,
+      ABOVE               = 0x0100,
+      BELOW               = 0x0200,
+      TORIGHT             = 0x0400,
+      TOLEFT              = 0x0800,
+      ONITEMSTATEICON     = 0x1000,
+      ONDROPDOWN          = 0x2000,
+      ONOVERFLOW          = 0x4000
+    }
+
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct HDHITTESTINFO 
+    {  
+      public POINT pt;  
+      public HeaderControlHitTestFlags flags; 
+      public int iItem; 
+    }
+
 
     /*
 [DllImport("user32.dll")]
@@ -677,8 +750,8 @@ public static extern int SendMessage(IntPtr hWnd, MSG Msg, int wParam, ref RECT 
     [DllImport("user32.dll")]
     public static extern int SendMessage(IntPtr hWnd, MSG Msg, ref LVITEMINDEX wParam, ref RECT lparam);
 
-    [DllImport("user32.dll")]
-    public static extern int SendMessage(IntPtr hWnd, MSG Msg, int wParam, ref RECT lparam);
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, ref RECT lparam);
 
     [DllImport("user32.dll")]
     public static extern int SendMessage(IntPtr hWnd, MSG Msg, int wParam, ref Shell.LVITEM lParam);
@@ -700,15 +773,17 @@ public static extern UInt32 PrivateExtractIcons(String lpszFile, int nIconIndex,
     [DllImport("user32.dll")]
     public static extern bool SetMenuInfo(IntPtr hmenu, ref MENUINFO lpcmi);
 
-    /*
-[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
-*/
 
-    /*
-[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-public static extern int GetWindowLong(IntPtr hwnd, int index);
-*/
+    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
+    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    public static extern int SetWindowLong(IntPtr hwnd, int index, long newStyle);
+
+
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    public static extern int GetWindowLong(IntPtr hwnd, int index);
+
     public struct WINDOWPOS {
       public IntPtr hwnd;
       public IntPtr hwndInsertAfter;
@@ -1050,7 +1125,7 @@ public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter,
       public int clrTextBk;
       public int iSubItem;
       public uint dwItemType;
-      public uint clrFace;
+      public int clrFace;
       public int iIconEffect;
       public int iIconPhase;
       public int iPartId;
@@ -2789,29 +2864,35 @@ public static extern bool UpdateWindow(IntPtr hWnd);
     [DllImport("user32")]
     public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr newProc);
 
-    [DllImport("user32")]
-    public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, WinProc newProc);
+    //[DllImport("user32")]
+    //public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, WinProc newProc);
 
-    [DllImport("user32.dll")]
-    public static extern IntPtr DefWindowProc(IntPtr hWnd, int uMsg, int wParam, int lParam);
+    //[DllImport("user32.dll")]
+    //public static extern IntPtr DefWindowProc(IntPtr hWnd, int uMsg, int wParam, int lParam);
 
-    [DllImport("user32")]
-    public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int Msg, int wParam, int lParam);
+    //[DllImport("user32")]
+    //public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int Msg, int wParam, int lParam);
 
-    public delegate IntPtr WinProc(IntPtr hWnd, int Msg, int wParam, int lParam);
-    public static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, WinProc dwNewLong) {
-      if (IntPtr.Size == 8)
-        return SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
-      else
-        return new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong));
-    }
+    //public delegate IntPtr WinProc(IntPtr hWnd, int Msg, int wParam, int lParam);
+    //public static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, WinProc dwNewLong) {
+    //  if (IntPtr.Size == 8)
+    //    return SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
+    //  else
+    //    return new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong));
+    //}
 
-    [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-    private static extern int SetWindowLong32(IntPtr hWnd, int nIndex, WinProc dwNewLong);
+    //[DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+    //private static extern int SetWindowLong32(IntPtr hWnd, int nIndex, WinProc dwNewLong);
 
-    [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
-    private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, WinProc dwNewLong);
+    //[DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
+    //private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, WinProc dwNewLong);
 
     public const int GWL_WNDPROC = -4;
+
+    public delegate IntPtr Win32WndProc(IntPtr hWnd, int uMsg, IntPtr wParam, IntPtr lParam);
+    [DllImport("user32")]
+    public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, Win32WndProc newProc);
+    [DllImport("user32.dll")]
+    public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
   }
 }

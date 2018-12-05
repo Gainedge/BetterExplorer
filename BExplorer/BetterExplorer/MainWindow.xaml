@@ -4130,7 +4130,8 @@
     <Grid
       Grid.Row="4"
       Grid.ColumnSpan="2"
-      Background="White">
+      Background="{DynamicResource WhiteBrush}"
+      Margin="1,0,1,0">
       <Grid.ColumnDefinitions>
         <ColumnDefinition />
         <ColumnDefinition x:Name="clPreviewSplitter" Width="2" />
@@ -4159,8 +4160,7 @@
         x:Name="TreeGrid"
         Grid.Row="2"
         Grid.Column="0"
-        Background="White"
-        ClipToBounds="True">
+        Background="{DynamicResource WhiteBrush}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="200" />
           <ColumnDefinition Width="2" />
@@ -4169,7 +4169,7 @@
         <Helper:NoFlickerWindowsFormsHost
           x:Name="ShellTreeHost"
           Grid.Column="0"
-          Background="White"
+          Background="{DynamicResource WhiteBrush}"
           SizeChanged="ShellTreeHost_SizeChanged" />
         <GridSplitter
           x:Name="TreeSplitter"
@@ -4178,10 +4178,16 @@
           HorizontalAlignment="Center"
           VerticalAlignment="Stretch"
           Background="LightGray" />
-        <Helper:NoFlickerWindowsFormsHost
-          x:Name="ShellViewHost"
-          Grid.Column="2"
-          Background="White" />
+        <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0"/>
+          </Grid.ColumnDefinitions>
+          <Helper:NoFlickerWindowsFormsHost
+            x:Name="ShellViewHost"
+            Background="{DynamicResource WhiteBrush}" />
+          <ScrollBar x:Name="sbLVVertical" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Minimum="0" Maximum="100" SmallChange="0.5" LargeChange="1" Scroll="ScrollBar_OnScroll"></ScrollBar>
+        </Grid>
       </Grid>
       <GridSplitter
         Grid.Row="2"

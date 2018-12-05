@@ -417,7 +417,7 @@
       while (true) {
         this._ResetEvent.WaitOne();
         Thread.Sleep(1);
-        Application.DoEvents();
+        //Application.DoEvents();
         var handle = this.imagesQueue.Dequeue();
         TreeNode node = null;
         IntPtr treeHandle = IntPtr.Zero;
