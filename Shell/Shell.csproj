@@ -90,6 +90,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -101,12 +102,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
+    <Compile Include="HandlingEventTrigger.cs" />
+    <Compile Include="TreeViewHelper.cs" />
+    <Compile Include="LeftMarginMultiplierConverter.cs" />
+    <Compile Include="FilesystemTreeViewItem.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ImageListEx.cs" />
     <Compile Include="Interop\IVisualProperties.cs" />
     <Compile Include="Interop\NativeWindowListener.cs" />
     <Compile Include="Interop\IListView.cs" />
     <Compile Include="QueueEx.cs" />
+    <Compile Include="ShellTreeView.xaml.cs">
+      <DependentUpon>ShellTreeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ShellViewControl.xaml.cs">
       <DependentUpon>ShellViewControl.xaml</DependentUpon>
     </Compile>
@@ -304,6 +312,10 @@
     <Page Include="FileOperation\FileOperation.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ShellTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ShellViewControl.xaml">
       <SubType>Designer</SubType>

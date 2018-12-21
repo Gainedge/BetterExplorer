@@ -24,6 +24,7 @@
   <Color x:Key="Gray8">#FF454545</Color>
   <Color x:Key="Gray9">#5EC9C9C9</Color>
   <Color x:Key="Gray10">#FF2F2F2F</Color>
+  <Color x:Key="Gray11">#171717</Color>
 
   <Color x:Key="TransparentWhiteColor">#00FFFFFF</Color>
   <Color x:Key="Fluent.Ribbon.Colors.HighTransparentWhiteColor">#17FFFFFF</Color>
@@ -81,6 +82,11 @@
     x:Key="GrayBrush10"
     options:Freeze="True"
     Color="{StaticResource Gray10}" />
+
+  <SolidColorBrush
+    x:Key="GrayBrush11"
+    options:Freeze="True"
+    Color="{StaticResource Gray11}" />
 
   <SolidColorBrush
     x:Key="TransparentWhiteBrush"

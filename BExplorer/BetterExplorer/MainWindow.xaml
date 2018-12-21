@@ -4166,18 +4166,14 @@
           <ColumnDefinition Width="2" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Helper:NoFlickerWindowsFormsHost
-          x:Name="ShellTreeHost"
-          Grid.Column="0"
-          Background="{DynamicResource WhiteBrush}"
-          SizeChanged="ShellTreeHost_SizeChanged" />
+        <shell:ShellTreeView x:Name="stvTreeView"></shell:ShellTreeView>
         <GridSplitter
           x:Name="TreeSplitter"
           Grid.Column="1"
           Width="2"
           HorizontalAlignment="Center"
           VerticalAlignment="Stretch"
-          Background="LightGray" />
+          Background="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabControl.Content.Background}" />
         <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

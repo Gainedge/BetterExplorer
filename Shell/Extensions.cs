@@ -7,7 +7,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Media;
+using Pen = System.Drawing.Pen;
 
 namespace BExplorer.Shell {
 
@@ -775,6 +778,21 @@ namespace BExplorer.Shell {
         new PointF(p.X - ay, p.Y + ax)
       };
       gr.DrawLines(pen, points);
+    }
+    public static int GetDepth(this TreeViewItem item) {
+      TreeViewItem parent;
+      while ((parent = GetParent(item)) != null) {
+        return GetDepth(parent) + 1;
+      }
+      return 0;
+    }
+
+    private static TreeViewItem GetParent(TreeViewItem item) {
+      var parent = VisualTreeHelper.GetParent(item);
+      while (!(parent is TreeViewItem || parent is System.Windows.Controls.TreeView)) {
+        parent = VisualTreeHelper.GetParent(parent);
+      }
+      return parent as TreeViewItem;
     }
   }
 }

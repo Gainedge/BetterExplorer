@@ -874,7 +874,7 @@ namespace BExplorer.Shell {
       navResult = HResult.S_OK;
       if (folder == null) return null;
       IEnumIDList result;
-      var res = folder.EnumObjects(IsCareForMessageHandle ? MessageHandle : IntPtr.Zero, flags, out result);
+      var res = folder.EnumObjects(IsCareForMessageHandle && MessageHandle != IntPtr.Zero ? MessageHandle : IntPtr.Zero, flags, out result);
       navResult = res;
       return res == HResult.S_OK ? result : null;
     }

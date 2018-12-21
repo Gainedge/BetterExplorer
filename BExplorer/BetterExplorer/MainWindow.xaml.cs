@@ -1652,10 +1652,10 @@ namespace BetterExplorer {
       this.grdItemTextColor.ItemsSource = this.LVItemsColorCol;
       this._keyjumpTimer.Interval = 1000;
       this._keyjumpTimer.Tick += this._keyjumpTimer_Tick;
-      this.ShellTreeHost.Child = this.ShellTree;
+      //this.ShellTreeHost.Child = this.ShellTree;
       this.ShellViewHost.Child = this._ShellListView;
 
-      this.ShellTree.ShellListView = this._ShellListView;
+      this.stvTreeView.ShellListView = this._ShellListView;
       //this.ctrlConsole.ShellListView = this._ShellListView;
       this.autoUpdater.UpdateAvailable += this.AutoUpdater_UpdateAvailable;
       this.updateCheckTimer.Interval = 10000;//3600000 * 3;

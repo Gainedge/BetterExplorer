@@ -85,27 +85,31 @@ namespace BetterExplorerControls {
 		}
 
 		private void UpdatePopupPosition() {
-			FrameworkElement placementTarget = this.PlacementTarget as FrameworkElement;
-			FrameworkElement child = this.Child as FrameworkElement;
+      try {
+        FrameworkElement placementTarget = this.PlacementTarget as FrameworkElement;
+        FrameworkElement child = this.Child as FrameworkElement;
 
-			if (PresentationSource.FromVisual(placementTarget) != null &&
-					AllowOutsideScreenPlacement == true) {
-				double leftOffset = CutLeft(placementTarget);
-				double topOffset = CutTop(placementTarget);
-				double rightOffset = CutRight(placementTarget);
-				double bottomOffset = CutBottom(placementTarget);
-				Debug.WriteLine(bottomOffset);
-				this.Width = Math.Max(0, Math.Min(leftOffset, rightOffset) + placementTarget.ActualWidth);
-				this.Height = Math.Max(0, Math.Min(topOffset, bottomOffset) + placementTarget.ActualHeight);
+        if (PresentationSource.FromVisual(placementTarget) != null &&
+            AllowOutsideScreenPlacement == true) {
+          double leftOffset = CutLeft(placementTarget);
+          double topOffset = CutTop(placementTarget);
+          double rightOffset = CutRight(placementTarget);
+          double bottomOffset = CutBottom(placementTarget);
+          Debug.WriteLine(bottomOffset);
+          this.Width = Math.Max(0, Math.Min(leftOffset, rightOffset) + placementTarget.ActualWidth);
+          this.Height = Math.Max(0, Math.Min(topOffset, bottomOffset) + placementTarget.ActualHeight);
 
-				if (child != null) {
-					child.Margin = new Thickness(leftOffset, topOffset, rightOffset, bottomOffset);
-				}
-			}
-			if (FollowPlacementTarget == true) {
-				this.HorizontalOffset += 0.01;
-				this.HorizontalOffset -= 0.01;
-			}
+          if (child != null) {
+            child.Margin = new Thickness(leftOffset, topOffset, rightOffset, bottomOffset);
+          }
+        }
+        if (FollowPlacementTarget == true) {
+          this.HorizontalOffset += 0.01;
+          this.HorizontalOffset -= 0.01;
+        }
+      } catch (Exception e) {
+
+      }
 		}
 
 		private double CutLeft(FrameworkElement placementTarget) {

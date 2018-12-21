@@ -27,10 +27,7 @@
             </my:PieChartLayout.ColorSelector>
         </my:PieChartLayout>
         <ProgressBar Height="12" Name="progressBar1" VerticalAlignment="Bottom" />
-        <TextBlock HorizontalAlignment="Center" Name="textBlock1wfx" Text="Getting size of subfolders..." VerticalAlignment="Bottom" Margin="0,0,0,15" Foreground="{DynamicResource BlackBrush}">
-            <TextBlock.Effect><BlurEffect Radius="8.0" KernelType="Box"/></TextBlock.Effect>
-        </TextBlock>
-        <TextBlock HorizontalAlignment="Center" Name="textBlock1" Text="Getting size of subfolders..." Foreground="{DynamicResource BlackBrush}" VerticalAlignment="Bottom" Margin="0,0,0,15">
+        <TextBlock HorizontalAlignment="Center" Name="txtGettingSizes" Text="Getting size of subfolders..." Foreground="{DynamicResource BlackBrush}" VerticalAlignment="Bottom" Margin="0,0,0,15">
         </TextBlock>
     </Grid>
 </Ribbon:RibbonWindow>
