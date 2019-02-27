@@ -11,7 +11,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using UserControl = System.Windows.Controls.UserControl;
@@ -28,13 +27,27 @@ namespace BExplorer.Shell {
 
     /// <summary>The <see cref="ShellView">List</see> that this is paired with</summary>
     public ShellView ShellListView {
-      private get { return this._ShellListView; }
+      get => this._ShellListView;
 
       set {
         this._ShellListView = value;
-        //this._ShellListView.Navigated += this.ShellListView_Navigated;
+        this._ShellListView.Navigated += this.ShellListView_Navigated;
+        this._ShellListView.NewItemAvailable += ShellListViewOnNewItemAvailable;
       }
     }
+
+    public ImageListEx SmallImageList;
+
+    private void ShellListViewOnNewItemAvailable(Object sender, ItemUpdatedEventArgs e) {
+      if (e.NewItem.Parent.ParsingName == KnownFolders.Network.ParsingName && e.NewItem.IsFolder) {
+        var newTreeItem = new FilesystemTreeViewItem(this, e.NewItem);
+        var networkRoot = this.Roots.OfType<FilesystemTreeViewItem>().Last();
+        if (networkRoot.Items.OfType<FilesystemTreeViewItem>().Count(c => c.FsItem.ParsingName.Equals(e.NewItem.ParsingName, StringComparison.InvariantCultureIgnoreCase)) == 0) {
+          networkRoot.Items.Add(newTreeItem);
+        }
+      }
+    }
+
     #endregion
 
     #region Event Handlers
@@ -140,156 +153,156 @@ namespace BExplorer.Shell {
     public ShellTreeView() {
       this.DataContext = this;
       ShellItem.IsCareForMessageHandle = false;
+      this.SmallImageList = new ImageListEx(16);
       this.Roots = new ObservableCollection<Object>();
       InitializeComponent();
       this.InitRootItems();
     }
 
+    /// <summary>Refreshes/rebuilds all nods (clears nodes => initializes root items => selects current folder from <see cref="ShellListView"/>)</summary>
+    public void RefreshContents() {
+      this.Roots.Clear();
+      this.InitRootItems();
+
+      if (this.ShellListView?.CurrentFolder != null) {
+        this.SelItem(this.ShellListView.CurrentFolder);
+      }
+    }
+
+    private FilesystemTreeViewItem FromItem(IListItemEx item, FilesystemTreeViewItem rootNode) {
+      if (rootNode == null) {
+        return null;
+      }
+
+      foreach (var node in rootNode.Items.OfType<FilesystemTreeViewItem>()) {
+        if (node.FsItem?.Equals(item) == true) {
+          if (!rootNode.IsExpanded) {
+            rootNode.IsExpanded = true;
+          }
+          return node;
+        }
+
+        var next = this.FromItem(item, node);
+        if (next != null) {
+          return next;
+        }
+      }
+
+      return null;
+    }
+
+    private FilesystemTreeViewItem FromItem(IListItemEx item) {
+      foreach (var node in this.tvShellTreeViewInternal.Items.OfType<FilesystemTreeViewItem>().Where(w => {
+        var nodeItem = w.FsItem;
+        //if (nodeItem != null) {
+        //  nodeItem = FileSystemListItem.ToFileSystemItem(item.ParentHandle, nodeItem.PIDL);
+        //}
+        return nodeItem != null && (!nodeItem.ParsingName.Equals(KnownFolders.Links.ParsingName) && !nodeItem.ParsingName.Equals("::{679f85cb-0220-4080-b29b-5540cc05aab6}"));
+      })) {
+        if ((node.FsItem)?.Equals(item) == true) {
+          return node;
+        }
+
+        var next = this.FromItem(item, node);
+        if (next != null) {
+          return next;
+        }
+      }
+
+      return null;
+    }
+
+    Stack<IListItemEx> parents = new Stack<IListItemEx>();
+
+    private void FindItem(IListItemEx item) {
+      var nodeNext = this.tvShellTreeViewInternal.Items.OfType<FilesystemTreeViewItem>().FirstOrDefault(s => s.FsItem != null && s.FsItem.Equals(item));
+      if (nodeNext == null) {
+        this.parents.Push(item);
+        if (item.Parent != null) {
+          this.FindItem(item.Parent.Clone());
+        }
+      } else {
+        while (this.parents.Count > 0) {
+          var obj = this.parents.Pop();
+          var newNode = this.FromItem(obj);
+          if (newNode != null && !newNode.IsExpanded) {
+            newNode.IsExpanded = true;
+          }
+        }
+      }
+    }
+
+    private void SelItem(IListItemEx item) {
+      // item = FileSystemListItem.ToFileSystemItem(item.ParentHandle, item.PIDL);
+      var node = this.FromItem(item);
+      if (node == null) {
+        this.FindItem(item.Clone());
+      } else {
+        node.IsSelected = true;
+      }
+    }
+
+    private void ShellListView_Navigated(Object sender, NavigatedEventArgs e) {
+      if (this.isFromTreeview) {
+        return;
+      }
+      this.SelItem(e.Folder);
+      // TODO: Try to reenable this since sometimes it causes an exceptions
+      //var thread = new Thread(() => { this.SelItem(e.Folder); });
+      //thread.SetApartmentState(ApartmentState.STA);
+      //thread.Start();
+    }
 
 
     private void TvShellTreeViewInternal_OnExpanded(Object sender, RoutedEventArgs e) {
       //if (e. == TreeViewAction.Collapse) {
       //  this._AcceptSelection = false;
       //}
-      var treeViewItem = e.OriginalSource as TreeViewItem;
-      if (treeViewItem.DataContext is FilesystemTreeViewItem fstItem && fstItem.Items.Count == 1 && fstItem.Items.First() is TreeViewItem) {
-        fstItem.Items.Clear();
-        this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
-          var sho = fstItem.FsItem;
-          foreach (var item in sho.ParsingName != KnownFolders.Computer.ParsingName
-            ? sho.GetContents(this.IsShowHiddenItems)
-              .Where(w => (sho != null && !sho.IsFileSystem && System.IO.Path.GetExtension(sho?.ParsingName)?.ToLowerInvariant() != ".library-ms") ||
-                          (w.IsFolder || w.IsLink || w.IsDrive)).OrderBy(o => o.DisplayName)
-            : sho.GetContents(this.IsShowHiddenItems)
-              .Where(w => (sho != null && !sho.IsFileSystem && System.IO.Path.GetExtension(sho?.ParsingName)?.ToLowerInvariant() != ".library-ms") || (w.IsFolder || w.IsLink || w.IsDrive))) {
-            if (item != null && !item.IsFolder && !item.IsLink) {
-              continue;
+      var treeViewItem = e.OriginalSource as FrameworkElement;
+      if (treeViewItem.DataContext is FilesystemTreeViewItem fstItem && !fstItem.IsLoaded) {
+        //fstItem.Items.Clear();
+        //var navThread = new Thread(() => {
+
+
+          this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
+            var sho = fstItem.FsItem;
+            fstItem.Items.Clear();
+            foreach (var item in sho.ParsingName != KnownFolders.Computer.ParsingName
+              ? sho.GetContents(this.IsShowHiddenItems)
+                .Where(w => (sho != null && !sho.IsFileSystem && System.IO.Path.GetExtension(sho?.ParsingName)?.ToLowerInvariant() != ".library-ms") ||
+                            (w.IsFolder || w.IsLink || w.IsDrive)).OrderBy(o => o.DisplayName)
+              : sho.GetContents(this.IsShowHiddenItems)
+                .Where(w => (sho != null && !sho.IsFileSystem && System.IO.Path.GetExtension(sho?.ParsingName)?.ToLowerInvariant() != ".library-ms") || (w.IsFolder || w.IsLink || w.IsDrive))) {
+              if (item != null && !item.IsFolder && !item.IsLink) {
+                continue;
+              }
+              //System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate { }));
+              if (item?.IsLink == true) {
+                try {
+                  var shellLink = new ShellLink(item.ParsingName);
+                  var linkTarget = shellLink.TargetPIDL;
+                  var itemLinkReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
+                  shellLink.Dispose();
+                  if (!itemLinkReal.IsFolder) {
+                    continue;
+                  }
+                } catch { }
+              }
+              fstItem.Items.Add(new FilesystemTreeViewItem(this, item));
             }
-            //System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate { }));
-            if (item?.IsLink == true) {
-              try {
-                var shellLink = new ShellLink(item.ParsingName);
-                var linkTarget = shellLink.TargetPIDL;
-                var itemLinkReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
-                shellLink.Dispose();
-                if (!itemLinkReal.IsFolder) {
-                  continue;
-                }
-              } catch { }
+
+            fstItem.IsLoaded = true;
+            var lvSho = this.ShellListView?.CurrentFolder?.Clone();
+            if (lvSho != null) {
+              this.SelItem(lvSho);
+              //var item = this.tvShellTreeViewInternal.ItemContainerGenerator.ContainerFromItemRecursive(this.tvShellTreeViewInternal.SelectedItem);
+              //item?.BringIntoView();
             }
-            fstItem.Items.Add(new FilesystemTreeViewItem(this, item));
-          }
-        }));
+          }));
+        //});
+        //navThread.SetApartmentState(ApartmentState.STA);
+        //navThread.Start();
       }
-      //return;
-      //var treeViewItem = e.Source as FilesystemTreeViewItem;
-      //  this._ResetEvent.Set();
-      //  if (treeViewItem.Items.Count > 0 && (treeViewItem.Items.OfType<TreeViewItem>().First().Header.ToString() == this._EmptyItemString || treeViewItem.Items.OfType<TreeViewItem>().First().Header.ToString() == this._SearchingForFolders)) {
-      //    treeViewItem.Items.Clear();
-      //    this.imagesQueue.Clear();
-      //    this.childsQueue.Clear();
-      //    var sho = treeViewItem.Tag as IListItemEx;
-      //    if (sho == null) {
-      //      return;
-      //    }
-      //    //if (sho != null) {
-      //    //  sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, sho.PIDL);
-      //    //}
-      //    // var lvSho = this.ShellListView != null && this.ShellListView.CurrentFolder != null ? this.ShellListView.CurrentFolder.Clone() : null;
-      //    var lvSho = this.ShellListView?.CurrentFolder?.Clone();
-
-      //    //var thread = new Thread(() => {
-      //    this.Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart) (() => {
-      //      var node = treeViewItem;
-      //      node.Items.Add(new TreeViewItem() {Header = this._SearchingForFolders});
-      //      var nodesTemp = new List<TreeViewItem>();
-      //      if (sho?.IsLink == true) {
-      //        try {
-      //          var shellLink = new ShellLink(sho.ParsingName);
-      //          var linkTarget = shellLink.TargetPIDL;
-      //          sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
-      //          shellLink.Dispose();
-      //        } catch { }
-      //      }
-
-      //      foreach (var item in sho.ParsingName != KnownFolders.Computer.ParsingName
-      //        ? sho.GetContents(this.IsShowHiddenItems)
-      //          .Where(w => (sho != null && !sho.IsFileSystem && System.IO.Path.GetExtension(sho?.ParsingName)?.ToLowerInvariant() != ".library-ms") ||
-      //                      (w.IsFolder || w.IsLink || w.IsDrive)).OrderBy(o => o.DisplayName)
-      //        : sho.GetContents(this.IsShowHiddenItems)
-      //          .Where(w => (sho != null && !sho.IsFileSystem && System.IO.Path.GetExtension(sho?.ParsingName)?.ToLowerInvariant() != ".library-ms") || (w.IsFolder || w.IsLink || w.IsDrive))) {
-      //        if (item != null && !item.IsFolder && !item.IsLink) {
-      //          continue;
-      //        }
-
-      //        if (item?.IsLink == true) {
-      //          try {
-      //            var shellLink = new ShellLink(item.ParsingName);
-      //            var linkTarget = shellLink.TargetPIDL;
-      //            var itemLinkReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
-      //            shellLink.Dispose();
-      //            if (!itemLinkReal.IsFolder) {
-      //              continue;
-      //            }
-      //          } catch { }
-      //        }
-
-      //        var itemNode = new TreeViewItem();
-      //        itemNode.Header = item.DisplayName;
-
-      //        // IListItemEx itemReal = null;
-      //        // if (item.Parent?.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
-      //        var itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.PIDL);
-
-      //        itemNode.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.PIDL);
-
-      //        if (sho.IsNetworkPath && sho.ParsingName != KnownFolders.Network.ParsingName) {
-      //          //itemNode.ImageIndex = this.folderImageListIndex;
-      //        } else if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS || sho.ParsingName == KnownFolders.Network.ParsingName) {
-      //          //itemNode.ImageIndex = itemReal.GetSystemImageListIndex(itemReal.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
-      //          //itemNode.SelectedImageIndex = itemNode.ImageIndex;
-      //        } else {
-      //          //itemNode.ImageIndex = this.folderImageListIndex;
-      //        }
-
-      //        if (item.HasSubFolders) {
-      //          itemNode.Items.Add(new TreeViewItem() {Header = this._EmptyItemString});
-      //        }
-
-      //        if (item.ParsingName.EndsWith(".library-ms")) {
-      //          var library = ShellLibrary.Load(Path.GetFileNameWithoutExtension(item.ParsingName), false);
-      //          if (library.IsPinnedToNavigationPane) {
-      //            nodesTemp.Add(itemNode);
-      //          }
-
-      //          library.Close();
-      //        } else {
-      //          nodesTemp.Add(itemNode);
-      //        }
-
-      //        // Application.DoEvents();
-      //      }
-
-
-      //      if (node.Items.Count == 1 && node.Items.OfType<TreeViewItem>().First().Header.ToString() == this._SearchingForFolders) {
-      //        node.Items.RemoveAt(0);
-      //      }
-
-      //      //foreach (var element in nodesTemp) {
-      //        node.ItemsSource = nodesTemp;
-      //      //}
-
-
-      //      if (lvSho != null) {
-      //        //this.SelItem(lvSho);
-      //      }
-      //    }));
-      //}));
-      //});
-      //thread.SetApartmentState(ApartmentState.STA);
-      //thread.Start();
-      //}
-
     }
     private ScrollViewer _ScrollViewer { get; set; }
     public ScrollViewer ScrollViewer {
@@ -306,21 +319,21 @@ namespace BExplorer.Shell {
     }
 
     private void OnTreeViewItem_Hover(Object sender, MouseEventArgs e) {
-      var item = sender as TreeViewItem;
-      var filesystemTreeViewItem = item.DataContext as FilesystemTreeViewItem;
-      var directlyOver = Mouse.DirectlyOver as FrameworkElement;
-      if (directlyOver != null && filesystemTreeViewItem.FsItem.ParsingName == (directlyOver.DataContext as FilesystemTreeViewItem).FsItem.ParsingName) {
+      //var item = sender as TreeViewItem;
+      //var filesystemTreeViewItem = item.DataContext as FilesystemTreeViewItem;
+      //var directlyOver = Mouse.DirectlyOver as FrameworkElement;
+      //if (directlyOver != null && filesystemTreeViewItem.FsItem.ParsingName == (directlyOver.DataContext as FilesystemTreeViewItem).FsItem.ParsingName) {
 
-        var ch = VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(item,0),0),0) as Visual;
-        var margin = (Thickness) ch.GetValue(MarginProperty);
-        GeneralTransform childTransform = ch.TransformToAncestor(this.ScrollViewer);
-        Rect rectangle = childTransform.TransformBounds(new Rect(new Point(0, 0), item.RenderSize));
-        //rectangle.X = rectangle.Left + margin.Left;
-        var svRect = new Rect(new Point(0, 0), this.ScrollViewer.RenderSize);
-        if (rectangle.Left < 0) {
-          this.ScrollViewer.ScrollToHorizontalOffset(margin.Left);
-        }
-      }
+      //  var ch = VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(item,0),0),0) as Visual;
+      //  var margin = (Thickness) ch.GetValue(MarginProperty);
+      //  GeneralTransform childTransform = ch.TransformToAncestor(this.ScrollViewer);
+      //  Rect rectangle = childTransform.TransformBounds(new Rect(new Point(0, 0), item.RenderSize));
+      //  //rectangle.X = rectangle.Left + margin.Left;
+      //  var svRect = new Rect(new Point(0, 0), this.ScrollViewer.RenderSize);
+      //  if (rectangle.Left < 0) {
+      //    this.ScrollViewer.ScrollToHorizontalOffset(margin.Left);
+      //  }
+      //}
 
       //this.ScrollViewer.ScrollToLeftEnd();
     }
@@ -353,10 +366,6 @@ namespace BExplorer.Shell {
 
     }
 
-    private void TvShellTreeViewInternal_OnSelectedItemChanged(Object sender, RoutedPropertyChangedEventArgs<Object> e) {
-      e.Handled = true;
-    }
-
     private void TvShellTreeViewInternal_OnPreviewMouseUp(Object sender, MouseButtonEventArgs e) {
       //e.Handled = true;
       if (e.OriginalSource is ToggleButton) {
@@ -364,6 +373,16 @@ namespace BExplorer.Shell {
       }
       var shItem = ((e.OriginalSource as FrameworkElement)?.DataContext as FilesystemTreeViewItem)?.FsItem;
       this.NavigateListView(shItem);
+    }
+
+    private void EventSetter_OnHandler(Object sender, RoutedEventArgs e) {
+      e.Handled = true;
+      var item = this.tvShellTreeViewInternal.ItemContainerGenerator.ContainerFromItemRecursive(e.OriginalSource);
+      item?.BringIntoView();
+    }
+
+    private void ShellTreeView_OnUnloaded(Object sender, RoutedEventArgs e) {
+      this.SmallImageList.Dispose();
     }
   }
 }

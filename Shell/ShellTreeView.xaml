@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:BExplorer.Shell"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" Unloaded="ShellTreeView_OnUnloaded">
   <UserControl.Resources>
     <Style x:Key="ScrollBarLineButton" TargetType="{x:Type RepeatButton}">
     <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -162,7 +162,7 @@
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
               <Setter TargetName="border" Property="Background" Value="{DynamicResource GrayBrush7}" />
-              <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+              <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource GrayBrush7}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -309,12 +309,12 @@
       <Trigger Property="Orientation" Value="Horizontal">
         <Setter Property="Width" Value="Auto" />
         <Setter Property="Template" Value="{DynamicResource HorizontalScrollBar}" />
-        <Setter Property="Height" Value="20" />
+        <Setter Property="Height" Value="18" />
       </Trigger>
       <Trigger Property="Orientation" Value="Vertical">
         <Setter Property="Height" Value="Auto" />
         <Setter Property="Template" Value="{DynamicResource VerticalScrollBar}" />
-        <Setter Property="Width" Value="20" />
+        <Setter Property="Width" Value="18" />
       </Trigger>
     </Style.Triggers>
   </Style>
@@ -337,14 +337,25 @@
   </Style>
   </UserControl.Resources>
   <Grid>
-    <TreeView x:Name="tvShellTreeViewInternal" Margin="0" TreeViewItem.PreviewMouseUp="TvShellTreeViewInternal_OnPreviewMouseUp"  TreeViewItem.Expanded="TvShellTreeViewInternal_OnExpanded" SelectedItemChanged="TvShellTreeViewInternal_OnSelectedItemChanged"  ScrollViewer.HorizontalScrollBarVisibility="Hidden" ItemsSource="{Binding Roots}" Background="{DynamicResource GrayBrush11}" RequestBringIntoView="TvShellTreeViewInternal_OnRequestBringIntoView" BorderThickness="0" VirtualizingPanel.IsVirtualizing="True">
+    <TreeView x:Name="tvShellTreeViewInternal" Margin="0" TreeViewItem.PreviewMouseUp="TvShellTreeViewInternal_OnPreviewMouseUp"  ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Roots}" Background="{DynamicResource GrayBrush11}" RequestBringIntoView="TvShellTreeViewInternal_OnRequestBringIntoView" BorderThickness="0" >
       <TreeView.Resources>
+        <local:ObjectToSeparatorBooleanConverter x:Key="ObjectToSeparatorBoolean" />
         <HierarchicalDataTemplate DataType="{x:Type local:FilesystemTreeViewItem}" ItemsSource="{Binding Items}">
-          <StackPanel Orientation="Horizontal">
-            <Image Source="{Binding Icon}" Width="16" Height="16" Stretch="None" Margin="0"></Image>
-            <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" Margin="3,0,0,0" Foreground="{DynamicResource BlackBrush}"></TextBlock>
-          </StackPanel>
-          
+          <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="16"/>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image Name="icon" Grid.Column="0" Source="{Binding Icon}" Width="16" Height="16" Stretch="None" Margin="0"></Image>
+            <Image Name="overlay" Grid.Column="0" Source="{Binding OverlayIcon}" Width="16" Height="16" Stretch="None" Margin="0"></Image>
+            <TextBlock Grid.Column="1" Text="{Binding DisplayName}" VerticalAlignment="Center" Margin="3,0,0,0" Foreground="{DynamicResource BlackBrush}"></TextBlock>
+          </Grid>
+          <HierarchicalDataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Path=IsHidden, UpdateSourceTrigger=PropertyChanged}" Value="True">
+              <Setter Property="Opacity" TargetName="icon" Value="0.6"/>
+              <Setter Property="Opacity" TargetName="overlay" Value="0.6"/>
+            </DataTrigger>
+          </HierarchicalDataTemplate.Triggers>
         </HierarchicalDataTemplate>
       </TreeView.Resources>
       <TreeView.ItemContainerStyle>
@@ -353,16 +364,20 @@
         </Style>-->
         <Style TargetType="TreeViewItem">
           <EventSetter Event="MouseEnter" Handler="OnTreeViewItem_Hover" HandledEventsToo="False"></EventSetter>
+          <EventSetter Event="Expanded" Handler="TvShellTreeViewInternal_OnExpanded"></EventSetter>
+          <EventSetter Event="Selected" Handler="EventSetter_OnHandler"></EventSetter>
           <!--<EventSetter Event="Selected" Handler="TvShellTreeViewInternal_OnSelected" HandledEventsToo="False"></EventSetter>-->
-          <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-          <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+          <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+          <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
           <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+          <Setter Property="local:TreeViewItemBehaviour.BringSelectedItemIntoView" Value="True" />
+          <Setter Property="local:TreeViewItemBehaviour.BringExpandedChildrenIntoView" Value="True" />
           <Setter Property="Template">
             <Setter.Value>
               <ControlTemplate TargetType="{x:Type TreeViewItem}">
 
                 <ControlTemplate.Resources>
-                  <local:LeftMarginMultiplierConverter Length="19" x:Key="lengthConverter" />
+                  <local:LeftMarginMultiplierConverter Length="8" x:Key="lengthConverter" />
                 </ControlTemplate.Resources>
                 <StackPanel>
                   <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{TemplateBinding Background}" Grid.ColumnSpan="3" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True" Margin="1">
@@ -371,7 +386,7 @@
                         <ColumnDefinition MinWidth="19" Width="Auto"/>
                         <ColumnDefinition/>
                       </Grid.ColumnDefinitions>
-                    <ToggleButton x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}">
+                    <ToggleButton x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Checked="TvShellTreeViewInternal_OnExpanded">
                     <ToggleButton.Style>
                       <Style TargetType="{x:Type ToggleButton}">
                         <Setter Property="Focusable" Value="False"/>
@@ -423,20 +438,23 @@
                   <ItemsPresenter x:Name="ItemsHost" Grid.ColumnSpan="2" Grid.Column="1" Grid.Row="1"/>
                 </StackPanel>
                 <ControlTemplate.Triggers>
-                  <Trigger Property="IsExpanded" Value="False">
+                  <DataTrigger Binding="{Binding Path=IsExpanded, UpdateSourceTrigger=PropertyChanged}" Value="False">
                     <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
-                  </Trigger>
-                  <Trigger Property="HasItems" Value="False">
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding DataContext, Converter={StaticResource ObjectToSeparatorBoolean}}" Value="True">
+                    <Setter Property="Visibility" TargetName="Bd" Value="Hidden"/>
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Path=HasChildren, UpdateSourceTrigger=PropertyChanged}" Value="False">
                     <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
-                  </Trigger>
+                  </DataTrigger>
                   <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" TargetName="Bd" Value="{DynamicResource GrayBrush10}"/>
                     <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource GrayBrush9}"/>
                     <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
                   </Trigger>
                   <Trigger Property="local:TreeViewHelper.IsMouseDirectlyOverItem" Value="True">
-                    <Setter Property="Background" TargetName="Bd" Value="{DynamicResource GrayBrush10}"/>
-                    <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource GrayBrush10}"/>
+                    <Setter Property="Background" TargetName="Bd" Value="{DynamicResource GrayBrush9}"/>
+                    <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource GrayBrush9}"/>
                     <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
                   </Trigger>
                  

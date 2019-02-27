@@ -23,8 +23,19 @@ namespace BExplorer.Shell {
     public String DisplayName => this.FsItem.DisplayName;
 
     public BitmapSource Icon => this.FsItem.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+    public BitmapSource OverlayIcon => this.Owner?.SmallImageList?.GetOverlayIconBS(this.FsItem.PIDL);
+    public Boolean HasChildren { get; set; }
+    public Boolean IsHidden => this.FsItem.IsHidden;
+    public Boolean IsLoaded { get; set; }
 
-    public Boolean IsExpanded { get; set; }
+    private Boolean _IsExpanded { get; set; }
+    public Boolean IsExpanded {
+      get => this._IsExpanded;
+      set {
+        this._IsExpanded = value;
+        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsExpanded"));
+      }
+    }
 
     private Boolean _IsSelected { get; set; }
 
@@ -32,9 +43,7 @@ namespace BExplorer.Shell {
       get => this._IsSelected;
       set {
         this._IsSelected = value;
-        if (value) {
-          //this.Owner.NavigateListView(this.FsItem);
-        }
+        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsSelected"));
       }
     }
 
@@ -87,9 +96,26 @@ namespace BExplorer.Shell {
       this.Owner = owner;
       this.FsItem = fsItem;
       this.Items = new ObservableCollection<Object>();
-      if (this.FsItem.HasSubFolders) {
-        this.Items.Add(new TreeViewItem());
-      }
+      var findingSubfoldersExistanceThread = new Thread(() => {
+        //ShellItem.IsCareForMessageHandle = false;
+        ////ShellItem.MessageHandle = IntPtr.Zero;
+        //foreach (var item in fsItem.GetContents(owner.IsShowHiddenItems)) {
+        //  ShellItem.IsCareForMessageHandle = false;
+        //  try {
+        //    if (item.IsFolder) {
+        //      this.HasChildren = true;
+        //      this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HasChildren"));
+        //      break;
+        //    }
+        //  } catch  { }
+        //}
+        //ShellItem.IsCareForMessageHandle = true;
+        //ShellItem.MessageHandle = owner.ShellListView.LVHandle;
+        this.HasChildren = fsItem.HasSubFolders;
+      });
+      findingSubfoldersExistanceThread.SetApartmentState(ApartmentState.STA);
+      findingSubfoldersExistanceThread.Start();
+      
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

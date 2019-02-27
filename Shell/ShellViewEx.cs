@@ -147,6 +147,8 @@ namespace BExplorer.Shell {
 
     public Boolean IsNavigateInSameTab { get; private set; }
 
+    public Boolean IsFirstItemAvailable { get; set; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="NavigatingEventArgs"/> class.
     /// </summary>
@@ -236,6 +238,8 @@ namespace BExplorer.Shell {
 
     public event EventHandler<ItemUpdatedEventArgs> ItemUpdated;
 
+    public event EventHandler<ItemUpdatedEventArgs> NewItemAvailable;
+
     public event EventHandler<ViewChangedEventArgs> ViewStyleChanged;
 
     public event EventHandler<NavigatedEventArgs> ItemMiddleClick;
@@ -260,6 +264,7 @@ namespace BExplorer.Shell {
     public event EventHandler KeyJumpTimerDone;
 
     public event EventHandler<ScrollEventArgs> OnLVScroll;
+
 
     #endregion Event Handler
 
@@ -487,7 +492,7 @@ namespace BExplorer.Shell {
 
     #region Private Members
 
-    private ShellNotifications notifications = new ShellNotifications();
+    private ShellNotifications _Notifications = new ShellNotifications();
     private IListView _IIListView;
     private FileSystemWatcher _FsWatcher = new FileSystemWatcher();
     private ListViewEditor _EditorSubclass;
@@ -603,14 +608,17 @@ namespace BExplorer.Shell {
     #region Events
 
     private void _MaintenanceTimer_Tick(Object sender, EventArgs e) {
-      new Thread(() => {
-        var curProcess = Process.GetCurrentProcess();
-        if (curProcess.WorkingSet64 > 100 * 1024 * 1024) {
-          Shell32.SetProcessWorkingSetSize(curProcess.Handle, -1, -1);
-        }
+      var thread = new Thread(
+        () => {
+          var curProcess = Process.GetCurrentProcess();
+          if (curProcess.WorkingSet64 > 100 * 1024 * 1024) {
+            Shell32.SetProcessWorkingSetSize(curProcess.Handle, -1, -1);
+          }
 
-        curProcess.Dispose();
-      }).Start();
+          curProcess.Dispose();
+        });
+      thread.IsBackground = true;
+      thread.Start();
     }
 
     private void _UnvalidateTimer_Tick(Object sender, EventArgs e) {
@@ -621,6 +629,7 @@ namespace BExplorer.Shell {
 
       try {
         while (this._ItemsQueue.Count() > 0) {
+          Thread.Sleep(5);
           var obj = this._ItemsQueue.Dequeue();
           if (obj.Item1 == ItemUpdateType.RecycleBin) {
             this.RaiseRecycleBinUpdated();
@@ -1669,7 +1678,7 @@ namespace BExplorer.Shell {
                   if ((this.View == ShellViewStyle.Details)) {
                     var currentCollumn = this.Collumns[nmlv.item.iSubItem];
 
-                    if (currentItem.ColumnValues.TryGetValue(currentCollumn.pkey, out var valueCached)) {
+                    if (currentItem.ColumnValues.TryGetValue(currentCollumn.pkey, out var valueCached) && !currentItem.IsNeedRefreshing) {
                       String val = String.Empty;
                       if (valueCached != null) {
                         if (currentCollumn.CollumnType == typeof(DateTime)) {
@@ -1699,11 +1708,7 @@ namespace BExplorer.Shell {
                       var pvar = new PropVariant();
                       if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
                         if (pvar.Value == null) {
-                          if (this.IconSize == 16) {
                             this.SmallImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
-                          } else {
-                            this.LargeImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
-                          }
                         } else {
                           var val = String.Empty;
                           if (currentCollumn.CollumnType == typeof(DateTime)) {
@@ -2374,7 +2379,7 @@ namespace BExplorer.Shell {
       this.BackColor = Color.Black;
       this.VScroll.Theme = this.Theme;
 
-      this.notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
+      this._Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
       this._UnvalidateTimer.Interval = 350;
       this._UnvalidateTimer.Tick += this._UnvalidateTimer_Tick;
       this._UnvalidateTimer.Stop();
@@ -2479,9 +2484,9 @@ namespace BExplorer.Shell {
     /// <inheritdoc/>
     protected override void OnHandleDestroyed(EventArgs e) {
       try {
-
+        this.VScroll.Dispose();
         this._FsWatcher?.Dispose();
-        this.notifications.UnregisterChangeNotify();
+        this._Notifications.UnregisterChangeNotify();
         this.LargeImageList.Dispose();
         this.SmallImageList.Dispose();
         var t = new Thread(() => {
@@ -2492,7 +2497,7 @@ namespace BExplorer.Shell {
             }
           }
         });
-
+        t.IsBackground = true;
         t.Start();
       } catch (ThreadAbortException) {
       } catch {
@@ -2503,6 +2508,14 @@ namespace BExplorer.Shell {
     #endregion Overrides
 
     #region Public Methods
+
+    public void ChangeTheme(ThemeColors theme) {
+      this.Theme = new LVTheme(theme);
+      this.VScroll.Theme = this.Theme;
+      this._IIListView.SetBackgroundColor(this.Theme.HeaderBackgroundColor.ToDrawingColor().ToWin32Color());
+      this._IIListView.SetTextColor(this.Theme.TextColor.ToDrawingColor().ToWin32Color());
+     
+    }
 
     public IListView GetListViewInterface() {
       return this._IIListView;
@@ -2851,6 +2864,7 @@ namespace BExplorer.Shell {
       });
 
       thread.SetApartmentState(ApartmentState.STA);
+      thread.IsBackground = true;
       thread.Start();
       Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
       GC.WaitForFullGCComplete(1000);
@@ -2886,6 +2900,7 @@ namespace BExplorer.Shell {
         }
       });
       thread.SetApartmentState(ApartmentState.STA);
+      thread.IsBackground = true;
       thread.Start();
     }
 
@@ -3809,6 +3824,7 @@ namespace BExplorer.Shell {
               this._FsWatcher = new FileSystemWatcher(@destination.ParsingName);
               this._FsWatcher.Changed += (sender, args) => {
                 try {
+                  //Thread.Sleep(2000);
                   var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
                   if (objUpdateItem.IsInCurrentFolder(this.CurrentFolder)) {
                     objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, objUpdateItem.PIDL);
@@ -3894,6 +3910,9 @@ namespace BExplorer.Shell {
         var content = destination;
 
         foreach (var shellItem in content.GetContents(this.ShowHidden).TakeWhile(shellItem => !this.IsCancelRequested).SetSortCollumn(this, true, columns, isThereSettings ? folderSettings.SortOrder : SortOrder.Ascending, false)) {
+          if (currentI == 0) {
+            this.Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab) { IsFirstItemAvailable = true });
+          }
           currentI++;
           if (shellItem == null) {
             continue;
@@ -3918,6 +3937,12 @@ namespace BExplorer.Shell {
         this.IsNavigationInProgress = false;
 
         if (this.RequestedCurrentLocation.NavigationStatus != HResult.S_OK) {
+          this.BeginInvoke((Action)(() => {
+            this._NavWaitTimer.Stop();
+            this._IsDisplayEmptyText = false;
+            this._IIListView.ResetEmptyText();
+            this.Navigate(this.CurrentFolder, true);
+          }));
           GC.Collect();
           Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
           if (this._Threads.Count <= 1) {
@@ -4240,6 +4265,7 @@ namespace BExplorer.Shell {
       });
 
       thread.SetApartmentState(ApartmentState.STA);
+      thread.IsBackground = true;
       thread.Start();
     }
 
@@ -4273,6 +4299,7 @@ namespace BExplorer.Shell {
       });
 
       thread.SetApartmentState(ApartmentState.STA);
+      thread.IsBackground = true;
       thread.Start();
     }
 
@@ -4324,14 +4351,15 @@ namespace BExplorer.Shell {
     }
 
     private void ProcessShellNotifications(ref Message m) {
-      if (this.notifications.NotificationReceipt(m.WParam, m.LParam)) {
-        foreach (NotifyInfos info in this.notifications.NotificationsReceived.ToArray()) {
+      if (this._Notifications.NotificationReceipt(m.WParam, m.LParam)) {
+        foreach (NotifyInfos info in this._Notifications.NotificationsReceived.ToArray()) {
           try {
             switch (info.Notification) {
               case ShellNotifications.SHCNE.SHCNE_MKDIR:
               case ShellNotifications.SHCNE.SHCNE_CREATE:
                 try {
                   var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
+                  this.NewItemAvailable?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj.Clone(), null, -1));
                   if (obj.IsInCurrentFolder(this.CurrentFolder)) {
                     obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, obj.PIDL);
                     if (this.IsRenameNeeded) {
@@ -4475,7 +4503,7 @@ namespace BExplorer.Shell {
           } catch {
           }
 
-          this.notifications.NotificationsReceived.Remove(info);
+          this._Notifications.NotificationsReceived.Remove(info);
         }
       }
     }
@@ -4720,11 +4748,7 @@ namespace BExplorer.Shell {
                   var pvar = new PropVariant();
                   if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
                     if (pvar.Value == null) {
-                      if (this.IconSize == 16) {
                         this.SmallImageList.EnqueueSubitemsGet(Tuple.Create(sho.ItemIndex, shoCColumn, pk));
-                      } else {
-                        this.LargeImageList.EnqueueSubitemsGet(Tuple.Create(sho.ItemIndex, shoCColumn, pk));
-                      }
                     } else {
                       if (currentCollumn.CollumnType == typeof(DateTime)) {
                         val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentUICulture);

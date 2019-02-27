@@ -102,6 +102,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
+    <Compile Include="ObjectToSeparatorBooleanConverter.cs" />
+    <Compile Include="TreeViewItemBehaviour.cs" />
     <Compile Include="HandlingEventTrigger.cs" />
     <Compile Include="TreeViewHelper.cs" />
     <Compile Include="LeftMarginMultiplierConverter.cs" />

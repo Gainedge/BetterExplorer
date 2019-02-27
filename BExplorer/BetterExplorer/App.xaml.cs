@@ -212,6 +212,11 @@ namespace BetterExplorer {
       }
     }
 
+    protected override void OnExit(ExitEventArgs e) {
+      base.OnExit(e);
+      Environment.Exit(Environment.ExitCode);
+    }
+
     #region UnhandledException
     /// <summary>
     /// Handle all exceptions from current domain

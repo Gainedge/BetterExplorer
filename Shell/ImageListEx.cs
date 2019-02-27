@@ -12,9 +12,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
 using BExplorer.Shell._Plugin_Interfaces;
 using Microsoft.Win32;
+using MSG = BExplorer.Shell.Interop.MSG;
 
 namespace BExplorer.Shell {
   public class ImageListEx {
@@ -59,19 +62,24 @@ namespace BExplorer.Shell {
       this._IImageList = (IImageList2) Marshal.GetObjectForIUnknown(ptr);
       this.Handle = ptr;
       this._IconLoadingThread = new Thread(_IconsLoadingThreadRun) {IsBackground = true, Priority = ThreadPriority.Normal};
+      this._IconLoadingThread.IsBackground = true;
       this._IconLoadingThread.SetApartmentState(ApartmentState.STA);
       this._IconLoadingThread.Start();
       this._IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) {IsBackground = true, Priority = ThreadPriority.BelowNormal};
       this._IconCacheLoadingThread.SetApartmentState(ApartmentState.STA);
+      this._IconCacheLoadingThread.IsBackground = true;
       this._IconCacheLoadingThread.Start();
       this._OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) {IsBackground = true, Priority = ThreadPriority.BelowNormal};
       this._OverlaysLoadingThread.SetApartmentState(ApartmentState.STA);
+      this._OverlaysLoadingThread.IsBackground = true;
       this._OverlaysLoadingThread.Start();
       this._UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) {Priority = ThreadPriority.BelowNormal};
       this._UpdateSubitemValuesThread.SetApartmentState(ApartmentState.STA);
+      this._UpdateSubitemValuesThread.IsBackground = true;
       this._UpdateSubitemValuesThread.Start();
       this._RedrawingThread = new Thread(_RedrawingThreadRun) {IsBackground = true, Priority = ThreadPriority.Normal};
       this._RedrawingThread.SetApartmentState(ApartmentState.STA);
+      this._RedrawingThread.IsBackground = true;
       this._RedrawingThread.Start();
       var defIconInfo = new Shell32.SHSTOCKICONINFO() {cbSize = (UInt32) Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO))};
 
@@ -106,7 +114,7 @@ namespace BExplorer.Shell {
         if (this._RedrawingThread.IsAlive)
           this._RedrawingThread.Abort();
       });
-
+      t.IsBackground = true;
       t.Start();
     }
 
@@ -128,8 +136,29 @@ namespace BExplorer.Shell {
     }
 
     public IntPtr GetHIcon(Int32 index) {
-      return this._Extra.GetHIcon(index);
+      return this._CurrentSize == 16 ? this._Small.GetHIcon(index) : this._Extra.GetHIcon(index);
     }
+
+    public BitmapSource GetOverlayIconBS(IntPtr pidl) {
+      Int32 overlayIndex = 0;
+      this._Small.GetIconIndexWithOverlay(pidl, out overlayIndex);
+      if (overlayIndex > 0) {
+        overlayIndex = this._Small.GetIndexOfOverlay(overlayIndex);
+        var icon = this._CurrentSize == 16 ? this._Small.GetHIcon(overlayIndex) : this._Extra.GetHIcon(overlayIndex);
+        if (icon == IntPtr.Zero) {
+          return null;
+        }
+
+        var returnValue = Imaging.CreateBitmapSourceFromHIcon(icon, System.Windows.Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()).Clone();
+        returnValue.Freeze();
+        // delete HBitmap to avoid memory leaks
+        User32.DestroyIcon(icon);
+        return returnValue;
+      }
+
+      return null;
+    }
+
     public void ResizeImages(Int32 newSize) {
       this.ReInitQueues();
       this._CurrentSize = newSize;

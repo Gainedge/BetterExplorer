@@ -82,7 +82,6 @@ namespace BetterExplorer {
     #region Private Members
     private bool _IsCalledFromLoading, isOnLoad;
     private MenuItem misa, misd, misag, misdg;
-    private ShellTreeViewEx ShellTree = new ShellTreeViewEx();
     private ShellView _ShellListView = new ShellView();
     private bool IsNeedEnsureVisible;
     private ClipboardMonitor cbm = new ClipboardMonitor();
@@ -1307,7 +1306,7 @@ namespace BetterExplorer {
     }
 
     private void InitializeExplorerControl() {
-      this.ShellTree.NodeClick += this.ShellTree_NodeClick;
+      //this.ShellTree.NodeClick += this.ShellTree_NodeClick;
       this._ShellListView.Navigated += this.ShellListView_Navigated;
       this._ShellListView.ViewStyleChanged += this.ShellListView_ViewStyleChanged;
       this._ShellListView.SelectionChanged += this.ShellListView_SelectionChanged;
@@ -1613,7 +1612,7 @@ namespace BetterExplorer {
     private void Window_Loaded(object sender, RoutedEventArgs e) {
       this.sbLVVertical.Track.Thumb.DragDelta += (o, args) => {
         this._IsScrollingManually = true;
-        User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Ceiling(args.VerticalChange*(8.5)));
+        User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Ceiling(args.VerticalChange * (8.5)));
         //args.Handled = true;
         //this.sbLVVertical.Value = this.sbLVVertical.Value + args.VerticalChange;
       };
@@ -1684,7 +1683,7 @@ namespace BetterExplorer {
         BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref statef, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS | BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, false);
         this.chkHiddenFiles.IsChecked = statef.fShowAllObjects == 1;
         this._ShellListView.ShowHidden = this.chkHiddenFiles.IsChecked.Value;
-        this.ShellTree.IsShowHiddenItems = this.chkHiddenFiles.IsChecked.Value;
+        this.stvTreeView.IsShowHiddenItems = this.chkHiddenFiles.IsChecked.Value;
         this.chkExtensions.IsChecked = statef.fShowExtensions == 1;
         this._ShellListView.IsFileExtensionShown = statef.fShowExtensions == 1;
         this._IsCalledFromLoading = false;
@@ -2266,8 +2265,8 @@ namespace BetterExplorer {
                         BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
                         this._ShellListView.ShowHidden = true;
 
-                        this.ShellTree.IsShowHiddenItems = true;
-                        this.ShellTree.RefreshContents();
+                        this.stvTreeView.IsShowHiddenItems = true;
+                        this.stvTreeView.RefreshContents();
                       }
       ));
     }
@@ -2281,8 +2280,8 @@ namespace BetterExplorer {
                         BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
                         this._ShellListView.ShowHidden = false;
 
-                        this.ShellTree.IsShowHiddenItems = false;
-                        this.ShellTree.RefreshContents();
+                        this.stvTreeView.IsShowHiddenItems = false;
+                        this.stvTreeView.RefreshContents();
                       }
       ));
     }
@@ -3352,45 +3351,51 @@ namespace BetterExplorer {
     void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
       if (this._ShellListView.CurrentFolder == null)
         return;
-      this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
-        this.btnCancelNavigation.Visibility = Visibility.Visible;
-        this.btnGoNavigation.Visibility = Visibility.Collapsed;
-        this._ProgressTimer.Start();
-      }));
-
-      if (this.bcbc.RootItem.Items.OfType<ShellItem>().Last().IsSearchFolder) {
-        this.bcbc.RootItem.Items.RemoveAt(this.bcbc.RootItem.Items.Count - 1);
-      }
-
-      var pidl = e.Folder.PIDL.ToString();
-      this.bcbc.SetPathWithoutNavigate(pidl);
-
-      this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
-        var tab = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
-        if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
-          if (tab.SelectedItems != null)
-            tab.SelectedItems.AddRange(this._ShellListView.SelectedItems.Select(s => s.ParsingName).ToList());
-          else
-            tab.SelectedItems = this._ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
-        }
-
-        this.Title = "Better Explorer - " + e.Folder.DisplayName;
-      }));
-
-      if (e.Folder.IsSearchFolder) {
-        this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
-          var selectedTabItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
-          if (selectedTabItem != null) {
-            selectedTabItem.Header = e.Folder.DisplayName;
-            selectedTabItem.Icon = e.Folder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
-            selectedTabItem.ShellObject = e.Folder;
-            selectedTabItem.ToolTip = e.Folder.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
+      if (e.IsFirstItemAvailable) {
+        this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => {
+          if (this.bcbc.RootItem.Items.OfType<ShellItem>().Last().IsSearchFolder) {
+            this.bcbc.RootItem.Items.RemoveAt(this.bcbc.RootItem.Items.Count - 1);
           }
+
+
+          var pidl = e.Folder.PIDL.ToString();
+          this.bcbc.SetPathWithoutNavigate(pidl);
         }));
+
+
+        this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => {
+          var tab = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
+          if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
+            if (tab.SelectedItems != null)
+              tab.SelectedItems.AddRange(this._ShellListView.SelectedItems.Select(s => s.ParsingName).ToList());
+            else
+              tab.SelectedItems = this._ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+          }
+
+          this.Title = "Better Explorer - " + e.Folder.DisplayName;
+        }));
+
+        if (e.Folder.IsSearchFolder) {
+          this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => {
+            var selectedTabItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
+            if (selectedTabItem != null) {
+              selectedTabItem.Header = e.Folder.DisplayName;
+              selectedTabItem.Icon = e.Folder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+              selectedTabItem.ShellObject = e.Folder;
+              selectedTabItem.ToolTip = e.Folder.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
+            }
+          }));
+        } else {
+          this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => { this.edtSearchBox.ClearSearchText(); }));
+        }
       } else {
-        this.edtSearchBox.ClearSearchText();
+        this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => {
+          this.btnCancelNavigation.Visibility = Visibility.Visible;
+          this.btnGoNavigation.Visibility = Visibility.Collapsed;
+          this._ProgressTimer.Start();
+        }));
+        this._ShellListView.Focus();
       }
-      this._ShellListView.Focus();
     }
 
     void ShellTree_NodeClick(object sender, WIN.Forms.TreeNodeMouseClickEventArgs e) {
@@ -4182,11 +4187,6 @@ namespace BetterExplorer {
       button.Items.OfType<MenuItem>().ToArray()[button.Items.OfType<MenuItem>().Count() - 2].IsChecked = this._ShellListView.LastGroupOrder == WIN.Forms.SortOrder.Ascending;
     }
 
-    private void ShellTreeHost_SizeChanged(object sender, SizeChangedEventArgs e) {
-      this.ShellTree.Refresh();
-      this._ShellListView.Refresh();
-    }
-
     private void btnStartPowerShellClick(object sender, RoutedEventArgs e) {
       if (this.ctrlConsole.IsProcessRunning)
         this.ctrlConsole.StopProcess();
@@ -4203,11 +4203,13 @@ namespace BetterExplorer {
 
     private void BtnTheme_OnChecked(Object sender, RoutedEventArgs e) {
       this.ChangeRibbonTheme("Dark");
+      this._ShellListView.ChangeTheme(ThemeColors.Dark);
       this.KeepBackstageOpen = true;
     }
 
     private void BtnTheme_OnUnchecked(Object sender, RoutedEventArgs e) {
       this.ChangeRibbonTheme("Light");
+      this._ShellListView.ChangeTheme(ThemeColors.Light);
       this.KeepBackstageOpen = true;
     }
 

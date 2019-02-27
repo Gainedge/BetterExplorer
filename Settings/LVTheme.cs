@@ -22,12 +22,12 @@ namespace Settings {
       switch (color) {
         case ThemeColors.Light:
           this.SelectionColor = Color.FromArgb(75, 128, 128, 128);
-          this.SelectionBorderColor = Color.FromArgb(75, 210, 210, 200);
-          this.HeaderSelectionColor = Color.FromArgb(255, 173, 172, 172);
-          this.TextColor = (System.Windows.Media.Color)System.Windows.Application.Current.Resources["BlackColor"];
-          this.HeaderBackgroundColor = Color.FromRgb(37,37,37);
+          this.SelectionBorderColor = Color.FromArgb(109, 96, 96, 91);
+          this.HeaderSelectionColor = Color.FromArgb(255, 235, 235, 235);
+          this.TextColor = Colors.Black;
+          this.HeaderBackgroundColor = Colors.White;
           this.SortColumnColor = Color.FromRgb(59,59,59);
-          this.HeaderDividerColor = Color.FromRgb(69,69,69);
+          this.HeaderDividerColor = Colors.DarkGray;
           break;
         case ThemeColors.Dark:
           this.SelectionColor = Color.FromArgb(75, 128, 128, 128);
