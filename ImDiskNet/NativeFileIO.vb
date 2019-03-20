@@ -27,6 +27,8 @@ Public Class NativeFileIO
         Public Const ERROR_FILE_NOT_FOUND As UInt32 = 2UI
         Public Const ERROR_PATH_NOT_FOUND As UInt32 = 3UI
         Public Const ERROR_ACCESS_DENIED As UInt32 = 5UI
+        Public Const ERROR_DEVICE_REMOVED As UInt32 = 1617UI
+        Public Const ERROR_DEV_NOT_EXIST As UInt32 = 55UI
 
         Public Const FSCTL_GET_COMPRESSION As UInt32 = &H9003C
         Public Const FSCTL_SET_COMPRESSION As UInt32 = &H9C040
@@ -200,7 +202,7 @@ Public Class NativeFileIO
             Public dwWaitHint As Integer
         End Structure
 
-        <Flags()>
+        <Flags>
         Public Enum DEFINE_DOS_DEVICE_FLAGS As UInt32
             DDD_EXACT_MATCH_ON_REMOVE = &H4
             DDD_NO_BROADCAST_SYSTEM = &H8
@@ -312,11 +314,11 @@ Public Class NativeFileIO
 
         Public Declare Auto Function GetCommTimeouts Lib "kernel32" (
           hFile As SafeFileHandle,
-          <Out()> ByRef lpCommTimeouts As COMMTIMEOUTS) As Boolean
+          <Out> ByRef lpCommTimeouts As COMMTIMEOUTS) As Boolean
 
         Public Declare Auto Function SetCommTimeouts Lib "kernel32" (
           hFile As SafeFileHandle,
-          <[In]()> ByRef lpCommTimeouts As COMMTIMEOUTS) As Boolean
+          <[In]> ByRef lpCommTimeouts As COMMTIMEOUTS) As Boolean
 
         Public Declare Auto Function CreateFile Lib "kernel32" (
           lpFileName As String,
@@ -334,9 +336,9 @@ Public Class NativeFileIO
         Public Declare Function DeviceIoControl Lib "kernel32" Alias "DeviceIoControl" (
           hDevice As SafeFileHandle,
           dwIoControlCode As UInt32,
-          <MarshalAs(UnmanagedType.LPArray, SizeParamIndex:=3), [In]()> lpInBuffer As Byte(),
+          <MarshalAs(UnmanagedType.LPArray), [In]> lpInBuffer As Byte(),
           nInBufferSize As UInt32,
-          <MarshalAs(UnmanagedType.LPArray, SizeParamIndex:=5), Out()> lpOutBuffer As Byte(),
+          <MarshalAs(UnmanagedType.LPArray, SizeParamIndex:=6), Out> lpOutBuffer As Byte(),
           nOutBufferSize As UInt32,
           ByRef lpBytesReturned As UInt32,
           lpOverlapped As IntPtr) As Boolean
@@ -398,7 +400,7 @@ Public Class NativeFileIO
     ''' that error code.
     ''' </summary>
     ''' <param name="result">Return code from a Win32 API function call.</param>
-    <DebuggerHidden()>
+    <DebuggerHidden>
     Public Shared Function Win32Try(Of T)(result As T) As T
 
         If result Is Nothing Then
@@ -556,7 +558,11 @@ Public Class NativeFileIO
     ''' </summary>
     ''' <param name="Value">FileAccess values.</param>
     Private Shared Function GetFileStreamLegalAccessValue(Value As FileAccess) As FileAccess
-        Return If(Value = 0, FileAccess.Read, Value)
+        If Value = 0 Then
+            Return FileAccess.Read
+        Else
+            Return Value
+        End If
     End Function
 
     ''' <summary>
@@ -670,7 +676,7 @@ Public Class NativeFileIO
       dwIoControlCode As UInt32,
       lpInBuffer As IntPtr,
       nInBufferSize As UInt32,
-      <Out()> ByRef lpOutBuffer As Int64,
+      <Out> ByRef lpOutBuffer As Int64,
       nOutBufferSize As UInt32,
       ByRef lpBytesReturned As UInt32,
       lpOverlapped As IntPtr) As Boolean
@@ -688,7 +694,7 @@ Public Class NativeFileIO
     Private Declare Function DeviceIoControl Lib "kernel32" (
       hDevice As SafeFileHandle,
       dwIoControlCode As UInt32,
-      <[In]()> ByRef lpInBuffer As Win32API.DISK_GROW_PARTITION,
+      <[In]> ByRef lpInBuffer As Win32API.DISK_GROW_PARTITION,
       nInBufferSize As UInt32,
       lpOutBuffer As IntPtr,
       nOutBufferSize As UInt32,
@@ -804,7 +810,7 @@ Public Class NativeFileIO
       dwIoControlCode As UInt32,
       lpInBuffer As IntPtr,
       nInBufferSize As UInt32,
-      <Out()> ByRef lpOutBuffer As Win32API.DISK_GEOMETRY,
+      <Out> ByRef lpOutBuffer As Win32API.DISK_GEOMETRY,
       nOutBufferSize As UInt32,
       ByRef lpBytesReturned As UInt32,
       lpOverlapped As IntPtr) As Boolean

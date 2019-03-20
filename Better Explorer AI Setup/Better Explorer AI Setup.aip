@@ -109,6 +109,7 @@
     <ROW Component="AIShRegAnswer" ComponentId="{F7166FEB-5E08-4D41-A296-E641424EEEE9}" Directory_="APPDIR" Attributes="4" KeyPath="AIShRegAnswer"/>
     <ROW Component="AI_CustomARPName" ComponentId="{32CF1001-A51C-4B8A-84AC-D9A5748CC07D}" Directory_="APPDIR" Attributes="4" KeyPath="DisplayName" Options="1"/>
     <ROW Component="AI_ExePath" ComponentId="{C3B2CAE6-2882-4483-8D5F-B517A1BA3DD6}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
+    <ROW Component="APPDIR" ComponentId="{26085809-D9BF-4A16-B754-1EF08263006B}" Directory_="APPDIR" Attributes="0"/>
     <ROW Component="AeroWizard.dll" ComponentId="{87F04D88-DABF-4240-8ACB-C2C25AF6BCE8}" Directory_="APPDIR" Attributes="0" KeyPath="AeroWizard.dll"/>
     <ROW Component="AutoSwitchApplicationTools" ComponentId="{E90E49AB-8C1C-4344-A200-F013C3324A89}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchApplicationTools"/>
     <ROW Component="AutoSwitchArchiveTools" ComponentId="{624DC389-681A-4C77-BB10-19CA0BD9E349}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchArchiveTools"/>
@@ -203,7 +204,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="AiAppXAssets" Title="AiAppXAssets" Description="Description" Display="5" Level="0" Directory_="APPDIR" Attributes="0" Options="271" Components="BetterExplorerSquare44x44Logo.scale100.png" Builds="BuildUwpAppX"/>
-    <ROW Feature="Feature" Title="Make Better Explorer Default Viewer" Description="Description" Display="0" Level="0" Directory_="APPDIR" Attributes="0" Components="AIShRegAnswer AI_CustomARPName AI_ExePath LaunchExplorerFlags MUIVerb MultiSelectModel _ __1 __38 __39 regid.201207.betterexplorer.com"/>
+    <ROW Feature="Feature" Title="Make Better Explorer Default Viewer" Description="Description" Display="0" Level="0" Directory_="APPDIR" Attributes="0" Components="AIShRegAnswer AI_CustomARPName AI_ExePath APPDIR LaunchExplorerFlags MUIVerb MultiSelectModel _ __1 __38 __39 regid.201207.betterexplorer.com"/>
     <ROW Feature="MainFeature" Title="Core Files" Description="Description" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_CustomARPName AI_ExePath AeroWizard.dll AutoSwitchApplicationTools AutoSwitchArchiveTools AutoSwitchDriveTools AutoSwitchFolderTools AutoSwitchImageTools AutoSwitchLibraryTools AutoSwitchVirtualDriveTools AutomaticUpdaterWPF.dll BEHelper.dll BExplorerShell.dll BetterExplorer BetterExplorer.exe BetterExplorerControls.dll BouncyCastle.Crypto.dll ConsoleControl.dll ControlzEx.dll CurrentTheme CustomScrollbar.dll Fluent.dll Google.Apis.Auth.PlatformServices.dll Google.Apis.Auth.dll Google.Apis.Core.dll Google.Apis.Drive.v2.dll Google.Apis.PlatformServices.dll Google.Apis.dll Hardcodet.Wpf.TaskbarNotification.dll IconExtractor.dll ImDiskNet.dll Interop.Shell32.dll IsConsoleShown IsRestoreTabs IsRibonMinimized LastWindowHeight LastWindowPosLeft LastWindowPosTop LastWindowState LastWindowWidth Microsoft.Threading.Tasks.Extensions.Des Microsoft.Threading.Tasks.Extensions.dll Microsoft.Threading.Tasks.dll NAppUpdate.Framework.dll NLog.dll Newtonsoft.Json.dll Odyssey.dll OpenedTabs ProductInformation QuickLaunch RTLMode RateBar.dll SQLite.Interop.dll SQLite.Interop.dll_1 Settings.dll Settings.sqlite SevenZipSharp.dll ShowCheckboxes StarRatingControl.dll System.Data.SQLite.dll System.Net.Http.Extensions.dll System.Net.Http.Primitives.dll System.Net.Http.dll System.Security.Cryptography.Algorithms.dll System.Security.Cryptography.Encoding.dll System.Security.Cryptography.Primitives.dll System.Security.Cryptography.X509Certificates.dll System.Windows.Interactivity.dll TAFactory.IconPack.dll TabBarAlignment TaskDialog.dll ToggleSwitch.dll UsbEject.dll WPFLocalizeExtension.dll Wpf.TabControl.dll WpfDocumentPreviewer.dll Xceed.Wpf.Toolkit.dll Zlib.Portable.dll client.wyc ico_2 log4net.dll wyUpdate.exe x64 x86"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
@@ -584,6 +585,7 @@
     <ROW Directory_="BetterExplorer_Dir" Component_="BetterExplorer" ManualDelete="false"/>
     <ROW Directory_="x64_Dir" Component_="x64" ManualDelete="true"/>
     <ROW Directory_="x86_Dir" Component_="x86" ManualDelete="true"/>
+    <ROW Directory_="APPDIR" Component_="APPDIR" ManualDelete="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>

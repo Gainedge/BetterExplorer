@@ -275,3 +275,6 @@ BExplorer/BetterExplorer/BEHelper.dll.config
 /Fluent.Ribbon-develop/Fluent.Ribbon/Fluent.Ribbon.NET 4.6.2.csproj
 /Better Explorer AI Setup/OutputWeb
 /Better Explorer AI Setup/Better Explorer AI Setup-cache
+/Debug/ImDiskNet.xml
+/Debug/ImDiskNet.pdb
+/Debug/ImDiskNet.dll
