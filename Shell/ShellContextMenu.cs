@@ -814,6 +814,7 @@ namespace BExplorer.Shell {
         iContextMenu = null;
         return false;
       }
+      return false;
     }
 
     class MessageWindow : Control {
