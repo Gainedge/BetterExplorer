@@ -1997,7 +1997,7 @@ namespace BetterExplorer {
       if (DirectoryName[DirectoryName.Length - 1] != Char.Parse(@"\"))
         Separator = @"\";
       this.AddToLog($"Extracted Archive to {DirectoryName}{Separator}{ArchName} from source {FileName}");
-      extractor.BeginExtractArchive(DirectoryName + Separator + ArchName);
+      extractor.BeginExtractArchive(DirectoryName + Separator + ArchName, DispatcherPriority.Normal);
     }
 
     void extractor_FileExtractionFinished(object sender, FileInfoEventArgs e) {
