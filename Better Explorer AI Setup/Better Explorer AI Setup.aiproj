@@ -22,6 +22,14 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BExplorer\BetterExplorer\BetterExplorer.csproj">
+      <Name>BetterExplorer</Name>
+      <Project>{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}</Project>
+      <Private>True</Private>
+      <OutputsToImport>ContentOutput;PrimaryOutput;References</OutputsToImport>
+    </ProjectReference>
+  </ItemGroup>
   <Target Name="Build">
     <Error Text="This project requires Advanced Installer tool. Please download it from https://www.advancedinstaller.com/download.html" />
   </Target>

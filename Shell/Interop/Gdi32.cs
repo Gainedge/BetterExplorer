@@ -156,6 +156,9 @@ namespace BExplorer.Shell.Interop {
     [DllImport("user32.dll", EntryPoint = "GetDC", CharSet = CharSet.Auto)]
     public static extern IntPtr GetDeviceContext(IntPtr hWnd);
 
+    [DllImport("gdi32", SetLastError = true, EntryPoint = "ExcludeClipRect", CharSet = CharSet.Auto)]
+    public static extern int ExcludeClipRect(IntPtr hDC, int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);
+
     [DllImport("gdi32", EntryPoint = "CreateCompatibleBitmap")]
     public static extern IntPtr CreateCompatibleBitmap(IntPtr hDC, int nWidth, int nHeight);
 
@@ -236,8 +239,8 @@ namespace BExplorer.Shell.Interop {
       }
     }
 
-    [DllImport("gdi32.dll",  EntryPoint = "GetTextExtentPoint32W")]      
-    public static extern int GetTextExtentPoint32(IntPtr hdc, [MarshalAs(UnmanagedType.LPWStr)] string str,  int len, ref Size size);
+    [DllImport("gdi32.dll", EntryPoint = "GetTextExtentPoint32W")]
+    public static extern int GetTextExtentPoint32(IntPtr hdc, [MarshalAs(UnmanagedType.LPWStr)] string str, int len, ref Size size);
 
 
     [DllImport("gdi32.dll")]

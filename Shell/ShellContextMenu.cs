@@ -18,6 +18,8 @@
 //
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -28,7 +30,13 @@ using System.Threading;
 using System.Runtime.ExceptionServices;
 using System.Linq;
 using System.Security.AccessControl;
+using System.Windows;
 using BExplorer.Shell._Plugin_Interfaces;
+using Settings;
+using Clipboard = System.Windows.Forms.Clipboard;
+using DataFormats = System.Windows.Forms.DataFormats;
+using Point = System.Drawing.Point;
+using Timer = System.Windows.Forms.Timer;
 
 namespace BExplorer.Shell {
   /// <summary>
@@ -142,7 +150,6 @@ namespace BExplorer.Shell {
 
     #endregion
 
-
     /// <summary>
     /// Handles context menu messages when the <see cref="ShellContextMenu"/>
     /// is displayed on a Form's main menu bar.
@@ -186,16 +193,12 @@ namespace BExplorer.Shell {
         if (m.Msg == (int)WM.WM_INITMENUPOPUP && m.WParam == _NewMenuPtr) {
           _ShellView.IsRenameNeeded = true;
         }
-        if (m_ComInterface2 != null) {
-          return 0 == (int)m_ComInterface2.HandleMenuMsg(m.Msg, m.WParam, m.LParam);
-        }
-      } else if (m.Msg == (int)WM.WM_MENUCHAR) {
         if (m_ComInterface3 != null) {
           var ptr = IntPtr.Zero;
-          return 0 == (int)m_ComInterface3.HandleMenuMsg2(m.Msg, m.WParam, m.LParam, out ptr);
+          return 0 == m_ComInterface3.HandleMenuMsg2(m.Msg, m.WParam, m.LParam, out ptr);
         }
-      }
 
+      }
       return false;
     }
 
@@ -213,9 +216,10 @@ namespace BExplorer.Shell {
     /// <param name="menu">The menu to populate.</param>
     /// <param name="additionalFlags"></param>
     public void Populate(Menu menu, CMF additionalFlags) {
-      m_ComInterface.QueryContextMenu(menu.Handle, 0, (int)m_CmdFirst, int.MaxValue, CMF.EXPLORE | additionalFlags | (Control.ModifierKeys == Keys.Shift ? CMF.EXTENDEDVERBS : 0));
+      m_ComInterface.QueryContextMenu(menu.Handle, 0, (int)m_CmdFirst, int.MaxValue, CMF.EXPLORE | CMF.SYNCCASCADEMENU | additionalFlags | (Control.ModifierKeys == Keys.Shift ? CMF.EXTENDEDVERBS : 0));
     }
 
+    Timer _Timer = new Timer();
     /// <summary>
     /// Shows a context menu for a shell item.
     /// </summary>
@@ -232,15 +236,20 @@ namespace BExplorer.Shell {
       using (ContextMenu mnu = new ContextMenu()) {
         pos = control.PointToScreen(pos);
         this.Populate(mnu, aditionalFlags);
+        this._Timer.Interval = 2;
+        this._Timer.Tick += TimerOnTick;
+        this._Timer.Stop();
+
         var view = new ContextMenu();
         var sortMenu = new ContextMenu();
         var groupMenu = new ContextMenu();
         var count = User32.GetMenuItemCount(mnu.Handle);
+
         var itemInfo = new MENUITEMINFO();
-        itemInfo.cbSize = (uint)Marshal.SizeOf(itemInfo);
-        itemInfo.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU;
+
+        itemInfo.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU | MIIM.MIIM_ID;
         if (User32.GetMenuItemInfo(mnu.Handle, count - 1, true, ref itemInfo)) {
-          if ((itemInfo.fType & 2048) != 0) {
+          if ((itemInfo.fType & MFT.MFT_SEPARATOR) != 0) {
             User32.DeleteMenu(mnu.Handle, count - 1, MF.MF_BYPOSITION);
           }
         }
@@ -268,6 +277,8 @@ namespace BExplorer.Shell {
         }
 
         this.RemoveDuplicatedSeparators(mnu);
+
+
 
         var command = User32.TrackPopupMenuEx(mnu.Handle, TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle, IntPtr.Zero);
         if (command > 0 && command < m_CmdFirst) {
@@ -343,13 +354,14 @@ namespace BExplorer.Shell {
         if (command > m_CmdFirst) {
           var info = string.Empty;
           var bytes = new byte[256];
+          IntPtr pszName = Marshal.AllocHGlobal(256);
+          this.m_ComInterface3.GetCommandString(command - (int)m_CmdFirst, 4, 0, pszName, 260);
 
-          this.m_ComInterface.GetCommandString(command - (int)m_CmdFirst, 4, 0, bytes, 260);
+          //var index = 0;
+          //while (index < bytes.Length - 1 && (bytes[index] != 0 || bytes[index + 1] != 0)) { index += 2; }
 
-          var index = 0;
-          while (index < bytes.Length - 1 && (bytes[index] != 0 || bytes[index + 1] != 0)) { index += 2; }
-
-          if (index < bytes.Length - 1) { info = Encoding.Unicode.GetString(bytes, 0, index); }
+          //if (index < bytes.Length - 1) { info = Encoding.Unicode.GetString(bytes, 0, index); }
+          info = Marshal.PtrToStringAuto(pszName);
 
           switch (info) {
             case "open":
@@ -365,7 +377,21 @@ namespace BExplorer.Shell {
               (control as ShellView)?.CopySelectedFiles();
               break;
             default:
-              this.InvokeCommand((IntPtr)(command - m_CmdFirst), pos, (IntPtr)(command - m_CmdFirst));
+              CMINVOKECOMMANDINFOEX cminvokecommandinfoex = new CMINVOKECOMMANDINFOEX {
+                lpVerb = (IntPtr)(command - m_CmdFirst),
+                lpVerbW = (IntPtr)(command - m_CmdFirst)
+              };
+              cminvokecommandinfoex.cbSize = Marshal.SizeOf(cminvokecommandinfoex);
+
+              //cminvokecommandinfoex.lpDirectory = this._ShellView.CurrentFolder.ParsingName;
+              //cminvokecommandinfoex.lpDirectoryW = this._ShellView.CurrentFolder.ParsingName;
+
+              cminvokecommandinfoex.fMask = ((CMIC.Asyncok | CMIC.PtInvoke | CMIC.Unicode | CMIC.FlagNoUi) | (((Control.ModifierKeys & Keys.Control) > Keys.None) ? CMIC.ControlDown : ((CMIC)0))) | (((Control.ModifierKeys & Keys.Shift) > Keys.None) ? CMIC.ShiftDown : ((CMIC)0));
+              cminvokecommandinfoex.ptInvoke = pos;
+              cminvokecommandinfoex.nShow = 1;
+              //cminvokecommandinfoex.hwnd = this._ShellView.LVHandle;
+              this.m_ComInterface3.InvokeCommand(ref cminvokecommandinfoex);
+              //this.InvokeCommand((IntPtr)(command - m_CmdFirst), pos, (IntPtr)(command - m_CmdFirst));
               break;
           }
         }
@@ -385,7 +411,10 @@ namespace BExplorer.Shell {
       Marshal.Release(this._Result);
       this._Result = IntPtr.Zero;
     }
-
+    private void TimerOnTick(Object sender, EventArgs e) {
+      this._Timer.Stop();
+      User32.SendMessage(this.m_MessageWindow.Handle, 0x001F, 0, 0);
+    }
     private List<string> GetNewContextMenuItems() {
       var newEntrieslist = new List<string>();
       var reg = Registry.CurrentUser;
@@ -487,16 +516,16 @@ namespace BExplorer.Shell {
       int newCount = User32.GetMenuItemCount(mnu.Handle);
       for (int i = 0; i < newCount - 1; i++) {
         var info = new MENUITEMINFO();
-        info.cbSize = (uint)Marshal.SizeOf(info);
+
         info.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU;
         if (User32.GetMenuItemInfo(mnu.Handle, i, true, ref info)) {
-          var isSep = (info.fType & 2048) != 0;
+          var isSep = (info.fType & MFT.MFT_SEPARATOR) != 0;
           if (isSep) {
             var info2 = new MENUITEMINFO();
-            info2.cbSize = (uint)Marshal.SizeOf(info2);
+
             info2.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU;
             if (User32.GetMenuItemInfo(mnu.Handle, i + 1, true, ref info2)) {
-              var isSep2 = (info2.fType & 2048) != 0;
+              var isSep2 = (info2.fType & MFT.MFT_SEPARATOR) != 0;
               if (isSep2) {
                 duplicatedSeparators.Add(i + 1);
               }
@@ -518,7 +547,7 @@ namespace BExplorer.Shell {
       User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
       if (!(control as ShellView).CurrentFolder.IsDrive && (control as ShellView).CurrentFolder.IsFileSystem && !(control as ShellView).CurrentFolder.IsNetworkPath && !(control as ShellView).CurrentFolder.ParsingName.StartsWith(@"\\")) {
         User32.GetMenuItemInfo(mnu.Handle, 1, true, ref itemInfo);
-        if ((itemInfo.fType & 2048) != 0) {
+        if ((itemInfo.fType & MFT.MFT_SEPARATOR) != 0) {
           User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
         } else {
           if (User32.GetMenuItemID(mnu.Handle, 1) - m_CmdFirst == 1) {
@@ -529,7 +558,7 @@ namespace BExplorer.Shell {
       }
       if ((control as ShellView).CurrentFolder.IsNetworkPath) {
         User32.GetMenuItemInfo(mnu.Handle, 1, true, ref itemInfo);
-        if ((itemInfo.fType & 2048) != 0) {
+        if ((itemInfo.fType & MFT.MFT_SEPARATOR) != 0) {
           User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
           User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
         }
@@ -537,7 +566,7 @@ namespace BExplorer.Shell {
     }
     private void GenerateSubmenu(ContextMenu child, ContextMenu parent, String header) {
       MENUITEMINFO miiview = new MENUITEMINFO();
-      miiview.cbSize = (uint)Marshal.SizeOf(miiview);
+
       miiview.fMask = MIIM.MIIM_STRING | MIIM.MIIM_FTYPE | MIIM.MIIM_STATE | MIIM.MIIM_SUBMENU;
       miiview.fState = 0x0;
       miiview.fType = 0;
@@ -548,31 +577,28 @@ namespace BExplorer.Shell {
     }
     private void GenerateMenuItem(ContextMenu view, String header, int id, bool isRadio = false, uint atPosition = 0) {
       MENUITEMINFO miidetails = new MENUITEMINFO();
-      miidetails.cbSize = (uint)Marshal.SizeOf(miidetails);
       miidetails.fMask = MIIM.MIIM_STRING | MIIM.MIIM_ID | MIIM.MIIM_FTYPE | MIIM.MIIM_STATE;
-      miidetails.fState = (uint)(isRadio ? 0x00000008 : 0x0);
-      miidetails.fType = 0 | 0x00000200;
-      miidetails.wID = id;
+      miidetails.fState = (MFS)(isRadio ? 0x00000008 : 0x0);
+      miidetails.fType = (MFT)(0 | 0x00000200);
+      miidetails.wID = (uint)id;
       miidetails.dwItemData = IntPtr.Zero;
       miidetails.dwTypeData = header;
       User32.InsertMenuItem(view.Handle, atPosition, true, ref miidetails);
     }
     private void GenerateMenuItemExecutable(ContextMenu view, String header, int id) {
       MENUITEMINFO miidetails = new MENUITEMINFO();
-      miidetails.cbSize = (uint)Marshal.SizeOf(miidetails);
       miidetails.fMask = MIIM.MIIM_STRING | MIIM.MIIM_ID | MIIM.MIIM_FTYPE | MIIM.MIIM_STATE;
       miidetails.fState = 0x0;
       miidetails.fType = 0;
-      miidetails.wID = id;
+      miidetails.wID = (uint)id;
       miidetails.dwItemData = IntPtr.Zero;
       miidetails.dwTypeData = header;
       User32.InsertMenuItem(view.Handle, 0, true, ref miidetails);
     }
     private void GenerateSeparator(ContextMenu view) {
       MENUITEMINFO miidetails = new MENUITEMINFO();
-      miidetails.cbSize = (uint)Marshal.SizeOf(miidetails);
       miidetails.fMask = MIIM.MIIM_FTYPE;
-      miidetails.fType = 2048;
+      miidetails.fType = MFT.MFT_SEPARATOR;
       User32.InsertMenuItem(view.Handle, 0, true, ref miidetails);
     }
     void Initialize(IListItemEx[] items) {
@@ -644,7 +670,7 @@ namespace BExplorer.Shell {
       var invoke = new CMINVOKECOMMANDINFOEX();
       invoke.cbSize = Marshal.SizeOf(invoke);
       invoke.nShow = SW_SHOWNORMAL;
-      invoke.fMask = (int)(CMIC.FlagNoUi | CMIC.Unicode);
+      invoke.fMask = CMIC.FlagNoUi | CMIC.Unicode;
       invoke.lpVerb = ansiCommand;
       invoke.lpVerbW = command;
       //invoke.ptInvoke = pt;
@@ -671,7 +697,6 @@ namespace BExplorer.Shell {
 
       menuInfo.cbSize = Marshal.SizeOf(menuInfo);
       menuInfo.fMask = MIM.MIM_MENUDATA;
-      itemInfo.cbSize = (uint)Marshal.SizeOf(itemInfo);
       itemInfo.fMask = MIIM.MIIM_ID | MIIM.MIIM_SUBMENU;
 
       // First, tag the managed menu items with an arbitary 
@@ -775,9 +800,7 @@ namespace BExplorer.Shell {
             Marshal.ReleaseComObject(iShellExtInit);
             Marshal.Release(iShellExtInitPtr);
             return true;
-          } finally {
-
-          }
+          } catch { } 
         } else {
           if (iContextMenu != null) {
             Marshal.ReleaseComObject(iContextMenu);

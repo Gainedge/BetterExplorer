@@ -144,6 +144,7 @@ namespace BetterExplorer {
     /// <param name="e">Startup EventArgs</param>
     protected override void OnStartup(StartupEventArgs e) {
       Settings.BESettings.LoadSettings();
+      
       Process process = Process.GetCurrentProcess();
       process.PriorityClass = ProcessPriorityClass.Normal;
 
@@ -170,9 +171,11 @@ namespace BetterExplorer {
         switch (Settings.BESettings.CurrentTheme) {
           case "Dark":
             ThemeManager.ChangeAppTheme(this, "BaseDark");
+            UxTheme.AllowDarkModeForApp(true);
             break;
           default:
             ThemeManager.ChangeAppTheme(this, "BaseLight");
+            UxTheme.AllowDarkModeForApp(false);
             break;
         }
       }

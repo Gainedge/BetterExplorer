@@ -497,6 +497,7 @@ namespace BExplorer.Shell {
     private FileSystemWatcher _FsWatcher = new FileSystemWatcher();
     private ListViewEditor _EditorSubclass;
     private readonly F.Timer _UnvalidateTimer = new F.Timer();
+    private readonly F.Timer _FastUnvalidateTimer = new F.Timer();
     private readonly F.Timer _MaintenanceTimer = new F.Timer();
     private readonly F.Timer _NavWaitTimer = new F.Timer() { Interval = 150, Enabled = false };
     private readonly String _DBPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite");
@@ -623,13 +624,13 @@ namespace BExplorer.Shell {
 
     private void _UnvalidateTimer_Tick(Object sender, EventArgs e) {
       this._UnvalidateTimer.Stop();
+      this._FastUnvalidateTimer.Stop();
       if (this.CurrentFolder == null) {
         return;
       }
 
       try {
         while (this._ItemsQueue.Count() > 0) {
-          Thread.Sleep(5);
           var obj = this._ItemsQueue.Dequeue();
           if (obj.Item1 == ItemUpdateType.RecycleBin) {
             this.RaiseRecycleBinUpdated();
@@ -1600,8 +1601,12 @@ namespace BExplorer.Shell {
     protected override void WndProc(ref Message m) {
       //base.WndProc(ref m);
       try {
-        if (m.Msg == 0x202) {
+        if (m.Msg == (int)WM.WM_DRAWITEM) {
           return;
+        }
+
+        if (m.Msg == 0x002B) {
+          var h = 111;
         }
         //if (m.Msg == (Int32) WM.WM_PARENTNOTIFY && User32.LOWORD((Int32)m.WParam) == (Int32)WM.WM_LBUTTONDOWN) {
         //  m.Result = (IntPtr)1;
@@ -2286,7 +2291,9 @@ namespace BExplorer.Shell {
       //      break;
       //  }
       //}
-
+      if (uMsg == 0x002B) {
+        var h = 111;
+      }
       if ((uMsg == 0x0202 || uMsg == 0x0201)) {
         var hitPoint = lParam.ToPoint();
         LVHITTESTINFO lvHitTestInfo = new LVHITTESTINFO();
@@ -2344,10 +2351,6 @@ namespace BExplorer.Shell {
       return User32.CallWindowProc(this._OldWndProc, hWnd, uMsg, wParam, lParam);
     }
 
-
-
-
-
     /// <inheritdoc/>
     protected override void OnHandleCreated(EventArgs e) {
       this._newWndProc = this.LVWndProc;
@@ -2380,9 +2383,13 @@ namespace BExplorer.Shell {
       this.VScroll.Theme = this.Theme;
 
       this._Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
-      this._UnvalidateTimer.Interval = 350;
+      this._UnvalidateTimer.Interval = 1000;
       this._UnvalidateTimer.Tick += this._UnvalidateTimer_Tick;
       this._UnvalidateTimer.Stop();
+
+      this._FastUnvalidateTimer.Interval = 200;
+      this._FastUnvalidateTimer.Tick += this._UnvalidateTimer_Tick;
+      this._FastUnvalidateTimer.Stop();
 
       this._MaintenanceTimer.Interval = 1000 * 15;
       this._MaintenanceTimer.Tick += this._MaintenanceTimer_Tick;
@@ -2472,8 +2479,14 @@ namespace BExplorer.Shell {
 
       iVisualProperties.SetColor(VPCOLORFLAGS.VPCF_SORTCOLUMN, this.Theme.SortColumnColor.ToDrawingColor().ToWin32Color());
       User32.SetForegroundWindow(this.LVHandle);
+      //IntPtr pDll = Kernel32.LoadLibrary(@"UxTheme.dll");
+      //IntPtr pAddressOfFunctionToCall = Kernel32.GetProcAddress(pDll, 133);
+      //var allowDarkModeForWindow = (AllowDarkModeForWindow)Marshal.GetDelegateForFunctionPointer(
+      //  pAddressOfFunctionToCall,
+      //  typeof(AllowDarkModeForWindow));
+      //var rsss = allowDarkModeForWindow(this.LVHandle, true);
       UxTheme.SetWindowTheme(this.LVHandle, "StartMenu", 0);
-
+      //Kernel32.FreeLibrary(pDll);
       ShellItem.MessageHandle = this.LVHandle;
       //this.IsViewSelectionAllowed = true;
     
@@ -2510,6 +2523,7 @@ namespace BExplorer.Shell {
     #region Public Methods
 
     public void ChangeTheme(ThemeColors theme) {
+      UxTheme.AllowDarkModeForApp(theme == ThemeColors.Dark);
       this.Theme = new LVTheme(theme);
       this.VScroll.Theme = this.Theme;
       this._IIListView.SetBackgroundColor(this.Theme.HeaderBackgroundColor.ToDrawingColor().ToWin32Color());
@@ -2779,8 +2793,8 @@ namespace BExplorer.Shell {
         }
       }
 
-      this.BeginInvoke(new MethodInvoker(() => {
-        this._IIListView.UpdateItem(index);
+      this.Invoke(new MethodInvoker(() => {
+        //this._IIListView.UpdateItem(index);
         this._IIListView.RedrawItems(index, index);
       }));
     }
@@ -3135,18 +3149,28 @@ namespace BExplorer.Shell {
 
     /// <summary>Invalidates the director</summary>
     /// <remarks>Starts restarts <see cref="_UnvalidateTimer"/></remarks>
-    public void UnvalidateDirectory() {
+    public void UnvalidateDirectory(Boolean isFastUnvalidate = true) {
       Action worker = () => {
-        if (this._UnvalidateTimer.Enabled) {
+        if (isFastUnvalidate) {
           this._UnvalidateTimer.Stop();
-        }
+          if (this._FastUnvalidateTimer.Enabled) {
+            this._FastUnvalidateTimer.Stop();
+          }
 
-        this._UnvalidateTimer.Start();
+          this._FastUnvalidateTimer.Start();
+        } else {
+          this._FastUnvalidateTimer.Stop();
+          if (this._UnvalidateTimer.Enabled) {
+            this._UnvalidateTimer.Stop();
+          }
+
+          this._UnvalidateTimer.Start();
+        }
 
       };
 
       if (this.InvokeRequired) {
-        this.BeginInvoke((Action)(() => worker()));
+        this.Invoke((Action)(() => worker()));
       } else {
         worker();
       }
@@ -3836,11 +3860,13 @@ namespace BExplorer.Shell {
                             this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingUItem.ItemIndex, collumn.Index, collumn.pkey));
                           }
                         }
-                      }
+                      } 
+                      //else {
 
-                      if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Updated, exisitingUItem))) {
-                        this.UnvalidateDirectory();
-                      }
+                        if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Updated, exisitingUItem))) {
+                          this.UnvalidateDirectory(false);
+                        }
+                      //}
                     }
                   }
                 } catch (FileNotFoundException) {
@@ -4420,11 +4446,12 @@ namespace BExplorer.Shell {
                           this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingUItem.ItemIndex, collumn.Index, collumn.pkey));
                         }
                       }
-                    }
-
-                    if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Updated, exisitingUItem))) {
-                      this.UnvalidateDirectory();
-                    }
+                    } 
+                    //else {
+                      if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Updated, exisitingUItem))) {
+                        this.UnvalidateDirectory(false);
+                      }
+                    //}
                   }
                 }
 
@@ -4454,7 +4481,9 @@ namespace BExplorer.Shell {
                   }
                 }
 
-                this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Updated, exisitingItemNetA));
+                if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Updated, exisitingItemNetA))) {
+                  this.UnvalidateDirectory(false);
+                }
                 break;
 
               case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
@@ -5023,7 +5052,6 @@ namespace BExplorer.Shell {
 
               var isSelected = (User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_SELECTED) & LVIS.LVIS_SELECTED) == LVIS.LVIS_SELECTED;
               var isHot = (nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT;
-
               if (isSelected || isHot) {
                 var gr = Graphics.FromHdc(hdc);
                 gr.CompositingQuality = CompositingQuality.HighSpeed;
@@ -5046,7 +5074,7 @@ namespace BExplorer.Shell {
               //User32.InvalidateRect(this.LVHandle, ref itemBounds, false);
 
               //m.Result = (IntPtr)(CustomDraw.CDRF_SKIPDEFAULT | CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW);
-              //nmlvcd.clrTextBk = -1;// (UInt32)ColorTranslator.ToWin32(Color.DimGray);
+              nmlvcd.clrFace = -1;// (UInt32)ColorTranslator.ToWin32(Color.DimGray);
 
               Marshal.StructureToPtr(nmlvcd, m.LParam, false);
               //this.ProcessCustomDrawPostPaint(ref m, nmlvcd, index, hdc, sho, textColor, lvi);

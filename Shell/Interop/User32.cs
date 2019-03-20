@@ -83,20 +83,59 @@ public struct LVITEM {
     public int dwMenuData;
   }
 
-  [StructLayout(LayoutKind.Sequential)]
+  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
   public struct MENUITEMINFO {
     public uint cbSize;
     public MIIM fMask;
-    public uint fType;
-    public uint fState;
-    public int wID;
+    public MFT fType;
+    public MFS fState;
+    public uint wID;
     public IntPtr hSubMenu;
     public IntPtr hbmpChecked;
     public IntPtr hbmpUnchecked;
     public IntPtr dwItemData;
-    public String dwTypeData;
+    [MarshalAs(UnmanagedType.LPTStr)]
+    public string dwTypeData;
     public uint cch;
     public IntPtr hbmpItem;
+    public static uint SizeOf {
+      get {
+        return (uint)Marshal.SizeOf(typeof(MENUITEMINFO));
+      }
+    }
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  public class MEASUREITEMSTRUCT {
+    public int CtlType = 0;
+    public int CtlID = 0;
+    public int itemID = 0;
+    public int itemWidth = 0;
+    public int itemHeight = 0;
+    public IntPtr itemData = IntPtr.Zero;
+  }
+
+  public enum MFS : uint {
+    MFS_CHECKED = 8,
+    MFS_DEFAULT = 0x1000,
+    MFS_DISABLED = 3,
+    MFS_ENABLED = 0,
+    MFS_GRAYED = 3,
+    MFS_HILITE = 0x80,
+    MFS_UNCHECKED = 0,
+    MFS_UNHILITE = 0
+  }
+
+  public enum MFT : uint {
+    MFT_BITMAP = 4,
+    MFT_MENUBARBREAK = 0x20,
+    MFT_MENUBREAK = 0x40,
+    MFT_OWNERDRAW = 0x100,
+    MFT_RADIOCHECK = 0x200,
+    MFT_RIGHTJUSTIFY = 0x4000,
+    MFT_RIGHTORDER = 0x2000,
+    MFT_SEPARATOR = 0x800,
+    MFT_STRING = 0
   }
 
   public enum MF {
@@ -292,8 +331,7 @@ public enum MK {
   }
 
   [Serializable, StructLayout(LayoutKind.Sequential)]
-  public struct SCROLLINFO
-  {
+  public struct SCROLLINFO {
     public uint cbSize;
     public uint fMask;
     public int nMin;
@@ -303,23 +341,21 @@ public enum MK {
     public int nTrackPos;
   }
 
-  public enum SBOrientation : int
-  {
+  public enum SBOrientation : int {
     SB_HORZ = 0x0,
     SB_VERT = 0x1,
     SB_CTL = 0x2,
     SB_BOTH = 0x3
   }
 
-  public enum ScrollInfoMask : uint
-  {
+  public enum ScrollInfoMask : uint {
     SIF_RANGE = 0x1,
     SIF_PAGE = 0x2,
     SIF_POS = 0x4,
     SIF_DISABLENOSCROLL = 0x8,
     SIF_TRACKPOS = 0x10,
     SIF_ALL = (SIF_RANGE | SIF_PAGE | SIF_POS | SIF_TRACKPOS | SIF_DISABLENOSCROLL),
-  } 
+  }
 
   public class User32 {
     [DllImport("user32")]
@@ -640,28 +676,26 @@ public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, LVFINDINF
     [DllImport("User32.dll")]
     public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref HDHITTESTINFO lParam);
 
-    public enum HeaderControlHitTestFlags : uint
-    {
-      NOWHERE             = 0x0001,
-      ONHEADER            = 0x0002,
-      ONDIVIDER           = 0x0004,
-      ONDIVOPEN           = 0x0008,
-      ABOVE               = 0x0100,
-      BELOW               = 0x0200,
-      TORIGHT             = 0x0400,
-      TOLEFT              = 0x0800,
-      ONITEMSTATEICON     = 0x1000,
-      ONDROPDOWN          = 0x2000,
-      ONOVERFLOW          = 0x4000
+    public enum HeaderControlHitTestFlags : uint {
+      NOWHERE = 0x0001,
+      ONHEADER = 0x0002,
+      ONDIVIDER = 0x0004,
+      ONDIVOPEN = 0x0008,
+      ABOVE = 0x0100,
+      BELOW = 0x0200,
+      TORIGHT = 0x0400,
+      TOLEFT = 0x0800,
+      ONITEMSTATEICON = 0x1000,
+      ONDROPDOWN = 0x2000,
+      ONOVERFLOW = 0x4000
     }
 
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct HDHITTESTINFO 
-    {  
-      public POINT pt;  
-      public HeaderControlHitTestFlags flags; 
-      public int iItem; 
+    public struct HDHITTESTINFO {
+      public POINT pt;
+      public HeaderControlHitTestFlags flags;
+      public int iItem;
     }
 
 
@@ -676,8 +710,25 @@ public static extern IntPtr EnumChildWindows(IntPtr parentHandle, Win32Callback 
     [DllImport("user32.dll")]
     public static extern int GetMenuItemCount(IntPtr hMenu);
 
-    [DllImport("user32.dll")]
+    [DllImport("user32.dll", CharSet=CharSet.Auto)]
     public static extern bool GetMenuItemInfo(IntPtr hMenu, int uItem, bool fByPosition, ref MENUITEMINFO lpmii);
+    [DllImport("user32.dll")]
+    public static extern bool ModifyMenu(IntPtr hMnu, uint uPosition, uint uFlags, IntPtr uIDNewItem, string lpNewItem);
+    [DllImport("user32.dll")]
+    public static extern bool GetMenuItemRect(IntPtr hWnd, IntPtr hMenu, uint uItem, out RECT lprcItem);
+
+    [StructLayout(LayoutKind.Sequential)]
+    public class DRAWITEMSTRUCT {
+      public int CtlType = 0;
+      public int CtlID = 0;
+      public int itemID = 0;
+      public int itemAction = 0;
+      public int itemState = 0;
+      public IntPtr hwndItem = IntPtr.Zero;
+      public IntPtr hDC = IntPtr.Zero;
+      public RECT rcItem;
+      public IntPtr itemData = IntPtr.Zero;
+    }
 
     /*
 [DllImport("user32.dll")]
@@ -2890,7 +2941,7 @@ public static extern bool UpdateWindow(IntPtr hWnd);
     public const int GWL_WNDPROC = -4;
 
     public delegate IntPtr Win32WndProc(IntPtr hWnd, int uMsg, IntPtr wParam, IntPtr lParam);
-    [DllImport("user32")]
+    [DllImport("user32", SetLastError = true)]
     public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, Win32WndProc newProc);
     [DllImport("user32.dll")]
     public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);

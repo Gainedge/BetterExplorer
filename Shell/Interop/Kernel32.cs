@@ -83,13 +83,16 @@ namespace BExplorer.Shell.Interop {
 		public static extern IntPtr GlobalLock(IntPtr hMem);
 		*/
 
-		/*
+		
 		[DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
-		public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+		public static extern IntPtr GetProcAddress(IntPtr hModule, UInt16 procName);
 
 		[DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
 		public static extern IntPtr LoadLibrary(string lpFileName);
-
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool FreeLibrary(IntPtr hModule);
+    /*
 		public enum FINDEX_INFO_LEVELS {
 			FindExInfoStandard = 0,
 			FindExInfoBasic = 1
@@ -136,29 +139,29 @@ namespace BExplorer.Shell.Interop {
 				int dwAdditionalFlags);
 		*/
 
-		/*
-		public static bool Is64bitProcess(Process proc) {
-			return !Is32bitProcess(proc);
-		}
-		*/
-		/*
-		public static bool Is32bitProcess(Process proc) {
-			if (!IsThis64bitProcess()) return true; // we're in 32bit mode, so all are 32bit
+    /*
+    public static bool Is64bitProcess(Process proc) {
+      return !Is32bitProcess(proc);
+    }
+    */
+    /*
+    public static bool Is32bitProcess(Process proc) {
+      if (!IsThis64bitProcess()) return true; // we're in 32bit mode, so all are 32bit
 
-			foreach (ProcessModule module in proc.Modules) {
-				try {
-					string fname = Path.GetFileName(module.FileName).ToLowerInvariant();
-					if (fname.Contains("wow64")) {
-						return true;
-					}
-				}
-				catch {
-					// wtf
-				}
-			}
+      foreach (ProcessModule module in proc.Modules) {
+        try {
+          string fname = Path.GetFileName(module.FileName).ToLowerInvariant();
+          if (fname.Contains("wow64")) {
+            return true;
+          }
+        }
+        catch {
+          // wtf
+        }
+      }
 
-			return false;
-		}
-		*/
-	}
+      return false;
+    }
+    */
+  }
 }
