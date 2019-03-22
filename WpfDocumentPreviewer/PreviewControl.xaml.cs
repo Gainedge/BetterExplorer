@@ -57,12 +57,12 @@ namespace WpfDocumentPreviewer {
         if (previewHandlerHost1.Open(fileName, out previewGuid) == false) {
           Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
             (Action)(() => {
-              if (previewGuid != null && previewGuid.Value != Guid.Empty || !Images.Contains(Path.GetExtension(fileName))) {
+              if (previewGuid != null && previewGuid.Value != Guid.Empty || !Images.Contains(Path.GetExtension(fileName).ToLowerInvariant())) {
                 wb1.Visibility = Visibility.Visible;
                 var activeX = wb1.GetType().InvokeMember("ActiveXInstance", BindingFlags.GetProperty | BindingFlags.Instance |
                               BindingFlags.NonPublic, null, wb1, new object[] { }) as SHDocVw.WebBrowser;
                 activeX.FileDownload += activeX_FileDownload;
-                wb1.Navigate(fileName);
+                wb1.Navigate(System.Net.WebUtility.UrlEncode(fileName));
                 imgh1.Visibility = Visibility.Collapsed;
                 wfh1.Visibility = Visibility.Collapsed;
               } else {
