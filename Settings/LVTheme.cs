@@ -26,8 +26,8 @@ namespace Settings {
           this.HeaderSelectionColor = Color.FromArgb(255, 235, 235, 235);
           this.TextColor = Colors.Black;
           this.HeaderBackgroundColor = Colors.White;
-          this.SortColumnColor = Color.FromRgb(59,59,59);
-          this.HeaderDividerColor = Colors.DarkGray;
+          this.SortColumnColor = Color.FromRgb(235, 244, 254);
+          this.HeaderDividerColor = Color.FromRgb(235, 244, 254);
           break;
         case ThemeColors.Dark:
           this.SelectionColor = Color.FromArgb(75, 128, 128, 128);

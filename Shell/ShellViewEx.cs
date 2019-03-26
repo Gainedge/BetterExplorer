@@ -494,6 +494,7 @@ namespace BExplorer.Shell {
 
     private ShellNotifications _Notifications = new ShellNotifications();
     private IListView _IIListView;
+    private IVisualProperties _IIVisualProperties;
     private FileSystemWatcher _FsWatcher = new FileSystemWatcher();
     private ListViewEditor _EditorSubclass;
     private readonly F.Timer _UnvalidateTimer = new F.Timer();
@@ -2200,12 +2201,14 @@ namespace BExplorer.Shell {
               var brush = new SolidBrush(isHot ? this.Theme.HeaderSelectionColor.ToDrawingColor() : collumnse.ID == this.LastSortedColumnId && this.View == ShellViewStyle.Details ? this.Theme.SortColumnColor.ToDrawingColor() : this.Theme.HeaderBackgroundColor.ToDrawingColor());
               var penBorder = new Pen(this.Theme.HeaderDividerColor.ToDrawingColor());
               var arrowPen = new Pen(this.Theme.SelectionBorderColor.ToDrawingColor(), 2);
-              g.FillRectangle(brush, rect2.X - 1, rect2.Y, rect2.Width - 1, rect2.Height);
+              g.FillRectangle(brush, rect2.X - 1, rect2.Y, rect2.Width + 2, rect2.Height);
               //g.DrawLine(penBorder, rect2.X, rect2.Y, rect2.Right - 2, rect2.Y);
               //g.DrawLine(penBorder, rect2.X, rect2.Bottom - 1, rect2.Right - 2, rect2.Bottom - 1);
-              g.DrawLine(penBorder, rect2.Right - 2, rect2.Y, rect2.Right - 2, rect2.Bottom);
+              var separatorOffset = Settings.BESettings.CurrentTheme == "Dark" ? 2 : 1;
+              g.DrawLine(penBorder, rect2.Left - separatorOffset, rect2.Y, rect2.Left - separatorOffset, rect2.Bottom);
               if (i == this.Collumns.Count - 1) {
                 g.FillRectangle(brushBack, rect2.Right - 1, rect2.Y, this.ClientRectangle.Width - rect2.Right + 1, rect2.Height);
+                g.DrawLine(penBorder, rect2.Right - separatorOffset, rect2.Y, rect2.Right - separatorOffset, rect2.Bottom);
                 //g.DrawLine(penBorder, rect2.Right, rect2.Y, this.ClientRectangle.Width - rect2.Right, rect2.Y);
                 //g.DrawLine(penBorder, rect2.Right, rect2.Bottom - 1, this.ClientRectangle.Width - rect2.Right, rect2.Bottom - 1);
               }
@@ -2473,11 +2476,11 @@ namespace BExplorer.Shell {
       IntPtr iiVisualPropertiesPtr = IntPtr.Zero;
       var iidVP = typeof(IVisualProperties).GUID;
       User32.SendMessage(this.LVHandle, 0x10BD, ref iidVP, out iiVisualPropertiesPtr);
-      var iVisualProperties = (IVisualProperties)Marshal.GetTypedObjectForIUnknown(iiVisualPropertiesPtr, typeof(IVisualProperties));
+      this._IIVisualProperties = (IVisualProperties)Marshal.GetTypedObjectForIUnknown(iiVisualPropertiesPtr, typeof(IVisualProperties));
 
       this.Focus();
 
-      iVisualProperties.SetColor(VPCOLORFLAGS.VPCF_SORTCOLUMN, this.Theme.SortColumnColor.ToDrawingColor().ToWin32Color());
+      this._IIVisualProperties.SetColor(VPCOLORFLAGS.VPCF_SORTCOLUMN, this.Theme.SortColumnColor.ToDrawingColor().ToWin32Color());
       User32.SetForegroundWindow(this.LVHandle);
       //IntPtr pDll = Kernel32.LoadLibrary(@"UxTheme.dll");
       //IntPtr pAddressOfFunctionToCall = Kernel32.GetProcAddress(pDll, 133);
@@ -2528,6 +2531,7 @@ namespace BExplorer.Shell {
       this.VScroll.Theme = this.Theme;
       this._IIListView.SetBackgroundColor(this.Theme.HeaderBackgroundColor.ToDrawingColor().ToWin32Color());
       this._IIListView.SetTextColor(this.Theme.TextColor.ToDrawingColor().ToWin32Color());
+      this._IIVisualProperties.SetColor(VPCOLORFLAGS.VPCF_SORTCOLUMN, this.Theme.SortColumnColor.ToDrawingColor().ToWin32Color());
      
     }
 
