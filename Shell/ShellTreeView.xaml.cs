@@ -3,6 +3,7 @@ using BExplorer.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -13,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using TabControl = System.Windows.Controls.TabControl;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace BExplorer.Shell {
@@ -52,7 +54,7 @@ namespace BExplorer.Shell {
 
     #region Event Handlers
 
-    public event EventHandler<TreeNodeMouseClickEventArgs> NodeClick;
+    public event EventHandler<TreeViewMiddleClickEventArgs> NodeClick;
 
     public event EventHandler<NavigatedEventArgs> AfterSelect;
 
@@ -264,41 +266,41 @@ namespace BExplorer.Shell {
         //var navThread = new Thread(() => {
 
 
-          this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
-            var sho = fstItem.FsItem;
-            fstItem.Items.Clear();
-            foreach (var item in sho.ParsingName != KnownFolders.Computer.ParsingName
-              ? sho.GetContents(this.IsShowHiddenItems)
-                .Where(w => (sho != null && !sho.IsFileSystem && System.IO.Path.GetExtension(sho?.ParsingName)?.ToLowerInvariant() != ".library-ms") ||
-                            (w.IsFolder || w.IsLink || w.IsDrive)).OrderBy(o => o.DisplayName)
-              : sho.GetContents(this.IsShowHiddenItems)
-                .Where(w => (sho != null && !sho.IsFileSystem && System.IO.Path.GetExtension(sho?.ParsingName)?.ToLowerInvariant() != ".library-ms") || (w.IsFolder || w.IsLink || w.IsDrive))) {
-              if (item != null && !item.IsFolder && !item.IsLink) {
-                continue;
-              }
-              //System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate { }));
-              if (item?.IsLink == true) {
-                try {
-                  var shellLink = new ShellLink(item.ParsingName);
-                  var linkTarget = shellLink.TargetPIDL;
-                  var itemLinkReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
-                  shellLink.Dispose();
-                  if (!itemLinkReal.IsFolder) {
-                    continue;
-                  }
-                } catch { }
-              }
-              fstItem.Items.Add(new FilesystemTreeViewItem(this, item));
+        this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
+          var sho = fstItem.FsItem;
+          fstItem.Items.Clear();
+          foreach (var item in sho.ParsingName != KnownFolders.Computer.ParsingName
+            ? sho.GetContents(this.IsShowHiddenItems)
+              .Where(w => (sho != null && !sho.IsFileSystem && System.IO.Path.GetExtension(sho?.ParsingName)?.ToLowerInvariant() != ".library-ms") ||
+                          (w.IsFolder || w.IsLink || w.IsDrive)).OrderBy(o => o.DisplayName)
+            : sho.GetContents(this.IsShowHiddenItems)
+              .Where(w => (sho != null && !sho.IsFileSystem && System.IO.Path.GetExtension(sho?.ParsingName)?.ToLowerInvariant() != ".library-ms") || (w.IsFolder || w.IsLink || w.IsDrive))) {
+            if (item != null && !item.IsFolder && !item.IsLink) {
+              continue;
             }
+            //System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate { }));
+            if (item?.IsLink == true) {
+              try {
+                var shellLink = new ShellLink(item.ParsingName);
+                var linkTarget = shellLink.TargetPIDL;
+                var itemLinkReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, linkTarget);
+                shellLink.Dispose();
+                if (!itemLinkReal.IsFolder) {
+                  continue;
+                }
+              } catch { }
+            }
+            fstItem.Items.Add(new FilesystemTreeViewItem(this, item));
+          }
 
-            fstItem.IsLoaded = true;
-            var lvSho = this.ShellListView?.CurrentFolder?.Clone();
-            if (lvSho != null) {
-              this.SelItem(lvSho);
-              //var item = this.tvShellTreeViewInternal.ItemContainerGenerator.ContainerFromItemRecursive(this.tvShellTreeViewInternal.SelectedItem);
-              //item?.BringIntoView();
-            }
-          }));
+          fstItem.IsLoaded = true;
+          var lvSho = this.ShellListView?.CurrentFolder?.Clone();
+          if (lvSho != null) {
+            this.SelItem(lvSho);
+            //var item = this.tvShellTreeViewInternal.ItemContainerGenerator.ContainerFromItemRecursive(this.tvShellTreeViewInternal.SelectedItem);
+            //item?.BringIntoView();
+          }
+        }));
         //});
         //navThread.SetApartmentState(ApartmentState.STA);
         //navThread.Start();
@@ -372,7 +374,20 @@ namespace BExplorer.Shell {
         return;
       }
       var shItem = ((e.OriginalSource as FrameworkElement)?.DataContext as FilesystemTreeViewItem)?.FsItem;
-      this.NavigateListView(shItem);
+      switch (e.ChangedButton) {
+        case MouseButton.Left:
+          this.NavigateListView(shItem);
+          break;
+        case MouseButton.Middle:
+          this.NodeClick?.Invoke(this, new TreeViewMiddleClickEventArgs() { Item = shItem });
+          break;
+        case MouseButton.Right:
+          var pt = this.PointToScreen(e.GetPosition(this));
+          new ShellContextMenu(this.ShellListView, shItem).ShowContextMenu(new System.Drawing.Point((Int32)pt.X, (Int32)pt.Y), CMF.CANRENAME);
+          break;
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
     }
 
     private void EventSetter_OnHandler(Object sender, RoutedEventArgs e) {

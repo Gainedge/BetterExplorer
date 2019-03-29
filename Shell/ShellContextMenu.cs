@@ -411,6 +411,177 @@ namespace BExplorer.Shell {
       Marshal.Release(this._Result);
       this._Result = IntPtr.Zero;
     }
+    public void ShowContextMenu(Point pos, CMF aditionalFlags, bool IsOnEmpty = false) {
+      using (ContextMenu mnu = new ContextMenu()) {
+        this.Populate(mnu, aditionalFlags);
+        this._Timer.Interval = 2;
+        this._Timer.Tick += TimerOnTick;
+        this._Timer.Stop();
+
+        var view = new ContextMenu();
+        var sortMenu = new ContextMenu();
+        var groupMenu = new ContextMenu();
+        var count = User32.GetMenuItemCount(mnu.Handle);
+
+        var itemInfo = new MENUITEMINFO();
+
+        itemInfo.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU | MIIM.MIIM_ID;
+        if (User32.GetMenuItemInfo(mnu.Handle, count - 1, true, ref itemInfo)) {
+          if ((itemInfo.fType & MFT.MFT_SEPARATOR) != 0) {
+            User32.DeleteMenu(mnu.Handle, count - 1, MF.MF_BYPOSITION);
+          }
+        }
+        
+        User32.GetMenuItemInfo(mnu.Handle, User32.GetMenuItemCount(mnu.Handle) - 3, true, ref itemInfo);
+        if (itemInfo.hSubMenu == IntPtr.Zero) {
+          User32.GetMenuItemInfo(mnu.Handle, User32.GetMenuItemCount(mnu.Handle) - 1, true, ref itemInfo);
+        }
+
+        this._NewMenuPtr = itemInfo.hSubMenu;
+
+        if (IsOnEmpty) {
+          this.GenerateExplorerBackgroundMenuItems(view, mnu, sortMenu, groupMenu);
+        } else {
+          if (this._Items.FirstOrDefault()?.IsFolder == true) {
+            this.GenerateMenuItem(mnu, System.Windows.Application.Current?.FindResource("mnuOpenNewTab")?.ToString(), 301, false, 1);
+          }
+        }
+
+        this.RemoveDuplicatedSeparators(mnu);
+
+
+
+        var command = User32.TrackPopupMenuEx(mnu.Handle, TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle, IntPtr.Zero);
+        if (command > 0 && command < m_CmdFirst) {
+          switch (command) {
+            case 245:
+              this._ShellView.SetGroupOrder(false);
+              break;
+            case 246:
+              this._ShellView.SetGroupOrder();
+              break;
+            case 247:
+              var colasc = this._ShellView.Collumns.FirstOrDefault(w => w.ID == this._ShellView.LastSortedColumnId);
+              this._ShellView.SetSortCollumn(true, colasc, SortOrder.Ascending);
+              break;
+            case 248:
+              var coldesc = this._ShellView.Collumns.FirstOrDefault(w => w.ID == this._ShellView.LastSortedColumnId);
+              this._ShellView.SetSortCollumn(true, coldesc, SortOrder.Descending);
+              break;
+            case 249:
+              this._ShellView.PasteAvailableFiles();
+              break;
+            case 250:
+              this._ShellView.RefreshContents();
+              break;
+            case 251:
+              this._ShellView.View = ShellViewStyle.ExtraLargeIcon;
+              break;
+            case 252:
+              this._ShellView.View = ShellViewStyle.LargeIcon;
+              break;
+            case 253:
+              this._ShellView.View = ShellViewStyle.Medium;
+              break;
+            case 254:
+              this._ShellView.View = ShellViewStyle.SmallIcon;
+              break;
+            case 255:
+              this._ShellView.View = ShellViewStyle.List;
+              break;
+            case 256:
+              this._ShellView.View = ShellViewStyle.Details;
+              break;
+            case 257:
+              this._ShellView.View = ShellViewStyle.Tile;
+              break;
+            case 258:
+              this._ShellView.View = ShellViewStyle.Content;
+              break;
+            case 259:
+              this._ShellView.View = ShellViewStyle.Thumbstrip;
+              break;
+            case 260:
+              if (this._ShellView.IsGroupsEnabled) {
+                this._ShellView.DisableGroups();
+              }
+              break;
+            case 301:
+              this._ShellView.RaiseMiddleClickOnItem(this._Items.First());
+              break;
+            default:
+              break;
+          }
+
+          if (command >= 262 && command <= 262 + this._ShellView.Collumns.Count) {
+            this._ShellView.SetSortCollumn(true, this._ShellView.Collumns[command - 262], SortOrder.Ascending);
+          } else if (command > 260 && command != 301) {
+            if (!this._ShellView.IsGroupsEnabled)
+              this._ShellView.EnableGroups();
+            this._ShellView.GenerateGroupsFromColumn(this._ShellView.Collumns[command - (262 + this._ShellView.Collumns.Count) - 1], false);
+          }
+        }
+
+        if (command > m_CmdFirst) {
+          var info = string.Empty;
+          var bytes = new byte[256];
+          IntPtr pszName = Marshal.AllocHGlobal(256);
+          this.m_ComInterface3.GetCommandString(command - (int)m_CmdFirst, 4, 0, pszName, 260);
+
+          //var index = 0;
+          //while (index < bytes.Length - 1 && (bytes[index] != 0 || bytes[index + 1] != 0)) { index += 2; }
+
+          //if (index < bytes.Length - 1) { info = Encoding.Unicode.GetString(bytes, 0, index); }
+          info = Marshal.PtrToStringAuto(pszName);
+
+          switch (info) {
+            case "open":
+              //(control as ShellView)?.OpenOrNavigateItem();
+              break;
+            case "rename":
+              //(control as ShellView)?.RenameSelectedItem();
+              break;
+            case "cut":
+              //(control as ShellView)?.CutSelectedFiles();
+              break;
+            case "copy":
+              //(control as ShellView)?.CopySelectedFiles();
+              break;
+            default:
+              CMINVOKECOMMANDINFOEX cminvokecommandinfoex = new CMINVOKECOMMANDINFOEX {
+                lpVerb = (IntPtr)(command - m_CmdFirst),
+                lpVerbW = (IntPtr)(command - m_CmdFirst)
+              };
+              cminvokecommandinfoex.cbSize = Marshal.SizeOf(cminvokecommandinfoex);
+
+              //cminvokecommandinfoex.lpDirectory = this._ShellView.CurrentFolder.ParsingName;
+              //cminvokecommandinfoex.lpDirectoryW = this._ShellView.CurrentFolder.ParsingName;
+
+              cminvokecommandinfoex.fMask = ((CMIC.Asyncok | CMIC.PtInvoke | CMIC.Unicode | CMIC.FlagNoUi) | (((Control.ModifierKeys & Keys.Control) > Keys.None) ? CMIC.ControlDown : ((CMIC)0))) | (((Control.ModifierKeys & Keys.Shift) > Keys.None) ? CMIC.ShiftDown : ((CMIC)0));
+              cminvokecommandinfoex.ptInvoke = pos;
+              cminvokecommandinfoex.nShow = 1;
+              //cminvokecommandinfoex.hwnd = this._ShellView.LVHandle;
+              this.m_ComInterface3.InvokeCommand(ref cminvokecommandinfoex);
+              //this.InvokeCommand((IntPtr)(command - m_CmdFirst), pos, (IntPtr)(command - m_CmdFirst));
+              break;
+          }
+        }
+
+        User32.DestroyMenu(mnu.Handle);
+        view.Dispose();
+        User32.DestroyMenu(view.Handle);
+        sortMenu.Dispose();
+        User32.DestroyMenu(sortMenu.Handle);
+        groupMenu.Dispose();
+        User32.DestroyMenu(groupMenu.Handle);
+      }
+
+      Marshal.ReleaseComObject(this.m_ComInterface);
+      Marshal.ReleaseComObject(this.m_ComInterface2);
+      Marshal.ReleaseComObject(this.m_ComInterface3);
+      Marshal.Release(this._Result);
+      this._Result = IntPtr.Zero;
+    }
     private void TimerOnTick(Object sender, EventArgs e) {
       this._Timer.Stop();
       User32.SendMessage(this.m_MessageWindow.Handle, 0x001F, 0, 0);

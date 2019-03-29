@@ -1655,6 +1655,7 @@ namespace BetterExplorer {
       this.ShellViewHost.Child = this._ShellListView;
 
       this.stvTreeView.ShellListView = this._ShellListView;
+      this.stvTreeView.NodeClick += (o, args) => { this.tcMain.NewTab(args.Item, false); };
       //this.ctrlConsole.ShellListView = this._ShellListView;
       this.autoUpdater.UpdateAvailable += this.AutoUpdater_UpdateAvailable;
       this.updateCheckTimer.Interval = 10000;//3600000 * 3;

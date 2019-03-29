@@ -309,12 +309,12 @@
       <Trigger Property="Orientation" Value="Horizontal">
         <Setter Property="Width" Value="Auto" />
         <Setter Property="Template" Value="{DynamicResource HorizontalScrollBar}" />
-        <Setter Property="Height" Value="18" />
+        <Setter Property="Height" Value="16" />
       </Trigger>
       <Trigger Property="Orientation" Value="Vertical">
         <Setter Property="Height" Value="Auto" />
         <Setter Property="Template" Value="{DynamicResource VerticalScrollBar}" />
-        <Setter Property="Width" Value="18" />
+        <Setter Property="Width" Value="16" />
       </Trigger>
     </Style.Triggers>
   </Style>
@@ -326,12 +326,12 @@
       <Trigger Property="Orientation" Value="Horizontal">
         <Setter Property="Width" Value="Auto" />
         <Setter Property="Template" Value="{DynamicResource HorizontalScrollBar}" />
-        <Setter Property="Height" Value="17" />
+        <Setter Property="Height" Value="16" />
       </Trigger>
       <Trigger Property="Orientation" Value="Vertical">
         <Setter Property="Height" Value="Auto" />
         <Setter Property="Template" Value="{DynamicResource VerticalScrollBar}" />
-        <Setter Property="Width" Value="17" />
+        <Setter Property="Width" Value="16" />
       </Trigger>
     </Style.Triggers>
   </Style>
