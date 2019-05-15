@@ -131,6 +131,7 @@ namespace BetterExplorer {
         this.spCommandPrompt.Height = new GridLength(0);
         this.ctrlConsole.StopProcess();
       }
+ 
     }
 
     private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e) {

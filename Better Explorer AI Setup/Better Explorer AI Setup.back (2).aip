@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="15.9" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="15.8" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
     <ROW Name="HiddenItems" Value="MsiJavaComponent;MultipleInstancesComponent;AutorunComponent;ScheduledTasksComponent;GameUxComponent;FirewallExceptionComponent;UserAccountsComponent;SqlConnectionComponent;SharePointSlnComponent;SilverlightSlnComponent"/>
   </COMPONENT>
@@ -302,10 +302,6 @@
     <ROW File="video_addorner.png" Component_="video_addorner.png" FileName="VIDEO_~1.PNG|video_addorner.png" Attributes="0" SourcePath="..\Deploy\video_addorner.png" SelfReg="false" NextFile="video_addorner_wide.png"/>
     <ROW File="video_addorner_wide.png" Component_="video_addorner.png" FileName="VIDEO_~2.PNG|video_addorner_wide.png" Attributes="0" SourcePath="..\Deploy\video_addorner_wide.png" SelfReg="false" NextFile="Wpf.TabControl.dll"/>
     <ROW File="wyUpdate.exe" Component_="wyUpdate.exe" FileName="wyUpdate.exe" Attributes="0" SourcePath="..\Deploy\wyUpdate.exe" SelfReg="false" NextFile="Xceed.Wpf.Toolkit.dll" DigSign="true"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.custcomp.MsiShortcutPropertyComponent">
-    <ROW MsiShortcutProperty="BetterExplorer2" Shortcut_="BetterExplorer" PropertyKey="System.AppUserModel.ID" PropVariantValue="Gainedge.ORG.BetterExplorer"/>
-    <ROW MsiShortcutProperty="BetterExplorer3" Shortcut_="BetterExplorer" PropertyKey="System.AppUserModel.ToastActivatorCLSID" PropVariantValue="A0176474-ED11-437F-8EBF-B53D64C41FC3"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AppXCfgComponent">
     <ROW ID="Configuration" Order="1" ManifestFile="AppxManifest.xml" TargetOs="4"/>

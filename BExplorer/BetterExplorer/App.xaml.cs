@@ -18,7 +18,8 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
-
+using BetterExplorer.Api;
+using BetterExplorer.Api.ToastNotifications;
 using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
@@ -114,8 +115,7 @@ namespace BetterExplorer {
       if (resourceDictionary != null) {
         try {
           Current.Resources.MergedDictionaries.Remove(resourceDictionary);
-        }
-        catch {
+        } catch {
         }
 
         Current.Resources.MergedDictionaries.Add(resourceDictionary);
@@ -143,8 +143,10 @@ namespace BetterExplorer {
     /// </summary>
     /// <param name="e">Startup EventArgs</param>
     protected override void OnStartup(StartupEventArgs e) {
+      DesktopNotificationManagerCompat.RegisterAumidAndComServer<BetterExplorerNotificationActivator>("Gainedge.ORG.BetterExplorer");
+      DesktopNotificationManagerCompat.RegisterActivator<BetterExplorerNotificationActivator>();
       Settings.BESettings.LoadSettings();
-      
+
       Process process = Process.GetCurrentProcess();
       process.PriorityClass = ProcessPriorityClass.Normal;
 
@@ -178,13 +180,12 @@ namespace BetterExplorer {
             UxTheme.AllowDarkModeForApp(false);
             break;
         }
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         // MessageBox.Show(String.Format("An error occurred while trying to load the theme data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "RibbonTheme Error - " + ex.ToString());
         MessageBox.Show(
           $"An error occurred while trying to load the theme data from the Registry. \n\r \n\rRibbonTheme Error - {ex}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/",
           ex.Message);
-      } 
+      }
 
       if (e.Args.Any()) {
         dmi = e.Args.Length >= 1;
@@ -192,8 +193,7 @@ namespace BetterExplorer {
 
         if (e.Args[0] != "-minimized") {
           this.Properties["cmd"] = e.Args[0];
-        }
-        else {
+        } else {
           IsStartMinimized = true;
         }
       }
@@ -206,8 +206,7 @@ namespace BetterExplorer {
 
       try {
         this.SelectCulture(Settings.BESettings.Locale);
-      }
-      catch {
+      } catch {
         // MessageBox.Show(String.Format("A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {0}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.", Locale));
         MessageBox.Show($"A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {Settings.BESettings.Locale}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.");
 
@@ -301,41 +300,34 @@ namespace BetterExplorer {
         if (args.CommandLineArgs.Length == 1) {
           win.Visibility = Visibility.Visible;
           windowsActivate.ActivateForm(win, null, IntPtr.Zero);
-        }
-        else {
+        } else {
           if (args.CommandLineArgs[1] == "/nw") {
             new MainWindow() { IsMultipleWindowsOpened = true }.Show();
-          }
-          else {
+          } else {
             IListItemEx sho;
             if (args.CommandLineArgs[1] == "t") {
               win.Visibility = Visibility.Visible;
               windowsActivate.ActivateForm(win, null, IntPtr.Zero);
 
               sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, startUpLocation.ToShellParsingName());
-            }
-            else {
+            } else {
               sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, args.CommandLineArgs[1].ToShellParsingName());
             }
 
             if (!IsStartMinimized || win.tcMain.Items.Count == 0) {
               this.CreateInitialTab(win, sho);
-            }
-            else if (Settings.BESettings.IsRestoreTabs) {
+            } else if (Settings.BESettings.IsRestoreTabs) {
               win.tcMain.Items.Clear();
               this.CreateInitialTab(win, sho);
-            }
-            else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
+            } else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
               if (args.CommandLineArgs[1] == "t") {
                 this.CreateInitialTab(win, sho);
-              }
-              else {
+              } else {
                 var cmd = args.CommandLineArgs[1];
                 sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd.ToShellParsingName());
                 this.CreateInitialTab(win, sho);
               }
-            }
-            else {
+            } else {
               this.CreateInitialTab(win, sho);
             }
           }

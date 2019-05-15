@@ -220,6 +220,7 @@ namespace BExplorer.Shell {
   #endregion Substructures and classes
 
   /// <summary> The ShellFileListView class that visualize contents of a directory </summary>
+  
   public partial class ShellView : UserControl {
     #region Event Handler
 
@@ -333,6 +334,8 @@ namespace BExplorer.Shell {
     public ImageListEx SmallImageList;
     private ConcurrentDictionary<Int32, Int32> CurrentlyUpdatingItems = new ConcurrentDictionary<Int32, Int32>();
     private Boolean _HasScrollbar = false;
+    private Boolean Test {get; set; }
+  
 
     /// <summary>Returns the currently selected item and removes any items in <see cref="_SelectedIndexes"/> not in <see cref="Items"/>  </summary>
     public List<IListItemEx> SelectedItems {
@@ -474,9 +477,6 @@ namespace BExplorer.Shell {
 
         this.ViewStyleChanged?.Invoke(this, new ViewChangedEventArgs(value, this.IconSize));
         this.IsViewSelectionAllowed = true;
-        var scrollInfo = this.GetScrollPosition();
-        this.UpdateVScrollbar(scrollInfo);
-        this.OnLVScroll?.Invoke(this, new ScrollEventArgs(scrollInfo));
       }
     }
 
@@ -488,8 +488,6 @@ namespace BExplorer.Shell {
     public Boolean IsRenameInProgress = false;
 
     public ManualResetEvent ScrollSyncEvent = new ManualResetEvent(true);
-
-    //public CustomScrollbar VScroll { get; set; }
 
     #endregion Public Members
 
@@ -1603,43 +1601,14 @@ namespace BExplorer.Shell {
     /// <inheritdoc/>
     [HandleProcessCorruptedStateExceptions]
     protected override void WndProc(ref Message m) {
-      //base.WndProc(ref m);
       try {
-        if (m.Msg == (int)WM.WM_DRAWITEM) {
-          return;
-        }
 
-        if (m.Msg == 0x002B) {
-          var h = 111;
-        }
-        //if (m.Msg == (Int32) WM.WM_PARENTNOTIFY && User32.LOWORD((Int32)m.WParam) == (Int32)WM.WM_LBUTTONDOWN) {
-        //  m.Result = (IntPtr)1;
-        //  return;
-        //}
 
         if (m.Msg == (Int32)WM.WM_PARENTNOTIFY && User32.LOWORD((Int32)m.WParam) == (Int32)WM.WM_MBUTTONDOWN) {
           this.OnItemMiddleClick();
         } else if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
           this.ProcessShellNotifications(ref m);
         } else if (m.Msg == 78) {
-          //var nmhdrHeader = (NMHEADER)m.GetLParam(typeof(NMHEADER));
-          //if (nmhdrHeader.hdr.code == (Int32)HDN.HDN_DROPDOWN)
-          //  this.Column_OnClick(nmhdrHeader.iItem);
-
-          //// F.MessageBox.Show(nmhdrHeader.iItem.ToString());
-          //else if (nmhdrHeader.hdr.code == (Int32)HDN.HDN_BEGINTRACKW) {
-          //  if (this.View != ShellViewStyle.Details) {
-          //    m.Result = (IntPtr)1;
-          //  }
-          //} else if (nmhdrHeader.hdr.code == (Int32)HDN.HDN_ENDTRACKW) {
-          //  var column = this.Collumns[nmhdrHeader.iItem];
-          //  column.SetColumnWidth(this);
-          //}
-          //else if (nmhdrHeader.hdr.code == -12 && nmhdrHeader.n) {
-          // this.ProcessHeaderCustomDraw(ref m);
-          //base.WndProc(ref m);
-          //}
-
           var nmhdr = (NMHDR)m.GetLParam(typeof(NMHDR));
           switch (nmhdr.code) {
             case WNM.LVN_GETEMPTYMARKUP:
@@ -1663,9 +1632,10 @@ namespace BExplorer.Shell {
                   this.RenameShellItem(item.ComInterface, nmlvedit.item.pszText, item.DisplayName != Path.GetFileName(item.ParsingName) && !item.IsFolder, item.Extension);
                 }
 
-                this.EndLabelEdit();
+                
               }
-
+              this.EndLabelEdit();
+              //this.IsRenameInProgress = false;
               this._EditorSubclass?.DestroyHandle();
               break;
 
@@ -1683,63 +1653,6 @@ namespace BExplorer.Shell {
                 if (nmlv.item.iSubItem == 0) {
                   nmlv.item.pszText = currentItem.DisplayName;
                   Marshal.StructureToPtr(nmlv, m.LParam, false);
-                } else {
-                  if ((this.View == ShellViewStyle.Details)) {
-                    var currentCollumn = this.Collumns[nmlv.item.iSubItem];
-
-                    if (currentItem.ColumnValues.TryGetValue(currentCollumn.pkey, out var valueCached) && !currentItem.IsNeedRefreshing) {
-                      String val = String.Empty;
-                      if (valueCached != null) {
-                        if (currentCollumn.CollumnType == typeof(DateTime)) {
-                          val = ((DateTime)valueCached).ToString(Thread.CurrentThread.CurrentUICulture);
-                        } else if (currentCollumn.CollumnType == typeof(Int64)) {
-                          val = $"{Math.Ceiling(Convert.ToDouble(valueCached.ToString()) / 1024):# ### ### ##0} KB";
-                        } else if (currentCollumn.CollumnType == typeof(PerceivedType)) {
-                          val = ((PerceivedType)valueCached).ToString();
-                        } else if (currentCollumn.CollumnType == typeof(FileAttributes)) {
-                          val = this.GetFilePropertiesString(valueCached);
-                        } else {
-                          val = valueCached.ToString();
-                        }
-                      }
-
-                      nmlv.item.pszText = val.Trim();
-                    } else {
-                      var temp = currentItem;
-                      var isi2 = (IShellItem2)temp.ComInterface;
-                      var guid = new Guid(InterfaceGuids.IPropertyStore);
-                      IPropertyStore propStore = null;
-                      PROPERTYKEY pk = currentCollumn.pkey;
-                      //var rgKeys = new PROPERTYKEY[1];
-                      //rgKeys[0] = pk;
-                      isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
-                      //var res = isi2.GetPropertyStoreForKeys(ref rgKeys, 1, GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
-                      var pvar = new PropVariant();
-                      if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-                        if (pvar.Value == null) {
-                          this.SmallImageList.EnqueueSubitemsGet(Tuple.Create(nmlv.item.iItem, nmlv.item.iSubItem, pk));
-                        } else {
-                          var val = String.Empty;
-                          if (currentCollumn.CollumnType == typeof(DateTime)) {
-                            val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentUICulture);
-                          } else if (currentCollumn.CollumnType == typeof(Int64))
-                            val = $"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024):# ### ### ##0} KB";
-                          else if (currentCollumn.CollumnType == typeof(PerceivedType)) {
-                            val = ((PerceivedType)pvar.Value).ToString();
-                          } else if (currentCollumn.CollumnType == typeof(FileAttributes)) {
-                            val = this.GetFilePropertiesString(pvar.Value);
-                          } else {
-                            val = pvar.Value.ToString();
-                          }
-                          //currentItem.ColumnValues.Add(pk, pvar.Value);
-                          nmlv.item.pszText = val.Trim();
-                          //pvar.Dispose();
-                        }
-                      }
-                    }
-                  }
-
-                  Marshal.StructureToPtr(nmlv, m.LParam, false);
                 }
               }
 
@@ -1755,9 +1668,7 @@ namespace BExplorer.Shell {
                     IPropertyDescriptionList propertyDescriptionList = (IPropertyDescriptionList)Marshal.GetObjectForIUnknown(ptrPDL);
                     var descriptionsCount = 0u;
                     propertyDescriptionList.GetCount(out descriptionsCount);
-                    //nmlv.item.cColumns = (Int32)descriptionsCount;
                     var columns = new Int32[(Int32)descriptionsCount];
-                    //Marshal.Copy(nmlv.item.puColumns, columns, 0, nmlv.item.cColumns);
                     for (UInt32 i = 0; i < descriptionsCount; i++) {
                       IPropertyDescription propertyDescription = null;
                       propertyDescriptionList.GetAt(i, ref refGuidPD, out propertyDescription);
@@ -1771,21 +1682,11 @@ namespace BExplorer.Shell {
                       }
                     }
 
-                    //Marshal.Copy(columns, 0, nmlv.item.puColumns, nmlv.item.cColumns);
-                    //Marshal.StructureToPtr(nmlv, m.LParam, false);
                     currentItem.cColumns = columns;
                   }
                 }
-                //else {
-                //  nmlv.item.cColumns = currentItem.cColumns.Length;
-                //  Marshal.Copy(currentItem.cColumns, 0, nmlv.item.puColumns, nmlv.item.cColumns);
-                //  Marshal.StructureToPtr(nmlv, m.LParam, false);
-                //}
+
               }
-
-              
-
-              //Marshal.StructureToPtr(nmlv, m.LParam, false);
               break;
 
             case WNM.LVN_COLUMNCLICK:
@@ -1872,6 +1773,7 @@ namespace BExplorer.Shell {
               this.IsFocusAllowed = false;
               this._IsCanceledOperation = false;
               this._ItemForRename = nmlvLe.item.iItem;
+              this.IsRenameInProgress = true;
               this.BeginItemLabelEdit?.Invoke(this, new RenameEventArgs(this._ItemForRename));
               m.Result = (IntPtr)0;
               var editControl = User32.SendMessage(this.LVHandle, 0x1018, 0, 0);
@@ -1916,32 +1818,10 @@ namespace BExplorer.Shell {
               this._ResetTimer.Stop();
               this.ToolTip?.HideTooltip();
               this.ScrollSyncEvent.Reset();
-              //User32.LockWindowUpdate(this.LVHandle);
-              //var scrollInfob = this.GetScrollPosition();
-              //this.OnLVScroll?.Invoke(this, new ScrollEventArgs(scrollInfob));
               break;
 
             case WNM.LVN_ENDSCROLL:
-              //User32.LockWindowUpdate(IntPtr.Zero);
               this._ResetTimer.Start();
-              var scrollInfo = this.GetScrollPosition();
-              if (!this._IsManualScroll) {
-                // this.BeginInvoke((Action)(() => {
-                this.UpdateVScrollbar(scrollInfo);
-                // }));
-              } else {
-                this._IsAutoScrool = true;
-                //this.VScroll.Value = scrollInfo.nPos;
-                this.OldPosition = scrollInfo.nPos;
-                this._IsAutoScrool = false;
-                this._IsManualScroll = false;
-              }
-
-              //this.Invoke((Action) (() => {
-              //  var rr = User32.SetScrollInfo(this.VScroll?.Handle ?? IntPtr.Zero, 0, ref scrollInfo, true);
-              //}));
-              //this.OnLVScroll?.Invoke(this, new ScrollEventArgs(scrollInfo) { IsPositionChangedOnly = true });
-              this.ScrollSyncEvent.Set();
               break;
 
             case -100:
@@ -2120,10 +2000,8 @@ namespace BExplorer.Shell {
 
             case CustomDraw.NM_CUSTOMDRAW:
               if (nmhdr.hwndFrom == this.LVHandle) {
-
                 this.ProcessCustomDraw(ref m, ref nmhdr);
               } else if (nmhdr.hwndFrom == this.LVHeaderHandle) {
-                //base.WndProc(ref m);
                 this.ProcessHeaderCustomDraw(ref m);
               }
               break;
@@ -2137,29 +2015,13 @@ namespace BExplorer.Shell {
 
     }
 
-    private void UpdateVScrollbar(SCROLLINFO scrollInfo) {
-      //this.VScroll.LargeChange = (int) scrollInfo.nPage;
-      //this.VScroll.Minimum = 0;
-      //this.VScroll.Maximum = (int) (scrollInfo.nMax + 1);
-      //this.VScroll.SmallChange = this.View == ShellViewStyle.Details && !this.IsGroupsEnabled ? 1 : this.View == ShellViewStyle.Details ? 18 : this.IconSize + 50;
-      //this._IsAutoScrool = true;
-      //this.VScroll.Value = scrollInfo.nPos;
-      //this.OldPosition = scrollInfo.nPos;
-      //this._IsAutoScrool = false;
-    }
 
     /// <inheritdoc/>
     protected override void OnSizeChanged(EventArgs e) {
       base.OnSizeChanged(e);
 
-      //User32.MoveWindow(this.LVHandle, 0, 0, this.ClientRectangle.Width + SystemInformation.VerticalScrollBarWidth, this.ClientRectangle.Height, false);
       User32.MoveWindow(this.LVHandle, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, false);
-      //if (this.VScroll != null) {
-      //  this.VScroll.Location = new System.Drawing.Point(this.ClientRectangle.Width - SystemInformation.VerticalScrollBarWidth, 0);
-      //  this.VScroll.Height = this.ClientRectangle.Height;
-      //}
 
-      //User32.MoveWindow(this.LVHeaderHandle, 0, 0, this.ClientRectangle.Width, 22, true);
     }
 
     [DllImport("user32.dll")]
@@ -2238,7 +2100,7 @@ namespace BExplorer.Shell {
             Gdi32.SetTextColor(hdc, (int)this.Theme.TextColor.ToDrawingColor().ToWin32Color());
 
 
-            User32.DrawText(hdc, collumnse.Name, -1, ref textRect, User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter | User32.TextFormatFlags.EndEllipsis);
+            User32.DrawText(hdc, collumnse.Name, -1, ref textRect, User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.NoPrefix);
             Gdi32.DeleteObject(hFont);
 
 
@@ -2275,34 +2137,6 @@ namespace BExplorer.Shell {
     }
 
     private IntPtr LVWndProc(IntPtr hWnd, int uMsg, IntPtr wParam, IntPtr lParam) {
-      //if (uMsg == 78) {
-      //  var nmhdr = (NMHDR) Marshal.PtrToStructure(lParam, typeof(NMHDR));
-      //  switch (nmhdr.code) {
-      //    case CustomDraw.NM_CUSTOMDRAW:
-      //      if (nmhdr.hwndFrom == this.LVHeaderHandle) {
-      //        var nmcd = (User32.NMCUSTOMDRAW)Marshal.PtrToStructure(lParam, typeof(User32.NMCUSTOMDRAW));
-      //        switch (nmcd.dwDrawStage) {
-      //          case CustomDraw.CDDS_PREPAINT:
-      //            return (IntPtr)(CustomDraw.CDRF_NOTIFYITEMDRAW | CustomDraw.CDRF_NEWFONT);
-      //            break;
-      //          case CustomDraw.CDDS_ITEMPREPAINT:
-      //            //using (var g = Graphics.FromHwnd(this.LVHeaderHandle)) {
-      //            //  var brush = new SolidBrush(this.Theme.BackgroundColor.ToDrawingColor());
-      //            //  //var rect = new User32.RECT();
-      //            //  //var res = User32.SendMessage(this.LVHeaderHandle, 0x1000 + 7, this.Collumns.Count - 1, ref rect);
-      //            //  g.FillRectangle(brush, this.Collumns.Sum(s => s.Width), 0, this.ClientRectangle.Width, 25);
-      //            //  brush.Dispose();
-      //            //}
-      //            //return (IntPtr)(CustomDraw.CDRF_SKIPDEFAULT);
-      //            break;
-      //        }
-      //      } 
-      //      break;
-      //  }
-      //}
-      if (uMsg == 0x002B) {
-        var h = 111;
-      }
       if ((uMsg == 0x0202 || uMsg == 0x0201)) {
         var hitPoint = lParam.ToPoint();
         LVHITTESTINFO lvHitTestInfo = new LVHITTESTINFO();
@@ -2352,9 +2186,6 @@ namespace BExplorer.Shell {
       }
 
       if (uMsg == (int)WM.WM_ERASEBKGND) {
-        //using (var g = Graphics.FromHdc(wParam)) {
-        //  g.FillRectangle(Brushes.Red, this.ClientRectangle);
-        //}
         return IntPtr.Zero;
       }
       return User32.CallWindowProc(this._OldWndProc, hWnd, uMsg, wParam, lParam);
@@ -2366,30 +2197,8 @@ namespace BExplorer.Shell {
       this._newHeaderWndProc = this.LVHeaderWndProc;
       base.OnHandleCreated(e);
 
-      //this.VScroll = new CustomScrollbar();
-      //this.Controls.Add(this.VScroll);
-      //this.VScroll.Width = SystemInformation.VerticalScrollBarWidth;
-      //this.VScroll.Location = new System.Drawing.Point(this.ClientRectangle.Width - SystemInformation.VerticalScrollBarWidth, 0);
-      //this.VScroll.Height = this.ClientRectangle.Height;
-      //this.VScroll.Visible = false;
-      //this.VScroll.VisibleChanged += (sender, args) => {
-      //  //User32.MoveWindow(this.LVHandle, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, false);
-      //};
-      //this.VScroll.ValueChanged += (sender, args) => {
-      //  if (!this._IsAutoScrool) {
-      //    //User32.LockWindowUpdate(this.LVHandle);
-      //    this._IsManualScroll = true;
-      //    var delta = this.VScroll.Value - this.OldPosition;
-      //    User32.SendMessage(this.LVHandle, 0x1000 + 20, 0, delta * (this.View == ShellViewStyle.Details && !this.IsGroupsEnabled ? 18 : 1));
-      //    this.OldPosition = this.OldPosition + delta;
-      //    //User32.LockWindowUpdate(IntPtr.Zero);
-      //  }
-      //};
-
-
       this.Theme = new LVTheme(Settings.BESettings.CurrentTheme == "Dark" ? ThemeColors.Dark : ThemeColors.Light);
       this.BackColor = Color.Black;
-      //this.VScroll.Theme = this.Theme;
 
       this._Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
       this._UnvalidateTimer.Interval = 1000;
@@ -2438,15 +2247,8 @@ namespace BExplorer.Shell {
         //(User32.WindowStyles)User32.LVS_SHOWSELALWAYS | (User32.WindowStyles)User32.LVS_AUTOARRANGE, 0, 0, this.ClientRectangle.Width + SystemInformation.VerticalScrollBarWidth, this.ClientRectangle.Height, this.Handle, IntPtr.Zero, hInstance, IntPtr.Zero);
         (User32.WindowStyles)User32.LVS_SHOWSELALWAYS | (User32.WindowStyles)User32.LVS_AUTOARRANGE, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, this.Handle, IntPtr.Zero, hInstance, IntPtr.Zero);
 
-      //this.LVHeaderHandle = User32.CreateWindowEx(User32.WindowStylesEx.WS_EX_TRANSPARENT, "SysHeader32", String.Empty,
-      //   User32.WindowStyles.WS_CHILD | User32.WindowStyles.WS_CLIPCHILDREN | User32.WindowStyles.WS_CLIPSIBLINGS | (User32.WindowStyles)User32.W32_HDS.HDS_BUTTONS | (User32.WindowStyles)User32.W32_HDS.HDS_DRAGDROP |
-      //   (User32.WindowStyles)User32.W32_HDS.HDS_FULLDRAG | (User32.WindowStyles)User32.W32_HDS.HDS_HORZ | (User32.WindowStyles)User32.W32_HDS.HDS_HOTTRACK, 0, 0, this.ClientRectangle.Width, 22, this.Handle, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
-      //User32.ShowWindow(this.LVHeaderHandle, User32.ShowWindowCommands.Show);
-
       User32.ShowWindow(this.LVHandle, User32.ShowWindowCommands.Show);
 
-      //nw.AttachedListView = this;
-      //nw.AttachedListView = this;
       this.AddDefaultColumns(true);
       this.LVHeaderHandle = User32.SendMessage(this.LVHandle, MSG.LVM_GETHEADER, 0, 0);
       this.AfterCollumsPopulate?.Invoke(this, new ColumnAddEventArgs(null) { Collumns = this.Collumns });
@@ -2466,7 +2268,6 @@ namespace BExplorer.Shell {
       User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.HeaderDragDrop, (Int32)ListViewExtendedStyles.HeaderDragDrop);
       User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.LabelTip, (Int32)ListViewExtendedStyles.LabelTip);
       User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.InfoTip, (Int32)ListViewExtendedStyles.InfoTip);
-      //User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.UnderlineHot, (Int32)ListViewExtendedStyles.UnderlineHot);
       User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (Int32)ListViewExtendedStyles.AutosizeColumns, (Int32)ListViewExtendedStyles.AutosizeColumns);
 
 
@@ -2489,16 +2290,9 @@ namespace BExplorer.Shell {
 
       this._IIVisualProperties.SetColor(VPCOLORFLAGS.VPCF_SORTCOLUMN, this.Theme.SortColumnColor.ToDrawingColor().ToWin32Color());
       User32.SetForegroundWindow(this.LVHandle);
-      //IntPtr pDll = Kernel32.LoadLibrary(@"UxTheme.dll");
-      //IntPtr pAddressOfFunctionToCall = Kernel32.GetProcAddress(pDll, 133);
-      //var allowDarkModeForWindow = (AllowDarkModeForWindow)Marshal.GetDelegateForFunctionPointer(
-      //  pAddressOfFunctionToCall,
-      //  typeof(AllowDarkModeForWindow));
-      //var rsss = allowDarkModeForWindow(this.LVHandle, true);
       //UxTheme.SetWindowTheme(this.LVHandle, "StartMenu", 0);
       UxTheme.AllowDarkModeForWindow(this.LVHandle, true);
       UxTheme.SetWindowTheme(this.LVHandle, "Explorer", 0);
-      //Kernel32.FreeLibrary(pDll);
       ShellItem.MessageHandle = this.LVHandle;
       //this.IsViewSelectionAllowed = true;
 
@@ -2509,7 +2303,6 @@ namespace BExplorer.Shell {
     /// <inheritdoc/>
     protected override void OnHandleDestroyed(EventArgs e) {
       try {
-        //this.VScroll.Dispose();
         this._FsWatcher?.Dispose();
         this._Notifications.UnregisterChangeNotify();
         this.LargeImageList.Dispose();
@@ -2960,9 +2753,6 @@ namespace BExplorer.Shell {
         var newW = 0;
         var newH = 0;
         this._IIListView?.SetIconSpacing(value + 28, value + 38, out newW, out newH);
-        var scrollInfo = this.GetScrollPosition();
-        this.UpdateVScrollbar(scrollInfo);
-        this.OnLVScroll?.Invoke(this, new ScrollEventArgs(scrollInfo));
       } catch (Exception) {
       }
     }
@@ -3590,11 +3380,12 @@ namespace BExplorer.Shell {
         this.EndItemLabelEdit.Invoke(this, isCancel);
         if (this._ItemForRename > -1) {
           // this.UpdateItem(this._ItemForRename);
-          // this.RefreshItem(this._ItemForRename, true);
+          
         }
 
         this._ItemForRename = -1;
         this._IsCanceledOperation = isCancel;
+        this.RefreshItem(this.GetFirstSelectedItemIndex());
       }
 
       this.Focus();
@@ -4728,7 +4519,9 @@ namespace BExplorer.Shell {
               }
               this.SmallImageList.DrawIcon(hdc, index, sho, iconBounds, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index), (nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT);
               //Gdi32.SetTextColor(hdc, (int)Color.WhiteSmoke.ToWin32Color());
-              User32.DrawText(hdc, sho.DisplayName, -1, ref labelBoundsReal, User32.TextFormatFlags.EditControl | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter);
+              if (index != this._ItemForRename) {
+                User32.DrawText(hdc, sho.DisplayName, -1, ref labelBoundsReal, User32.TextFormatFlags.EditControl | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter | User32.TextFormatFlags.NoPrefix);
+              } 
               if (this.View == ShellViewStyle.Details) {
                 for (int i = 1; i < this.Collumns.Count; i++) {
                   var labelBoundsSubitem = new User32.RECT() { Left = 2 };
@@ -4796,7 +4589,7 @@ namespace BExplorer.Shell {
                       }
                     }
                   }
-                  User32.DrawText(hdc, val, -1, ref subItemRect, align | User32.TextFormatFlags.EditControl | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter);
+                  User32.DrawText(hdc, val, -1, ref subItemRect, align | User32.TextFormatFlags.EditControl | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter | User32.TextFormatFlags.NoPrefix);
                 }
               }
               //for (int i = 1; i < this.Collumns.Count; i++) {
@@ -4819,9 +4612,14 @@ namespace BExplorer.Shell {
                 align = User32.TextFormatFlags.Default | User32.TextFormatFlags.SingleLine;
                 labelBoundsReal.Top = labelBoundsReal.Top + 7;
                 labelBoundsReal.Left = labelBoundsReal.Left + 2;
+              } else {
+                labelBoundsReal.Right = labelBoundsReal.Right - 2;
+                labelBoundsReal.Left = labelBoundsReal.Left + 2;
               }
               //User32.DrawText(hdc, sho.DisplayName, -1, ref labelBounds, User32.TextFormatFlags.Center | User32.TextFormatFlags.EditControl |User32.TextFormatFlags.CalcRect | User32.TextFormatFlags.WordBreak | User32.TextFormatFlags.EndEllipsis);
-              User32.DrawText(hdc, sho.DisplayName, -1, ref labelBoundsReal, align | User32.TextFormatFlags.EditControl | User32.TextFormatFlags.WordBreak | User32.TextFormatFlags.EndEllipsis);
+              if (index != this._ItemForRename) {
+                User32.DrawText(hdc, sho.DisplayName, -1, ref labelBoundsReal, align | User32.TextFormatFlags.EditControl | User32.TextFormatFlags.WordBreak | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.NoPrefix);
+              }
             }
 
             if (sho.cColumns != null && this.View == ShellViewStyle.Tile) {
@@ -4895,7 +4693,7 @@ namespace BExplorer.Shell {
                 labelBounds.Bottom = labelBounds.Top + 15;
 
                 Gdi32.SetTextColor(hdc, textColor == null ? (int)Color.SlateGray.ToWin32Color() : (int)textColor.Value.ToWin32Color());
-                User32.DrawText(hdc, val, -1, ref labelBounds, User32.TextFormatFlags.EditControl | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter);
+                User32.DrawText(hdc, val, -1, ref labelBounds, User32.TextFormatFlags.EditControl | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter | User32.TextFormatFlags.NoPrefix);
               }
             }
 
@@ -5061,10 +4859,6 @@ namespace BExplorer.Shell {
           var arrowPen = new Pen(this._IsOverGroup ? Color.LightGray : this.Theme.SelectionBorderColor.ToDrawingColor(), 2);
           gr.DrawLine(pen, nmlvcd.rcText.X + textSize.Height + 8, nmlvcd.rcText.Y + (nmlvcd.rcText.Height / 2) + 1, nmlvcd.rcText.Right - 40, nmlvcd.rcText.Y + (nmlvcd.rcText.Height / 2) + 1);
 
-
-
-
-
           gr.DrawArrowHead(arrowPen, new PointF(nmlvcd.rcText.Right - 58 + 60 / 2f, state == 1 ? nmlvcd.rcText.Y + 8 : nmlvcd.rcText.Y + 12), 0, state == 1 ? -4 : 4, 1);
           arrowPen.Dispose();
           brush.Dispose();
@@ -5073,7 +4867,7 @@ namespace BExplorer.Shell {
 
           Gdi32.SetTextColor(hdc, (int)Color.WhiteSmoke.ToWin32Color());
 
-          User32.DrawText(hdc, header, -1, ref nmlvcd.rcText, User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter);
+          User32.DrawText(hdc, header, -1, ref nmlvcd.rcText, User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter | User32.TextFormatFlags.NoPrefix);
 
         }
 
@@ -5151,6 +4945,7 @@ namespace BExplorer.Shell {
                 gr.InterpolationMode = InterpolationMode.NearestNeighbor;
                 gr.SmoothingMode = SmoothingMode.HighSpeed;
                 var brush = new SolidBrush(this.Theme.SelectionColor.ToDrawingColor());
+
                 var rectSel = new Rectangle(itemBounds.X, itemBounds.Y, itemBounds.Width, itemBounds.Height);
                 var rect = new Rectangle(itemBounds.X, itemBounds.Y, itemBounds.Width - 1, itemBounds.Height - 1);
                 gr.FillRectangle(brush, rectSel);
