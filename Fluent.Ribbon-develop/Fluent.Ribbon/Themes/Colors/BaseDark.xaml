@@ -25,6 +25,8 @@
   <Color x:Key="Gray9">#5EC9C9C9</Color>
   <Color x:Key="Gray10">#FF2F2F2F</Color>
   <Color x:Key="Gray11">#171717</Color>
+  <Color x:Key="SelectionColor">#4B808080</Color>
+  <Color x:Key="SelectionBorderColor">#4BD2D2D2</Color>
 
   <Color x:Key="TransparentWhiteColor">#00FFFFFF</Color>
   <Color x:Key="Fluent.Ribbon.Colors.HighTransparentWhiteColor">#17FFFFFF</Color>
@@ -87,6 +89,15 @@
     x:Key="GrayBrush11"
     options:Freeze="True"
     Color="{StaticResource Gray11}" />
+
+  <SolidColorBrush
+    x:Key="SelectionBrush"
+    options:Freeze="True"
+    Color="{StaticResource SelectionColor}" />
+  <SolidColorBrush
+    x:Key="SelectionBorderBrush"
+    options:Freeze="True"
+    Color="{StaticResource SelectionBorderColor}" />
 
   <SolidColorBrush
     x:Key="TransparentWhiteBrush"

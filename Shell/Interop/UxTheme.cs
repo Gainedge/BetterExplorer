@@ -9,6 +9,9 @@ namespace BExplorer.Shell.Interop {
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     private delegate bool AllowDarkModeForWindowDelegate(IntPtr hWnd, Boolean isAllow);
 
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    private delegate void FlushMenuThemesDelegate();
+
     [DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
     public static extern int SetWindowTheme(IntPtr hWnd, String pszSubAppName, int pszSubIdList);
 
@@ -37,6 +40,20 @@ namespace BExplorer.Shell.Interop {
       var result = allowDarkModeForWindow(hWnd, isAllowed);
       Kernel32.FreeLibrary(pDll);
       return result;
+    }
+
+    public static Boolean FlushMenuThemes() {
+      IntPtr pDll = Kernel32.LoadLibrary(@"UxTheme.dll");
+      IntPtr pFunction = Kernel32.GetProcAddress(pDll, 136);
+      if (pFunction == IntPtr.Zero) {
+        return false;
+      }
+      var flushMenuThemes = (FlushMenuThemesDelegate)Marshal.GetDelegateForFunctionPointer(
+        pFunction,
+        typeof(FlushMenuThemesDelegate));
+      flushMenuThemes();
+      Kernel32.FreeLibrary(pDll);
+      return true;
     }
   }
 }

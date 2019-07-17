@@ -2291,7 +2291,7 @@ namespace BExplorer.Shell {
       this._IIVisualProperties.SetColor(VPCOLORFLAGS.VPCF_SORTCOLUMN, this.Theme.SortColumnColor.ToDrawingColor().ToWin32Color());
       User32.SetForegroundWindow(this.LVHandle);
       //UxTheme.SetWindowTheme(this.LVHandle, "StartMenu", 0);
-      UxTheme.AllowDarkModeForWindow(this.LVHandle, true);
+      //UxTheme.AllowDarkModeForWindow(this.LVHandle, true);
       UxTheme.SetWindowTheme(this.LVHandle, "Explorer", 0);
       ShellItem.MessageHandle = this.LVHandle;
       //this.IsViewSelectionAllowed = true;
@@ -2329,6 +2329,9 @@ namespace BExplorer.Shell {
 
     public void ChangeTheme(ThemeColors theme) {
       UxTheme.AllowDarkModeForApp(theme == ThemeColors.Dark);
+      UxTheme.AllowDarkModeForWindow(this.LVHandle, theme == ThemeColors.Dark);
+      UxTheme.SetWindowTheme(this.LVHandle, "Explorer", 0);
+      UxTheme.FlushMenuThemes();
       this.Theme = new LVTheme(theme);
       //this.VScroll.Theme = this.Theme;
       this._IIListView.SetBackgroundColor(this.Theme.HeaderBackgroundColor.ToDrawingColor().ToWin32Color());
@@ -2753,8 +2756,7 @@ namespace BExplorer.Shell {
         var newW = 0;
         var newH = 0;
         this._IIListView?.SetIconSpacing(value + 28, value + 38, out newW, out newH);
-      } catch (Exception) {
-      }
+      } catch (Exception) { }
     }
 
     /// <summary>Selects all items and sets this to focus</summary>
@@ -2762,12 +2764,13 @@ namespace BExplorer.Shell {
       this._IIListView.SetItemState(-1, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, LVIS.LVIS_SELECTED);
       this.Focus();
     }
-
     /// <summary>
     /// Selects only the specified items. First runs <see cref="DeSelectAllItems">DeSelectAllItems</see> Then selects all items on a separate thread.
     /// </summary>
     /// <param name="shellObjectArray"></param>
+    /// <param name="isEnsureVisible"></param>
     public void SelectItems(IListItemEx[] shellObjectArray, Boolean isEnsureVisible = false) {
+      User32.LockWindowUpdate(this.LVHandle);
       this.DeSelectAllItems();
       var selectionThread = new Thread(() => {
         var lastItem = shellObjectArray.LastOrDefault();
@@ -2779,12 +2782,15 @@ namespace BExplorer.Shell {
             var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
             User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
             if (isEnsureVisible && item.Equals(lastItem)) {
-              this.BeginInvoke((Action)(() => { this._IIListView.EnsureItemVisible(lvii, true); }));
+              this.BeginInvoke((Action)(() => {
+                this._IIListView.EnsureItemVisible(lvii, true);
+              }));
             }
           } catch (Exception) {
             // catch the given key was not found. It happen on fast delete of items
           }
         }
+        this.BeginInvoke((Action)(() => { User32.LockWindowUpdate(IntPtr.Zero); }));
         this.Focus();
       });
 
@@ -2800,6 +2806,7 @@ namespace BExplorer.Shell {
     /// <param name="deselectOthers">Deselect all other items?</param>
     public void SelectItemByIndex(Int32 index, Boolean ensureVisability = false, Boolean deselectOthers = false) {
       this.Focus();
+      User32.LockWindowUpdate(this.LVHandle);
       if (deselectOthers) {
         this.BeginInvoke((Action)(() => { this._IIListView.SetItemState(-1, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, 0); }));
       }
@@ -2809,7 +2816,10 @@ namespace BExplorer.Shell {
       User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
 
       if (ensureVisability) {
-        this.BeginInvoke((Action)(() => this._IIListView.EnsureItemVisible(lvii, true)));
+        this.BeginInvoke((Action)(() => {
+          this._IIListView.EnsureItemVisible(lvii, true);
+          User32.LockWindowUpdate(IntPtr.Zero);
+        }));
       }
     }
 
@@ -3526,7 +3536,7 @@ namespace BExplorer.Shell {
       isThereSettings = this.LoadSettingsFromDatabase(destination, out folderSettings);
       this.RequestedCurrentLocation = destination;
       if (!refresh) {
-        this.Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab));
+        this.Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab) { IsFirstItemAvailable = true });
       }
 
       var columns = new Collumns();
@@ -3741,7 +3751,7 @@ namespace BExplorer.Shell {
 
         foreach (var shellItem in content.GetContents(this.ShowHidden).TakeWhile(shellItem => !this.IsCancelRequested).SetSortCollumn(this, true, columns, isThereSettings ? folderSettings.SortOrder : SortOrder.Ascending, false)) {
           if (currentI == 0) {
-            this.Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab) { IsFirstItemAvailable = true });
+            //this.Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab) { IsFirstItemAvailable = true });
           }
           currentI++;
           if (shellItem == null) {

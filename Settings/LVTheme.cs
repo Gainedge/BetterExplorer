@@ -21,8 +21,8 @@ namespace Settings {
     public LVTheme(ThemeColors color) {
       switch (color) {
         case ThemeColors.Light:
-          this.SelectionColor = Color.FromArgb(75, 128, 128, 128);
-          this.SelectionBorderColor = Color.FromArgb(109, 96, 96, 91);
+          this.SelectionColor = Color.FromArgb(75, 2, 163, 255);
+          this.SelectionBorderColor = Color.FromArgb(75, 10, 127, 237);
           this.HeaderSelectionColor = Color.FromArgb(255, 235, 235, 235);
           this.TextColor = Colors.Black;
           this.HeaderBackgroundColor = Colors.White;

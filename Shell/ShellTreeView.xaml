@@ -448,13 +448,13 @@
                     <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
                   </DataTrigger>
                   <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" TargetName="Bd" Value="{DynamicResource GrayBrush10}"/>
-                    <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource GrayBrush9}"/>
+                    <Setter Property="Background" TargetName="Bd" Value="{DynamicResource SelectionBrush}"/>
+                    <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource SelectionBorderBrush}"/>
                     <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
                   </Trigger>
                   <Trigger Property="local:TreeViewHelper.IsMouseDirectlyOverItem" Value="True">
-                    <Setter Property="Background" TargetName="Bd" Value="{DynamicResource GrayBrush9}"/>
-                    <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource GrayBrush9}"/>
+                    <Setter Property="Background" TargetName="Bd" Value="{DynamicResource SelectionBrush}"/>
+                    <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource SelectionBrush}"/>
                     <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
                   </Trigger>
                  
