@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -34,7 +35,7 @@ namespace BetterExplorer {
       this._IsCheckUpdateFromTimer = true;
       Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
         (Action)(() => {
-          autoUpdater.ForceCheckForUpdate(true);
+          //autoUpdater.ForceCheckForUpdate(true);
         }));
 
       Settings.BESettings.LastUpdateCheck = DateTime.Now;
@@ -46,9 +47,11 @@ namespace BetterExplorer {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     private void updateCheckTimer_Tick(object sender, EventArgs e) {
-      if (DateTime.Now.Subtract(Settings.BESettings.LastUpdateCheck).Days >= Settings.BESettings.UpdateCheckInterval) {
-        CheckForUpdate(false);
-      }
+      var updaterThread = new Thread(((App)Application.Current).RunAutomaticUpdateChecker);
+      updaterThread.Start();
+      //if (DateTime.Now.Subtract(Settings.BESettings.LastUpdateCheck).Days >= Settings.BESettings.UpdateCheckInterval) {
+      //  CheckForUpdate(false);
+      //}
     }
   }
 }

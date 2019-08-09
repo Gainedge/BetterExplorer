@@ -66,10 +66,10 @@
     <ROW Property="AppLogoIcon" Value="applogoicon" MultiBuildValue="ExeBuild:Explorer256.ico" Type="1" MsiKey="AppLogoIcon"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Gainedge.org"/>
-    <ROW Property="ProductCode" Value="1026:{4F9125FA-A344-4558-9D9A-E57FECE95502} 1031:{EDDB5BC7-8606-4BF8-8579-BC1C85D6BF20} 1033:{3B384425-3607-4A80-BC5E-3E77BDEA38FE} 1041:{9BA2AD70-1A4F-493E-86B7-DEB319032197} 1049:{AF8AE3BC-11FD-4E94-AD86-A18B4BC39318} " Type="16"/>
+    <ROW Property="ProductCode" Value="1026:{7344AC06-3DDE-4DAC-992A-5DE23A2AC5C4} 1031:{D8878512-21E1-4848-ADA9-A7098C700012} 1033:{8C9CF418-1C17-4CEE-B024-B53E4ED1D35C} 1041:{C07207AF-3C26-4EF7-A7A7-A48050A64746} 1049:{271C503E-0CB4-4AA8-9B7A-604F6E205B63} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Better Explorer"/>
-    <ROW Property="ProductVersion" Value="2.6.18157.935" Type="32" TargetFile="BetterExplorer.exe"/>
+    <ROW Property="ProductVersion" Value="2.5.18157.935" Type="32" TargetFile="BetterExplorer.exe"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{5E93AAAE-AC44-47F5-BFC8-330F951A30F4}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="ExeBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -107,7 +107,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="AIShRegAnswer" ComponentId="{F7166FEB-5E08-4D41-A296-E641424EEEE9}" Directory_="APPDIR" Attributes="4" KeyPath="AIShRegAnswer"/>
-    <ROW Component="AI_CustomARPName" ComponentId="{9FA63FDA-929B-4AD4-B3DB-4DA62DCE4898}" Directory_="APPDIR" Attributes="4" KeyPath="DisplayName" Options="1"/>
+    <ROW Component="AI_CustomARPName" ComponentId="{32CF1001-A51C-4B8A-84AC-D9A5748CC07D}" Directory_="APPDIR" Attributes="4" KeyPath="DisplayName" Options="1"/>
     <ROW Component="AI_ExePath" ComponentId="{C3B2CAE6-2882-4483-8D5F-B517A1BA3DD6}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
     <ROW Component="APPDIR" ComponentId="{017E1B0C-7485-4999-A7CF-B7F3EF5C8E6D}" Directory_="APPDIR" Attributes="0"/>
     <ROW Component="AeroWizard.dll" ComponentId="{26B9C2C1-4F59-4232-9D52-4C5A98423220}" Directory_="APPDIR" Attributes="0" KeyPath="AeroWizard.dll"/>
@@ -307,7 +307,7 @@
     <ROW File="updater.exe" Component_="updater.exe" FileName="BEUPDA~1.EXE|BEUpdater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" DigSign="true"/>
     <ROW File="CheckforUpdatesSquare44x44Logo.scale100.png" Component_="BetterExplorerSquare44x44Logo.scale100.png" FileName="CHECKF~1.PNG|CheckforUpdatesSquare44x44Logo.scale-100.png" Attributes="0" SourcePath="..\..\..\..\Program Files (x86)\Caphyon\Advanced Installer 16.2\stubs\x86\Updater.exe" SelfReg="false"/>
     <ROW File="CheckforUpdatesSquare150x150Logo.scale100.png" Component_="BetterExplorerSquare44x44Logo.scale100.png" FileName="CHECKF~2.PNG|CheckforUpdatesSquare150x150Logo.scale-100.png" Attributes="0" SourcePath="..\..\..\..\Program Files (x86)\Caphyon\Advanced Installer 16.2\stubs\x86\Updater.exe" SelfReg="false"/>
-    <ATTRIBUTE name="IcoToPng" value="CheckforUpdatesSquare44x44Logo.scale100.png:0:44 CheckforUpdatesSquare150x150Logo.scale100.png:0:150"/>
+    <ATTRIBUTE name="IcoToPng" value="CheckforUpdatesSquare150x150Logo.scale100.png:0:150 CheckforUpdatesSquare44x44Logo.scale100.png:0:44"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.custcomp.MsiShortcutPropertyComponent">
     <ROW MsiShortcutProperty="BetterExplorer2" Shortcut_="BetterExplorer" PropertyKey="System.AppUserModel.ID" PropVariantValue="Gainedge.ORG.BetterExplorer"/>
@@ -418,7 +418,7 @@
     <ROW XmlAttribute="StartAccount" XmlElement="NTService" Name="StartAccount" Flags="0" Order="0" Value="localSystem"/>
     <ROW XmlAttribute="StartErrorAction" XmlElement="NTService" Name="StartErrorAction" Flags="0" Order="0" Value="logError"/>
     <ROW XmlAttribute="StartupType" XmlElement="NTService" Name="StartupType" Flags="0" Order="0" Value="auto"/>
-    <ROW XmlAttribute="Version" XmlElement="Identity" Name="Version" Flags="0" Order="0" Value="2.6.18157.935"/>
+    <ROW XmlAttribute="Version" XmlElement="Identity" Name="Version" Flags="0" Order="0" Value="2.5.18157.935"/>
     <ROW XmlAttribute="WorkingDirectory" XmlElement="Application" Name="WorkingDirectory" Flags="0" Order="0" Value="APPDIR"/>
     <ROW XmlAttribute="WorkingDirectory_1" XmlElement="Application_2" Name="WorkingDirectory" Flags="0" Order="0" Value="APPDIR"/>
     <ROW XmlAttribute="xmlns" XmlElement="Package" Name="xmlns" Flags="14" Order="1" Value="http://schemas.microsoft.com/appx/manifest/foundation/windows10"/>
@@ -979,7 +979,7 @@
     <ROW XmlElement="swidbuild" ParentElement="swidnumeric" Name="swid:build" Condition="1" Order="2" Flags="14" Text="18157"/>
     <ROW XmlElement="swidentitlement_required_indicator" ParentElement="swidsoftware_identification_tag" Name="swid:entitlement_required_indicator" Condition="1" Order="0" Flags="14" Text="false"/>
     <ROW XmlElement="swidmajor" ParentElement="swidnumeric" Name="swid:major" Condition="1" Order="0" Flags="14" Text="2"/>
-    <ROW XmlElement="swidminor" ParentElement="swidnumeric" Name="swid:minor" Condition="1" Order="1" Flags="14" Text="6"/>
+    <ROW XmlElement="swidminor" ParentElement="swidnumeric" Name="swid:minor" Condition="1" Order="1" Flags="14" Text="5"/>
     <ROW XmlElement="swidname" ParentElement="swidproduct_version" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[ProductVersion]"/>
     <ROW XmlElement="swidname_1" ParentElement="swidsoftware_creator" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[Manufacturer]"/>
     <ROW XmlElement="swidname_2" ParentElement="swidsoftware_licensor" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[Manufacturer]"/>

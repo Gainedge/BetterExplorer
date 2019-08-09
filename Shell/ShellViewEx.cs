@@ -3596,7 +3596,7 @@ namespace BExplorer.Shell {
 
 
       }
-      User32.LockWindowUpdate(IntPtr.Zero);
+      
       if (!String.IsNullOrEmpty(folderSettings.GroupCollumn)) {
         var colData = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == folderSettings.GroupCollumn).Value;
         if (colData != null) {
@@ -3607,6 +3607,7 @@ namespace BExplorer.Shell {
       } else {
         this.DisableGroups();
       }
+      
 
       columns = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == folderSettings.SortColumn).Value;
       this.IsViewSelectionAllowed = false;
@@ -3626,7 +3627,6 @@ namespace BExplorer.Shell {
 
       this.IsViewSelectionAllowed = true;
       this.Invoke((Action)(() => this._NavWaitTimer.Start()));
-
 
       for (var i = 0; i < this.Collumns.Count; i++) {
         this.Collumns[i].SetSplitButton(this.LVHeaderHandle, i);
@@ -3650,7 +3650,7 @@ namespace BExplorer.Shell {
           User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, -1, 0);
         }
       }
-
+      User32.LockWindowUpdate(IntPtr.Zero);
       var navigationThread = new Thread(() => {
         this._ResetScrollEvent.Reset();
         this.IsCancelRequested = false;

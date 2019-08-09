@@ -143,6 +143,8 @@ namespace BetterExplorer {
     /// </summary>
     /// <param name="e">Startup EventArgs</param>
     protected override void OnStartup(StartupEventArgs e) {
+      var updaterThread = new Thread(new ThreadStart(this.RunAutomaticUpdateChecker));
+      updaterThread.Start();
       DesktopNotificationManagerCompat.RegisterAumidAndComServer<BetterExplorerNotificationActivator>("Gainedge.ORG.BetterExplorer");
       DesktopNotificationManagerCompat.RegisterActivator<BetterExplorerNotificationActivator>();
       Settings.BESettings.LoadSettings();
@@ -213,7 +215,12 @@ namespace BetterExplorer {
         this.Shutdown();
       }
     }
-
+    public void RunAutomaticUpdateChecker() {
+      Thread.Sleep(5000);
+      var updaterPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "BEUpdater.exe");
+      var process = Process.Start(updaterPath, "/silent");
+      process?.Close();
+    }
     protected override void OnExit(ExitEventArgs e) {
       base.OnExit(e);
       Environment.Exit(Environment.ExitCode);

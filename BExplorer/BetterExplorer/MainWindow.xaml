@@ -722,7 +722,7 @@
                   HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
                   <StackPanel Margin="1,0,0,1">
-                    <Controls:AutomaticUpdater
+                    <!--<Controls:AutomaticUpdater
                       x:Name="autoUpdater"
                       Margin="0,15,30,10"
                       HorizontalAlignment="Left"
@@ -740,7 +740,7 @@
                       FontSize="14"
                       FontWeight="ExtraBold"
                       Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
-                      Visibility="Collapsed" />
+                      Visibility="Collapsed" />-->
                     <Ribbon:SeparatorTabItem
                       Margin="0,-30,50,0"
                       Foreground="#FFC71212"

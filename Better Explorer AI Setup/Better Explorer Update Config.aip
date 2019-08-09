@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="16.2" version="16.2" Modules="update" RootPath="." Language="bg" Id="{1EF032DC-2CDC-4EE8-B721-29DC151377D2}">
+  <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
+    <ROW Name="HiddenItems" Value="TilesComponent"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;aiu-ue.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;aiu-ue_en.ail"/>
+    <ATTRIBUTE name="BuildLanguages" value="en"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.UpdaterEditorComponent">
+    <ROW Section="Better Explorer 2.6" Key="Name" Value="Better Explorer 2.6 Test update"/>
+    <ROW Section="Better Explorer 2.6" Key="ProductVersion" Value="2.6.18157.935" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2.6" Key="URL" Value="https://update.explorer.gainedge.org/download/BetterExplorer2.6.18157.935.exe" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2.6" Key="Size" Value="..\Installer\BetterExplorer2.6.18157.935.exe" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2.6" Key="ReleaseDate" Value="20232" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2.6" Key="MD5" Value="..\Installer\BetterExplorer2.6.18157.935.exe" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2.6" Key="ServerFileName" Value="BetterExplorer2.6.18157.935.exe" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2.6" Key="RegistryKey" Value="HKUD\Software\Gainedge.org\Better Explorer\Version" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2.6" Key="Version" Value="2.6.18157.935" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2.6" Key="Description" Value="Test Update to test new updater"/>
+    <ATTRIBUTE name="OutputFileName" value="updates.txt"/>
+    <ATTRIBUTE name="OutputFolder" value="..\Installer"/>
+  </COMPONENT>
+</DOCUMENT>

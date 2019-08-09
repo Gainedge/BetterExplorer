@@ -131,7 +131,7 @@ namespace BetterExplorer {
         this.spCommandPrompt.Height = new GridLength(0);
         this.ctrlConsole.StopProcess();
       }
- 
+
     }
 
     private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e) {
@@ -141,8 +141,8 @@ namespace BetterExplorer {
       } else {
         this._ShellListView.IsFocusAllowed = true;
       }
-      this.autoUpdater.Visibility = Visibility.Visible;
-      this.autoUpdater.UpdateLayout();
+      //this.autoUpdater.Visibility = Visibility.Visible;
+      //this.autoUpdater.UpdateLayout();
 
       if (this.KeepBackstageOpen) {
         this.backstage.IsOpen = true;
@@ -1138,27 +1138,31 @@ namespace BetterExplorer {
 
     #region Backstage - Information Tab
 
-    private void Button_Click_6(object sender, RoutedEventArgs e) {
-      this.backstage.IsOpen = true;
-      this.autoUpdater.Visibility = WIN.Visibility.Visible;
-      this.autoUpdater.UpdateLayout();
+    private void Button_Click_6(Object sender, RoutedEventArgs e) {
+      var updaterPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "BEUpdater.exe");
+      var process = Process.Start(updaterPath, "/checknow");
+      process?.Close();
+      this.backstage.IsOpen = false;
+      //this.backstage.IsOpen = true;
+      //this.autoUpdater.Visibility = WIN.Visibility.Visible;
+      //this.autoUpdater.UpdateLayout();
 
-      switch (this.autoUpdater.UpdateStepOn) {
-        case UpdateStepOn.Checking:
-        case UpdateStepOn.DownloadingUpdate:
-        case UpdateStepOn.ExtractingUpdate:
-          this.autoUpdater.Cancel();
-          break;
-        case UpdateStepOn.UpdateReadyToInstall:
-        case UpdateStepOn.UpdateAvailable:
-          break;
-        case UpdateStepOn.UpdateDownloaded:
-          this.autoUpdater.InstallNow();
-          break;
-        default:
-          this.autoUpdater.ForceCheckForUpdate(true);
-          break;
-      }
+      //switch (this.autoUpdater.UpdateStepOn) {
+      //  case UpdateStepOn.Checking:
+      //  case UpdateStepOn.DownloadingUpdate:
+      //  case UpdateStepOn.ExtractingUpdate:
+      //    this.autoUpdater.Cancel();
+      //    break;
+      //  case UpdateStepOn.UpdateReadyToInstall:
+      //  case UpdateStepOn.UpdateAvailable:
+      //    break;
+      //  case UpdateStepOn.UpdateDownloaded:
+      //    this.autoUpdater.InstallNow();
+      //    break;
+      //  default:
+      //    this.autoUpdater.ForceCheckForUpdate(true);
+      //    break;
+      //}
     }
 
     private void Button_Click_7(object sender, RoutedEventArgs e) => Process.Start("http://gainedge.org/better-explorer/");
@@ -1564,14 +1568,14 @@ namespace BetterExplorer {
 
 
       this.miTabManager.IsEnabled = Directory.Exists(BESettings.SavedTabsDirectory);
-      this.autoUpdater.DaysBetweenChecks = Settings.BESettings.UpdateCheckInterval;
+      //this.autoUpdater.DaysBetweenChecks = Settings.BESettings.UpdateCheckInterval;
 
       try {
-        this.autoUpdater.UpdateType = Settings.BESettings.IsUpdateCheck ? UpdateType.OnlyCheck : UpdateType.DoNothing;
+        //this.autoUpdater.UpdateType = Settings.BESettings.IsUpdateCheck ? UpdateType.OnlyCheck : UpdateType.DoNothing;
         if (Settings.BESettings.IsUpdateCheckStartup)
           this.CheckForUpdate();
       } catch (IOException) {
-        this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
+        //this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
         this.btnUpdateCheck.IsEnabled = false;
       }
 
@@ -1658,8 +1662,8 @@ namespace BetterExplorer {
       this.stvTreeView.ShellListView = this._ShellListView;
       this.stvTreeView.NodeClick += (o, args) => { this.tcMain.NewTab(args.Item, false); };
       //this.ctrlConsole.ShellListView = this._ShellListView;
-      this.autoUpdater.UpdateAvailable += this.AutoUpdater_UpdateAvailable;
-      this.updateCheckTimer.Interval = 10000;//3600000 * 3;
+      //this.autoUpdater.UpdateAvailable += this.AutoUpdater_UpdateAvailable;
+      this.updateCheckTimer.Interval = 18000000 * 3;
       this.updateCheckTimer.Tick += new EventHandler(this.updateCheckTimer_Tick);
       this.updateCheckTimer.Enabled = false;
 
@@ -1752,36 +1756,36 @@ namespace BetterExplorer {
     }
 
     private void AutoUpdater_UpdateAvailable(object sender, EventArgs e) {
-      if (this._IsCheckUpdateFromTimer && !this._IsUpdateNotificationMessageBoxShown) {
-        this._IsUpdateNotificationMessageBoxShown = true;
-        var newVersion = this.autoUpdater.Version;
-        var changes = this.autoUpdater.Changes;
-        var config = new TaskDialogOptions();
+      //if (this._IsCheckUpdateFromTimer && !this._IsUpdateNotificationMessageBoxShown) {
+      //  this._IsUpdateNotificationMessageBoxShown = true;
+      //  var newVersion = this.autoUpdater.Version;
+      //  var changes = this.autoUpdater.Changes;
+      //  var config = new TaskDialogOptions();
 
-        config.Owner = this;
-        config.Title = "Update";
-        config.MainInstruction = "There is new updated version " + newVersion + " available!";
-        config.Content = "The new version have the following changes:\r\n" + changes;
-        config.ExpandedInfo = "You can download and install the new version immediately by clicking \"Download & Install\" button.\r\nYou can skip this version from autoupdate check by clicking \"Skip this version\" button.";
-        //config.VerificationText = "Don't show me this message again";
-        config.CustomButtons = new string[] { "&Download & Install", "Skip this version", "&Close" };
-        config.MainIcon = VistaTaskDialogIcon.SecurityWarning;
+      //  config.Owner = this;
+      //  config.Title = "Update";
+      //  config.MainInstruction = "There is new updated version " + newVersion + " available!";
+      //  config.Content = "The new version have the following changes:\r\n" + changes;
+      //  config.ExpandedInfo = "You can download and install the new version immediately by clicking \"Download & Install\" button.\r\nYou can skip this version from autoupdate check by clicking \"Skip this version\" button.";
+      //  //config.VerificationText = "Don't show me this message again";
+      //  config.CustomButtons = new string[] { "&Download & Install", "Skip this version", "&Close" };
+      //  config.MainIcon = VistaTaskDialogIcon.SecurityWarning;
 
-        if (newVersion.Contains("RC") || newVersion.Contains("Nightly") || newVersion.Contains("Beta") || newVersion.Contains("Alpha")) {
-          config.FooterText = "This is an experimental version and may contains bugs. Use at your own risk!";
-          config.FooterIcon = VistaTaskDialogIcon.Warning;
-        } else {
-          config.FooterText = "This is a final version and can be installed safely!";
-          config.FooterIcon = VistaTaskDialogIcon.SecuritySuccess;
-        }
+      //  if (newVersion.Contains("RC") || newVersion.Contains("Nightly") || newVersion.Contains("Beta") || newVersion.Contains("Alpha")) {
+      //    config.FooterText = "This is an experimental version and may contains bugs. Use at your own risk!";
+      //    config.FooterIcon = VistaTaskDialogIcon.Warning;
+      //  } else {
+      //    config.FooterText = "This is a final version and can be installed safely!";
+      //    config.FooterIcon = VistaTaskDialogIcon.SecuritySuccess;
+      //  }
 
-        config.AllowDialogCancellation = true;
-        config.Callback = this.taskDialog_Callback;
+      //  config.AllowDialogCancellation = true;
+      //  config.Callback = this.taskDialog_Callback;
 
-        TaskDialogResult res = TaskDialog.Show(config);
-        this._IsCheckUpdateFromTimer = false;
-        this._IsUpdateNotificationMessageBoxShown = false;
-      }
+      //  TaskDialogResult res = TaskDialog.Show(config);
+      //  this._IsCheckUpdateFromTimer = false;
+      //  this._IsUpdateNotificationMessageBoxShown = false;
+      //}
     }
 
     private bool taskDialog_Callback(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData) {
@@ -1790,8 +1794,8 @@ namespace BetterExplorer {
       switch (args.Notification) {
         case VistaTaskDialogNotification.ButtonClicked:
           if (args.ButtonId == 500) {
-            this.autoUpdater.ReadyToBeInstalled += this.AutoUpdater_ReadyToBeInstalled;
-            this.autoUpdater.InstallNow();
+            //this.autoUpdater.ReadyToBeInstalled += this.AutoUpdater_ReadyToBeInstalled;
+            //this.autoUpdater.InstallNow();
           } else if (args.ButtonId == 501) {
           }
           break;
@@ -1801,8 +1805,8 @@ namespace BetterExplorer {
     }
 
     private void AutoUpdater_ReadyToBeInstalled(object sender, EventArgs e) {
-      this.autoUpdater.ReadyToBeInstalled -= this.AutoUpdater_ReadyToBeInstalled;
-      this.autoUpdater.InstallNow();
+      //this.autoUpdater.ReadyToBeInstalled -= this.AutoUpdater_ReadyToBeInstalled;
+      //this.autoUpdater.InstallNow();
     }
 
     #endregion
@@ -3354,7 +3358,7 @@ namespace BetterExplorer {
       if (this._ShellListView.CurrentFolder == null)
         return;
       if (e.IsFirstItemAvailable) {
-        this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => {
+        this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
           if (this.bcbc.RootItem.Items.OfType<ShellItem>().Last().IsSearchFolder) {
             this.bcbc.RootItem.Items.RemoveAt(this.bcbc.RootItem.Items.Count - 1);
           }
@@ -3365,7 +3369,7 @@ namespace BetterExplorer {
         }));
 
 
-        this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => {
+        this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
           var tab = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
           if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
             if (tab.SelectedItems != null)
@@ -3378,7 +3382,7 @@ namespace BetterExplorer {
         }));
 
         if (e.Folder.IsSearchFolder) {
-          this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => {
+          this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
             var selectedTabItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
             if (selectedTabItem != null) {
               selectedTabItem.Header = e.Folder.DisplayName;
@@ -3388,10 +3392,10 @@ namespace BetterExplorer {
             }
           }));
         } else {
-          this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => { this.edtSearchBox.ClearSearchText(); }));
+          this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => { this.edtSearchBox.ClearSearchText(); }));
         }
       } else {
-        this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => {
+        this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
           this.btnCancelNavigation.Visibility = Visibility.Visible;
           this.btnGoNavigation.Visibility = Visibility.Collapsed;
           this._ProgressTimer.Start();
