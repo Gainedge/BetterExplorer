@@ -4,7 +4,7 @@ A Better Explorer filemanager repository
 
 Issues
 ==============
-http://bugs.gainedge.org/public/betterexplorer
+https://github.com/Gainedge/BetterExplorer/issues
 
 Contribute
 ==============
