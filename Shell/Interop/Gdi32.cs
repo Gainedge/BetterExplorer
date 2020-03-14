@@ -212,6 +212,8 @@ namespace BExplorer.Shell.Interop {
           g.InterpolationMode = InterpolationMode.NearestNeighbor;
           g.FillRectangle(backgroundColor, r);
           g.DrawRectangle(borderColor, r);
+          borderColor.Dispose();
+          backgroundColor.Dispose();
           return roundedImage;
         }
       } else {
@@ -232,8 +234,8 @@ namespace BExplorer.Shell.Interop {
 
           g.FillPath(backgroundColor, gp);
           g.DrawPath(borderColor, gp);
-          backgroundColor.Dispose();
           borderColor.Dispose();
+          backgroundColor.Dispose();
           return roundedImage;
         }
       }

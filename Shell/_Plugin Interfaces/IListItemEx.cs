@@ -8,7 +8,7 @@ using Size = System.Drawing.Size;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
 
-  public interface IListItemEx : IEnumerable<IListItemEx>, IDisposable, IEquatable<IListItemEx>, IEqualityComparer<IListItemEx> {
+  public interface IListItemEx : IEnumerable<IListItemEx>, IEquatable<IListItemEx>, IEqualityComparer<IListItemEx> {
 
     IntPtr ParentPIDL { get; set; }
 
@@ -166,6 +166,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     int GetUniqueID();
 
     int[] cColumns { get; set; }
+
+    void Dispose();
 
   }
 }

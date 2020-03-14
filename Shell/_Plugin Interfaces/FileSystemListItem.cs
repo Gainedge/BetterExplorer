@@ -67,15 +67,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     }
 
     public IExtractIconPWFlags GetIconType() {
-      //if (this.Extension.ToLowerInvariant() == ".exe" || this.Extension.ToLowerInvariant() == ".com" || this.Extension.ToLowerInvariant() == ".bat" || this.Extension.ToLowerInvariant() == ".msi") {
-      //  return IExtractIconPWFlags.GIL_PERINSTANCE;
-      //}
-
-      if (this.Parent == null) {
-        return 0;
-      }
-
-      //if (this.IsFolder) {
+      if (this.IsFolder) {
         IExtractIcon iextract = null;
         IShellFolder ishellfolder = null;
         StringBuilder str = null;
@@ -97,14 +89,63 @@ namespace BExplorer.Shell._Plugin_Interfaces {
           str = new StringBuilder(512);
           var index = -1;
           IExtractIconPWFlags flags;
-          iextract.GetIconLocation(IExtractIconUFlags.GIL_ASYNC, str, 512, out index, out flags);
+          iextract.GetIconLocation(0, str, 512, out index, out flags);
+          Marshal.ReleaseComObject(ishellfolder);
+          Marshal.ReleaseComObject(iextract);
           return flags;
         } catch (Exception) {
           return 0;
         }
-      //} else {
-      //  return IExtractIconPWFlags.GIL_PERCLASS;
+      } else {
+        var value = this.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType))?.Value;
+        if (value != null) {
+          var perceivedType = (PerceivedType)value;
+          if (perceivedType == PerceivedType.Application) {
+            return IExtractIconPWFlags.GIL_PERINSTANCE;
+          } else {
+            return IExtractIconPWFlags.GIL_PERCLASS;
+          }
+        }
+      }
+      return IExtractIconPWFlags.GIL_PERCLASS;
+      //if (this.Extension.ToLowerInvariant() == ".exe" || this.Extension.ToLowerInvariant() == ".com" || this.Extension.ToLowerInvariant() == ".bat" || this.Extension.ToLowerInvariant() == ".msi" || this.Extension.ToLowerInvariant() == ".jar") {
+      //  return IExtractIconPWFlags.GIL_PERINSTANCE;
       //}
+      ////return IExtractIconPWFlags.GIL_PERCLASS;
+      //if (this.Parent == null) {
+      //  return 0;
+      //}
+
+      ////if (this.IsFolder) {
+      //  IExtractIcon iextract = null;
+      //  IShellFolder ishellfolder = null;
+      //  StringBuilder str = null;
+      //  IntPtr result;
+
+      //  try {
+      //    var guid = new Guid("000214fa-0000-0000-c000-000000000046");
+      //    uint res = 0;
+      //    ishellfolder = this.Parent.GetIShellFolder();
+      //    var pidls = new IntPtr[1] { Shell32.ILFindLastID(this.PIDL) };
+
+      //    ishellfolder.GetUIObjectOf(IntPtr.Zero, 1, pidls, ref guid, res, out result);
+
+      //    if (result == IntPtr.Zero) {
+      //      pidls = null;
+      //      return IExtractIconPWFlags.GIL_PERCLASS;
+      //    }
+      //    iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
+      //    str = new StringBuilder(512);
+      //    var index = -1;
+      //    IExtractIconPWFlags flags;
+      //    iextract.GetIconLocation(IExtractIconUFlags.GIL_ASYNC, str, 512, out index, out flags);
+      //    return flags;
+      //  } catch (Exception) {
+      //    return 0;
+      //  }
+      ////} else {
+      ////  return IExtractIconPWFlags.GIL_PERCLASS;
+      ////}
     }
 
     public IntPtr ILPidl => Shell32.ILFindLastID(this.PIDL);
@@ -207,7 +248,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     private void Initialize_Helper(IntPtr folder, IntPtr lvHandle, int index) {
       this.ParentPIDL = IntPtr.Zero;
       this.EnumPIDL = folder;
-      this.ParentHandle = lvHandle;
+      //this.ParentHandle = lvHandle;
       this.OverlayIconIndex = -1;
       this.ShieldedIconIndex = -1;
     }
@@ -215,7 +256,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     private void Initialize_Helper2(IntPtr parent, IntPtr pidl, IntPtr lvHandle, int index) {
       this.ParentPIDL = parent;
       this.EnumPIDL = pidl;
-      this.ParentHandle = lvHandle;
+      //this.ParentHandle = lvHandle;
       this.OverlayIconIndex = -1;
       this.ShieldedIconIndex = -1;
     }
@@ -248,10 +289,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     }
 
     public void Initialize(IntPtr lvHandle, string path, int index) {
+      var shellItem = Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
       this.ParentPIDL = IntPtr.Zero;
-      this.EnumPIDL = Shell32.SHGetIDListFromObject(Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID));
-
-      this.ParentHandle = lvHandle;
+      this.EnumPIDL = Shell32.SHGetIDListFromObject(shellItem);
+      Marshal.ReleaseComObject(shellItem);
+      //this.ParentHandle = lvHandle;
 
       this.OverlayIconIndex = -1;
       this.ShieldedIconIndex = -1;
@@ -303,6 +345,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         result = enumId.Next(1, out pidl, out count);
       }
 
+      if (folder != null) {
+        Marshal.ReleaseComObject(folder);
+      }
       if (result != HResult.S_FALSE) {
         //Marshal.ThrowExceptionForHR((int)result);
       }
@@ -347,6 +392,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         result = enumId.Next(1, out pidl, out count);
       }
 
+      if (folder != null) {
+        Marshal.ReleaseComObject(folder);
+      }
+
       if (result != HResult.S_FALSE) {
         //Marshal.ThrowExceptionForHR((int)result);
       }
@@ -385,6 +434,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         fsi.IsParentSearchFolder = this.IsSearchFolder;
         yield return fsi;
         result = enumId.Next(1, out pidl, out count);
+      }
+
+      if (folder != null) {
+        Marshal.ReleaseComObject(folder);
       }
 
       if (result != HResult.S_FALSE) {
@@ -691,7 +744,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     #region IDisposable Members
 
-    public void Dispose() => this._Item?.Dispose();
+    public void Dispose() {
+      this._Item?.Dispose();
+      Marshal.ReleaseComObject(this.ComInterface);
+    }
 
     #endregion IDisposable Members
   }

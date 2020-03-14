@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,11 +12,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
 using BExplorer.Shell._Plugin_Interfaces;
 using Microsoft.Win32;
+using Color = System.Drawing.Color;
+using LinearGradientBrush = System.Drawing.Drawing2D.LinearGradientBrush;
 using MSG = BExplorer.Shell.Interop.MSG;
+using Pen = System.Drawing.Pen;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace BExplorer.Shell {
   public class ImageListEx {
@@ -377,8 +381,8 @@ namespace BExplorer.Shell {
       Int32 width2, height2;
       if (addornerType == 2) {
         var addorner = new Bitmap(width + 7, height + 7, PixelFormat.Format32bppPArgb);
-        LinearGradientBrush gb = new LinearGradientBrush(new System.Drawing.Point(0, 0), new System.Drawing.Point(0, this._CurrentSize), Color.WhiteSmoke, Color.WhiteSmoke);
-        addorner = Gdi32.RoundCorners(addorner, 0, gb, Pens.LightGray);
+        var gb = new LinearGradientBrush(new System.Drawing.Point(0, 0), new System.Drawing.Point(0, this._CurrentSize), Color.WhiteSmoke, Color.WhiteSmoke);
+        addorner = Gdi32.RoundCorners(addorner, 0, gb, new Pen(Color.LightGray));
         var hAddorner = addorner.GetHbitmap();
 
         Gdi32.ConvertPixelByPixel(hAddorner, out width2, out height2);
@@ -404,7 +408,7 @@ namespace BExplorer.Shell {
           Gdi32.NativeDraw(hdc, hAddorner, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width2, height2, width2,
             height + (Int32)(this._CurrentSize * 0.06) - (Int32)(this._CurrentSize * 0.07), isGhosted);
         }
-
+        
         Gdi32.DeleteObject(hAddorner);
       }
     }
@@ -517,7 +521,7 @@ namespace BExplorer.Shell {
         ResetEvent?.WaitOne();
         if (this._RedrawQueue.IsEmpty) {
           Thread.Sleep(1);
-          Application.DoEvents();
+          //Application.DoEvents();
           continue;
         }
         //if (this._RedrawQueue.Count == 1) {
@@ -525,7 +529,7 @@ namespace BExplorer.Shell {
         //} else {
         //  Thread.Sleep(5);
         //}
-        Application.DoEvents();
+        //Application.DoEvents();
         var index = -1;
         if (this._RedrawQueue.TryDequeue(out index)) {
         if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero)
