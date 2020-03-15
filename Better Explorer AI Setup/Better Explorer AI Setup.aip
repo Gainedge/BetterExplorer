@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="16.2" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
-  <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
-    <ROW Name="HiddenItems" Value="MsiJavaComponent;MultipleInstancesComponent;AutorunComponent;ScheduledTasksComponent;GameUxComponent;FirewallExceptionComponent;UserAccountsComponent;SqlConnectionComponent;SharePointSlnComponent;SilverlightSlnComponent"/>
-  </COMPONENT>
+<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="16.8.1" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiValidationComponent">
     <ROW Table="File" Column="Sequence" MinValue="1" MaxValue="2147483647" Description="Sequence with respect to the media images; order must track cabinet order." Options="0" ColumnType="3" ColumnIndex="7" ColumnSize="4" MsiKey="File#Sequence"/>
     <ROW Table="Media" Column="LastSequence" MinValue="0" MaxValue="2147483647" Description="File sequence number for the last file for this media." Options="0" ColumnType="3" ColumnIndex="1" ColumnSize="4" MsiKey="Media#LastSequence"/>
@@ -74,16 +71,16 @@
     <ROW Property="UpgradeCode" Value="{5E93AAAE-AC44-47F5-BFC8-330F951A30F4}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="ExeBuild:Windows 9x/ME" ValueLocId="-"/>
     <ROW Property="WindowsType9XDisplay" MultiBuildValue="ExeBuild:Windows 9x/ME" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT" MultiBuildValue="ExeBuild:Windows XP SP3 x86, Windows Server 2003 SP2 x86, Windows Vista x86, Windows Server 2008 x86" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT" MultiBuildValue="ExeBuild:Windows Vista x86, Windows Server 2008 x86" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT40" MultiBuildValue="ExeBuild:Windows NT 4.0" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT40Display" MultiBuildValue="ExeBuild:Windows NT 4.0" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT50" MultiBuildValue="ExeBuild:Windows 2000" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT50Display" MultiBuildValue="ExeBuild:Windows 2000" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT5X" MultiBuildValue="ExeBuild:Windows XP/2003 RTM, Windows XP/2003 SP1, Windows XP SP2 x86" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="ExeBuild:Windows XP/2003 RTM, Windows XP/2003 SP1, Windows XP SP2 x86" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT64" MultiBuildValue="ExeBuild:Windows XP SP2 x64, Windows Server 2003 SP2 x64, Windows Vista x64, Windows Server 2008 x64, Windows Server 2008 R2 x64, Windows Server 2012 x64, Windows Server 2012 R2 x64, Windows Server x64" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT64Display" MultiBuildValue="ExeBuild:Windows XP SP2 x64, Windows Server 2003 SP2 x64, Windows Vista x64, Windows Server 2008 x64, Windows Server 2008 R2 x64, Windows Server 2012 x64, Windows Server 2012 R2 x64, Windows Server x64" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNTDisplay" MultiBuildValue="ExeBuild:Windows XP SP3 x86, Windows Server 2003 SP2 x86, Windows Vista x86, Windows Server 2008 x86" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5X" MultiBuildValue="ExeBuild:Windows XP/2003" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="ExeBuild:Windows XP/2003" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT64" MultiBuildValue="ExeBuild:Windows Vista x64, Windows Server 2008 x64, Windows Server 2008 R2 x64, Windows Server 2012 x64, Windows Server 2012 R2 x64, Windows Server x64" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT64Display" MultiBuildValue="ExeBuild:Windows Vista x64, Windows Server 2008 x64, Windows Server 2008 R2 x64, Windows Server 2012 x64, Windows Server 2012 R2 x64, Windows Server x64" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNTDisplay" MultiBuildValue="ExeBuild:Windows Vista x86, Windows Server 2008 x86" ValueLocId="-"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
@@ -278,7 +275,6 @@
     <ROW File="Wpf.TabControl.dll.config" Component_="video_addorner.png" FileName="WPFTAB~1.CON|Wpf.TabControl.dll.config" Attributes="0" SourcePath="..\Deploy\Wpf.TabControl.dll.config" SelfReg="false"/>
     <ROW File="WpfDocumentPreviewer.dll.config" Component_="video_addorner.png" FileName="WPFDOC~1.CON|WpfDocumentPreviewer.dll.config" Attributes="0" SourcePath="..\Deploy\WpfDocumentPreviewer.dll.config" SelfReg="false"/>
     <ROW File="Zlib.Portable.xml" Component_="video_addorner.png" FileName="ZLIBPO~1.XML|Zlib.Portable.xml" Attributes="0" SourcePath="..\Deploy\Zlib.Portable.xml" SelfReg="false"/>
-    <ROW File="AutomaticUpdaterWPF.xml" Component_="video_addorner.png" FileName="AUTOMA~1.XML|AutomaticUpdaterWPF.xml" Attributes="0" SourcePath="..\Deploy\AutomaticUpdaterWPF.xml" SelfReg="false"/>
     <ROW File="BEHelper.dll.config" Component_="video_addorner.png" FileName="BEHELP~1.CON|BEHelper.dll.config" Attributes="0" SourcePath="..\Deploy\BEHelper.dll.config" SelfReg="false"/>
     <ROW File="BetterExplorer.exe.config" Component_="video_addorner.png" FileName="BETTER~1.CON|BetterExplorer.exe.config" Attributes="0" SourcePath="..\Deploy\BetterExplorer.exe.config" SelfReg="false"/>
     <ROW File="BetterExplorerControls.dll.config" Component_="video_addorner.png" FileName="BETTER~2.CON|BetterExplorerControls.dll.config" Attributes="0" SourcePath="..\Deploy\BetterExplorerControls.dll.config" SelfReg="false"/>
@@ -290,7 +286,6 @@
     <ROW File="Google.Apis.Drive.v2.xml" Component_="video_addorner.png" FileName="GOOGLE~3.XML|Google.Apis.Drive.v2.xml" Attributes="0" SourcePath="..\Deploy\Google.Apis.Drive.v2.xml" SelfReg="false"/>
     <ROW File="Google.Apis.xml" Component_="video_addorner.png" FileName="GOOGLE~4.XML|Google.Apis.xml" Attributes="0" SourcePath="..\Deploy\Google.Apis.xml" SelfReg="false"/>
     <ROW File="Hardcodet.Wpf.TaskbarNotification.dll.config" Component_="video_addorner.png" FileName="HARDCO~1.CON|Hardcodet.Wpf.TaskbarNotification.dll.config" Attributes="0" SourcePath="..\Deploy\Hardcodet.Wpf.TaskbarNotification.dll.config" SelfReg="false"/>
-    <ROW File="Hardcodet.Wpf.TaskbarNotification.xml" Component_="video_addorner.png" FileName="HARDCO~1.XML|Hardcodet.Wpf.TaskbarNotification.xml" Attributes="0" SourcePath="..\Deploy\Hardcodet.Wpf.TaskbarNotification.xml" SelfReg="false"/>
     <ROW File="ImDiskNet.dll.config" Component_="video_addorner.png" FileName="IMDISK~1.CON|ImDiskNet.dll.config" Attributes="0" SourcePath="..\Deploy\ImDiskNet.dll.config" SelfReg="false"/>
     <ROW File="ImDiskNet.xml" Component_="video_addorner.png" FileName="IMDISK~1.XML|ImDiskNet.xml" Attributes="0" SourcePath="..\Deploy\ImDiskNet.xml" SelfReg="false"/>
     <ROW File="log4net.xml" Component_="video_addorner.png" FileName="log4net.xml" Attributes="0" SourcePath="..\Deploy\log4net.xml" SelfReg="false"/>
@@ -305,8 +300,8 @@
     <ROW File="SevenZipSharp.xml" Component_="video_addorner.png" FileName="SEVENZ~1.XML|SevenZipSharp.xml" Attributes="0" SourcePath="..\Deploy\SevenZipSharp.xml" SelfReg="false"/>
     <ROW File="System.Data.SQLite.dll.config" Component_="video_addorner.png" FileName="SYSTEM~1.CON|System.Data.SQLite.dll.config" Attributes="0" SourcePath="..\Deploy\System.Data.SQLite.dll.config" SelfReg="false"/>
     <ROW File="updater.exe" Component_="updater.exe" FileName="BEUPDA~1.EXE|BEUpdater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="CheckforUpdatesSquare44x44Logo.scale100.png" Component_="BetterExplorerSquare44x44Logo.scale100.png" FileName="CHECKF~1.PNG|CheckforUpdatesSquare44x44Logo.scale-100.png" Attributes="0" SourcePath="..\..\..\..\Program Files (x86)\Caphyon\Advanced Installer 16.2\stubs\x86\Updater.exe" SelfReg="false"/>
-    <ROW File="CheckforUpdatesSquare150x150Logo.scale100.png" Component_="BetterExplorerSquare44x44Logo.scale100.png" FileName="CHECKF~2.PNG|CheckforUpdatesSquare150x150Logo.scale-100.png" Attributes="0" SourcePath="..\..\..\..\Program Files (x86)\Caphyon\Advanced Installer 16.2\stubs\x86\Updater.exe" SelfReg="false"/>
+    <ROW File="CheckforUpdatesSquare44x44Logo.scale100.png" Component_="BetterExplorerSquare44x44Logo.scale100.png" FileName="CHECKF~1.PNG|CheckforUpdatesSquare44x44Logo.scale-100.png" Attributes="0" SourcePath="..\Deploy\BEUpdater.exe" SelfReg="false"/>
+    <ROW File="CheckforUpdatesSquare150x150Logo.scale100.png" Component_="BetterExplorerSquare44x44Logo.scale100.png" FileName="CHECKF~2.PNG|CheckforUpdatesSquare150x150Logo.scale-100.png" Attributes="0" SourcePath="..\Deploy\BEUpdater.exe" SelfReg="false"/>
     <ATTRIBUTE name="IcoToPng" value="CheckforUpdatesSquare44x44Logo.scale100.png:0:44 CheckforUpdatesSquare150x150Logo.scale100.png:0:150"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.custcomp.MsiShortcutPropertyComponent">
@@ -790,9 +785,9 @@
     <ROW Feature_="MainFeature" Component_="updater.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
-    <ROW Name="BEUpdater.exe" SourcePath="..\..\..\..\Program Files (x86)\Caphyon\Advanced Installer 16.2\stubs\x86\Updater.exe" Index="0"/>
     <ROW Name="BetterExplorer_1.exe" SourcePath="..\BExplorer\BetterExplorer\Explorer.ico" Index="0"/>
     <ROW Name="SystemFoldermsiexec.exe" SourcePath="&lt;AI_RES&gt;uninstall.ico" Index="0"/>
+    <ROW Name="updater.exe" SourcePath="..\Deploy\BEUpdater.exe" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
     <ROW IniFile="AppDir" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="AppDir" Value="[APPDIR]" Action="0" Component_="updater.exe"/>
@@ -861,16 +856,16 @@
     <ROW Action="AI_DetectSoftware" Sequence="101"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
-    <ROW Condition="( Version9X OR ( NOT VersionNT64 ) OR ( VersionNT64 AND ((VersionNT64 &lt;&gt; 502) OR (ServicePackLevel &lt;&gt; 2) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 502) OR (ServicePackLevel &lt;&gt; 2) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 602) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 603) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 1000) OR (MsiNTProductType = 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT64Display]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT64" IsPredefined="true" Builds="ExeBuild"/>
-    <ROW Condition="( Version9X OR VersionNT64 OR ( VersionNT AND ((VersionNT &lt;&gt; 501) OR (ServicePackLevel &lt;&gt; 3)) AND ((VersionNT &lt;&gt; 502) OR (ServicePackLevel &lt;&gt; 2)) AND ((VersionNT &lt;&gt; 600) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT &lt;&gt; 600) OR (MsiNTProductType = 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNTDisplay]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT" IsPredefined="true" Builds="ExeBuild"/>
+    <ROW Condition="( Version9X OR ( NOT VersionNT64 ) OR ( VersionNT64 AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 602) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 603) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 1000) OR (MsiNTProductType = 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT64Display]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT64" IsPredefined="true" Builds="ExeBuild"/>
+    <ROW Condition="( Version9X OR VersionNT64 OR ( VersionNT AND ((VersionNT &lt;&gt; 600) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT &lt;&gt; 600) OR (MsiNTProductType = 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNTDisplay]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT" IsPredefined="true" Builds="ExeBuild"/>
+    <ROW Condition="((VersionNT &lt;&gt; 501) AND (VersionNT &lt;&gt; 502))" Description="[ProductName] cannot be installed on [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="ExeBuild"/>
     <ROW Condition="(AI_DETECTED_SCREEN_RESOLUTION_X &gt;= AI_REQUIRED_SCREEN_RESOLUTION_X) AND (AI_DETECTED_SCREEN_RESOLUTION_Y &gt;= AI_REQUIRED_SCREEN_RESOLUTION_Y)" Description="[ProductName] cannot be installed on systems with screen resolution smaller than [AI_REQUIRED_SCREEN_RESOLUTION_X] x [AI_REQUIRED_SCREEN_RESOLUTION_Y]." DescriptionLocId="AI.LaunchCondition.Resolution" IsPredefined="true" Builds="ExeBuild"/>
     <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT40Display]" DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="ExeBuild"/>
     <ROW Condition="(VersionNT &lt;&gt; 500)" Description="[ProductName] cannot be installed on [WindowsTypeNT50Display]." DescriptionLocId="AI.LaunchCondition.NoNT50" IsPredefined="true" Builds="ExeBuild"/>
-    <ROW Condition="(VersionNT64 OR ((VersionNT &lt;&gt; 501) OR (ServicePackLevel = 3))) AND ((VersionNT &lt;&gt; 502) OR (ServicePackLevel = 2))" Description="[ProductName] cannot be installed on [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="ExeBuild"/>
     <ROW Condition="AI_DETECTED_COLOR_QUALITY &gt;= AI_REQUIRED_COLOR_QUALITY" Description="[ProductName] cannot be installed on systems with color quality lower than [AI_REQUIRED_COLOR_QUALITY] bits." DescriptionLocId="AI.LaunchCondition.ColorDepth" IsPredefined="true" Builds="ExeBuild"/>
     <ROW Condition="AI_DETECTED_PHYSICAL_MEMORY &gt;= AI_REQUIRED_PHYSICAL_MEMORY" Description="[ProductName] cannot be installed on systems with less physical memory than [AI_REQUIRED_PHYSICAL_MEMORY] MB." DescriptionLocId="AI.LaunchCondition.RAM" IsPredefined="true" Builds="ExeBuild"/>
     <ROW Condition="VersionMsi &gt;= AI_REQUIRED_WINDOWS_INSTALLER_VERSION" Description="[ProductName] cannot be installed on systems with Windows Installer version lower than [AI_REQUIRED_WINDOWS_INSTALLER_DISPLAY]." DescriptionLocId="AI.LaunchCondition.WI" IsPredefined="true" Builds="ExeBuild"/>
-    <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]" DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="ExeBuild"/>
+    <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="ExeBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
     <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
@@ -938,7 +933,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
     <ROW Shortcut="BetterExplorer" Directory_="BetterExplorer_Dir" Name="BETTER~1|BetterExplorer" Component_="BetterExplorer.exe" Target="[#BetterExplorer.exe]" Hotkey="0" Icon_="BetterExplorer_1.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="CheckforUpdates" Directory_="BetterExplorer_Dir" Name="CHECKF~1|Check for Updates" Component_="updater.exe" Target="[#updater.exe]" Arguments="/checknow" Hotkey="0" Icon_="BEUpdater.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR" CustomFlags="1"/>
+    <ROW Shortcut="CheckforUpdates" Directory_="BetterExplorer_Dir" Name="CHECKF~1|Check for Updates" Component_="updater.exe" Target="[#updater.exe]" Arguments="/checknow" Hotkey="0" Icon_="updater.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR" CustomFlags="1"/>
     <ROW Shortcut="Uninstall" Directory_="BetterExplorer_Dir" Name="UNINST~1|Uninstall" Component_="AIShRegAnswer" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]" Hotkey="0" Icon_="SystemFoldermsiexec.exe" IconIndex="0" ShowCmd="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
@@ -952,9 +947,9 @@
     <ATTRIBUTE name="DynamicInstances" value="ExeBuild:"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqComponent">
-    <ROW PrereqKey="BB9062A4604BB61146D7C9AA49D" DisplayName=".NET Framework 4.6.1 (web installer)" SetupFileUrl="http://download.microsoft.com/download/3/5/9/35980F81-60F4-4DE3-88FC-8F962B97253B/NDP461-KB3102438-Web.exe" Location="1" ExactSize="1424328" WinNTVersions="Windows XP SP3 x86, Windows Server 2003 SP2 x86, Windows Vista x86, Windows Server 2008 x86, Windows 7 RTM x86" WinNT64Versions="Windows XP SP2 x64, Windows Server 2003 SP2 x64, Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64" Operator="1" NoUiComLine="/q /norestart" Options="xym" MD5="4d1bb86d0eee168e1da91a36350c1c21" TargetName=".NET Framework 4.6.1"/>
-    <ROW PrereqKey="C676C2BD547E7A6181C255B343B7A" DisplayName=".NET Framework 4.7.2 (web installer)" SetupFileUrl="https://download.microsoft.com/download/0/5/C/05C1EC0E-D5EE-463B-BFE3-9311376A6809/NDP472-KB4054531-Web.exe" Location="1" ExactSize="1432848" WinNTVersions="Windows XP SP3 x86, Windows Server 2003 SP2 x86, Windows Vista x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86, Windows 10 version 1803 x86, Windows 10 version 1809 x86" WinNT64Versions="Windows XP SP2 x64, Windows Server 2003 SP2 x64, Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64, Windows 10 version 1803 x64, Windows 10 version 1809 x64, Windows Server 2019 x64" Operator="1" NoUiComLine="/q /norestart" Options="xym" MD5="c84209349f18afe5a41ce04e9ae8f487" TargetName=".NET Framework 4.7.2"/>
-    <ROW PrereqKey="EEDF697C58FF44AEA12537BBFB266D19" DisplayName=".NET Framework 4.6 (web installer)" SetupFileUrl="http://download.microsoft.com/download/1/4/A/14A6C422-0D3C-4811-A31F-5EF91A83C368/NDP46-KB3045560-Web.exe" Location="1" ExactSize="1497400" WinNTVersions="Windows XP SP3 x86, Windows Server 2003 SP2 x86, Windows Vista RTM x86, Windows Vista SP1 x86, Windows 7 RTM x86, Windows 10 x86" WinNT64Versions="Windows XP SP2 x64, Windows Server 2003 SP2 x64, Windows Vista RTM x64, Windows Vista SP1 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64, Windows 10 x64" Operator="1" NoUiComLine="/q /norestart" Options="xym" MD5="58d88886a42aeb5d17e8b232c2697899" TargetName=".NET Framework 4.6"/>
+    <ROW PrereqKey="BB9062A4604BB61146D7C9AA49D" DisplayName=".NET Framework 4.6.1 (web installer)" SetupFileUrl="http://download.microsoft.com/download/3/5/9/35980F81-60F4-4DE3-88FC-8F962B97253B/NDP461-KB3102438-Web.exe" Location="1" ExactSize="1424328" WinNTVersions="Windows Vista RTM x86, Windows Server 2008 x86, Windows 7 RTM x86" WinNT64Versions="Windows Vista RTM x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64" Operator="1" NoUiComLine="/q /norestart" Options="xym" MD5="4d1bb86d0eee168e1da91a36350c1c21" TargetName=".NET Framework 4.6.1"/>
+    <ROW PrereqKey="C676C2BD547E7A6181C255B343B7A" DisplayName=".NET Framework 4.7.2 (web installer)" SetupFileUrl="https://download.microsoft.com/download/0/5/C/05C1EC0E-D5EE-463B-BFE3-9311376A6809/NDP472-KB4054531-Web.exe" Location="1" ExactSize="1432848" WinNTVersions="Windows Vista RTM x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86, Windows 10 version 1803 x86, Windows 10 version 1809 x86" WinNT64Versions="Windows Vista RTM x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64, Windows 10 version 1803 x64, Windows 10 version 1809 x64, Windows Server 2019 x64" Operator="1" NoUiComLine="/q /norestart" Options="xym" MD5="c84209349f18afe5a41ce04e9ae8f487" TargetName=".NET Framework 4.7.2"/>
+    <ROW PrereqKey="EEDF697C58FF44AEA12537BBFB266D19" DisplayName=".NET Framework 4.6 (web installer)" SetupFileUrl="http://download.microsoft.com/download/1/4/A/14A6C422-0D3C-4811-A31F-5EF91A83C368/NDP46-KB3045560-Web.exe" Location="1" ExactSize="1497400" WinNTVersions="Windows Vista RTM x86, Windows Vista SP1 x86, Windows 7 RTM x86, Windows 10 x86" WinNT64Versions="Windows Vista RTM x64, Windows Vista SP1 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64, Windows 10 x64" Operator="1" NoUiComLine="/q /norestart" Options="xym" MD5="58d88886a42aeb5d17e8b232c2697899" TargetName=".NET Framework 4.6"/>
     <ATTRIBUTE name="PrereqsOrder" value="EEDF697C58FF44AEA12537BBFB266D19 BB9062A4604BB61146D7C9AA49D C676C2BD547E7A6181C255B343B7A"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
@@ -967,7 +962,7 @@
     <ATTRIBUTE name="SystemFile" value="regid.199509.com.example_ProductName.swidtag_1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.UpdaterComponent">
-    <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" SupportServiceName="SupportServiceName" Flags="Flags" IconPath="..\..\..\..\Program Files (x86)\Caphyon\Advanced Installer 16.2\bin\x86\updater.exe" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" SupportServiceCASeq="AI_UPDATER_SERVICE_CONFIG" SupportService="updater" SupportServiceCtrl="updater" Description="[|UpdaterName] [|ProductVersion]"/>
+    <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" SupportServiceName="SupportServiceName" Flags="Flags" IconPath="..\Deploy\BEUpdater.exe" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" SupportServiceCASeq="AI_UPDATER_SERVICE_CONFIG" SupportService="updater" SupportServiceCtrl="updater" Description="[|UpdaterName] [|ProductVersion]"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.XmlAttributeComponent">
     <ROW XmlAttribute="xmlnsds" XmlElement="swidsoftware_identification_tag" Name="xmlns:ds" Flags="14" Order="0" Value="http://www.w3.org/2000/09/xmldsig#"/>
