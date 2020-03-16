@@ -1609,7 +1609,6 @@ namespace BExplorer.Shell {
     protected override void WndProc(ref Message m) {
       try {
 
-
         if (m.Msg == (Int32)WM.WM_PARENTNOTIFY && User32.LOWORD((Int32)m.WParam) == (Int32)WM.WM_MBUTTONDOWN) {
           this.OnItemMiddleClick();
         } else if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
@@ -2142,7 +2141,8 @@ namespace BExplorer.Shell {
     }
 
     private IntPtr LVWndProc(IntPtr hWnd, int uMsg, IntPtr wParam, IntPtr lParam) {
-      if ((uMsg == 0x0202 || uMsg == 0x0201)) {
+
+      if ((uMsg == 0x0202 || uMsg == 0x0201 || uMsg == 515)) {
         var hitPoint = lParam.ToPoint();
         LVHITTESTINFO lvHitTestInfo = new LVHITTESTINFO();
         lvHitTestInfo.pt.x = hitPoint.X;
@@ -2166,6 +2166,8 @@ namespace BExplorer.Shell {
 
             return IntPtr.Zero;
           }
+        } else if (uMsg == 515 && Settings.BESettings.NavigateParentWithDblClickEmpty) {
+          this.NavigateParent();
         }
 
       }
@@ -2248,7 +2250,7 @@ namespace BExplorer.Shell {
       Module m = t.Module;
       IntPtr hInstance = IntPtr.Zero;//  Marshal.GetHINSTANCE(m);
       this.LVHandle = User32.CreateWindowEx(0, "SysListView32", String.Empty,
-        User32.WindowStyles.WS_CHILD | User32.WindowStyles.WS_CLIPCHILDREN | User32.WindowStyles.WS_CLIPSIBLINGS | (User32.WindowStyles)User32.LVS_EDITLABELS | (User32.WindowStyles)User32.LVS_OWNERDATA | (User32.WindowStyles)0x00200000 |
+        User32.WindowStyles.WS_CHILD | User32.WindowStyles.WS_CLIPCHILDREN | User32.WindowStyles.WS_CLIPSIBLINGS | (User32.WindowStyles)User32.LVS_EDITLABELS | (User32.WindowStyles)User32.LVS_OWNERDATA | (User32.WindowStyles)0x00200000 | (User32.WindowStyles)0x0008 |
         //(User32.WindowStyles)User32.LVS_SHOWSELALWAYS | (User32.WindowStyles)User32.LVS_AUTOARRANGE, 0, 0, this.ClientRectangle.Width + SystemInformation.VerticalScrollBarWidth, this.ClientRectangle.Height, this.Handle, IntPtr.Zero, hInstance, IntPtr.Zero);
         (User32.WindowStyles)User32.LVS_SHOWSELALWAYS | (User32.WindowStyles)User32.LVS_AUTOARRANGE, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, this.Handle, IntPtr.Zero, hInstance, IntPtr.Zero);
 
@@ -2350,7 +2352,7 @@ namespace BExplorer.Shell {
     }
 
     public void RaiseMiddleClickOnItem(IListItemEx item) {
-      this.ItemMiddleClick?.Invoke(this, new NavigatedEventArgs(item, item));
+      this.ItemMiddleClick?.Invoke(this, e: new NavigatedEventArgs(item, item));
     }
 
     /// <summary>

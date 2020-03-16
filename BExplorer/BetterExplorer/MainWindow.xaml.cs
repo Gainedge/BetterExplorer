@@ -1509,6 +1509,7 @@ namespace BetterExplorer {
       this.chkIsCFO.IsChecked = BESettings.IsCustomFO;
       this.chkIsRestoreTabs.IsChecked = BESettings.IsRestoreTabs;
       this.chkTraditionalNameGrouping.IsChecked = BESettings.IsTraditionalNameGrouping;
+      this.chkLevelUpEmpty.IsChecked = BESettings.NavigateParentWithDblClickEmpty;
 
       // if this instance has the /norestore switch, do not load tabs from previous session, even if it is set in the Registry
       if (App.IsStartWithStartupTab) {
@@ -4269,6 +4270,13 @@ namespace BetterExplorer {
 
 
 
+    }
+
+    private void chkLevelUpEmpty_CheckChanged(Object sender, RoutedEventArgs e) {
+      var isChecked = this.chkLevelUpEmpty?.IsChecked;
+      if (isChecked != null) {
+        Settings.BESettings.NavigateParentWithDblClickEmpty = isChecked.Value;
+      }
     }
   }
 }

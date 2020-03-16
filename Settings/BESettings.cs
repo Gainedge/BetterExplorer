@@ -62,6 +62,7 @@ namespace Settings {
     public static double CmdWinHeight { get; set; }
     public static string TabBarAlignment { get; set; }
     public static bool HFlyoutEnabled { get; set; }
+    public static bool NavigateParentWithDblClickEmpty { get; set; }
 
     /// <summary>
     /// Loads all the settings in BESettings from the parent registry Software\BExplorer
@@ -119,6 +120,7 @@ namespace Settings {
         TabBarAlignment = rksRoot.GetValue("TabBarAlignment", "top").ToString();
         HFlyoutEnabled = rksRoot.GetValue("HFlyoutEnabled", "False").ToBoolean();
         PreviewPaneWidth = Convert.ToDouble(rksRoot.GetValue("PreviewPaneWidth", 120));
+        NavigateParentWithDblClickEmpty = rksRoot.GetValue("NavigateParentWithDblClickEmpty", "False").ToBoolean();
       }
     }
 
@@ -171,6 +173,7 @@ namespace Settings {
         rks.SetValue("TabBarAlignment", TabBarAlignment);
         rks.SetValue("HFlyoutEnabled", HFlyoutEnabled);
         rks.SetValue("PreviewPaneWidth", PreviewPaneWidth);
+        rks.SetValue("NavigateParentWithDblClickEmpty", NavigateParentWithDblClickEmpty);
       }
     } //TODO: Make sure you only use this 1 time when the application closes OR when a new instance is opened
   }

@@ -1,5 +1,22 @@
 ;aiu;
 
+[Better Explorer 2020.03.15.1304]
+Name = Better Explorer
+ProductVersion = 2020.3.15.1304
+URL = https://update.explorer.gainedge.org/download/BetterExplorer2020.03.15.1304.exe
+Size = 9942940
+SHA256 = AA864AB9915F2838A51D78E67880CF346579D94C07C9ECE0F6E5EF5A6CB99A48
+MD5 = 98529d29dee7f01024b106e617dd8ab6
+ServerFileName = BetterExplorer2020.03.15.1304.exe
+RegistryKey = HKUD\Software\Gainedge.org\Better Explorer\Version
+Version = 2020.3.15.1304
+UpdatedApplications = Better Explorer[1.0-2020.3.15.1304)
+Description = First offitial update that includes new installer, updater and many fixes
+Feature = New updating procedure
+Feature1 = Dark and Light skins that match the Windows 10 Dark and Light mode
+BugFix = Speed fixed in all application
+BugFix1 = Memmory usage optimisations
+
 [Better Explorer 2.6]
 Name = Better Explorer 2.6 Test update
 ProductVersion = 2.6.18157.935

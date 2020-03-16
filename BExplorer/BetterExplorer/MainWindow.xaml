@@ -1400,6 +1400,24 @@
                     </Expander>
                   </Grid>
                 </TabItem>
+                <Ribbon:SeparatorTabItem Header="{DynamicResource sepShortcutsCP}" />
+                <TabItem HorizontalContentAlignment="Left"
+                         Ribbon:KeyTip.Keys="R"
+                         Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
+                         Header="{DynamicResource tabNavigationCP}">
+                  <Grid Margin="20,5,0,0">
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="Auto" />
+                      <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Ribbon:CheckBox
+                      x:Name="chkLevelUpEmpty"
+                      Checked="chkLevelUpEmpty_CheckChanged"
+                      Foreground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}"
+                      Header="{DynamicResource chkUpLevelEmptyCP}"
+                      Unchecked="chkLevelUpEmpty_CheckChanged" />
+                  </Grid>
+                </TabItem>
                 <Ribbon:SeparatorTabItem Header="{DynamicResource sepAppearanceCP}" />
                 <TabItem
                   HorizontalContentAlignment="Left"

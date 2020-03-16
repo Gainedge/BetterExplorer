@@ -441,4 +441,7 @@
   <system:String x:Key="frmAbout_info">Product details:</system:String>
   <system:String x:Key="CustomizeQAT_Textbox1">Add or remove items from the Quick Access Toolbar:</system:String>
   <!--<system:String x:Key="blank"></system:String>-->
+  <system:String x:Key="tabNavigationCP">Navigation</system:String>
+  <system:String x:Key="sepShortcutsCP">Shortcuts &amp; Hotkeys</system:String>
+  <system:String x:Key="chkUpLevelEmptyCP">Navigate level up on double click on empty folder space</system:String>
 </ResourceDictionary>

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="16.2" version="16.2" Modules="update" RootPath="." Language="bg" Id="{1EF032DC-2CDC-4EE8-B721-29DC151377D2}">
-  <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
-    <ROW Name="HiddenItems" Value="TilesComponent"/>
-  </COMPONENT>
+<DOCUMENT Type="Advanced Installer" CreateVersion="16.2" version="16.8.1" Modules="update" RootPath="." Language="bg" Id="{1EF032DC-2CDC-4EE8-B721-29DC151377D2}">
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;aiu-ue.ail"/>
     <ROW Path="&lt;AI_DICTS&gt;aiu-ue_en.ail"/>
@@ -19,6 +16,19 @@
     <ROW Section="Better Explorer 2.6" Key="RegistryKey" Value="HKUD\Software\Gainedge.org\Better Explorer\Version" ValueLocId="-"/>
     <ROW Section="Better Explorer 2.6" Key="Version" Value="2.6.18157.935" ValueLocId="-"/>
     <ROW Section="Better Explorer 2.6" Key="Description" Value="Test Update to test new updater"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="Name" Value="Better Explorer"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="ProductVersion" Value="2020.3.15.1304" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="URL" Value="https://update.explorer.gainedge.org/download/BetterExplorer2020.03.15.1304.exe" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="Size" Value="..\Installer\BetterExplorer2020.03.15.1304.exe" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="SHA256" Value="..\Installer\BetterExplorer2020.03.15.1304.exe" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="MD5" Value="..\Installer\BetterExplorer2020.03.15.1304.exe" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="ServerFileName" Value="BetterExplorer2020.03.15.1304.exe" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="RegistryKey" Value="HKUD\Software\Gainedge.org\Better Explorer\Version" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="Version" Value="2020.3.15.1304" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="UpdatedApplications" Value="Better Explorer[1.0-2020.3.15.1304)" ValueLocId="-"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="Description" Value="First offitial update that includes new installer, updater and many fixes"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="Feature" Value="New updating procedure&#13;&#10;Dark and Light skins that match the Windows 10 Dark and Light mode"/>
+    <ROW Section="Better Explorer 2020.03.15.1304" Key="BugFix" Value="Speed fixed in all application&#13;&#10;Memmory usage optimisations"/>
     <ATTRIBUTE name="OutputFileName" value="updates.txt"/>
     <ATTRIBUTE name="OutputFolder" value="..\Installer"/>
   </COMPONENT>
