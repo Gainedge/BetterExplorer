@@ -550,8 +550,8 @@ namespace BExplorer.Shell {
         Tuple<int, int, PROPERTYKEY> index;
         if (this._ItemsForSubitemsUpdate.TryDequeue(out index)) {
         //index = this._ItemsForSubitemsUpdate.Dequeue();
-        //Thread.Sleep(1);
-        //Application.DoEvents();
+        Thread.Sleep(1);
+        Application.DoEvents();
         if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero) {
           var currentItem = this._ShellViewEx.Items[index.Item1];
           var temp = currentItem.Clone();

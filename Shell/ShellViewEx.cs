@@ -631,11 +631,20 @@ namespace BExplorer.Shell {
         return;
       }
       //return;
+      var isChanged = false;
       try {
         while (this._ItemsQueue.Count() > 0) {
+          Thread.Sleep(1);
           var obj = this._ItemsQueue.Dequeue();
+          if (obj.Item2.IsProcessed) {
+            continue;
+          }
+
+          obj.Item2.IsProcessed = true;
+
           if (obj.Item1 == ItemUpdateType.RecycleBin) {
             this.RaiseRecycleBinUpdated();
+            isChanged = true;
           }
 
           if (obj.Item1 == ItemUpdateType.Deleted) {
@@ -657,24 +666,28 @@ namespace BExplorer.Shell {
             // }
 
             obj.Item2.Dispose();
-
+            isChanged = true;
             // this.Invoke((Action)(this.ResortListViewItems));
             // });
             // worker.SetApartmentState(ApartmentState.STA);
             // worker.Start();
           } else if (obj.Item1 == ItemUpdateType.Created) {
-            if (obj.Item2.IsInCurrentFolder(this.CurrentFolder) && !this.Items.Contains(obj.Item2, new ShellItemEqualityComparer())) {
+            if (obj.Item2.IsInCurrentFolder(this.CurrentFolder) &&
+                !this.Items.Contains(obj.Item2, new ShellItemEqualityComparer())) {
               obj.Item2.ItemIndex = this.Items.Count;
               this.Items.Add(obj.Item2);
               this._AddedItems.Add(obj.Item2.PIDL);
             }
+
+            isChanged = true;
             obj.Item2.Dispose();
           } else if (obj.Item1 != ItemUpdateType.RecycleBin) {
             //continue;
             var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj.Item2));
             if (existingItem == null) {
               if (obj.Item2.ParsingName.StartsWith(this.CurrentFolder.ParsingName)) {
-                if (!this.Items.Contains(obj.Item2, new ShellItemEqualityComparer()) && !String.IsNullOrEmpty(obj.Item2.ParsingName)) {
+                if (!this.Items.Contains(obj.Item2, new ShellItemEqualityComparer()) &&
+                    !String.IsNullOrEmpty(obj.Item2.ParsingName)) {
                   obj.Item2.ItemIndex = this.Items.Count;
                   this.Items.Add(obj.Item2);
                   this._AddedItems.Add(obj.Item2.PIDL);
@@ -686,7 +699,8 @@ namespace BExplorer.Shell {
                   var index = affectedItem.ItemIndex;
                   this.RefreshItem(index, true);
                 }
-                affectedItem.Dispose();
+
+                affectedItem?.Dispose();
               }
             } else {
               if (this.IconSize == 16) {
@@ -698,7 +712,10 @@ namespace BExplorer.Shell {
               this.RefreshItem(existingItem.ItemIndex, true);
               existingItem.Dispose();
               obj.Item2.Dispose();
+              isChanged = true;
             }
+
+            obj.Item2.IsProcessed = false;
             GC.Collect();
             // this.ResortListViewItems();
           } else {
@@ -706,12 +723,16 @@ namespace BExplorer.Shell {
           }
         }
 
+
+
         foreach (var path in this._TemporaryFiles.ToArray()) {
           var item = this.Items.ToArray().SingleOrDefault(s => s.ParsingName.ToLower().Equals(path.ToLower()));
           if (item?.IsFolder == false && !File.Exists(path)) {
             this.Items.Remove(item);
+            isChanged = true;
           }
         }
+
 
         ////if (this.Items.Count != this.CurrentFolder.Count()) {
         // var maintenanceThread = new Thread(() => {
@@ -729,14 +750,18 @@ namespace BExplorer.Shell {
 
         // }
         if (!this.RequestedCurrentLocation.IsSearchFolder) {
-          this.ResortListViewItems();
+          if (isChanged) {
+            this.ResortListViewItems();
+          }
         }
 
-        this.ItemUpdated?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, null, null, -1));
+        if (isChanged) {
+          this.ItemUpdated?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, null, null, -1));
+        }
       } catch (Exception) {
       }
 
-      Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+      //Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
       GC.WaitForFullGCComplete(1000);
       GC.Collect();
     }
@@ -1688,6 +1713,7 @@ namespace BExplorer.Shell {
                     }
 
                     currentItem.cColumns = columns;
+                    Marshal.ReleaseComObject(propertyDescriptionList);
                   }
                 }
 
@@ -3545,6 +3571,7 @@ namespace BExplorer.Shell {
       this.SmallImageList.ReInitQueues();
       this._CuttedIndexes.Clear();
       this._ResetScrollEvent.Reset();
+      this._TemporaryFiles.Clear();
 
       FolderSettings folderSettings;
       var isThereSettings = false;
@@ -3668,100 +3695,101 @@ namespace BExplorer.Shell {
       }
       User32.LockWindowUpdate(IntPtr.Zero);
       if (destination.IsFileSystem) {
-          if (this._FsWatcher != null) {
-            this._FsWatcher.EnableRaisingEvents = false;
-            this._FsWatcher.Dispose();
-            try {
-              this._FsWatcher = new FileSystemWatcher(@destination.ParsingName);
-              this._FsWatcher.Changed += (sender, args) => {
-                try {
-                  //Thread.Sleep(2000);
-                  var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
-                  if (objUpdateItem.IsInCurrentFolder(this.CurrentFolder)) {
-                    objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, objUpdateItem.PIDL);
-                    var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
-                    if (exisitingUItem != null) {
-                      if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.Tile) {
-                        foreach (var collumn in this.Collumns) {
-                          if ((collumn.Index > 0 && this.IconSize == 16) || (collumn.Index > 0 && this.View == ShellViewStyle.Tile)) {
-                            this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingUItem.ItemIndex, collumn.Index, collumn.pkey));
-                          }
+        if (this._FsWatcher != null) {
+          this._FsWatcher.EnableRaisingEvents = false;
+          this._FsWatcher.Dispose();
+          try {
+            this._FsWatcher = new FileSystemWatcher(@destination.ParsingName);
+            this._FsWatcher.Changed += (sender, args) => {
+              try {
+                //Thread.Sleep(2000);
+                var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath);
+                if (objUpdateItem.IsInCurrentFolder(this.CurrentFolder)) {
+                  objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, objUpdateItem.PIDL);
+                  var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
+                  if (exisitingUItem != null) {
+                    if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.Tile) {
+                      foreach (var collumn in this.Collumns) {
+                        if ((collumn.Index > 0 && this.IconSize == 16) || (collumn.Index > 0 && this.View == ShellViewStyle.Tile)) {
+                          this.SmallImageList.EnqueueSubitemsGet(new Tuple<Int32, Int32, PROPERTYKEY>(exisitingUItem.ItemIndex, collumn.Index, collumn.pkey));
                         }
                       }
-                      //else {
-
-                      if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Updated, exisitingUItem))) {
-                        this.UnvalidateDirectory(false);
-                      }
-                      //}
                     }
-                  }
-                } catch (FileNotFoundException) {
-                  this.QueueDeleteItem(args, true);
+                    //else {
 
-                  // Probably a temporary file 
-                  this._TemporaryFiles.Add(args.FullPath);
-                } catch { }
-              };
-              this._FsWatcher.Error += (sender, args) => {
-                var ex = args.GetException();
-              };
-              this._FsWatcher.Created += (sender, args) => {
-                try {
-                  var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
-                  if (existing != null) {
-                    return;
-                  }
-
-                  if (Path.GetExtension(args.FullPath)?.ToLowerInvariant() == ".tmp" || Path.GetExtension(args.FullPath) == String.Empty) {
-                    if (!this._TemporaryFiles.Contains(args.FullPath)) {
-                      this._TemporaryFiles.Add(args.FullPath);
+                    if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Updated, exisitingUItem))) {
+                      this.UnvalidateDirectory(false);
                     }
+                    //}
                   }
-                  var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
-                  if (obj.IsInCurrentFolder(this.CurrentFolder)) {
-                    if (this.IsRenameNeeded) {
-                      var existingItem = this.Items.ToArray().FirstOrDefault(s => s.Equals(obj));
-                      if (existingItem == null) {
-                        var itemIndex = this.InsertNewItem(obj);
-                        this.SelectItemByIndex(itemIndex, true, true);
-                        this.RenameSelectedItem(itemIndex);
-                        this.IsRenameNeeded = false;
-                      } else {
-                        this.RenameSelectedItem(existingItem.ItemIndex);
-                      }
+                }
+                objUpdateItem.Dispose();
+              } catch (FileNotFoundException) {
+                this.QueueDeleteItem(args, true);
+
+                // Probably a temporary file 
+                this._TemporaryFiles.Add(args.FullPath);
+              } catch { }
+            };
+            this._FsWatcher.Error += (sender, args) => {
+              var ex = args.GetException();
+            };
+            this._FsWatcher.Created += (sender, args) => {
+              try {
+                var existing = this.Items.FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
+                if (existing != null) {
+                  return;
+                }
+
+                if (Path.GetExtension(args.FullPath)?.ToLowerInvariant() == ".tmp" || Path.GetExtension(args.FullPath) == String.Empty) {
+                  if (!this._TemporaryFiles.Contains(args.FullPath)) {
+                    this._TemporaryFiles.Add(args.FullPath);
+                  }
+                }
+                var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
+                if (obj.IsInCurrentFolder(this.CurrentFolder)) {
+                  if (this.IsRenameNeeded) {
+                    var existingItem = this.Items.ToArray().FirstOrDefault(s => s.Equals(obj));
+                    if (existingItem == null) {
+                      var itemIndex = this.InsertNewItem(obj);
+                      this.SelectItemByIndex(itemIndex, true, true);
+                      this.RenameSelectedItem(itemIndex);
+                      this.IsRenameNeeded = false;
                     } else {
-                      if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj))) {
-                        this.UnvalidateDirectory();
-                      }
+                      this.RenameSelectedItem(existingItem.ItemIndex);
+                    }
+                  } else {
+                    if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj))) {
+                      this.UnvalidateDirectory();
                     }
                   }
-                } catch (FileNotFoundException) {
-                  this.QueueDeleteItem(args);
-                } catch { }
-              };
+                }
+              } catch (FileNotFoundException) {
+                this.QueueDeleteItem(args);
+              } catch { }
+            };
 
-              this._FsWatcher.Deleted += (sender, args) => this.QueueDeleteItem(args);
-              this._FsWatcher.Renamed += (sender, args) => { };
-              this._FsWatcher.IncludeSubdirectories = false;
-              this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.Attributes | NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
-                                             NotifyFilters.Size;
-            } catch (ArgumentException) {
-              this._FsWatcher = new FileSystemWatcher();
-            }
-          }
-
-          try {
-            if (!String.IsNullOrEmpty(_FsWatcher?.Path)) {
-              this._FsWatcher.EnableRaisingEvents = true;
-            }
-          } catch (FileNotFoundException) {
+            this._FsWatcher.Deleted += (sender, args) => this.QueueDeleteItem(args);
+            this._FsWatcher.Renamed += (sender, args) => { };
+            this._FsWatcher.IncludeSubdirectories = false;
+            this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.Attributes | NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
+                                           NotifyFilters.Size;
+          } catch (ArgumentException) {
+            this._FsWatcher = new FileSystemWatcher();
           }
         }
+
+        try {
+          if (!String.IsNullOrEmpty(_FsWatcher?.Path)) {
+            this._FsWatcher.EnableRaisingEvents = true;
+          }
+        } catch (FileNotFoundException) {
+        }
+      }
       var navigationThread = new Thread(() => {
         this._ResetScrollEvent.Reset();
         this.IsCancelRequested = false;
-        
+
 
         this.RequestedCurrentLocation = destination;
         var content = destination;
@@ -3780,7 +3808,7 @@ namespace BExplorer.Shell {
           }
 
           shellItem.ItemIndex = k++;
-          
+
           this.Items.Add(shellItem);
           shellItem.Dispose();
           if (currentI == 1) {
@@ -3851,14 +3879,14 @@ namespace BExplorer.Shell {
         }));
         //GC.WaitForFullGCComplete();
         GC.Collect();
-        
+
         Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
         this.Invoke((Action)(() => {
           if (this._SearchTimer.Enabled) {
             this._SearchTimer.Stop();
           }
         }));
-        
+
 
         this._ResetScrollEvent.Set();
         this._Mre.Reset();
@@ -4321,6 +4349,7 @@ namespace BExplorer.Shell {
                 if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Updated, exisitingItemNetA))) {
                   this.UnvalidateDirectory(false);
                 }
+                objNetA.Dispose();
                 break;
 
               case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
@@ -4331,8 +4360,8 @@ namespace BExplorer.Shell {
                   if (exisitingItem != null) {
                     this.UpdateItem(exisitingItem.ItemIndex);
                   }
+                  objMedia.Dispose();
                 }
-
                 break;
 
               case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
@@ -4403,7 +4432,7 @@ namespace BExplorer.Shell {
         GC.WaitForFullGCComplete();
         GC.Collect();
       });
-      
+
     }
 
     [Obsolete("Contains No Code")]
@@ -4627,6 +4656,7 @@ namespace BExplorer.Shell {
                         //currentItem.ColumnValues.Add(pk, pvar.Value);
                         //nmlv.item.pszText = val.Trim();
                         pvar.Dispose();
+                        Marshal.ReleaseComObject(propStore);
                       }
                     }
                   }
@@ -4725,6 +4755,7 @@ namespace BExplorer.Shell {
                       //currentItem.ColumnValues.Add(pk, pvar.Value);
                       //nmlv.item.pszText = val.Trim();
                       pvar.Dispose();
+                      Marshal.ReleaseComObject(propStore);
                     }
                   }
                 }

@@ -50,6 +50,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     /// <summary>Assigned values but never used</summary>
     public bool IsInvalid { get; set; }
 
+    public Boolean IsProcessed { get; set; }
+
     /// <summary>Changes how the item gets loaded</summary>
     public bool IsOnlyLowQuality { get; set; }
 

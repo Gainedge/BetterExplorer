@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="16.8.1" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="16.9" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiValidationComponent">
     <ROW Table="File" Column="Sequence" MinValue="1" MaxValue="2147483647" Description="Sequence with respect to the media images; order must track cabinet order." Options="0" ColumnType="3" ColumnIndex="7" ColumnSize="4" MsiKey="File#Sequence"/>
     <ROW Table="Media" Column="LastSequence" MinValue="0" MaxValue="2147483647" Description="File sequence number for the last file for this media." Options="0" ColumnType="3" ColumnIndex="1" ColumnSize="4" MsiKey="Media#LastSequence"/>
@@ -276,7 +276,7 @@
     <ROW File="updater.exe" Component_="updater.exe" FileName="BEUPDA~1.EXE|BEUpdater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" DigSign="true"/>
     <ROW File="CheckforUpdatesSquare44x44Logo.scale100.png" Component_="BetterExplorerSquare44x44Logo.scale100.png" FileName="CHECKF~1.PNG|CheckforUpdatesSquare44x44Logo.scale-100.png" Attributes="0" SourcePath="..\BExplorer\BetterExplorer\BEUpdater.exe" SelfReg="false"/>
     <ROW File="CheckforUpdatesSquare150x150Logo.scale100.png" Component_="BetterExplorerSquare44x44Logo.scale100.png" FileName="CHECKF~2.PNG|CheckforUpdatesSquare150x150Logo.scale-100.png" Attributes="0" SourcePath="..\BExplorer\BetterExplorer\BEUpdater.exe" SelfReg="false"/>
-    <ATTRIBUTE name="IcoToPng" value="CheckforUpdatesSquare150x150Logo.scale100.png:0:150 CheckforUpdatesSquare44x44Logo.scale100.png:0:44"/>
+    <ATTRIBUTE name="IcoToPng" value="CheckforUpdatesSquare44x44Logo.scale100.png:0:44 CheckforUpdatesSquare150x150Logo.scale100.png:0:150"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.custcomp.MsiShortcutPropertyComponent">
     <ROW MsiShortcutProperty="BetterExplorer2" Shortcut_="BetterExplorer" PropertyKey="System.AppUserModel.ID" PropVariantValue="Gainedge.ORG.BetterExplorer"/>
@@ -332,6 +332,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.GenericXmlAttributeComponent">
     <ROW XmlAttribute="AppListEntry" XmlElement="VisualElements_1" Name="AppListEntry" Flags="0" Order="0" Value="default"/>
     <ROW XmlAttribute="Args" XmlElement="Application_2" Name="Args" Flags="0" Order="0" Value="/checknow"/>
+    <ROW XmlAttribute="Arguments" XmlElement="Service" Name="Arguments" Flags="0" Order="0" Value="/runservice"/>
     <ROW XmlAttribute="AssetGenConvertedAttrNames" XmlElement="Package" Name="AssetGenConvertedAttrNames" Flags="0" Order="0" Value="true"/>
     <ROW XmlAttribute="AssetGenDestFolderPath" XmlElement="Package" Name="AssetGenDestFolderPath" Flags="0" Order="0" Value="G:\Developping\C#\Better Explorer\Better Explorer AI Setup\Generated Assets"/>
     <ROW XmlAttribute="AssetGenScalesSavedWin10" XmlElement="Package" Name="AssetGenScalesSavedWin10" Flags="0" Order="0" Value="true"/>
@@ -344,6 +345,7 @@
     <ROW XmlAttribute="Category" XmlElement="Extension" Name="Category" Flags="0" Order="0" Value="windows.desktopAppMigration"/>
     <ROW XmlAttribute="Category_1" XmlElement="Extension_1" Name="Category" Flags="0" Order="0" Value="windows.ntServices"/>
     <ROW XmlAttribute="Category_2" XmlElement="Extension_2" Name="Category" Flags="0" Order="0" Value="windows.desktopAppMigration"/>
+    <ROW XmlAttribute="Category_3" XmlElement="Extension_3" Name="Category" Flags="0" Order="0" Value="windows.service"/>
     <ROW XmlAttribute="Description" XmlElement="VisualElements" Name="Description" Flags="0" Order="0" Value="BetterExplorer"/>
     <ROW XmlAttribute="Description_1" XmlElement="VisualElements_1" Name="Description" Flags="0" Order="0" Value="ServerExtensionsApp"/>
     <ROW XmlAttribute="Description_2" XmlElement="NTService" Name="Description" Flags="0" Order="0" Value="Your Service Description"/>
@@ -355,10 +357,12 @@
     <ROW XmlAttribute="EntryPoint" XmlElement="Application" Name="EntryPoint" Flags="0" Order="0" Value="Windows.FullTrustApplication"/>
     <ROW XmlAttribute="EntryPoint_1" XmlElement="Application_2" Name="EntryPoint" Flags="0" Order="0" Value="Windows.FullTrustApplication"/>
     <ROW XmlAttribute="EntryPoint_2" XmlElement="Extension_2" Name="EntryPoint" Flags="0" Order="0" Value="Windows.FullTrustApplication"/>
+    <ROW XmlAttribute="EntryPoint_3" XmlElement="Extension_3" Name="EntryPoint" Flags="0" Order="0" Value="Windows.FullTrustApplication"/>
     <ROW XmlAttribute="Executable" XmlElement="Application" Name="Executable" Flags="0" Order="0" FileId="BetterExplorer.exe"/>
     <ROW XmlAttribute="Executable_1" XmlElement="NTService" Name="Executable" Flags="0" Order="0" FileId="updater.exe"/>
     <ROW XmlAttribute="Executable_2" XmlElement="Application_2" Name="Executable" Flags="0" Order="0" FileId="updater.exe"/>
     <ROW XmlAttribute="Executable_3" XmlElement="Extension_2" Name="Executable" Flags="0" Order="0" FileId="updater.exe"/>
+    <ROW XmlAttribute="Executable_4" XmlElement="Extension_3" Name="Executable" Flags="0" Order="0" FileId="updater.exe"/>
     <ROW XmlAttribute="Id" XmlElement="Application" Name="Id" Flags="0" Order="0" Value="BetterExplorer"/>
     <ROW XmlAttribute="Id_1" XmlElement="Application_1" Name="Id" Flags="0" Order="0" Value="ServerExtensionsApp"/>
     <ROW XmlAttribute="Id_2" XmlElement="Application_2" Name="Id" Flags="0" Order="0" Value="CheckforUpdates"/>
@@ -371,6 +375,9 @@
     <ROW XmlAttribute="Name_1" XmlElement="Capability" Name="Name" Flags="0" Order="0" Value="runFullTrust"/>
     <ROW XmlAttribute="Name_2" XmlElement="TargetDeviceFamily" Name="Name" Flags="0" Order="0" Value="Windows.Desktop"/>
     <ROW XmlAttribute="Name_3" XmlElement="NTService" Name="Name" Flags="0" Order="0" Value="updater"/>
+    <ROW XmlAttribute="Name_4" XmlElement="Service" Name="Name" Flags="0" Order="0" Value="updater"/>
+    <ROW XmlAttribute="Name_5" XmlElement="Capability_1" Name="Name" Flags="0" Order="0" Value="localSystemServices"/>
+    <ROW XmlAttribute="Name_6" XmlElement="Capability_2" Name="Name" Flags="0" Order="0" Value="packagedServices"/>
     <ROW XmlAttribute="Preference" XmlElement="Rotation" Name="Preference" Flags="0" Order="0" Value="portrait"/>
     <ROW XmlAttribute="Preference_1" XmlElement="Rotation_1" Name="Preference" Flags="0" Order="0" Value="landscape"/>
     <ROW XmlAttribute="Preference_2" XmlElement="Rotation_2" Name="Preference" Flags="0" Order="0" Value="portrait"/>
@@ -391,8 +398,10 @@
     <ROW XmlAttribute="Square44x44Logo_1" XmlElement="VisualElements_1" Name="Square44x44Logo" Flags="0" Order="0" FileId="Store50x50Logo.scale100.png"/>
     <ROW XmlAttribute="Square44x44Logo_2" XmlElement="VisualElements_2" Name="Square44x44Logo" Flags="0" Order="0" FileId="CheckforUpdatesSquare44x44Logo.scale100.png"/>
     <ROW XmlAttribute="StartAccount" XmlElement="NTService" Name="StartAccount" Flags="0" Order="0" Value="localSystem"/>
+    <ROW XmlAttribute="StartAccount_1" XmlElement="Service" Name="StartAccount" Flags="0" Order="0" Value="localSystem"/>
     <ROW XmlAttribute="StartErrorAction" XmlElement="NTService" Name="StartErrorAction" Flags="0" Order="0" Value="logError"/>
     <ROW XmlAttribute="StartupType" XmlElement="NTService" Name="StartupType" Flags="0" Order="0" Value="auto"/>
+    <ROW XmlAttribute="StartupType_1" XmlElement="Service" Name="StartupType" Flags="0" Order="0" Value="manual"/>
     <ROW XmlAttribute="Version" XmlElement="Identity" Name="Version" Flags="0" Order="0" Value="2020.3.15.1304"/>
     <ROW XmlAttribute="WorkingDirectory" XmlElement="Application" Name="WorkingDirectory" Flags="0" Order="0" Value="APPDIR"/>
     <ROW XmlAttribute="WorkingDirectory_1" XmlElement="Application_2" Name="WorkingDirectory" Flags="0" Order="0" Value="APPDIR"/>
@@ -408,6 +417,8 @@
     <ROW XmlElement="Applications" ParentElement="Package" Name="Applications" Order="4" Flags="0" Type="3"/>
     <ROW XmlElement="Capabilities" ParentElement="Package" Name="Capabilities" Order="2" Flags="0" Type="0"/>
     <ROW XmlElement="Capability" ParentElement="Capabilities" Name="Capability" Order="0" Flags="0" Type="0"/>
+    <ROW XmlElement="Capability_1" ParentElement="Capabilities" Name="Capability" Order="1" Flags="0" Type="0"/>
+    <ROW XmlElement="Capability_2" ParentElement="Capabilities" Name="Capability" Order="2" Flags="0" Type="0"/>
     <ROW XmlElement="Dependencies" ParentElement="Package" Name="Dependencies" Order="5" Flags="0" Type="0"/>
     <ROW XmlElement="DesktopApp" ParentElement="DesktopAppMigration" Name="DesktopApp" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="DesktopAppMigration" ParentElement="Extension" Name="DesktopAppMigration" Order="0" Flags="0" Type="0"/>
@@ -419,6 +430,7 @@
     <ROW XmlElement="Extension" ParentElement="Extensions" Name="Extension" Order="0" Flags="0" Type="55"/>
     <ROW XmlElement="Extension_1" ParentElement="Extensions_1" Name="Extension" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="Extension_2" ParentElement="Extensions_2" Name="Extension" Order="0" Flags="0" Type="55"/>
+    <ROW XmlElement="Extension_3" ParentElement="Extensions_2" Name="Extension" Order="1" Flags="0" Type="110"/>
     <ROW XmlElement="Extensions" ParentElement="Application" Name="Extensions" Order="1" Flags="0" Type="0"/>
     <ROW XmlElement="Extensions_1" ParentElement="Application_1" Name="Extensions" Order="1" Flags="0" Type="0"/>
     <ROW XmlElement="Extensions_2" ParentElement="Application_2" Name="Extensions" Order="1" Flags="0" Type="0"/>
@@ -441,6 +453,7 @@
     <ROW XmlElement="Rotation_3" ParentElement="InitialRotationPreference_1" Name="Rotation" Order="1" Flags="0" Type="0"/>
     <ROW XmlElement="Rotation_4" ParentElement="InitialRotationPreference_2" Name="Rotation" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="Rotation_5" ParentElement="InitialRotationPreference_2" Name="Rotation" Order="1" Flags="0" Type="0"/>
+    <ROW XmlElement="Service" ParentElement="Extension_3" Name="Service" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="TargetDeviceFamily" ParentElement="Dependencies" Name="TargetDeviceFamily" Order="0" Flags="0" Type="28"/>
     <ROW XmlElement="VisualElements" ParentElement="Application" Name="VisualElements" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="VisualElements_1" ParentElement="Application_1" Name="VisualElements" Order="0" Flags="0" Type="0"/>
@@ -745,6 +758,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
     <ROW IniFile="AppDir" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="AppDir" Value="[APPDIR]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="AppId" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="AppId" Value="Gainedge.ORG.BetterExplorer" Action="0" Component_="updater.exe"/>
     <ROW IniFile="ApplicationName" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationName" Value="[ProductName]" Action="0" Component_="updater.exe"/>
     <ROW IniFile="ApplicationVersion" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationVersion" Value="[ProductVersion]" Action="0" Component_="updater.exe"/>
     <ROW IniFile="CheckFrequency" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="CheckFrequency" Value="2" Action="0" Component_="updater.exe"/>
@@ -916,7 +930,7 @@
     <ATTRIBUTE name="SystemFile" value="regid.199509.com.example_ProductName.swidtag_1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.UpdaterComponent">
-    <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" SupportServiceName="SupportServiceName" Flags="Flags" IconPath="..\BExplorer\BetterExplorer\BEUpdater.exe" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" SupportServiceCASeq="AI_UPDATER_SERVICE_CONFIG" SupportService="updater" SupportServiceCtrl="updater" Description="[|UpdaterName] [|ProductVersion]"/>
+    <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" SupportServiceName="SupportServiceName" Flags="Flags" IconPath="..\BExplorer\BetterExplorer\BEUpdater.exe" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" SupportServiceCASeq="AI_UPDATER_SERVICE_CONFIG" SupportService="updater" SupportServiceCtrl="updater" Description="[|UpdaterName] [|ProductVersion]" AppId="AppId"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.XmlAttributeComponent">
     <ROW XmlAttribute="xmlnsds" XmlElement="swidsoftware_identification_tag" Name="xmlns:ds" Flags="14" Order="0" Value="http://www.w3.org/2000/09/xmldsig#"/>
