@@ -3748,17 +3748,7 @@ namespace BExplorer.Shell {
                 }
                 var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
                 if (obj.IsInCurrentFolder(this.CurrentFolder)) {
-                  if (this.IsRenameNeeded) {
-                    var existingItem = this.Items.ToArray().FirstOrDefault(s => s.Equals(obj));
-                    if (existingItem == null) {
-                      var itemIndex = this.InsertNewItem(obj);
-                      this.SelectItemByIndex(itemIndex, true, true);
-                      this.RenameSelectedItem(itemIndex);
-                      this.IsRenameNeeded = false;
-                    } else {
-                      this.RenameSelectedItem(existingItem.ItemIndex);
-                    }
-                  } else {
+                  if (!this.IsRenameNeeded) {
                     if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj))) {
                       this.UnvalidateDirectory();
                     }

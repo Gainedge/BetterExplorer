@@ -246,9 +246,9 @@ namespace BExplorer.Shell {
         var count = User32.GetMenuItemCount(mnu.Handle);
 
         var itemInfo = new MENUITEMINFO();
-
+        itemInfo.cbSize = MENUITEMINFO.SizeOf;
         itemInfo.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU | MIIM.MIIM_ID;
-        if (User32.GetMenuItemInfo(mnu.Handle, count - 1, true, ref itemInfo)) {
+        if (User32.GetMenuItemInfo(mnu.Handle, (uint)count - 1, true, ref itemInfo)) {
           if ((itemInfo.fType & MFT.MFT_SEPARATOR) != 0) {
             User32.DeleteMenu(mnu.Handle, count - 1, MF.MF_BYPOSITION);
           }
@@ -261,9 +261,9 @@ namespace BExplorer.Shell {
           this.RemoveDefaultExplorerItems(mnu, control, ref itemInfo);
         }
 
-        User32.GetMenuItemInfo(mnu.Handle, User32.GetMenuItemCount(mnu.Handle) - 3, true, ref itemInfo);
+        User32.GetMenuItemInfo(mnu.Handle, (uint)User32.GetMenuItemCount(mnu.Handle) - 3, true, ref itemInfo);
         if (itemInfo.hSubMenu == IntPtr.Zero) {
-          User32.GetMenuItemInfo(mnu.Handle, User32.GetMenuItemCount(mnu.Handle) - 1, true, ref itemInfo);
+          User32.GetMenuItemInfo(mnu.Handle, (uint)User32.GetMenuItemCount(mnu.Handle) - 1, true, ref itemInfo);
         }
 
         this._NewMenuPtr = itemInfo.hSubMenu;
@@ -424,17 +424,17 @@ namespace BExplorer.Shell {
         var count = User32.GetMenuItemCount(mnu.Handle);
 
         var itemInfo = new MENUITEMINFO();
-
+        itemInfo.cbSize = MENUITEMINFO.SizeOf;
         itemInfo.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU | MIIM.MIIM_ID;
-        if (User32.GetMenuItemInfo(mnu.Handle, count - 1, true, ref itemInfo)) {
+        if (User32.GetMenuItemInfo(mnu.Handle, (uint)count - 1, true, ref itemInfo)) {
           if ((itemInfo.fType & MFT.MFT_SEPARATOR) != 0) {
             User32.DeleteMenu(mnu.Handle, count - 1, MF.MF_BYPOSITION);
           }
         }
         
-        User32.GetMenuItemInfo(mnu.Handle, User32.GetMenuItemCount(mnu.Handle) - 3, true, ref itemInfo);
+        User32.GetMenuItemInfo(mnu.Handle, (uint)User32.GetMenuItemCount(mnu.Handle) - 3, true, ref itemInfo);
         if (itemInfo.hSubMenu == IntPtr.Zero) {
-          User32.GetMenuItemInfo(mnu.Handle, User32.GetMenuItemCount(mnu.Handle) - 1, true, ref itemInfo);
+          User32.GetMenuItemInfo(mnu.Handle, (uint)User32.GetMenuItemCount(mnu.Handle) - 1, true, ref itemInfo);
         }
 
         this._NewMenuPtr = itemInfo.hSubMenu;
@@ -685,20 +685,20 @@ namespace BExplorer.Shell {
     private void RemoveDuplicatedSeparators(ContextMenu mnu) {
       var duplicatedSeparators = new List<int>();
       int newCount = User32.GetMenuItemCount(mnu.Handle);
-      for (int i = 0; i < newCount - 1; i++) {
+      for (uint i = 0; i < newCount - 1; i++) {
         var info = new MENUITEMINFO();
-
+        info.cbSize = MENUITEMINFO.SizeOf;
         info.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU;
         if (User32.GetMenuItemInfo(mnu.Handle, i, true, ref info)) {
           var isSep = (info.fType & MFT.MFT_SEPARATOR) != 0;
           if (isSep) {
             var info2 = new MENUITEMINFO();
-
+            info2.cbSize = MENUITEMINFO.SizeOf;
             info2.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU;
             if (User32.GetMenuItemInfo(mnu.Handle, i + 1, true, ref info2)) {
               var isSep2 = (info2.fType & MFT.MFT_SEPARATOR) != 0;
               if (isSep2) {
-                duplicatedSeparators.Add(i + 1);
+                duplicatedSeparators.Add((int)i + 1);
               }
             }
           }
@@ -734,10 +734,11 @@ namespace BExplorer.Shell {
           User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
         }
       }
+      
     }
     private void GenerateSubmenu(ContextMenu child, ContextMenu parent, String header) {
       MENUITEMINFO miiview = new MENUITEMINFO();
-
+      miiview.cbSize = MENUITEMINFO.SizeOf;
       miiview.fMask = MIIM.MIIM_STRING | MIIM.MIIM_FTYPE | MIIM.MIIM_STATE | MIIM.MIIM_SUBMENU;
       miiview.fState = 0x0;
       miiview.fType = 0;
@@ -748,6 +749,7 @@ namespace BExplorer.Shell {
     }
     private void GenerateMenuItem(ContextMenu view, String header, int id, bool isRadio = false, uint atPosition = 0) {
       MENUITEMINFO miidetails = new MENUITEMINFO();
+      miidetails.cbSize = MENUITEMINFO.SizeOf;
       miidetails.fMask = MIIM.MIIM_STRING | MIIM.MIIM_ID | MIIM.MIIM_FTYPE | MIIM.MIIM_STATE;
       miidetails.fState = (MFS)(isRadio ? 0x00000008 : 0x0);
       miidetails.fType = (MFT)(0 | 0x00000200);
@@ -758,6 +760,7 @@ namespace BExplorer.Shell {
     }
     private void GenerateMenuItemExecutable(ContextMenu view, String header, int id) {
       MENUITEMINFO miidetails = new MENUITEMINFO();
+      miidetails.cbSize = MENUITEMINFO.SizeOf;
       miidetails.fMask = MIIM.MIIM_STRING | MIIM.MIIM_ID | MIIM.MIIM_FTYPE | MIIM.MIIM_STATE;
       miidetails.fState = 0x0;
       miidetails.fType = 0;
@@ -768,6 +771,7 @@ namespace BExplorer.Shell {
     }
     private void GenerateSeparator(ContextMenu view) {
       MENUITEMINFO miidetails = new MENUITEMINFO();
+      miidetails.cbSize = MENUITEMINFO.SizeOf;
       miidetails.fMask = MIIM.MIIM_FTYPE;
       miidetails.fType = MFT.MFT_SEPARATOR;
       User32.InsertMenuItem(view.Handle, 0, true, ref miidetails);
@@ -868,6 +872,7 @@ namespace BExplorer.Shell {
 
       menuInfo.cbSize = Marshal.SizeOf(menuInfo);
       menuInfo.fMask = MIM.MIM_MENUDATA;
+      itemInfo.cbSize = MENUITEMINFO.SizeOf;
       itemInfo.fMask = MIIM.MIIM_ID | MIIM.MIIM_SUBMENU;
 
       // First, tag the managed menu items with an arbitary 
@@ -875,7 +880,7 @@ namespace BExplorer.Shell {
       TagManagedMenuItems(menu, tag);
 
       for (int n = 0; n < count; ++n) {
-        User32.GetMenuItemInfo(menu.Handle, n, true, ref itemInfo);
+        User32.GetMenuItemInfo(menu.Handle, (uint)n, true, ref itemInfo);
 
         if (itemInfo.hSubMenu == IntPtr.Zero) {
           // If the item has no submenu we can't get the tag, so 

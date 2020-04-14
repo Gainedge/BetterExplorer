@@ -98,11 +98,7 @@ public struct LVITEM {
     public string dwTypeData;
     public uint cch;
     public IntPtr hbmpItem;
-    public static uint SizeOf {
-      get {
-        return (uint)Marshal.SizeOf(typeof(MENUITEMINFO));
-      }
-    }
+    public static uint SizeOf => (uint)Marshal.SizeOf(typeof(MENUITEMINFO));
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -143,6 +139,7 @@ public struct LVITEM {
     MF_BYPOSITION = 0x00000400,
   }
 
+  [Flags]
   public enum MIIM : uint {
     MIIM_STATE = 0x00000001,
     MIIM_ID = 0x00000002,
@@ -711,7 +708,7 @@ public static extern IntPtr EnumChildWindows(IntPtr parentHandle, Win32Callback 
     public static extern int GetMenuItemCount(IntPtr hMenu);
 
     [DllImport("user32.dll", CharSet=CharSet.Auto)]
-    public static extern bool GetMenuItemInfo(IntPtr hMenu, int uItem, bool fByPosition, ref MENUITEMINFO lpmii);
+    public static extern bool GetMenuItemInfo(IntPtr hMenu, uint uItem, bool fByPosition, ref MENUITEMINFO lpmii);
     [DllImport("user32.dll")]
     public static extern bool ModifyMenu(IntPtr hMnu, uint uPosition, uint uFlags, IntPtr uIDNewItem, string lpNewItem);
     [DllImport("user32.dll")]
@@ -752,7 +749,7 @@ public static extern uint RegisterClipboardFormat(string lpszFormat);
       MF_POPUP = 0x00000010,
     }
 
-    [DllImport("user32.dll")]
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
     public static extern bool InsertMenuItem(IntPtr hMenu, uint uItem, bool fByPosition, [In] ref MENUITEMINFO lpmii);
 
     [DllImport("user32.dll")]
