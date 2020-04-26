@@ -190,6 +190,9 @@
     <Compile Include="StreamWrappers.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="sfx\7zS.sfx" />

@@ -125,7 +125,7 @@ namespace BExplorer.Shell {
 					RaisePropertyChanged("Image");
 				}
 
-
+				clonedCurrentItem.Dispose();
 				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() => {
 					var lvi = new LVITEMINDEX();
 					lvi.iItem = this.ItemIndex;

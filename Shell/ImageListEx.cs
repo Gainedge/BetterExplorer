@@ -434,6 +434,7 @@ namespace BExplorer.Shell {
             //this._ShellViewEx.RedrawItem(index);
           }
           sho.Dispose();
+          shoTemp.Dispose();
         } catch {
         }
       }
@@ -477,6 +478,7 @@ namespace BExplorer.Shell {
           }
         }
         clonedSho.Dispose();
+        sho.Dispose();
       }
     }
 
@@ -512,6 +514,7 @@ namespace BExplorer.Shell {
               Gdi32.DeleteObject(result);
             }
           }
+          sho.Dispose();
         }
       }
     }
@@ -594,6 +597,7 @@ namespace BExplorer.Shell {
           }
 
           temp.Dispose();
+          currentItem.Dispose();
         }
         }
       }
@@ -679,6 +683,7 @@ namespace BExplorer.Shell {
               result = (Int32)threatment;
             }
             perceiveTypeKey.Close();
+            perceiveTypeKey.Dispose();
           } else {
             var systemFileAssociationsKey = Registry.ClassesRoot.OpenSubKey(@"SystemFileAssociations\" + perceivedType);
             if (systemFileAssociationsKey != null) {
@@ -687,6 +692,7 @@ namespace BExplorer.Shell {
                 result = (Int32)threatment;
               }
               systemFileAssociationsKey.Close();
+              systemFileAssociationsKey.Dispose();
             }
           }
         }

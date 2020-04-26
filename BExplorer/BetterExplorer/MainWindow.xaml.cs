@@ -1884,13 +1884,7 @@ namespace BetterExplorer {
       this._ShellListView.SaveSettingsToDatabase(this._ShellListView.CurrentFolder);
       //SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", this.bcbc.DropDownItems.OfType<String>().Select(s => s).ToList());
       this.AddToLog("Session Ended");
-      if (!this.IsMultipleWindowsOpened) {
-        e.Cancel = true;
-        App.IsStartMinimized = true;
-
-        this.WindowState = WindowState.Minimized;
-        this.Visibility = Visibility.Hidden;
-      } else {
+      if (this.IsMultipleWindowsOpened) {
         this.beNotifyIcon.Visibility = Visibility.Collapsed;
       }
 

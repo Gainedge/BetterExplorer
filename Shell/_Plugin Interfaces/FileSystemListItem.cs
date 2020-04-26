@@ -197,6 +197,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       SFGAO sfgao;
       comObject.GetAttributes(Check, out sfgao);
       Marshal.FinalReleaseComObject(comObject);
+      this.Dispose();
       return (sfgao & Check) != 0;
     }
 
@@ -389,6 +390,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
           continue;
         }
         fsi.IsParentSearchFolder = this.IsSearchFolder;
+        fsi.Dispose();
         yield return fsi;
         //Shell32.ILFree(pidl);
         result = enumId.Next(1, out pidl, out count);
@@ -434,6 +436,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         }
 
         fsi.IsParentSearchFolder = this.IsSearchFolder;
+        fsi.Dispose();
         yield return fsi;
         result = enumId.Next(1, out pidl, out count);
       }
@@ -460,6 +463,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
       isi2.GetProperty(ref pkey, pvar);
       Marshal.ReleaseComObject(comObject);
+      this.Dispose();
       return pvar;
     }
 
@@ -480,6 +484,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       returnValue.Freeze();
       // delete HBitmap to avoid memory leaks
       Gdi32.DeleteObject(hBitmap);
+      this.Dispose();
       return returnValue;
     }
 
@@ -643,6 +648,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         var result = Marshal.PtrToStringUni(resultPtr);
         Marshal.FreeCoTaskMem(resultPtr);
         Marshal.FinalReleaseComObject(comInterface);
+        this.Dispose();
         return result;
       } catch {
         return "Search.search-ms";

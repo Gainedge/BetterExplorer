@@ -4762,6 +4762,7 @@ namespace BExplorer.Shell {
             if (!sho.IsInitialised) {
               sho.IsInitialised = true;
             }
+            sho.Dispose();
           }
 
           var ind = -1;
@@ -4965,7 +4966,7 @@ namespace BExplorer.Shell {
 
               var isSelected = (User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_SELECTED) & LVIS.LVIS_SELECTED) == LVIS.LVIS_SELECTED;
               var isFocused = (User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_FOCUSED) & LVIS.LVIS_FOCUSED) == LVIS.LVIS_FOCUSED;
-              var isHot = (nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT;
+              var isHot = (nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (nmlvcd.nmcd.uItemState & CDIS.DROPHILITED) == CDIS.DROPHILITED;
               if (isSelected || isHot) {
                 var gr = Graphics.FromHdc(hdc);
                 gr.CompositingQuality = CompositingQuality.HighSpeed;

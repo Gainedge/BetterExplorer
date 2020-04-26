@@ -23,72 +23,72 @@ using System.Runtime.InteropServices;
 #pragma warning disable 1591
 
 namespace BExplorer.Shell.Interop {
-	public class Kernel32 {
+  public class Kernel32 {
 
-		/// <summary>
-		/// The GetDriveType function determines whether a disk drive is a removable, fixed, CD-ROM, RAM disk, or network drive
-		/// </summary>
-		/// <param name="lpRootPathName">A pointer to a null-terminated string that specifies the root directory and returns information about the disk.A trailing backslash is required. If this parameter is NULL, the function uses the root of the current directory.</param>
-		[DllImport("kernel32.dll")]
-		public static extern DriveType GetDriveType([MarshalAs(UnmanagedType.LPStr)] string lpRootPathName);
+    /// <summary>
+    /// The GetDriveType function determines whether a disk drive is a removable, fixed, CD-ROM, RAM disk, or network drive
+    /// </summary>
+    /// <param name="lpRootPathName">A pointer to a null-terminated string that specifies the root directory and returns information about the disk.A trailing backslash is required. If this parameter is NULL, the function uses the root of the current directory.</param>
+    [DllImport("kernel32.dll")]
+    public static extern DriveType GetDriveType([MarshalAs(UnmanagedType.LPStr)] string lpRootPathName);
 
-		public static bool IsThis64bitProcess() {
-			return IntPtr.Size == 8;
-		}
+    public static bool IsThis64bitProcess() {
+      return IntPtr.Size == 8;
+    }
 
-		[DllImport("kernel32.dll")]
-		public static extern uint GetCurrentThreadId();
+    [DllImport("kernel32.dll")]
+    public static extern uint GetCurrentThreadId();
 
-//		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-//		public static extern IntPtr CreateFile(
-//		 string lpFileName,
-//		 uint dwDesiredAccess,
-//		 uint dwShareMode,
-//		 IntPtr SecurityAttributes,
-//		 uint dwCreationDisposition,
-//		 uint dwFlagsAndAttributes,
-//		 IntPtr hTemplateFile
-//);
+    //		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    //		public static extern IntPtr CreateFile(
+    //		 string lpFileName,
+    //		 uint dwDesiredAccess,
+    //		 uint dwShareMode,
+    //		 IntPtr SecurityAttributes,
+    //		 uint dwCreationDisposition,
+    //		 uint dwFlagsAndAttributes,
+    //		 IntPtr hTemplateFile
+    //);
 
-//		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true, CharSet = CharSet.Auto)]
-//		public static extern bool DeviceIoControl(
-//				IntPtr hDevice,
-//				uint dwIoControlCode,
-//				IntPtr lpInBuffer,
-//				uint nInBufferSize,
-//				IntPtr lpOutBuffer,
-//				uint nOutBufferSize,
-//				out uint lpBytesReturned,
-//				IntPtr lpOverlapped
-//		);
+    //		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true, CharSet = CharSet.Auto)]
+    //		public static extern bool DeviceIoControl(
+    //				IntPtr hDevice,
+    //				uint dwIoControlCode,
+    //				IntPtr lpInBuffer,
+    //				uint nInBufferSize,
+    //				IntPtr lpOutBuffer,
+    //				uint nOutBufferSize,
+    //				out uint lpBytesReturned,
+    //				IntPtr lpOverlapped
+    //		);
 
-//		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true, CharSet = CharSet.Auto)]
-//		public static extern bool DeviceIoControl(
-//				IntPtr hDevice,
-//				uint dwIoControlCode,
-//				byte[] lpInBuffer,
-//				uint nInBufferSize,
-//				IntPtr lpOutBuffer,
-//				uint nOutBufferSize,
-//				out uint lpBytesReturned,
-//				IntPtr lpOverlapped
-//		);
+    //		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true, CharSet = CharSet.Auto)]
+    //		public static extern bool DeviceIoControl(
+    //				IntPtr hDevice,
+    //				uint dwIoControlCode,
+    //				byte[] lpInBuffer,
+    //				uint nInBufferSize,
+    //				IntPtr lpOutBuffer,
+    //				uint nOutBufferSize,
+    //				out uint lpBytesReturned,
+    //				IntPtr lpOverlapped
+    //		);
 
-//		[DllImport("kernel32.dll", SetLastError = true)]
-//		[return: MarshalAs(UnmanagedType.Bool)]
-//		public static extern bool CloseHandle(IntPtr hObject);
+    //		[DllImport("kernel32.dll", SetLastError = true)]
+    //		[return: MarshalAs(UnmanagedType.Bool)]
+    //		public static extern bool CloseHandle(IntPtr hObject);
 
-		/*
+    /*
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr GlobalLock(IntPtr hMem);
 		*/
 
-		
-		[DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
-		public static extern IntPtr GetProcAddress(IntPtr hModule, UInt16 procName);
 
-		[DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
-		public static extern IntPtr LoadLibrary(string lpFileName);
+    [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
+    public static extern IntPtr GetProcAddress(IntPtr hModule, UInt16 procName);
+
+    [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern IntPtr LoadLibrary(string lpFileName);
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool FreeLibrary(IntPtr hModule);
