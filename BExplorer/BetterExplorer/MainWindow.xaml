@@ -28,6 +28,7 @@
   d:DesignWidth="852"
   Activated="RibbonWindow_Activated"
   Closing="RibbonWindow_Closing"
+  Closed="MainWindow_OnClosed"
   Icon="Explorer.ico"
   Initialized="RibbonWindow_Initialized"
   Loaded="Window_Loaded"
@@ -1798,6 +1799,9 @@
         -->
               </TabControl>
             </Ribbon:BackstageTabItem>
+            <Ribbon:Button Header="Show Notif Test" Click="ButtonBase_OnClick">
+
+            </Ribbon:Button>
             <Ribbon:Button
               x:Name="Exitbutton"
               Ribbon:KeyTip.Keys="X"

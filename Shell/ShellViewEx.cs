@@ -4,7 +4,6 @@ using Settings;
 
 namespace BExplorer.Shell {
   using _Plugin_Interfaces;
-  using CustomScrollbar;
   using DropTargetHelper;
   using Interop;
   using System;
@@ -1775,8 +1774,8 @@ namespace BExplorer.Shell {
               this.KeyJumpString = findItem.lvfi.psz;
 
               this.KeyJumpKeyDown?.Invoke(this, new KeyEventArgs(Keys.A));
-              Int32 startindex = this.GetFirstSelectedItemIndex() + (this.KeyJumpString.Length > 1 ? 0 : 1);
-              Int32 selind = this.GetFirstIndexOf(this.KeyJumpString, startindex);
+              var startindex = this.GetFirstSelectedItemIndex() + (this.KeyJumpString.Length > 1 ? 0 : 1);
+              var selind = this.GetFirstIndexOf(this.KeyJumpString, startindex);
               if (selind != -1) {
                 m.Result = (IntPtr)selind;
                 if (this.IsGroupsEnabled) {
@@ -2546,11 +2545,10 @@ namespace BExplorer.Shell {
     }
 
     public static Boolean IsShowingLayered(F.DataObject dataObject) {
-      if (dataObject.GetDataPresent("IsShowingLayered")) {
-        Object data = dataObject.GetData("IsShowingLayered");
-        if (data != null) {
-          return data is Stream ? new BinaryReader(data as Stream).ReadBoolean() : false;
-        }
+      if (!dataObject.GetDataPresent("IsShowingLayered")) return false;
+      var data = dataObject.GetData("IsShowingLayered");
+      if (data != null) {
+        return data is Stream stream && new BinaryReader(stream).ReadBoolean();
       }
 
       return false;

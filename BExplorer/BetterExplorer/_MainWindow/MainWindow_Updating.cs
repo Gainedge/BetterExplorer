@@ -3,6 +3,10 @@ using System.ComponentModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using Windows.Data.Xml.Dom;
+using Windows.UI.Notifications;
+using BetterExplorer.Api;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace BetterExplorer {
   partial class MainWindow {
@@ -52,6 +56,24 @@ namespace BetterExplorer {
       //if (DateTime.Now.Subtract(Settings.BESettings.LastUpdateCheck).Days >= Settings.BESettings.UpdateCheckInterval) {
       //  CheckForUpdate(false);
       //}
+    }
+
+    private void MainWindow_OnClosed(Object sender, EventArgs e) {
+      
+    }
+
+    private void ButtonBase_OnClick(Object sender, RoutedEventArgs e) {
+      ToastContent toastContent = new ToastContentBuilder()
+        .AddToastActivationInfo("action=viewConversation&conversationId=5", ToastActivationType.Foreground)
+        .AddText("Hello world!")
+        .AddButton("Test", ToastActivationType.Foreground, "Alabala")
+        .GetToastContent();
+
+      // And create the toast notification
+      var toast = new ToastNotification(toastContent.GetXml());
+
+      // And then show it
+      Microsoft.Toolkit.Uwp.Notifications.DesktopNotificationManagerCompat.CreateToastNotifier().Show(toast);
     }
   }
 }

@@ -24,6 +24,7 @@ using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using Fluent;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Win32;
 
 using SingleInstanceApplication;
@@ -143,6 +144,7 @@ namespace BetterExplorer {
     /// </summary>
     /// <param name="e">Startup EventArgs</param>
     protected override void OnStartup(StartupEventArgs e) {
+      Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
       var updaterThread = new Thread(new ThreadStart(this.RunAutomaticUpdateChecker));
       updaterThread.Start();
       DesktopNotificationManagerCompat.RegisterAumidAndComServer<BetterExplorerNotificationActivator>("Gainedge.ORG.BetterExplorer");

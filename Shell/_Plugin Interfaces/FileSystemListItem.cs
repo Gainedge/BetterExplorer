@@ -40,26 +40,26 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       : Shell32.SHCreateItemWithParent(this.ParentPIDL, null, this.EnumPIDL, typeof(IShellItem).GUID);
 
     /// <summary>The text that represents the display name</summary>
-    public string DisplayName {
+    public String DisplayName {
       get { return this.GetDisplayName(SIGDN.NORMALDISPLAY); }
     }
 
     /// <summary>Does the current item need to be refreshed in the ShellListView</summary>
-    public bool IsNeedRefreshing { get; set; }
+    public Boolean IsNeedRefreshing { get; set; }
 
     /// <summary>Assigned values but never used</summary>
-    public bool IsInvalid { get; set; }
+    public Boolean IsInvalid { get; set; }
 
     public Boolean IsProcessed { get; set; }
 
     /// <summary>Changes how the item gets loaded</summary>
-    public bool IsOnlyLowQuality { get; set; }
+    public Boolean IsOnlyLowQuality { get; set; }
 
-    public bool IsThumbnailLoaded { get; set; }
+    public Boolean IsThumbnailLoaded { get; set; }
 
-    public bool IsInitialised { get; set; }
+    public Boolean IsInitialised { get; set; }
 
-    public int OverlayIconIndex { get; set; }
+    public Int32 OverlayIconIndex { get; set; }
 
     private IExtractIconPWFlags _IconType = IExtractIconPWFlags.GIL_PERCLASS;
 
@@ -77,7 +77,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
         try {
           var guid = new Guid("000214fa-0000-0000-c000-000000000046");
-          uint res = 0;
+          UInt32 res = 0;
           ishellfolder = this.Parent.GetIShellFolder();
           var pidls = new IntPtr[1] { Shell32.ILFindLastID(this.PIDL) };
 
@@ -163,7 +163,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public IntPtr AbsolutePidl {
       get {
-        uint attr;
+        UInt32 attr;
         IntPtr pidl;
         Shell32.SHParseDisplayName(this.ParsingName, IntPtr.Zero, out pidl, 0, out attr);
         return pidl;
@@ -171,28 +171,28 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     }
 
     /// <summary>Index of the ShieldedIcon</summary>
-    public int ShieldedIconIndex { get; set; }
+    public Int32 ShieldedIconIndex { get; set; }
 
     /// <summary>Is this item's icon loaded yet?</summary>
-    public bool IsIconLoaded { get; set; }
+    public Boolean IsIconLoaded { get; set; }
 
-    public string ParsingName {
+    public String ParsingName {
       get { return this.GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING); }
     }
 
     /// <summary>The file system extension for this item</summary>
-    public string Extension => Path.GetExtension(this.ParsingName);
+    public String Extension => Path.GetExtension(this.ParsingName);
 
     /// <summary>The file system path</summary>
-    public string FileSystemPath => this.GetDisplayName(SIGDN.FILESYSPATH);
+    public String FileSystemPath => this.GetDisplayName(SIGDN.FILESYSPATH);
 
     /// <summary>
     /// Returns true if folder can be browsed
     /// </summary>
-    public bool IsBrowsable => this.COM_Attribute_Check(SFGAO.BROWSABLE);
+    public Boolean IsBrowsable => this.COM_Attribute_Check(SFGAO.BROWSABLE);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool COM_Attribute_Check(SFGAO Check) {
+    private Boolean COM_Attribute_Check(SFGAO Check) {
       var comObject = this.ComInterface;
       SFGAO sfgao;
       comObject.GetAttributes(Check, out sfgao);
@@ -201,8 +201,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       return (sfgao & Check) != 0;
     }
 
-    /// <summary>Gets or sets a value indicating whether this is a folder </summary>
-    public bool IsFolder {
+    /// <summary>Gets a value indicating whether this is a folder </summary>
+    public Boolean IsFolder {
       get {
         var comObject = this.ComInterface;
         SFGAO sfgao;
@@ -215,17 +215,17 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     }
 
     /// <summary>Does this have folders?</summary>
-    public bool HasSubFolders => this.COM_Attribute_Check(SFGAO.HASSUBFOLDER);
+    public Boolean HasSubFolders => this.COM_Attribute_Check(SFGAO.HASSUBFOLDER);
 
     /// <summary>Is this item normally hidden?</summary>
-    public bool IsHidden => this.COM_Attribute_Check(SFGAO.HIDDEN);
+    public Boolean IsHidden => this.COM_Attribute_Check(SFGAO.HIDDEN);
 
-    public bool IsFileSystem => this.COM_Attribute_Check(SFGAO.FILESYSTEM);
+    public Boolean IsFileSystem => this.COM_Attribute_Check(SFGAO.FILESYSTEM);
 
-    public bool IsNetworkPath => Shell32.PathIsNetworkPath(this.ParsingName);
+    public Boolean IsNetworkPath => Shell32.PathIsNetworkPath(this.ParsingName);
 
     /// <summary>Is current item represent a system drive?</summary>
-    public bool IsDrive {
+    public Boolean IsDrive {
       get {
         try {
           return Directory.GetLogicalDrives().Contains(this.ParsingName) && Kernel32.GetDriveType(this.ParsingName) != DriveType.Network;
@@ -235,12 +235,12 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       }
     }
 
-    public bool IsShared => this.COM_Attribute_Check(SFGAO.SHARE);
+    public Boolean IsShared => this.COM_Attribute_Check(SFGAO.SHARE);
 
-    public bool IsSlow => this.COM_Attribute_Check(SFGAO.ISSLOW);
+    public Boolean IsSlow => this.COM_Attribute_Check(SFGAO.ISSLOW);
 
     /// <summary>Is the parent a search folder?</summary>
-    public bool IsParentSearchFolder { get; set; }
+    public Boolean IsParentSearchFolder { get; set; }
 
     public Int32 GroupIndex { get; set; }
 
@@ -248,7 +248,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public IShellFolder IFolder { get; set; }
 
-    private void Initialize_Helper(IntPtr folder, IntPtr lvHandle, int index) {
+    private void Initialize_Helper(IntPtr folder, IntPtr lvHandle, Int32 index) {
       this.ParentPIDL = IntPtr.Zero;
       this.EnumPIDL = folder;
       //this.ParentHandle = lvHandle;
@@ -256,7 +256,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       this.ShieldedIconIndex = -1;
     }
 
-    private void Initialize_Helper2(IntPtr parent, IntPtr pidl, IntPtr lvHandle, int index) {
+    private void Initialize_Helper2(IntPtr parent, IntPtr pidl, IntPtr lvHandle, Int32 index) {
       this.ParentPIDL = parent;
       this.EnumPIDL = pidl;
       //this.ParentHandle = lvHandle;
@@ -264,24 +264,24 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       this.ShieldedIconIndex = -1;
     }
 
-    public void Initialize(IntPtr lvHandle, IntPtr pidl, int index) {
+    public void Initialize(IntPtr lvHandle, IntPtr pidl, Int32 index) {
       this.Initialize_Helper(pidl, lvHandle, index);
     }
 
-    public void InitializeWithParent(IntPtr parent, IntPtr lvHandle, IntPtr pidl, int index) {
+    public void InitializeWithParent(IntPtr parent, IntPtr lvHandle, IntPtr pidl, Int32 index) {
       this.Initialize_Helper2(parent, pidl, lvHandle, index);
     }
 
-    public void InitializeWithShellItem(ShellSearchFolder item, IntPtr lvHandle, int index) {
+    public void InitializeWithShellItem(ShellSearchFolder item, IntPtr lvHandle, Int32 index) {
       this.Initialize_Helper(item.Pidl, lvHandle, index);
       this.searchFolder = item;
     }
 
     public ShellSearchFolder searchFolder { get; set; }
 
-    public Dictionary<PROPERTYKEY, object> ColumnValues { get; set; }
+    public Dictionary<PROPERTYKEY, Object> ColumnValues { get; set; }
 
-    public int ItemIndex { get; set; }
+    public Int32 ItemIndex { get; set; }
 
     public IntPtr ParentHandle { get; set; }
 
@@ -291,7 +291,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       return fsItem;
     }
 
-    public void Initialize(IntPtr lvHandle, string path, int index) {
+    public void Initialize(IntPtr lvHandle, String path, Int32 index) {
       var shellItem = Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
       this.ParentPIDL = IntPtr.Zero;
       this.EnumPIDL = Shell32.SHGetIDListFromObject(shellItem);
@@ -302,7 +302,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       this.ShieldedIconIndex = -1;
     }
 
-    public void Initialize(IntPtr lvHandle, string path) {
+    public void Initialize(IntPtr lvHandle, String path) {
       throw new NotImplementedException();
     }
 
@@ -334,7 +334,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       }
       var enumId = ShellItem.GetIEnumIDList(folder, flags, out navRes);
       this.NavigationStatus = navRes;
-      uint count;
+      UInt32 count;
       IntPtr pidl;
 
       if (enumId == null) {
@@ -371,7 +371,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
       var enumId = ShellItem.GetIEnumIDList(folder, flags, out navRes);
       this.NavigationStatus = navRes;
-      uint count;
+      UInt32 count;
       IntPtr pidl;
       if (enumId == null) {
         yield break;
@@ -418,7 +418,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       var flags = SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.FASTITEMS | SHCONTF.NONFOLDERS | SHCONTF.ENABLE_ASYNC | SHCONTF.INIT_ON_FIRST_NEXT;
       var enumId = ShellItem.GetIEnumIDList(folder, flags, out navRes);
       this.NavigationStatus = navRes;
-      uint count;
+      UInt32 count;
       IntPtr pidl;
 
       if (enumId == null) {
@@ -467,11 +467,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       return pvar;
     }
 
-    public System.Drawing.Bitmap Thumbnail(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) => this._Item?.GetShellThumbnail(size, format, source);
+    public System.Drawing.Bitmap Thumbnail(Int32 size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) => this._Item?.GetShellThumbnail(size, format, source);
 
     public BitmapSource ThumbnailBitmapSource => this.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 
-    public BitmapSource ThumbnailSource(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) {
+    public BitmapSource ThumbnailSource(Int32 size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) {
       var hBitmap = this.GetHBitmap(size, format == ShellThumbnailFormatOption.ThumbnailOnly, source == ShellThumbnailRetrievalOption.Default, format == ShellThumbnailFormatOption.Default);
 
       // return a System.Media.Imaging.BitmapSource
@@ -489,7 +489,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     }
 
     /// <summary>Is the current item a search folder?</summary>
-    public bool IsSearchFolder {
+    public Boolean IsSearchFolder {
       get {
         try {
           return (!this.ParsingName.StartsWith("::") && !this.IsFileSystem && !this.ParsingName.StartsWith(@"\\") && !this.ParsingName.Contains(":\\")) || this.ParsingName.EndsWith(".search-ms");
@@ -513,7 +513,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         } else if (result == HResult.MK_E_NOOBJECT) {
           return null;
         } else {
-          Marshal.ThrowExceptionForHR((int)result);
+          Marshal.ThrowExceptionForHR((Int32)result);
           return null;
         }
       }
@@ -532,14 +532,14 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       }
     }
 
-    public bool IsLink => this.COM_Attribute_Check(SFGAO.LINK);
+    public Boolean IsLink => this.COM_Attribute_Check(SFGAO.LINK);
 
-    public string ToolTipText {
+    public String ToolTipText {
       get {
         IntPtr result;
         IQueryInfo queryInfo;
         IntPtr infoTipPtr;
-        string infoTip;
+        String infoTip;
 
         try {
           var relativePidl = this.ILPidl;
@@ -548,7 +548,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
           return string.Empty;
         }
         if (result == IntPtr.Zero) {
-          return String.Empty;
+          return string.Empty;
         }
 
         queryInfo = (IQueryInfo)Marshal.GetTypedObjectForIUnknown(result, typeof(IQueryInfo));
@@ -567,7 +567,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       get { return this.ThumbnailSource(48, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default); }
     }
 
-    public HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false) {
+    public HResult ExtractAndDrawThumbnail(IntPtr hdc, UInt32 iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out Boolean retrieved, Boolean isHidden, Boolean isRefresh = false) {
       IThumbnailCache thumbCache = null;
 
       if (this.ComInterface != null) {
@@ -594,8 +594,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
           bmp.GetSharedBitmap(out hBitmap);
           retrieved = true;
 
-          int width;
-          int height;
+          Int32 width;
+          Int32 height;
           Gdi32.ConvertPixelByPixel(hBitmap, out width, out height);
           Gdi32.NativeDraw(hdc, hBitmap, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, isHidden);
           Gdi32.DeleteObject(hBitmap);
@@ -608,7 +608,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       return res;
     }
 
-    public IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false, bool isBoth = false) {
+    public IntPtr GetHBitmap(Int32 iconSize, Boolean isThumbnail, Boolean isForce = false, Boolean isBoth = false) {
       var options = ThumbnailOptions.None;
       if (isThumbnail) {
         options = ThumbnailOptions.ThumbnailOnly;
@@ -641,7 +641,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       return fsItem;
     }
 
-    public string GetDisplayName(SIGDN type) {
+    public String GetDisplayName(SIGDN type) {
       try {
         var comInterface = this.ComInterface;
         var resultPtr = comInterface.GetDisplayName(type);
@@ -663,7 +663,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
       try {
         var guid = new Guid("000214fa-0000-0000-c000-000000000046");
-        uint res = 0;
+        UInt32 res = 0;
         ishellfolder = this.Parent.GetIShellFolder();
         var pidls = new IntPtr[1];
         pidls[0] = Shell32.ILFindLastID(this.PIDL);
@@ -680,7 +680,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       }
     }
 
-    public int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
+    public Int32 GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
       var options = SHGetFileInfoOptions.Icon | SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.OverlayIndex | SHGetFileInfoOptions.Pidl | SHGetFileInfoOptions.AddOverlays | (SHGetFileInfoOptions)type | (SHGetFileInfoOptions)flags;
       var shfi = new SHFILEINFO();
       var shfiSize = Marshal.SizeOf(shfi.GetType());
@@ -696,7 +696,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       }
     }
 
-    public Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags) {
+    public Boolean RefreshThumb(Int32 iconSize, out WTS_CACHEFLAGS flags) {
       flags = WTS_CACHEFLAGS.WTS_DEFAULT;
       return true;
       //ISharedBitmap bmp = null;
@@ -717,7 +717,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public Int32 IconIndex { get; set; }
 
-    public int GetUniqueID() => this.ParsingName.GetHashCode();
+    public Int32 GetUniqueID() => this.ParsingName.GetHashCode();
 
     public Int32[] cColumns { get; set; }
 
@@ -736,16 +736,16 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     #region IEquatable<IListItemEx> Members
 
-    public bool Equals(IListItemEx other) => other == null ? false : other.ParsingName.Equals(this.ParsingName, StringComparison.InvariantCultureIgnoreCase);
+    public Boolean Equals(IListItemEx other) => other == null ? false : other.ParsingName.Equals(this.ParsingName, StringComparison.InvariantCultureIgnoreCase);
 
 
     #endregion IEquatable<IListItemEx> Members
 
     #region IEqualityComparer<IListItemEx> Members
 
-    public bool Equals(IListItemEx x, IListItemEx y) => x.Equals(y);
+    public Boolean Equals(IListItemEx x, IListItemEx y) => x.Equals(y);
 
-    public int GetHashCode(IListItemEx obj) => 0;
+    public Int32 GetHashCode(IListItemEx obj) => 0;
 
 
     #endregion IEqualityComparer<IListItemEx> Members
