@@ -91,7 +91,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
           str = new StringBuilder(512);
           var index = -1;
           IExtractIconPWFlags flags;
-          iextract.GetIconLocation(0, str, 512, out index, out flags);
+          iextract.GetIconLocation(IExtractIconUFlags.GIL_ASYNC, str, 512, out index, out flags);
           Marshal.ReleaseComObject(ishellfolder);
           Marshal.ReleaseComObject(iextract);
           return flags;

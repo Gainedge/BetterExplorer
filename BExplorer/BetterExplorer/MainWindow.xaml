@@ -4188,7 +4188,10 @@
           <ColumnDefinition Width="2" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <shell:ShellTreeView x:Name="stvTreeView"></shell:ShellTreeView>
+        <!--<shell:ShellTreeView x:Name="stvTreeView"></shell:ShellTreeView>-->
+        <Helper:NoFlickerWindowsFormsHost
+          x:Name="ShellTreeViewHost"
+          Background="{DynamicResource WhiteBrush}" />
         <GridSplitter
           x:Name="TreeSplitter"
           Grid.Column="1"
@@ -4204,7 +4207,7 @@
           <Helper:NoFlickerWindowsFormsHost
             x:Name="ShellViewHost"
             Background="{DynamicResource WhiteBrush}" />
-          <ScrollBar x:Name="sbLVVertical" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Minimum="0" Maximum="100" SmallChange="0.5" LargeChange="1" Scroll="ScrollBar_OnScroll"></ScrollBar>
+          <!--<ScrollBar x:Name="sbLVVertical" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Minimum="0" Maximum="100" SmallChange="0.5" LargeChange="1" Scroll="ScrollBar_OnScroll"></ScrollBar>-->
         </Grid>
       </Grid>
       <GridSplitter

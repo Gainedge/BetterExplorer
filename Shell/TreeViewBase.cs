@@ -1,8 +1,10 @@
 ﻿using BExplorer.Shell.Interop;
 using System;
+using System.Drawing;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Settings;
 
 namespace BExplorer.Shell {
   public class TreeViewBase : TreeView {
@@ -22,6 +24,7 @@ namespace BExplorer.Shell {
     private const int TVS_EX_DOUBLEBUFFER = 0x0004;
     private const int TVM_SETEXTENDEDSTYLE = TV_FIRST + 44;
     private const int TVM_SETBKCOLOR = TV_FIRST + 29;
+    private const int TVM_SETTEXTCOLOR = TV_FIRST + 30;
 
     private const int TV_FIRST = 0x1100;
     private const int WM_ERASEBKGND = 0x0014;
@@ -58,7 +61,27 @@ namespace BExplorer.Shell {
       SetDoubleBuffer();
       SetExpandoesStyle();
       SendMessage(this.Handle, TVM_SETEXTENDEDSTYLE, (IntPtr)TVS_EX_AUTOHSCROLL, (IntPtr)TVS_EX_AUTOHSCROLL);
+      //SendMessage(this.Handle, TVM_SETBKCOLOR, IntPtr.Zero, Color.Black.ToWin32Color());
+      //SendMessage(this.Handle, TVM_SETTEXTCOLOR, IntPtr.Zero, Color.White.ToWin32Color());
+      //UxTheme.AllowDarkModeForApp(true);
+      //UxTheme.AllowDarkModeForWindow(this.Handle, true);
       UxTheme.SetWindowTheme(this.Handle, "Explorer", 0);
+      //this.ChangeTheme(ThemeColors.Dark);
+
+    }
+    public void ChangeTheme(ThemeColors theme) {
+      var themeStruct = new LVTheme(theme);
+      //UxTheme.AllowDarkModeForApp(theme == ThemeColors.Dark);
+      SendMessage(this.Handle, TVM_SETBKCOLOR, IntPtr.Zero, themeStruct.BackgroundColorTree.ToDrawingColor().ToWin32Color());
+      SendMessage(this.Handle, TVM_SETTEXTCOLOR, IntPtr.Zero, themeStruct.TextColor.ToDrawingColor().ToWin32Color());
+      UxTheme.AllowDarkModeForWindow(this.Handle, theme == ThemeColors.Dark);
+      UxTheme.SetWindowTheme(this.Handle, "Explorer", 0);
+      //UxTheme.FlushMenuThemes();
+      //this.Theme = new LVTheme(theme);
+      //this.VScroll.Theme = this.Theme;
+      //this._IIListView.SetBackgroundColor(this.Theme.HeaderBackgroundColor.ToDrawingColor().ToWin32Color());
+      //this._IIListView.SetTextColor(this.Theme.TextColor.ToDrawingColor().ToWin32Color());
+      //this._IIVisualProperties.SetColor(VPCOLORFLAGS.VPCF_SORTCOLUMN, this.Theme.SortColumnColor.ToDrawingColor().ToWin32Color());
 
     }
     [HandleProcessCorruptedStateExceptions]

@@ -83,6 +83,7 @@ namespace BetterExplorer {
     private bool _IsCalledFromLoading, isOnLoad;
     private MenuItem misa, misd, misag, misdg;
     private ShellView _ShellListView = new ShellView();
+    private ShellTreeViewEx _ShellTreeView = new ShellTreeViewEx();
     private bool IsNeedEnsureVisible;
     private ClipboardMonitor cbm = new ClipboardMonitor();
     private ContextMenu _CMHistory = new ContextMenu();
@@ -1616,30 +1617,30 @@ namespace BetterExplorer {
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e) {
-      this.sbLVVertical.Track.Thumb.DragDelta += (o, args) => {
-        this._IsScrollingManually = true;
-        User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Ceiling(args.VerticalChange * (8.5)));
-        //args.Handled = true;
-        //this.sbLVVertical.Value = this.sbLVVertical.Value + args.VerticalChange;
-      };
+      //this.sbLVVertical.Track.Thumb.DragDelta += (o, args) => {
+      //  this._IsScrollingManually = true;
+      //  User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Ceiling(args.VerticalChange * (8.5)));
+      //  //args.Handled = true;
+      //  //this.sbLVVertical.Value = this.sbLVVertical.Value + args.VerticalChange;
+      //};
       this._ScrollDeferer.Interval = 100;
       this._ScrollDeferer.Stop();
       this._ScrollDeferer.Tick += (o, args) => {
         this._ScrollDeferer.Stop();
 
         this._IsScrollingManually = true;
-        var delta = this.sbLVVertical.Value - this._ScrollOldValue;
+        //var delta = this.sbLVVertical.Value - this._ScrollOldValue;
 
         //User32.LockWindowUpdate(this._ShellListView.LVHandle);
-        if (Math.Abs(delta) > 0) {
-          //User32.LockWindowUpdate(this._ShellListView.LVHandle);
-          User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Round(delta * (this._ShellListView.View == ShellViewStyle.Details ? 1 : 1)));
-          this._ScrollOldValue = this.sbLVVertical.Value;
-          //User32.LockWindowUpdate(IntPtr.Zero);
-        } else {
-          User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Round(delta * (this._ShellListView.View == ShellViewStyle.Details ? 1 : 1)));
-          this._ScrollOldValue = this.sbLVVertical.Value;
-        }
+        //if (Math.Abs(delta) > 0) {
+        //  //User32.LockWindowUpdate(this._ShellListView.LVHandle);
+        //  User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Round(delta * (this._ShellListView.View == ShellViewStyle.Details ? 1 : 1)));
+        //  //this._ScrollOldValue = this.sbLVVertical.Value;
+        //  //User32.LockWindowUpdate(IntPtr.Zero);
+        //} else {
+        //  User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Round(delta * (this._ShellListView.View == ShellViewStyle.Details ? 1 : 1)));
+        //  //this._ScrollOldValue = this.sbLVVertical.Value;
+        //}
 
         //User32.LockWindowUpdate(IntPtr.Zero);
       };
@@ -1654,14 +1655,15 @@ namespace BetterExplorer {
 
       this._ProgressTimer.Stop();
       this.TheRibbon.UpdateLayout();
+      this._ShellTreeView.ShellListView = this._ShellListView;
       this.grdItemTextColor.ItemsSource = this.LVItemsColorCol;
       this._keyjumpTimer.Interval = 1000;
       this._keyjumpTimer.Tick += this._keyjumpTimer_Tick;
-      //this.ShellTreeHost.Child = this.ShellTree;
+      this.ShellTreeViewHost.Child = this._ShellTreeView;
       this.ShellViewHost.Child = this._ShellListView;
 
-      this.stvTreeView.ShellListView = this._ShellListView;
-      this.stvTreeView.NodeClick += (o, args) => { this.tcMain.NewTab(args.Item, false); };
+      //this.stvTreeView.ShellListView = this._ShellListView;
+      //this.stvTreeView.NodeClick += (o, args) => { this.tcMain.NewTab(args.Item, false); };
       //this.ctrlConsole.ShellListView = this._ShellListView;
       //this.autoUpdater.UpdateAvailable += this.AutoUpdater_UpdateAvailable;
       this.updateCheckTimer.Interval = 18000000 * 3;
@@ -1690,7 +1692,7 @@ namespace BetterExplorer {
         BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref statef, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS | BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, false);
         this.chkHiddenFiles.IsChecked = statef.fShowAllObjects == 1;
         this._ShellListView.ShowHidden = this.chkHiddenFiles.IsChecked.Value;
-        this.stvTreeView.IsShowHiddenItems = this.chkHiddenFiles.IsChecked.Value;
+        //this.stvTreeView.IsShowHiddenItems = this.chkHiddenFiles.IsChecked.Value;
         this.chkExtensions.IsChecked = statef.fShowExtensions == 1;
         this._ShellListView.IsFileExtensionShown = statef.fShowExtensions == 1;
         this._IsCalledFromLoading = false;
@@ -2265,9 +2267,10 @@ namespace BetterExplorer {
                         var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE() { fShowAllObjects = 1 };
                         BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
                         this._ShellListView.ShowHidden = true;
-
-                        this.stvTreeView.IsShowHiddenItems = true;
-                        this.stvTreeView.RefreshContents();
+                        this._ShellTreeView.IsShowHiddenItems = true;
+                        this._ShellTreeView.RefreshContents();
+                        //this.stvTreeView.IsShowHiddenItems = true;
+                        //this.stvTreeView.RefreshContents();
                       }
       ));
     }
@@ -2280,9 +2283,10 @@ namespace BetterExplorer {
                         var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE() { fShowAllObjects = 0 };
                         BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
                         this._ShellListView.ShowHidden = false;
-
-                        this.stvTreeView.IsShowHiddenItems = false;
-                        this.stvTreeView.RefreshContents();
+                        this._ShellTreeView.IsShowHiddenItems = false;
+                        this._ShellTreeView.RefreshContents();
+                        //this.stvTreeView.IsShowHiddenItems = false;
+                        //this.stvTreeView.RefreshContents();
                       }
       ));
     }
@@ -4205,12 +4209,14 @@ namespace BetterExplorer {
     private void BtnTheme_OnChecked(Object sender, RoutedEventArgs e) {
       this.ChangeRibbonTheme("Dark");
       this._ShellListView.ChangeTheme(ThemeColors.Dark);
+      this._ShellTreeView.ChangeTheme(ThemeColors.Dark);
       this.KeepBackstageOpen = true;
     }
 
     private void BtnTheme_OnUnchecked(Object sender, RoutedEventArgs e) {
       this.ChangeRibbonTheme("Light");
       this._ShellListView.ChangeTheme(ThemeColors.Light);
+      this._ShellTreeView.ChangeTheme(ThemeColors.Light);
       this.KeepBackstageOpen = true;
     }
 

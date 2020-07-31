@@ -191,9 +191,6 @@
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
     <Reference Include="Windows.Data" />
-    <Reference Include="Windows.Foundation.UniversalApiContract">
-      <HintPath>..\..\packages\Microsoft.Windows.SDK.Contracts.10.0.17763.1000\ref\netstandard2.0\Windows.Foundation.UniversalApiContract.winmd</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -1218,7 +1215,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

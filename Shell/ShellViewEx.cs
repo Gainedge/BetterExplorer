@@ -2233,7 +2233,7 @@ namespace BExplorer.Shell {
       this.BackColor = Color.Black;
 
       this._Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
-      this._UnvalidateTimer.Interval = 1000;
+      this._UnvalidateTimer.Interval = 150;
       this._UnvalidateTimer.Tick += this._UnvalidateTimer_Tick;
       this._UnvalidateTimer.Stop();
 
@@ -5006,7 +5006,7 @@ namespace BExplorer.Shell {
             break;
 
           case CustomDraw.CDDS_ITEMPOSTPAINT:
-            this.ProcessCustomDrawPostPaint(ref m, nmlvcd, index, hdc, sho, textColor, lvi);
+            //this.ProcessCustomDrawPostPaint(ref m, nmlvcd, index, hdc, sho, textColor, lvi);
             break;
         }
       }

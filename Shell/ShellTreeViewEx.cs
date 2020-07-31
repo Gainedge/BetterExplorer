@@ -1,4 +1,6 @@
-﻿namespace BExplorer.Shell {
+﻿using Settings;
+
+namespace BExplorer.Shell {
   using System;
   using System.Collections.Generic;
   using System.Drawing;
@@ -562,36 +564,36 @@
     }
 
     /*
-		public void DoCopy(IDataObject dataObject, IListItemEx destination)
-		{
-				var handle = this.Handle;
-				var thread = new Thread(() =>
-				{
-						var items = new IShellItem[0];
-						if (dataObject.GetDataPresent("FileDrop"))
-								items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
-						else
-								items = dataObject.ToShellItemArray().ToArray();
+    public void DoCopy(IDataObject dataObject, IListItemEx destination)
+    {
+        var handle = this.Handle;
+        var thread = new Thread(() =>
+        {
+            var items = new IShellItem[0];
+            if (dataObject.GetDataPresent("FileDrop"))
+                items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => FileSystemListItem.ToFileSystemItem(IntPtr.Zero, s.ToShellParsingName()).ComInterface).ToArray();
+            else
+                items = dataObject.ToShellItemArray().ToArray();
 
-						try
-						{
-								var fo = new IIFileOperation(handle);
-								foreach (var item in items)
-								{
-										fo.CopyItem(item, destination);
-								}
+            try
+            {
+                var fo = new IIFileOperation(handle);
+                foreach (var item in items)
+                {
+                    fo.CopyItem(item, destination);
+                }
 
-								fo.PerformOperations();
-						}
-						catch (SecurityException)
-						{
-								throw;
-						}
-				});
-				thread.SetApartmentState(ApartmentState.STA);
-				thread.Start();
-		}
-		*/
+                fo.PerformOperations();
+            }
+            catch (SecurityException)
+            {
+                throw;
+            }
+        });
+        thread.SetApartmentState(ApartmentState.STA);
+        thread.Start();
+    }
+    */
 
     /// <summary>
     /// Pasted the files in the clipboard to the <see cref="ShellTreeView"/>'s currentlt <see cref="TreeView.SelectedNode">Selected Node</see> on a separate thread
@@ -883,7 +885,7 @@
             fo.PerformOperations();
           } else {
             /* Cancel the label edit action, inform the user, and
-							 place the node in edit mode again. */
+               place the node in edit mode again. */
             e.CancelEdit = true;
             MessageBox.Show("Invalid tree node label.\n The invalid characters are: '@','.', ',', '!'", "Node Label Edit");
             e.Node.BeginEdit();
@@ -1233,5 +1235,10 @@
     }
 
     #endregion
+
+    public void ChangeTheme(ThemeColors theme) {
+      this.BackColor = theme == ThemeColors.Dark ? Color.Black : Color.White;
+      this.ShellTreeView.ChangeTheme(theme);
+    }
   }
 }

@@ -521,10 +521,11 @@ namespace BExplorer.Shell {
 
     private void _RedrawingThreadRun() {
       while (true) {
+        Application.DoEvents();
         ResetEvent?.WaitOne();
         if (this._RedrawQueue.IsEmpty) {
           Thread.Sleep(1);
-          //Application.DoEvents();
+          Application.DoEvents();
           continue;
         }
         //if (this._RedrawQueue.Count == 1) {
@@ -532,7 +533,7 @@ namespace BExplorer.Shell {
         //} else {
         //  Thread.Sleep(5);
         //}
-        //Application.DoEvents();
+        Application.DoEvents();
         var index = -1;
         if (this._RedrawQueue.TryDequeue(out index)) {
         if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero)

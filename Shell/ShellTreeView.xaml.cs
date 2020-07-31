@@ -248,7 +248,7 @@ namespace BExplorer.Shell {
       if (this.isFromTreeview) {
         return;
       }
-      this.SelItem(e.Folder);
+      //this.SelItem(e.Folder);
       // TODO: Try to reenable this since sometimes it causes an exceptions
       //var thread = new Thread(() => { this.SelItem(e.Folder); });
       //thread.SetApartmentState(ApartmentState.STA);
@@ -263,10 +263,10 @@ namespace BExplorer.Shell {
       var treeViewItem = e.OriginalSource as FrameworkElement;
       if (treeViewItem.DataContext is FilesystemTreeViewItem fstItem && !fstItem.IsLoaded) {
         //fstItem.Items.Clear();
-        //var navThread = new Thread(() => {
+        var navThread = new Thread(() => {
 
 
-        this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
+        this.Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
           var sho = fstItem.FsItem;
           fstItem.Items.Clear();
           foreach (var item in sho.ParsingName != KnownFolders.Computer.ParsingName
@@ -301,9 +301,9 @@ namespace BExplorer.Shell {
             //item?.BringIntoView();
           }
         }));
-        //});
-        //navThread.SetApartmentState(ApartmentState.STA);
-        //navThread.Start();
+        });
+        navThread.SetApartmentState(ApartmentState.STA);
+        navThread.Start();
       }
     }
     private ScrollViewer _ScrollViewer { get; set; }
