@@ -1673,9 +1673,10 @@ namespace BExplorer.Shell {
               if (this.Items.Count == 0 || this.Items.Count - 1 < nmlv.item.iItem || ((nmlv.item.mask & LVIF.LVIF_TEXT) == 0 && (nmlv.item.mask & LVIF.LVIF_COLUMNS) == 0)) {
                 break;
               }
-              var currentItem = this.IsSearchNavigating ? this.Items[nmlv.item.iItem].Clone() : this.Items[nmlv.item.iItem];
-              if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT && nmlv.item.iSubItem == 0) {
-
+              //var currentItem = this.IsSearchNavigating ? this.Items[nmlv.item.iItem].Clone() : this.Items[nmlv.item.iItem];
+              var currentItem = this.Items[nmlv.item.iItem];
+              if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
+                var hh = nmlv.item.iSubItem;
               }
 
               if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT && (this.View != ShellViewStyle.Tile || (nmlv.item.mask & LVIF.LVIF_IMAGE) == LVIF.LVIF_IMAGE)) {
@@ -2992,7 +2993,7 @@ namespace BExplorer.Shell {
       var shellItem = new ShellItem(this.CurrentFolder.PIDL);
       var searchFolder = new ShellSearchFolder(searchCondition, shellItem);
       IListItemEx searchItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, searchFolder);
-      this.NavigateSearch(searchItem, isInSameTab, refresh, this.IsNavigationInProgress);
+      this.Navigate(searchItem, isInSameTab, refresh, this.IsNavigationInProgress);
     }
 
     /// <summary>Invalidates the director</summary>
@@ -3575,6 +3576,7 @@ namespace BExplorer.Shell {
       var isThereSettings = false;
 
       isThereSettings = this.LoadSettingsFromDatabase(destination, out folderSettings);
+
       this.RequestedCurrentLocation = destination;
       if (!refresh) {
         this.Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab) { IsFirstItemAvailable = true });
@@ -3585,6 +3587,17 @@ namespace BExplorer.Shell {
       this.IsNavigationInProgress = true;
 
       this._ResetTimer.Stop();
+      if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List) {
+        this.ResizeIcons(16);
+        this.View = folderSettings.View;
+      } else if (folderSettings.IconSize >= 16) {
+        this.ResizeIcons(folderSettings.IconSize);
+        if (folderSettings.IconSize != 48 && folderSettings.IconSize != 96 && folderSettings.IconSize != 256) {
+          this.View = ShellViewStyle.Thumbnail;
+        } else {
+          this.View = folderSettings.View;
+        }
+      }
       if (isThereSettings) {
         if (folderSettings.Columns != null) {
           //this.AfterCollumsPopulate?.Invoke(this, new ColumnAddEventArgs(this.Collumns.FirstOrDefault()));
@@ -3617,6 +3630,7 @@ namespace BExplorer.Shell {
             if (folderSettings.View != ShellViewStyle.Details) {
               this.AutosizeColumn(this.Collumns.Count - 1, -2);
             }
+            
           }
 
         }
@@ -3654,17 +3668,17 @@ namespace BExplorer.Shell {
       this.IsViewSelectionAllowed = false;
 
 
-      if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List) {
-        this.ResizeIcons(16);
-        this.View = folderSettings.View;
-      } else if (folderSettings.IconSize >= 16) {
-        this.ResizeIcons(folderSettings.IconSize);
-        if (folderSettings.IconSize != 48 && folderSettings.IconSize != 96 && folderSettings.IconSize != 256) {
-          this.View = ShellViewStyle.Thumbnail;
-        } else {
-          this.View = folderSettings.View;
-        }
-      }
+      //if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List) {
+      //  this.ResizeIcons(16);
+      //  this.View = folderSettings.View;
+      //} else if (folderSettings.IconSize >= 16) {
+      //  this.ResizeIcons(folderSettings.IconSize);
+      //  if (folderSettings.IconSize != 48 && folderSettings.IconSize != 96 && folderSettings.IconSize != 256) {
+      //    this.View = ShellViewStyle.Thumbnail;
+      //  } else {
+      //    this.View = folderSettings.View;
+      //  }
+      //}
 
       this.IsViewSelectionAllowed = true;
       this.Invoke((Action)(() => this._NavWaitTimer.Start()));
@@ -3798,6 +3812,22 @@ namespace BExplorer.Shell {
           shellItem.ItemIndex = k++;
 
           this.Items.Add(shellItem);
+          var delta = currentI - lastI;
+          if (delta >= 100) {
+            lastI = currentI;
+          }
+
+          //if (this.IsSearchNavigating && delta >= 100) {
+
+          //  //if (this.IsGroupsEnabled) {
+          //  //  var colData = this.AllAvailableColumns.FirstOrDefault(w => w.Value.ID == folderSettings.GroupCollumn).Value;
+          //  //  this.GenerateGroupsFromColumn(colData, folderSettings.GroupOrder == SortOrder.Descending);
+          //  //} else {
+          //    User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
+          //    //this.ScrollUpdateThreadRun();
+          //  //}
+          //}
+
           shellItem.Dispose();
           if (currentI == 1) {
             this.BeginInvoke((Action)(() => {
@@ -3836,7 +3866,7 @@ namespace BExplorer.Shell {
           this.GenerateGroupsFromColumn(colData, folderSettings.GroupOrder == SortOrder.Descending);
         } else {
           User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
-          this.ScrollUpdateThreadRun();
+          //this.ScrollUpdateThreadRun();
         }
         //this.Invoke((Action)(() => {
         //  User32.LockWindowUpdate(IntPtr.Zero);
@@ -4974,7 +5004,7 @@ namespace BExplorer.Shell {
                   isFocused ? this.Theme.SelectionFocusedColor.ToDrawingColor() : this.Theme.SelectionColor.ToDrawingColor());
 
                 var rectSel = new Rectangle(itemBounds.X, itemBounds.Y, itemBounds.Width, itemBounds.Height - 1);
-                var rect = new Rectangle(itemBounds.X, itemBounds.Y - 1, itemBounds.Width - 1, itemBounds.Height);
+                var rect = new Rectangle(itemBounds.X, itemBounds.Y, itemBounds.Width - 1, itemBounds.Height - 1);
                 gr.FillRectangle(brush, rectSel);
                 if (isSelected && this.View != ShellViewStyle.Details) {
                   var pen = new Pen(this.Theme.SelectionBorderColor.ToDrawingColor());

@@ -802,8 +802,10 @@ namespace BetterExplorer {
 
     private void btnmtOther_Click(object sender, RoutedEventArgs e) {
       var dlg = new FolderSelectDialog();
-      if (dlg.ShowDialog())
+      this._ShellListView.IsFocusAllowed = false;
+      if (dlg.ShowDialog(this._ShellListView.LVHandle))
         this.SetFOperation(dlg.FileName, OperationType.Move);
+      this._ShellListView.IsFocusAllowed = true;
     }
 
     private void SetFOperation(String fileName, OperationType opType) {

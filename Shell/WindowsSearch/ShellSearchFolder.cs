@@ -45,22 +45,22 @@ namespace BExplorer.Shell
         }
 
         /*
-		/// <summary>
-		/// Create a simple search folder. Once the appropiate parameters are set,
-		/// the search folder can be enumerated to get the search results.
-		/// </summary>
-		/// <param name="searchCondition">Specific condition on which to perform the search (property and expected value)</param>
-		/// <param name="searchScopePath">List of folders/paths to perform the search on. These locations need to be indexed by the system.</param>
-		public ShellSearchFolder(SearchCondition searchCondition, params string[] searchScopePath) {
-			ComInterface = this.m_SearchComInterface;
-			NativeSearchFolderItemFactory = (ISearchFolderItemFactory)new SearchFolderItemFactoryCoClass();
-			this.SearchCondition = searchCondition;
+    /// <summary>
+    /// Create a simple search folder. Once the appropiate parameters are set,
+    /// the search folder can be enumerated to get the search results.
+    /// </summary>
+    /// <param name="searchCondition">Specific condition on which to perform the search (property and expected value)</param>
+    /// <param name="searchScopePath">List of folders/paths to perform the search on. These locations need to be indexed by the system.</param>
+    public ShellSearchFolder(SearchCondition searchCondition, params string[] searchScopePath) {
+      ComInterface = this.m_SearchComInterface;
+      NativeSearchFolderItemFactory = (ISearchFolderItemFactory)new SearchFolderItemFactoryCoClass();
+      this.SearchCondition = searchCondition;
 
-			if (searchScopePath != null && searchScopePath.Length > 0 && searchScopePath[0] != null) {
-				this.SearchScopePaths = searchScopePath;
-			}
-		}
-		*/
+      if (searchScopePath != null && searchScopePath.Length > 0 && searchScopePath[0] != null) {
+        this.SearchScopePaths = searchScopePath;
+      }
+    }
+    */
         #endregion Constructors
 
         public IShellItem m_SearchComInterface
@@ -209,7 +209,7 @@ namespace BExplorer.Shell
             HResult hr = NativeSearchFolderItemFactory.SetFolderLogicalViewMode(mode);
             if (hr != HResult.S_OK) throw new Exception(hr.ToString());
         }
-		
+    
         /// <summary>
         /// Creates a new column list whose columns are all visible,
         /// given an array of PropertyKey structures. The default is based on FolderTypeID.

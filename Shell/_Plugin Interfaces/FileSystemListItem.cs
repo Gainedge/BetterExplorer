@@ -64,7 +64,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     private IExtractIconPWFlags _IconType = IExtractIconPWFlags.GIL_PERCLASS;
 
     public IExtractIconPWFlags IconType {
-      get { return this.IsParentSearchFolder ? IExtractIconPWFlags.GIL_PERINSTANCE : this.GetIconType(); }
+      get { return this.GetIconType(); }
       set { this._IconType = value; }
     }
 

@@ -608,7 +608,7 @@ namespace BExplorer.Shell {
       try {
         if (queue.IsEmpty) {
           Thread.Sleep(1);
-          //Application.DoEvents();
+          Application.DoEvents();
           return false;
         }
         if (queue.TryDequeue(out index)) {
