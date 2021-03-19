@@ -1167,7 +1167,7 @@
       <Version>1.36.1.1421</Version>
     </PackageReference>
     <PackageReference Include="log4net">
-      <Version>2.0.8</Version>
+      <Version>2.0.10</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Bcl.Async">
       <Version>1.0.168</Version>
