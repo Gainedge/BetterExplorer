@@ -1,6 +1,6 @@
 ﻿using BExplorer.Shell.VirtualGroups;
-using System.Reflection;
 using Settings;
+using System.Reflection;
 
 namespace BExplorer.Shell {
   using _Plugin_Interfaces;
@@ -432,7 +432,7 @@ namespace BExplorer.Shell {
           case ShellViewStyle.Tile:
             var isComputer = this.RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName);
             User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_TILE, 0);
-            if (isComputer) {
+            if (isComputer) { 
               var tvi = new LVTILEVIEWINFO {
                 cLines = 2,
                 rcLabelMargin = new User32.RECT() { Left = 2, Right = 0, Bottom = 60, Top = 5 },
@@ -1632,7 +1632,6 @@ namespace BExplorer.Shell {
     [HandleProcessCorruptedStateExceptions]
     protected override void WndProc(ref Message m) {
       try {
-
         if (m.Msg == (Int32)WM.WM_PARENTNOTIFY && User32.LOWORD((Int32)m.WParam) == (Int32)WM.WM_MBUTTONDOWN) {
           this.OnItemMiddleClick();
         } else if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
@@ -1660,10 +1659,9 @@ namespace BExplorer.Shell {
                 if (!item.DisplayName.Equals(nmlvedit.item.pszText, StringComparison.InvariantCultureIgnoreCase)) {
                   this.RenameShellItem(item.ComInterface, nmlvedit.item.pszText, item.DisplayName != Path.GetFileName(item.ParsingName) && !item.IsFolder, item.Extension);
                 }
-
-
               }
               this.EndLabelEdit();
+
               //this.IsRenameInProgress = false;
               this._EditorSubclass?.DestroyHandle();
               break;
@@ -1891,6 +1889,7 @@ namespace BExplorer.Shell {
               if (!this._ItemForRealNameIsAny && !this.IsRenameInProgress && !(System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.TextBox)) {
                 switch (nkd.wVKey) {
                   case (Int16)Keys.Enter:
+                    break;
                     if (this._IsCanceledOperation) {
                       // this.IsRenameInProgress = false;
                       break;
@@ -3436,6 +3435,7 @@ namespace BExplorer.Shell {
 
         this._ItemForRename = -1;
         this._IsCanceledOperation = isCancel;
+        this.IsRenameInProgress = false;
         this.RefreshItem(this.GetFirstSelectedItemIndex());
       }
 
@@ -3630,7 +3630,7 @@ namespace BExplorer.Shell {
             if (folderSettings.View != ShellViewStyle.Details) {
               this.AutosizeColumn(this.Collumns.Count - 1, -2);
             }
-            
+
           }
 
         }
@@ -4342,13 +4342,15 @@ namespace BExplorer.Shell {
 
               case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
               case ShellNotifications.SHCNE.SHCNE_RENAMEITEM:
-                var obj1 = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-                var obj2 = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item2);
-                if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName)) {
-                  this.UpdateItem(obj1, obj2);
+                if (!this.IsRenameInProgress) {
+                  var obj1 = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
+                  var obj2 = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item2);
+                  if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName)) {
+                    this.UpdateItem(obj1, obj2);
+                  }
                 }
 
-                this.IsRenameInProgress = false;
+                //this.IsRenameInProgress = false;
                 break;
 
               case ShellNotifications.SHCNE.SHCNE_NETSHARE:

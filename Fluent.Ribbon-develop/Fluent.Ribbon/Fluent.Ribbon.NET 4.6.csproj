@@ -346,10 +346,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\Colors\Colors.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Themes\Colors\BaseLight.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

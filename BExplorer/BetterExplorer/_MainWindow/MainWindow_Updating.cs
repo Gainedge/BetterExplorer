@@ -69,7 +69,7 @@ namespace BetterExplorer {
         .AddButton("Test", ToastActivationType.Foreground, "Alabala")
         .GetToastContent();
 
-      // And create the toast notification
+      // And create the toast notification #FIXME@DimitarCC 
       var toast = new ToastNotification(toastContent.GetXml());
 
       // And then show it

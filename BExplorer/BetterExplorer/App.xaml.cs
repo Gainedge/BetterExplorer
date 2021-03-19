@@ -151,12 +151,12 @@ namespace BetterExplorer {
       DesktopNotificationManagerCompat.RegisterActivator<BetterExplorerNotificationActivator>();
       Settings.BESettings.LoadSettings();
 
-      Process process = Process.GetCurrentProcess();
-      process.PriorityClass = ProcessPriorityClass.Normal;
+      //Process process = Process.GetCurrentProcess();
+      //process.PriorityClass = ProcessPriorityClass.Normal;
 
-      // Set the current thread to run at 'Highest' Priority
-      Thread thread = Thread.CurrentThread;
-      thread.Priority = ThreadPriority.Highest;
+      //// Set the current thread to run at 'Highest' Priority
+      //Thread thread = Thread.CurrentThread;
+      //thread.Priority = ThreadPriority.Highest;
 
       Boolean dmi = true;
       System.Windows.Forms.Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);

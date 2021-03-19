@@ -641,6 +641,10 @@
       <Project>{737CC7F2-EC7C-4800-B7EB-72637E892C42}</Project>
       <Name>ConsoleControl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Fluent.Ribbon-develop\Fluent.Ribbon\Fluent.Ribbon.NET 4.6.csproj">
+      <Project>{4c92fcf4-3561-499f-bc5b-f2f089863047}</Project>
+      <Name>Fluent.Ribbon.NET 4.6</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\IconExtractor\IconExtractor.csproj">
       <Project>{fdfd4eeb-c202-4d93-a6e9-d8984a12d014}</Project>
       <Name>IconExtractor</Name>
@@ -1160,9 +1164,6 @@
     <PackageReference Include="ControlzEx">
       <Version>3.0.2.4</Version>
     </PackageReference>
-    <PackageReference Include="Fluent.Ribbon">
-      <Version>6.0.0-dev0171</Version>
-    </PackageReference>
     <PackageReference Include="Google.Apis.Drive.v2">
       <Version>1.36.1.1421</Version>
     </PackageReference>
@@ -1215,7 +1216,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
