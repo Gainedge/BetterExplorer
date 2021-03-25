@@ -50,7 +50,6 @@ namespace BetterExplorer {
   using System.Xml;
   using System.Xml.Linq;
   using TaskDialogInterop;
-  using wyDay.Controls;
   using Clipboards = System.Windows.Forms.Clipboard;
   using ContextMenu = Fluent.ContextMenu;
   using Image = System.Windows.Controls.Image;

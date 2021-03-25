@@ -2942,5 +2942,8 @@ public static extern bool UpdateWindow(IntPtr hWnd);
     public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, Win32WndProc newProc);
     [DllImport("user32.dll")]
     public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
   }
 }

@@ -287,7 +287,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public static IListItemEx InitializeWithIShellItem(IntPtr lvHandle, IShellItem item) {
       var fsItem = new FileSystemListItem();
-      fsItem.Initialize(lvHandle, new ShellItem(item).Pidl, 0);
+      fsItem.Initialize(lvHandle, Shell32.SHGetIDListFromObject(item), 0);
       return fsItem;
     }
 

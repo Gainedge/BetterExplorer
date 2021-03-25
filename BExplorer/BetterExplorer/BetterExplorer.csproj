@@ -343,12 +343,6 @@
       <DependentUpon>UndoCloseGalleryItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Updater\Updater.cs" />
-    <Compile Include="Updater\UpdateWizard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Updater\UpdateWizard.Designer.cs">
-      <DependentUpon>UpdateWizard.cs</DependentUpon>
-    </Compile>
     <Compile Include="_MainWindow\MainWindow_Tabs.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -600,9 +594,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Updater\UpdateWizard.resx">
-      <DependentUpon>UpdateWizard.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="app.manifest">
       <SubType>Designer</SubType>
@@ -625,10 +616,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutomaticUpdater\ControlWPF\AutomaticUpdaterWPF.csproj">
-      <Project>{b6b5cbb6-87b2-411a-9166-9e165df5b0da}</Project>
-      <Name>AutomaticUpdaterWPF</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\BEHelper\BEHelper.csproj">
       <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
       <Name>BEHelper</Name>
@@ -1153,9 +1140,6 @@
     <Content Include="BEUpdater.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="wyUpdate.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BouncyCastle">
@@ -1216,7 +1200,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

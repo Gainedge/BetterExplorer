@@ -353,11 +353,11 @@ namespace BetterExplorer {
     /// <param name="sender">The main Window</param>
     /// <param name="e">The args</param>
     private void Win_StateChanged(Object sender, EventArgs e) {
-      if ((sender as Window)?.WindowState != WindowState.Minimized) {
-        ((Window)sender).Visibility = Visibility.Visible;
-        CombinedWindowActivator windowsActivate = new CombinedWindowActivator();
-        windowsActivate.ActivateForm(sender as Window, null, IntPtr.Zero);
-      }
+      //if ((sender as Window)?.WindowState != WindowState.Minimized) {
+      //  ((Window)sender).Visibility = Visibility.Visible;
+      //  CombinedWindowActivator windowsActivate = new CombinedWindowActivator();
+      //  windowsActivate.ActivateForm(sender as Window, null, IntPtr.Zero);
+      //}
     }
 
     /// <summary>

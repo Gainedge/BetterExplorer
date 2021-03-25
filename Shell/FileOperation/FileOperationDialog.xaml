@@ -1,14 +1,15 @@
-﻿<Window x:Class="BExplorer.Shell.FileOperationDialog"
+﻿<Ribbon:RibbonWindow x:Class="BExplorer.Shell.FileOperationDialog"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" SizeToContent="WidthAndHeight" Closed="Window_Closed" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <StackPanel Orientation="Vertical" CanVerticallyScroll="False">
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" Height="Auto" MaxHeight="530" VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Path=Contents}"/>
-            </ScrollViewer>
-        </StackPanel>
-    </Grid>
-</Window>
+             xmlns:Ribbon="clr-namespace:Fluent;assembly=Fluent"
+             mc:Ignorable="d" Height="0" Width="421" Closed="Window_Closed" ResizeMode="CanMinimize" WindowStartupLocation="CenterOwner">
+  <Grid>
+    <StackPanel Orientation="Vertical" CanVerticallyScroll="False" Width="Auto" Height="Auto">
+      <ScrollViewer HorizontalScrollBarVisibility="Disabled" Height="Auto" MaxHeight="530" VerticalScrollBarVisibility="Auto">
+        <ItemsControl ItemsSource="{Binding Path=Contents}"/>
+      </ScrollViewer>
+    </StackPanel>
+  </Grid>
+</Ribbon:RibbonWindow>

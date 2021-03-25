@@ -289,6 +289,7 @@ namespace BExplorer.Shell {
     public Boolean IsNavigationInProgress = false;
 
     public Boolean IsGroupsEnabled { get; set; }
+    public FileOperationDialog OperationDialog { get; set; }
 
     // public Boolean IsTraditionalNameGrouping { get; set; }
 
@@ -2678,51 +2679,56 @@ namespace BExplorer.Shell {
     public void PasteAvailableFiles() {
       var handle = this.Handle;
       var view = this;
-      var thread = new Thread(() => {
-        var dataObject = F.Clipboard.GetDataObject();
-        var dropEffect = dataObject.GetDropEffect();
-        if (dataObject != null && dataObject.GetDataPresent("Shell IDList Array")) {
-          var shellItemArray = dataObject.ToShellItemArray();
-          var items = shellItemArray.ToArray();
+      var dlg = new FileOperation(this);
+      try {
+        var thread = new Thread(() => {
+          var dataObject = F.Clipboard.GetDataObject();
+          var dropEffect = dataObject.GetDropEffect();
+          if (dataObject != null && dataObject.GetDataPresent("Shell IDList Array")) {
+            var shellItemArray = dataObject.ToShellItemArray();
+            var items = shellItemArray.ToArray();
 
-          try {
-            var sink = new FOperationProgressSink(view);
-            var controlItem = FileSystemListItem.InitializeWithIShellItem(this.LVHandle, items.First()).Parent;
-            var fo = new IIFileOperation(sink, handle, true, controlItem.Equals(this.CurrentFolder));
-            if (dropEffect == System.Windows.DragDropEffects.Copy) {
-              fo.CopyItems(shellItemArray, this.CurrentFolder);
-            } else {
-              fo.MoveItems(shellItemArray, this.CurrentFolder);
-            }
-
-            fo.PerformOperations();
-            Marshal.ReleaseComObject(shellItemArray);
-          } catch { }
-        } else if (dataObject != null && dataObject.GetDataPresent("FileDrop")) {
-          var items = ((String[])dataObject.GetData("FileDrop")).Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
-          try {
-            var sink = new FOperationProgressSink(view);
-            var controlItem = FileSystemListItem.InitializeWithIShellItem(this.LVHandle, items.First()).Parent;
-            var fo = new IIFileOperation(sink, handle, true, controlItem.Equals(this.CurrentFolder));
-            foreach (var item in items) {
+            try {
+              var controlItem = FileSystemListItem.InitializeWithIShellItem(this.LVHandle, items.First()).Parent;
+              var fo = new IIFileOperation(dlg, handle, true, controlItem.Equals(this.CurrentFolder), dlg);
               if (dropEffect == System.Windows.DragDropEffects.Copy) {
-                fo.CopyItem(item, this.CurrentFolder);
+                fo.CopyItems(shellItemArray, this.CurrentFolder);
               } else {
-                fo.MoveItem(item, this.CurrentFolder, null);
+                fo.MoveItems(shellItemArray, this.CurrentFolder);
               }
-            }
 
-            fo.PerformOperations();
-          } catch { }
-        } else {
-          return;
-        }
-        this.LargeImageList.SupressThumbnailGeneration(false);
-      });
+              fo.PerformOperations();
+              Marshal.ReleaseComObject(shellItemArray);
+            } catch { }
+          } else if (dataObject != null && dataObject.GetDataPresent("FileDrop")) {
+            var items = ((String[])dataObject.GetData("FileDrop")).Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
+            try {
 
-      thread.SetApartmentState(ApartmentState.STA);
-      thread.IsBackground = true;
-      thread.Start();
+              var controlItem = FileSystemListItem.InitializeWithIShellItem(this.LVHandle, items.First()).Parent;
+              var fo = new IIFileOperation(dlg, handle, true, controlItem.Equals(this.CurrentFolder), dlg);
+              foreach (var item in items) {
+                if (dropEffect == System.Windows.DragDropEffects.Copy) {
+                  fo.CopyItem(item, this.CurrentFolder);
+                } else {
+                  fo.MoveItem(item, this.CurrentFolder, null);
+                }
+              }
+
+              fo.PerformOperations();
+            } catch { }
+          } else {
+            return;
+          }
+          this.LargeImageList.SupressThumbnailGeneration(false);
+        });
+        dlg.CurrentThread = thread;
+        thread.SetApartmentState(ApartmentState.STA);
+        //thread.IsBackground = true;
+        thread.Start();
+      }
+      catch (ThreadAbortException ex) {
+        
+      }
       Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
       GC.WaitForFullGCComplete(1000);
       GC.Collect();
@@ -2743,27 +2749,29 @@ namespace BExplorer.Shell {
     public void DeleteSelectedFiles(Boolean isRecycling) {
       var handle = this.Handle;
       var view = this;
+      var dlg = new FileOperation(view);
       var thread = new Thread(() => {
-        var sink = new FOperationProgressSink(view);
-        var fo = new IIFileOperation(sink, handle, isRecycling);
+        var fo = new IIFileOperation(dlg, handle, isRecycling, dlg);
         foreach (var item in this.SelectedItems) {
           fo.DeleteItem(item);
           this.BeginInvoke(new MethodInvoker(() => { this._IIListView.SetItemState(item.ItemIndex, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, 0); }));
         }
 
         fo.PerformOperations();
+        fo.Dispose();
         if (isRecycling) {
           this.RaiseRecycleBinUpdated();
         }
       });
+      dlg.CurrentThread = thread;
       thread.SetApartmentState(ApartmentState.STA);
-      thread.IsBackground = true;
+      //thread.IsBackground = true;
       thread.Start();
     }
 
     public void RenameShellItem(IShellItem item, String newName, Boolean isAddFileExtension, String extension = "") {
       var handle = this.Handle;
-      var sink = new FOperationProgressSink(this);
+      var sink = new FileOperation(this);
       var fo = new IIFileOperation(sink, handle, false);
       fo.RenameItem(item, isAddFileExtension ? newName + extension : newName);
       fo.PerformOperations();

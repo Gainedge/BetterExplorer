@@ -90,7 +90,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -128,7 +127,6 @@
     <Compile Include="WindowActivator.cs" />
     <Compile Include="ShellItemEqualityComparer.cs" />
     <Compile Include="Custom ContextMenus Remove Soon\FilterMenu_Strings.cs" />
-    <Compile Include="FOperationProgressSink.cs" />
     <Compile Include="Interop\WindowsThumbnailProvider.cs" />
     <Compile Include="Interop\IOperationsProgressDialog.cs" />
     <Compile Include="Interop\Wallpaper.cs" />
@@ -136,7 +134,6 @@
     <Compile Include="FolderSelectDialog.cs" />
     <Compile Include="FolderSettings.cs" />
     <Compile Include="FileOperation\AsyncUnbuffCopy.cs" />
-    <Compile Include="FileOperation\FileOperationProgressSink.cs" />
     <Compile Include="FileOperation\IIFileOperation.cs" />
     <Compile Include="FileOperation\FileOperation.xaml.cs">
       <DependentUpon>FileOperation.xaml</DependentUpon>
@@ -341,6 +338,10 @@
     <ProjectReference Include="..\CustomScrollbar\CustomScrollbar.csproj">
       <Project>{5b85e2d7-2005-4496-b5d7-59c68a1ec91d}</Project>
       <Name>CustomScrollbar</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fluent.Ribbon-develop\Fluent.Ribbon\Fluent.Ribbon.NET 4.6.csproj">
+      <Project>{4c92fcf4-3561-499f-bc5b-f2f089863047}</Project>
+      <Name>Fluent.Ribbon.NET 4.6</Name>
     </ProjectReference>
     <ProjectReference Include="..\IconExtractor\IconExtractor.csproj">
       <Project>{fdfd4eeb-c202-4d93-a6e9-d8984a12d014}</Project>
