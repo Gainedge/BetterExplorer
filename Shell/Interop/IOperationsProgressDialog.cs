@@ -85,9 +85,9 @@ namespace BExplorer.Shell.Interop {
     [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
     void GetMilliseconds([Out] ulong pullElapsed, [Out] ulong pullRemaining);
 
-    //[PreserveSig]
+    [PreserveSig]
     [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    void GetOperationStatus([In, Out] ref PDOPSTATUS popstatus);
+    HResult GetOperationStatus([In, Out] ref PDOPSTATUS popstatus);
     //PDOPSTATUS GetOperationStatus();
   }
 }

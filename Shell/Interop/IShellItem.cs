@@ -38,8 +38,8 @@ namespace BExplorer.Shell.Interop
 
         IntPtr GetDisplayName(SIGDN sigdnName);
 
-			[PreserveSig]
-				HResult GetAttributes(SFGAO sfgaoMask, out SFGAO psfgaoAttribs);
+      [PreserveSig]
+        HResult GetAttributes(SFGAO sfgaoMask, out SFGAO psfgaoAttribs);
 
         int Compare(IShellItem psi, SICHINT hint);
     };

@@ -10,7 +10,7 @@ namespace BExplorer.Shell {
         var column = new LVCOLUMN() { cx = 75, iSubItem = 0, pszText = "Name", fmt = LVCFMT.LEFT };
         column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_MINWIDTH;
         User32.SendMessage(shellView.LVHandle, BExplorer.Shell.Interop.MSG.LVM_INSERTCOLUMN, 0, ref column);
-        
+
 
         var collumn = column.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 10 }, typeof(String), false, 200);
         collumn.ID = "A0";
@@ -22,7 +22,7 @@ namespace BExplorer.Shell {
           var column2 = new LVCOLUMN() { cx = 100, iSubItem = 1, pszText = "Type", fmt = LVCFMT.LEFT };
           column2.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_SUBITEM;
           User32.SendMessage(shellView.LVHandle, BExplorer.Shell.Interop.MSG.LVM_INSERTCOLUMN, 1, ref column2);
-          
+
           var columnType = column2.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 }, typeof(Type), false, 150);
           columnType.ID = "A182";
           shellView.Collumns.Add(columnType);
@@ -32,7 +32,7 @@ namespace BExplorer.Shell {
           var column3 = new LVCOLUMN() { cx = 100, iSubItem = 2, pszText = "Size", fmt = LVCFMT.RIGHT };
           column3.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_SUBITEM;
           User32.SendMessage(shellView.LVHandle, BExplorer.Shell.Interop.MSG.LVM_INSERTCOLUMN, 2, ref column3);
-          
+
           var columnSize = column3.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 12 }, typeof(long), false, 90);
           columnSize.ID = "A1";
           shellView.Collumns.Add(columnSize);
@@ -42,7 +42,7 @@ namespace BExplorer.Shell {
           var column4 = new LVCOLUMN() { cx = 100, iSubItem = 3, pszText = "Date Modified", fmt = LVCFMT.LEFT };
           column4.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_SUBITEM;
           User32.SendMessage(shellView.LVHandle, BExplorer.Shell.Interop.MSG.LVM_INSERTCOLUMN, 3, ref column4);
-          
+
           var columnDM = column4.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 14 }, typeof(DateTime), false, 150);
           columnDM.ID = "A3";
           shellView.Collumns.Add(columnDM);
@@ -345,16 +345,16 @@ namespace BExplorer.Shell {
             {"A286", new Tuple<String, PROPERTYKEY, Type, int>("Total bitrate", new PROPERTYKEY(){fmtid = Guid.Parse("64440491-4c8b-11d1-8b70-080036b11a03"), pid = 43}, typeof(String),75)},
             {"A287", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("9b174b35-40ff-11d2-a27e-00c04fc30871"), pid = 7}, typeof(String),75)},
             {"A288", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("4ac903f8-e780-4e4b-b7b8-4d00a99804fc"), pid = 100}, typeof(String),75)},
-						
-						
-			//disabled these because I have no idea what they are
-			//{"A287", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("1ce0d6bc-536c-4600-b0dd-7e0c66b350d5"), pid = 3}, typeof(String))},
-			//{"A288", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("1ce0d6bc-536c-4600-b0dd-7e0c66b350d5"), pid = 4}, typeof(String))},
-			//{"A289", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("1ce0d6bc-536c-4600-b0dd-7e0c66b350d5"), pid = 5}, typeof(String))},
-			//{"A290", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("1ce0d6bc-536c-4600-b0dd-7e0c66b350d5"), pid = 6}, typeof(String))},
-			//{"A291", new Tuple<String, PROPERTYKEY, Type, int>("Masters Keywords (debug)", new PROPERTYKEY(){fmtid = Guid.Parse("a4790b72-7113-4348-97ea-292bbc1f6770"), pid = 6}, typeof(String))},
-			//{"A292", new Tuple<String, PROPERTYKEY, Type, int>("Masters Keywords (debug)", new PROPERTYKEY(){fmtid = Guid.Parse("a4790b72-7113-4348-97ea-292bbc1f6770"), pid = 5}, typeof(String))},
-		};
+            
+            
+      //disabled these because I have no idea what they are
+      //{"A287", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("1ce0d6bc-536c-4600-b0dd-7e0c66b350d5"), pid = 3}, typeof(String))},
+      //{"A288", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("1ce0d6bc-536c-4600-b0dd-7e0c66b350d5"), pid = 4}, typeof(String))},
+      //{"A289", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("1ce0d6bc-536c-4600-b0dd-7e0c66b350d5"), pid = 5}, typeof(String))},
+      //{"A290", new Tuple<String, PROPERTYKEY, Type, int>("", new PROPERTYKEY(){fmtid = Guid.Parse("1ce0d6bc-536c-4600-b0dd-7e0c66b350d5"), pid = 6}, typeof(String))},
+      //{"A291", new Tuple<String, PROPERTYKEY, Type, int>("Masters Keywords (debug)", new PROPERTYKEY(){fmtid = Guid.Parse("a4790b72-7113-4348-97ea-292bbc1f6770"), pid = 6}, typeof(String))},
+      //{"A292", new Tuple<String, PROPERTYKEY, Type, int>("Masters Keywords (debug)", new PROPERTYKEY(){fmtid = Guid.Parse("a4790b72-7113-4348-97ea-292bbc1f6770"), pid = 5}, typeof(String))},
+    };
 
     /// <summary>
     /// Convert and Collumns structure to LVCOLUMN (Native Listview Column)
@@ -407,11 +407,8 @@ namespace BExplorer.Shell {
     public static PROPERTYKEY LinkTarget = new PROPERTYKEY() { fmtid = Guid.Parse("b9b4b3fc-2b51-4a42-b5d8-324146afcf25"), pid = 2 };
     public static PROPERTYKEY FileType = new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 };
     public static PROPERTYKEY DriveFreeSpace = new PROPERTYKEY() { fmtid = Guid.Parse("9b174b35-40ff-11d2-a27e-00c04fc30871"), pid = 7 };
-
-    public static PROPERTYKEY PerceivedType = new PROPERTYKEY() {
-      fmtid = Guid.Parse("28636aa6-953d-11d2-b5d6-00c04fd918d0"),
-      pid = 9
-    };
+    public static PROPERTYKEY DateModified = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 14 };
+    public static PROPERTYKEY PerceivedType = new PROPERTYKEY() { fmtid = Guid.Parse("28636aa6-953d-11d2-b5d6-00c04fd918d0"), pid = 9 };
 
   }
 

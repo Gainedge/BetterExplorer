@@ -16,6 +16,7 @@ namespace BExplorer.Shell {
   public partial class FileOperation : UserControl, IOperationsProgressDialog, IFileOperationProgressSink {
     public ShellView Owner { get; set; }
     public Boolean IsPause { get; set; }
+    public Boolean IsStop { get; set; }
     public Guid Handle { get; set; }
     public Thread CurrentThread { get; set; }
 
@@ -207,8 +208,12 @@ namespace BExplorer.Shell {
 
     }
 
-    public void PreCopyItem(UInt32 dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName) {
+    public HResult PreCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName) {
       //this.Owner.LargeImageList.SupressThumbnailGeneration(true);
+      //MessageBox.Show("Text");
+      dwFlags &= ~TRANSFER_SOURCE_FLAGS.TSF_OVERWRITE_EXIST;
+      dwFlags |= TRANSFER_SOURCE_FLAGS.TSF_RENAME_EXIST;
+      return HResult.S_OK;
     }
 
     public void PostCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName,
@@ -216,8 +221,8 @@ namespace BExplorer.Shell {
 
     }
 
-    public void PreDeleteItem(UInt32 dwFlags, IShellItem psiItem) {
-
+    public HResult PreDeleteItem(UInt32 dwFlags, IShellItem psiItem) {
+      return HResult.S_OK;
     }
 
     public void PostDeleteItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, UInt32 hrDelete, IShellItem psiNewlyCreated) {
@@ -233,8 +238,12 @@ namespace BExplorer.Shell {
 
     }
 
-    public void UpdateProgress(UInt32 iWorkTotal, UInt32 iWorkSoFar) {
+    public HResult UpdateProgress(UInt32 iWorkTotal, UInt32 iWorkSoFar) {
+      if (this.IsStop) {
+        //return HResult.E_CANCELED;
+      }
 
+      return HResult.S_OK;
     }
 
     public void ResetTimer() {
@@ -253,8 +262,16 @@ namespace BExplorer.Shell {
 
     }
 
-    public void GetOperationStatus(ref PDOPSTATUS popstatus) {
-      popstatus = 0;
+    public HResult GetOperationStatus(ref PDOPSTATUS popstatus) {
+      if (this.IsStop) {
+        popstatus = PDOPSTATUS.PDOPS_CANCELLED;
+      } else if (this.IsPause) {
+        popstatus = PDOPSTATUS.PDOPS_PAUSED;
+      } else {
+        popstatus = PDOPSTATUS.PDOPS_RUNNING;
+      }
+
+      return HResult.S_OK;
     }
 
     private void BtnPause_OnClick(Object sender, RoutedEventArgs e) {
@@ -275,8 +292,9 @@ namespace BExplorer.Shell {
     }
 
     private void BtnStop_OnClick(Object sender, RoutedEventArgs e) {
-      this.StopProgressDialog();
-      this.CurrentThread.Abort();
+      //this.StopProgressDialog();
+      //this.CurrentThread.Abort();
+      this.IsStop = true;
     }
 
     private void FileOperation_OnLoaded(Object sender, RoutedEventArgs e) {

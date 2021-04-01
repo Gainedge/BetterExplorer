@@ -481,7 +481,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       }
 
       var returnValue = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, System.Windows.Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()).Clone();
-      returnValue.Freeze();
+      //returnValue.Freeze();
       // delete HBitmap to avoid memory leaks
       Gdi32.DeleteObject(hBitmap);
       this.Dispose();

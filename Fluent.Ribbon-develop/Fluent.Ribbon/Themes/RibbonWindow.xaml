@@ -25,7 +25,7 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top"
             Background="{TemplateBinding TitleBackground}"
-            LastChildFill="True">
+            LastChildFill="True" Margin="5,0,0,0">
             <Image
               x:Name="PART_Icon"
               Width="16"

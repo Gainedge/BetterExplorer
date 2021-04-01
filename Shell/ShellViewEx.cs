@@ -2690,7 +2690,7 @@ namespace BExplorer.Shell {
 
             try {
               var controlItem = FileSystemListItem.InitializeWithIShellItem(this.LVHandle, items.First()).Parent;
-              var fo = new IIFileOperation(dlg, handle, true, controlItem.Equals(this.CurrentFolder), dlg);
+              var fo = new IIFileOperation(dlg, handle, false, controlItem.Equals(this.CurrentFolder), dlg);
               if (dropEffect == System.Windows.DragDropEffects.Copy) {
                 fo.CopyItems(shellItemArray, this.CurrentFolder);
               } else {
@@ -2750,6 +2750,11 @@ namespace BExplorer.Shell {
       var handle = this.Handle;
       var view = this;
       var dlg = new FileOperation(view);
+      if (!isRecycling) {
+        if (DeleteNotificationDialog.ShowNotificationDialog(this.SelectedItems.ToArray()) == false) {
+          return;
+        }
+      }
       var thread = new Thread(() => {
         var fo = new IIFileOperation(dlg, handle, isRecycling, dlg);
         foreach (var item in this.SelectedItems) {
@@ -4167,8 +4172,9 @@ namespace BExplorer.Shell {
 
     private void Do_Copy_OR_Move_Helper(Boolean copy, IListItemEx destination, IShellItem[] items) {
       var handle = this.Handle;
+      var dlg = new FileOperation(this);
       var thread = new Thread(() => {
-        var fo = new IIFileOperation(handle);
+        var fo = new IIFileOperation(dlg, handle, false, dlg);
         foreach (var item in items) {
           if (copy) {
             fo.CopyItem(item, destination);
@@ -4178,7 +4184,7 @@ namespace BExplorer.Shell {
         }
         fo.PerformOperations();
       });
-
+      dlg.CurrentThread = thread;
       thread.SetApartmentState(ApartmentState.STA);
       thread.IsBackground = true;
       thread.Start();
@@ -4195,10 +4201,11 @@ namespace BExplorer.Shell {
         shellItemArray = dataObject.ToShellItemArray();
         items = shellItemArray.ToArray();
       }
-
+      var dlg = new FileOperation(this);
       var thread = new Thread(() => {
         try {
-          var fo = new IIFileOperation(handle);
+          
+          var fo = new IIFileOperation(dlg, handle, false, dlg);
           foreach (var item in items) {
             if (copy) {
               fo.CopyItem(item, destination);
@@ -4206,13 +4213,13 @@ namespace BExplorer.Shell {
               fo.MoveItem(item, destination, null);
             }
           }
-
+          
           fo.PerformOperations();
         } catch (SecurityException) {
           throw;
         }
       });
-
+      dlg.CurrentThread = thread;
       thread.SetApartmentState(ApartmentState.STA);
       thread.IsBackground = true;
       thread.Start();

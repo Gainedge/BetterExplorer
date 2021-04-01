@@ -125,6 +125,7 @@ public void SetTaskbarProgress() {
 */
 
     private void Window_Closed(object sender, EventArgs e) {
+      this.LoadTimer.Stop();
       foreach (FileOperation item in this.Contents) {
         item.Owner.OperationDialog = null;
       }

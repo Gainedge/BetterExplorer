@@ -47,6 +47,7 @@ Controls\Ribbon.xaml
 Controls\ColorGallery.xaml
 Controls\SeparatorTabItem.xaml
 Controls\Slider.xaml
+Controls\Calendar.xaml
 Images\Images.xaml
 RibbonWindow.xaml
 Common.xaml

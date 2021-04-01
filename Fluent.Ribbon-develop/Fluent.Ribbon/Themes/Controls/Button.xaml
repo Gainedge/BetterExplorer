@@ -51,6 +51,52 @@
     </Style.Triggers>
   </Style>
 
+  <Style x:Key="FluentButtonStyle" TargetType="{x:Type Button}">
+    <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Foreground}" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    <Setter Property="Padding" Value="1" />
+    <Setter Property="Width" Value="46" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Grid Background="{TemplateBinding Background}">
+            <Border VerticalAlignment="Stretch" BorderThickness="1" BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BorderBrush}">
+              <ContentPresenter
+                x:Name="contentPresenter"
+                Margin="{TemplateBinding Padding}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                VerticalAlignment="Center"
+                RecognizesAccessKey="True"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            </Border>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="contentPresenter" Property="Opacity" Value="1" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="False">
+              <Setter TargetName="contentPresenter" Property="Opacity" Value="0.5" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.WhiteBrush}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.MouseOver.Background}" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Pressed.Background}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
   <ControlTemplate x:Key="RibbonButtonControlTemplate" TargetType="{x:Type Fluent:Button}">
     <Border
       x:Name="border"

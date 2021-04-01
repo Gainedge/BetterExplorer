@@ -59,7 +59,7 @@ namespace BExplorer.Shell {
       this._CallbackSink = callbackSink;
       this._FileOperation = (IFileOperation)Activator.CreateInstance(_FileOperationType);
 
-      var flags = isRecycle ? FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_ALLOWUNDO : FileOperationFlags.FOF_NOCONFIRMMKDIR;// | FileOperationFlags.FOF_NOCONFIRMATION;
+      var flags = isRecycle ? FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_ALLOWUNDO : FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_NOCONFIRMATION;
       this._FileOperation.SetOperationFlags(flags);
 
       if (this._CallbackSink != null) this._FileOperation.Advise(_CallbackSink, out this._SinkCookie);
@@ -75,7 +75,7 @@ namespace BExplorer.Shell {
       _FileOperation = (IFileOperation)Activator.CreateInstance(_FileOperationType);
 
       if (!isRecycle)
-        this._FileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR);
+        this._FileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR);// | FileOperationFlags.FOF_NOCONFIRMATION);
 
       if (_CallbackSink != null) _FileOperation.Advise(_CallbackSink, out this._SinkCookie);
       if (owner != IntPtr.Zero) _FileOperation.SetOwnerWindow((uint)owner);

@@ -985,20 +985,20 @@ namespace BExplorer.Shell {
     public Uri ToUri() => this.ParsingName.StartsWith("::") ? new Uri("shell:///" + this.ParsingName) : new Uri(this.FileSystemPath);
 
     /*
-		/// <summary>
-		/// Returns a URI representation of the <see cref="ShellItem"/>.
-		/// </summary>
-		public Uri ToUri() {
-			return this.ParsingName.StartsWith("::") ? new Uri("shell:///" + this.ParsingName) : new Uri(this.FileSystemPath);
-			StringBuilder path = new StringBuilder("shell:///");
+    /// <summary>
+    /// Returns a URI representation of the <see cref="ShellItem"/>.
+    /// </summary>
+    public Uri ToUri() {
+      return this.ParsingName.StartsWith("::") ? new Uri("shell:///" + this.ParsingName) : new Uri(this.FileSystemPath);
+      StringBuilder path = new StringBuilder("shell:///");
 
-			if (this.ParsingName.StartsWith("::")) {
-				path.Append(this.ParsingName);
-				return new Uri(path.ToString());
-			}
-			return new Uri(this.FileSystemPath);
-		}
-		*/
+      if (this.ParsingName.StartsWith("::")) {
+        path.Append(this.ParsingName);
+        return new Uri(path.ToString());
+      }
+      return new Uri(this.FileSystemPath);
+    }
+    */
 
     private void Initialize(Uri uri) {
       if (uri.Scheme == "file")

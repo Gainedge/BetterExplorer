@@ -144,6 +144,17 @@ namespace BetterExplorer {
     /// </summary>
     /// <param name="e">Startup EventArgs</param>
     protected override void OnStartup(StartupEventArgs e) {
+
+      var dllPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+      if (IntPtr.Size == 8)
+      {
+        dllPath = Path.Combine(dllPath, "X64");
+      } else {
+        // X32
+        dllPath = Path.Combine(dllPath, "X86");
+      }
+      Kernel32.SetDllDirectory(dllPath);
+
       Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
       var updaterThread = new Thread(new ThreadStart(this.RunAutomaticUpdateChecker));
       updaterThread.Start();

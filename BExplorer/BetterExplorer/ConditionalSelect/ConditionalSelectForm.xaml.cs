@@ -5,13 +5,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using BExplorer.Shell;
+using Fluent;
 
 namespace BetterExplorer {
 
   /// <summary>
   /// Interaction logic for ConditionalSelectForm.xaml
   /// </summary>
-  public partial class ConditionalSelectForm : Window {
+  public partial class ConditionalSelectForm : RibbonWindow {
     private System.Globalization.CultureInfo ci;
     public bool CancelAction = true;
     public ConditionalSelectData csd;

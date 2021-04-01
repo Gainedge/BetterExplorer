@@ -17,6 +17,7 @@ namespace ThumbnailGenerator {
 
   public class WindowsThumbnailProvider {
     private const string IShellItem2Guid = "7E9FB0D3-919F-4307-AB2E-9B1860310C93";
+    private const string IShellImageFactoryGuid = "bcc18b79-ba16-442f-80c4-8a59c30c463b";
 
     /*
       [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
@@ -32,6 +33,12 @@ namespace ThumbnailGenerator {
         IntPtr pidl,
         ref Guid riid,
         [MarshalAs(UnmanagedType.Interface)] out IShellItem shellItem);
+
+    [DllImport("shell32.dll", PreserveSig = false)]
+    internal static extern int SHCreateItemFromIDList(
+      IntPtr pidl,
+      ref Guid riid,
+      [MarshalAs(UnmanagedType.Interface)] out object shellItem);
 
     /*
       [DllImport("gdi32.dll")]
@@ -182,8 +189,8 @@ namespace ThumbnailGenerator {
     */
 
     private static IntPtr GetHBitmap(IntPtr pidl, int width, int height, ThumbnailOptions options) {
-      IShellItem nativeShellItem;
-      Guid shellItem2Guid = new Guid(IShellItem2Guid);
+      object nativeShellItem;
+      Guid shellItem2Guid = new Guid(IShellImageFactoryGuid);
       //int retCode = SHCreateItemFromParsingName(fileName, IntPtr.Zero, ref shellItem2Guid, out nativeShellItem);
       int retCode = SHCreateItemFromIDList(pidl, ref shellItem2Guid, out nativeShellItem);
 
