@@ -17,6 +17,8 @@ using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
 using BExplorer.Shell._Plugin_Interfaces;
 using Microsoft.Win32;
+using Settings;
+using Brushes = System.Drawing.Brushes;
 using Color = System.Drawing.Color;
 using LinearGradientBrush = System.Drawing.Drawing2D.LinearGradientBrush;
 using MSG = BExplorer.Shell.Interop.MSG;
@@ -381,8 +383,10 @@ namespace BExplorer.Shell {
       Int32 width2, height2;
       if (addornerType == 2) {
         var addorner = new Bitmap(width + 7, height + 7, PixelFormat.Format32bppPArgb);
-        var gb = new LinearGradientBrush(new System.Drawing.Point(0, 0), new System.Drawing.Point(0, this._CurrentSize), Color.WhiteSmoke, Color.WhiteSmoke);
-        addorner = Gdi32.RoundCorners(addorner, 0, gb, new Pen(Color.LightGray));
+        var gb = new LinearGradientBrush(new System.Drawing.Point(0, 0), new System.Drawing.Point(0, this._CurrentSize), this._ShellViewEx.Theme.AdornerBackgroundColor.ToDrawingColor(), this._ShellViewEx.Theme.AdornerBackgroundColor.ToDrawingColor());
+        var border = new Pen(this._ShellViewEx.Theme.AdornerBorderColor.ToDrawingColor());
+        addorner = Gdi32.RoundCorners(addorner, 0, gb, border);
+
         var hAddorner = addorner.GetHbitmap();
 
         Gdi32.ConvertPixelByPixel(hAddorner, out width2, out height2);
@@ -392,24 +396,54 @@ namespace BExplorer.Shell {
         Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width2) / 2 + 3, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height2) - (height2 <= width2 && height2 < this._CurrentSize ? 1 : height2 == width2 ? 1 : (-2)), width, height, isGhosted);
       } else if (addornerType == 3) {
         var isWide = (height / (Double)width) < 0.6;
-        var hAddorner = isWide ? this._VideAddornerWide.GetHBitmap(this._CurrentSize, true, true) : this._VideAddorner.GetHBitmap(this._CurrentSize, true, true);
-        Gdi32.ConvertPixelByPixel(hAddorner, out width2, out height2);
-        if (isWide) {
-          Gdi32.NativeDrawCrop(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2 + (Int32)(this._CurrentSize * 0.12),
-            iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.07 / 2), (Int32)(this._CurrentSize * 0.12), (Int32)(this._CurrentSize * 0.03 / 2),
-            width - (Int32)(this._CurrentSize * 0.13 * 2), height - (Int32)(this._CurrentSize * 0.03), isGhosted);
-          var left = iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2;
-          var top = iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2;
-          Gdi32.NativeDraw(hdc, hAddorner, left, top, width2, height2, width2, height + (Int32)(this._CurrentSize * 0.07) - (Int32)(this._CurrentSize * 0.04), isGhosted);
-        } else {
-          Gdi32.NativeDrawCrop(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2 + (Int32)(this._CurrentSize * 0.12),
-            iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.07 / 2), (Int32)(this._CurrentSize * 0.12), (Int32)(this._CurrentSize * 0.03 / 2),
-            width - (Int32)(this._CurrentSize * 0.13 * 1.9), height - (Int32)(this._CurrentSize * 0.07), isGhosted);
-          Gdi32.NativeDraw(hdc, hAddorner, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width2, height2, width2,
-            height + (Int32)(this._CurrentSize * 0.06) - (Int32)(this._CurrentSize * 0.07), isGhosted);
+        var addorner = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
+        var left = iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2;
+        var top = iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2;
+        //var hAddorner = isWide ? this._VideAddornerWide.GetHBitmap(this._CurrentSize, true, true) : this._VideAddorner.GetHBitmap(this._CurrentSize, true, true);
+        //Gdi32.ConvertPixelByPixel(hAddorner, out width2, out height2);
+        using (var g = Graphics.FromImage(addorner)) {
+          var background = new SolidBrush(this._ShellViewEx.Theme.AdornerBackgroundColor.ToDrawingColor());
+          g.FillRectangle(background, 0, 0, addorner.Width, addorner.Height);
+          background.Dispose();
+          var border = new Pen(this._ShellViewEx.Theme.AdornerBorderColor.ToDrawingColor(), 1);
+          g.DrawRectangle(border, 0, 0, addorner.Width - 1, addorner.Height - 1);
+          g.DrawLine(border, (Int32)Math.Ceiling(width * 0.13) - 1, 0, (Int32)Math.Ceiling(width * 0.13) - 1, height);
+          g.DrawLine(border, (Int32)Math.Ceiling(width * 0.13) + width - (Int32)Math.Ceiling(width * 0.1285) * 2, 0, (Int32)Math.Ceiling(width * 0.13) + width - (Int32)Math.Ceiling(width * 0.1285) * 2, height);
+          border.Dispose();
+          var xPos = (Int32)Math.Ceiling(width * 0.15 * 0.2);
+          var yPos = (Int32)Math.Ceiling(height * 0.04);
+          var backgroundHoles = new SolidBrush(this._ShellViewEx.Theme.AdornerHoleColor.ToDrawingColor());
+          for (int i = 0; i < 7; i++) {
+            g.FillRectangle(backgroundHoles, xPos, (Int32)(yPos + Math.Ceiling(((width * 0.13 * 0.4) + (width * 0.13 * 0.40))*i)), (Int32)Math.Round((width * 0.13) - ((width * 0.16 * 0.4)), 0), (Int32)(Math.Round(width * 0.14 * 0.4, 0)));
+            g.FillRectangle(backgroundHoles, xPos + (Int32)Math.Round((width * 0.13) - (width * 0.13 * 0.42) + (width * 0.14 * 0.2 * 2) + (width - (Int32)Math.Ceiling(width * 0.1285 * 2)),0), (Int32)(yPos + Math.Ceiling(((width * 0.13 * 0.4) + (width * 0.13 * 0.40)) * i)), (Int32)Math.Round((width * 0.13) - ((width * 0.16 * 0.4)), 0), (Int32)(Math.Round(width * 0.14 * 0.4, 0)));
+            
+          }
+          backgroundHoles.Dispose();
         }
-        
+        //if (isWide) {
+        //  Gdi32.NativeDrawCrop(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2 + (Int32)(this._CurrentSize * 0.12),
+        //    iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.07 / 2), (Int32)(this._CurrentSize * 0.12), (Int32)(this._CurrentSize * 0.03 / 2),
+        //    width - (Int32)(this._CurrentSize * 0.13 * 2), height - (Int32)(this._CurrentSize * 0.03), isGhosted);
+        //  var left = iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2;
+        //  var top = iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2;
+        //  Gdi32.NativeDraw(hdc, hAddorner, left, top, width2, height2, width2, height + (Int32)(this._CurrentSize * 0.07) - (Int32)(this._CurrentSize * 0.04), isGhosted);
+        //} else {
+        //  Gdi32.NativeDrawCrop(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2 + (Int32)(this._CurrentSize * 0.12),
+        //    iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.07 / 2), (Int32)(this._CurrentSize * 0.12), (Int32)(this._CurrentSize * 0.03 / 2),
+        //    width - (Int32)(this._CurrentSize * 0.13 * 1.9), height - (Int32)(this._CurrentSize * 0.07), isGhosted);
+        //  Gdi32.NativeDraw(hdc, hAddorner, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width2, height2, width2,
+        //    height + (Int32)(this._CurrentSize * 0.06) - (Int32)(this._CurrentSize * 0.07), isGhosted);
+        //}
+
+        //Gdi32.DeleteObject(hAddorner);
+        var hAddorner = addorner.GetHbitmap();
+        Gdi32.ConvertPixelByPixel(hAddorner, out width2, out height2);
+        Gdi32.NativeDraw(hdc, hAddorner, left, top, width, height, width, height, isGhosted);
         Gdi32.DeleteObject(hAddorner);
+        addorner.Dispose();
+        Gdi32.NativeDrawCrop(hdc, hThumbnail, left + (Int32)Math.Ceiling(width*0.13),
+          top + 1, (Int32)Math.Ceiling(width2 * 0.13), (Int32)Math.Ceiling(this._CurrentSize * 0.015 / 2),
+          width - (Int32)Math.Ceiling(width * 0.1285)*2, height - 2, isGhosted);
       }
     }
 

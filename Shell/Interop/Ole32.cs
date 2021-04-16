@@ -18,11 +18,15 @@
 //
 using System;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 
 #pragma warning disable 1591
 
 namespace BExplorer.Shell.Interop {
 	public class Ole32 {
+    [DllImport("Ole32.dll")]
+    [return: MarshalAs(UnmanagedType.Error)]
+    public static extern int CreateBindCtx([In] uint reserved, [Out, MarshalAs(UnmanagedType.Interface)] out IBindCtx pbc);
 		[DllImport("ole32.dll")]
 		public static extern void CoTaskMemFree(IntPtr pv);
 

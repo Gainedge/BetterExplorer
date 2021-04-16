@@ -357,7 +357,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       yield break;
     }
 
-    public IEnumerable<IListItemEx> GetContents(Boolean isEnumHidden) {
+    public IEnumerable<IListItemEx> GetContents(Boolean isEnumHidden, Boolean isFlatList = false) {
       var folder = this.GetIShellFolder();
       if (folder == null) {
         yield return null;
@@ -368,6 +368,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       if (isEnumHidden) {
         flags = SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.NONFOLDERS | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.ENABLE_ASYNC;
       }
+
+      //if (isFlatList) {
+      //  flags = SHCONTF.NONFOLDERS | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.ENABLE_ASYNC | SHCONTF.SFLATLIST | SHCONTF.NAVIGATION_ENUM;
+      //}
 
       var enumId = ShellItem.GetIEnumIDList(folder, flags, out navRes);
       this.NavigationStatus = navRes;
@@ -388,6 +392,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
           fsi.InitializeWithParent(this.PIDL, this.ParentHandle, pidl, i++);
         } catch {
           continue;
+        }
+        if (fsi.IsFolder && isFlatList) {
+          foreach (var child in fsi.GetContents(true, true)) {
+            yield return child;
+          }
         }
         fsi.IsParentSearchFolder = this.IsSearchFolder;
         fsi.Dispose();

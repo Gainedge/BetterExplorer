@@ -2690,7 +2690,7 @@ namespace BExplorer.Shell {
 
             try {
               var controlItem = FileSystemListItem.InitializeWithIShellItem(this.LVHandle, items.First()).Parent;
-              var fo = new IIFileOperation(dlg, handle, false, controlItem.Equals(this.CurrentFolder), dlg);
+              var fo = new IIFileOperation(dlg, handle, false, controlItem.Equals(this.CurrentFolder), controlItem, dlg);
               if (dropEffect == System.Windows.DragDropEffects.Copy) {
                 fo.CopyItems(shellItemArray, this.CurrentFolder);
               } else {
@@ -2705,7 +2705,7 @@ namespace BExplorer.Shell {
             try {
 
               var controlItem = FileSystemListItem.InitializeWithIShellItem(this.LVHandle, items.First()).Parent;
-              var fo = new IIFileOperation(dlg, handle, true, controlItem.Equals(this.CurrentFolder), dlg);
+              var fo = new IIFileOperation(dlg, handle, true, controlItem.Equals(this.CurrentFolder), controlItem, dlg);
               foreach (var item in items) {
                 if (dropEffect == System.Windows.DragDropEffects.Copy) {
                   fo.CopyItem(item, this.CurrentFolder);

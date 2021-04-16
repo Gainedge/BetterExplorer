@@ -103,9 +103,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
+    <Compile Include="FileOperation\CollisionDialog.xaml.cs">
+      <DependentUpon>CollisionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileOperation\CollisionItem.cs" />
     <Compile Include="FileOperation\DeleteNotificationDialog.xaml.cs">
       <DependentUpon>DeleteNotificationDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="_Plugin Interfaces\VirtualFilesystemItem.cs" />
+    <Compile Include="Interop\IFileSystemBindData.cs" />
     <Compile Include="ObjectToSeparatorBooleanConverter.cs" />
     <Compile Include="TreeViewItemBehaviour.cs" />
     <Compile Include="TreeViewHelper.cs" />
@@ -312,6 +318,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="FileOperation\CollisionDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FileOperation\DeleteNotificationDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

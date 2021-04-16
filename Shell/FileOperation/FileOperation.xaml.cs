@@ -1,8 +1,6 @@
 ﻿using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +17,8 @@ namespace BExplorer.Shell {
     public Boolean IsStop { get; set; }
     public Guid Handle { get; set; }
     public Thread CurrentThread { get; set; }
+    public ManualResetEvent FOReset { get; set; }
+    public Boolean IsReplaceAll { get; set; }
 
     private readonly ManualResetEvent _Reset = new ManualResetEvent(true);
     private readonly System.Diagnostics.Stopwatch _Sw = new System.Diagnostics.Stopwatch();
@@ -30,17 +30,23 @@ namespace BExplorer.Shell {
     public FileOperation(ShellView view) {
       this.InitializeComponent();
       this.Owner = view;
+      if (this.Owner.OperationDialog == null) {
+        this.Owner.OperationDialog = new FileOperationDialog();
+      }
     }
 
     public HResult StartProgressDialog(IntPtr hwndOwner, OPPROGDLGF flags) {
       this.Dispatcher.BeginInvoke(DispatcherPriority.Render,
         (Action)(() => {
-          if (this.Owner.OperationDialog == null) {
-            this.Owner.OperationDialog = new FileOperationDialog();
-          }
+          //if (this.Owner.OperationDialog == null) {
+          //  this.Owner.OperationDialog = new FileOperationDialog();
+          //}
           //this.Owner.OperationDialog.AddFileOperation(this);
 
         }));
+      //if (!this._Sw.IsRunning) {
+      //  this._Sw.Start();
+      //}
 
       return HResult.S_OK;
     }
@@ -94,7 +100,7 @@ namespace BExplorer.Shell {
               //  this.StopProgressDialog();
               //} else {
               //  this._Reset.Set();
-                this.Owner.OperationDialog.AddFileOperation(this);
+              this.Owner.OperationDialog.AddFileOperation(this);
               //}
               break;
             case SPACTION.SPACTION_RENAMING:
@@ -115,6 +121,9 @@ namespace BExplorer.Shell {
     public void SetMode(PDMODE mode) {
       if (mode == PDMODE.PDM_RUN) {
         //this.sw.Start();
+        //if (!this._Sw.IsRunning) {
+        //  this._Sw.Start();
+        //}
       }
     }
 
@@ -127,30 +136,38 @@ namespace BExplorer.Shell {
 
       //this._Reset.WaitOne();
       if (this._Sw.IsRunning && this._Sw.Elapsed.TotalMilliseconds > 0) {
-        this._Speed = ((Double) ullSizeCurrent / this._Sw.Elapsed.TotalMilliseconds) * 1000;
+        this._Speed = ((Double)ullSizeCurrent / this._Sw.Elapsed.TotalMilliseconds) * 1000;
         this._SpeedMax = Math.Max(this._SpeedMax, this._Speed);
       }
 
       Double precentComplete = ((Double)ullSizeCurrent / (Double)ullSizeTotal) * 100d;
+      if (true) {
+        this.Dispatcher.BeginInvoke(DispatcherPriority.Render,
+          (ThreadStart)(() => {
+            if (!Double.IsNaN(precentComplete) && (this._Sw.Elapsed.TotalMilliseconds - this._LastMili) >= 50) {
+              this._LastMili = this._Sw.Elapsed.TotalMilliseconds;
+              this.lblProgress.Text = Math.Round(precentComplete, 0) + "% complete";
+              this.lblItemsCount.Text = ullItemsTotal.ToString();
+              this.lblItemsRemaining.Text =
+                $"{ullItemsTotal - ullItemsCurrent} ({ShlWapi.StrFormatByteSize((Int64)ullSizeTotal - (Int64)ullSizeCurrent)})";
+              this.prOverallProgress.Maximum = 100;
+              if (this._Sw.Elapsed.TotalMilliseconds >= 200) {
+                this.prOverallProgress.Rate = this._Speed;
+              }
 
-      this.Dispatcher.BeginInvoke(DispatcherPriority.Render,
-        (ThreadStart)(() => {
-          if (!Double.IsNaN(precentComplete) && (this._Sw.Elapsed.TotalMilliseconds - this._LastMili) >= 50) {
-            this._LastMili = this._Sw.Elapsed.TotalMilliseconds;
-            this.lblProgress.Text = Math.Round(precentComplete, 0) + "% complete";
-            this.lblItemsCount.Text = ullItemsTotal.ToString();
-            this.lblItemsRemaining.Text =
-              $"{ullItemsTotal - ullItemsCurrent} ({ShlWapi.StrFormatByteSize((Int64)ullSizeTotal - (Int64)ullSizeCurrent)})";
-            this.prOverallProgress.Maximum = 100;
-            this.prOverallProgress.Rate = this._Speed;
-            this.prOverallProgress.Caption = "Speed: " + ShlWapi.StrFormatByteSize((Int64)this._Speed) + "/s";
-            this.prOverallProgress.Value = precentComplete;
-            if (ullSizeCurrent > 0) {
-              this.lblTimeLeft.Text = TimeSpan.FromMilliseconds((this._Sw.Elapsed.TotalMilliseconds * (ullSizeTotal - ullSizeCurrent) / ullSizeCurrent) + 1000)
-                .ToString(@"hh\:mm\:ss");
+              this.prOverallProgress.Caption = "Speed: " + ShlWapi.StrFormatByteSize((Int64)this._Speed) + "/s";
+
+              this.prOverallProgress.Value = precentComplete;
+
+
+              if (ullSizeCurrent > 0) {
+                this.lblTimeLeft.Text = TimeSpan.FromMilliseconds((this._Sw.Elapsed.TotalMilliseconds *
+                    (ullSizeTotal - ullSizeCurrent) / ullSizeCurrent) + 1000)
+                  .ToString(@"hh\:mm\:ss");
+              }
             }
-          }
-        }));
+          }));
+      }
 
     }
 
@@ -200,7 +217,7 @@ namespace BExplorer.Shell {
     }
 
     public void PreMoveItem(UInt32 dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName) {
-      
+
     }
 
     public void PostMoveItem(UInt32 dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName, UInt32 hrMove,
@@ -298,7 +315,12 @@ namespace BExplorer.Shell {
     }
 
     private void FileOperation_OnLoaded(Object sender, RoutedEventArgs e) {
-      
+
+    }
+
+    private void BtnReplaceAll_OnClick(Object sender, RoutedEventArgs e) {
+      this.IsReplaceAll = true;
+      this.FOReset.Set();
     }
   }
 

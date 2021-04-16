@@ -1,11 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 using BetterExplorer.Api;
+using BExplorer.Shell._Plugin_Interfaces;
 using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace BetterExplorer {
@@ -63,6 +65,10 @@ namespace BetterExplorer {
     }
 
     private void ButtonBase_OnClick(Object sender, RoutedEventArgs e) {
+      //var item = new FileSystemListItem();
+      //item.Initialize(IntPtr.Zero, @"D:\Movie\KnightRider", 0);
+      //var contents = item.GetContents(false, true);
+      //var count = contents.Count();
       ToastContent toastContent = new ToastContentBuilder()
         .AddToastActivationInfo("action=viewConversation&conversationId=5", ToastActivationType.Foreground)
         .AddText("Hello world!")

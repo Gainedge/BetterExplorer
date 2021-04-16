@@ -28,7 +28,7 @@
   Activated="RibbonWindow_Activated"
   Closing="RibbonWindow_Closing"
   Closed="MainWindow_OnClosed"
-  Icon="Explorer.ico"
+  Icon="BENewIcon.ico"
   Initialized="RibbonWindow_Initialized"
   Loaded="Window_Loaded"
   PreviewKeyDown="RibbonWindow_PreviewKeyDown"
@@ -484,7 +484,7 @@
     <ni:TaskbarIcon
       x:Name="beNotifyIcon"
       Grid.ColumnSpan="2"
-      IconSource="Explorer.ico"
+      IconSource="BENewIcon.ico"
       MenuActivation="RightClick"
       PopupActivation="DoubleClick"
       ToolTipText="{DynamicResource beNotifyIcon_ToolTipText}"

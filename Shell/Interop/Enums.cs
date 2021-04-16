@@ -916,6 +916,23 @@ namespace BExplorer.Shell.Interop {
     Windows7
   }
 
+  [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
+  public struct WIN32_FIND_DATA {
+    public uint dwFileAttributes;
+    public long ftCreationTime;
+    public long ftLastAccessTime;
+    public long ftLastWriteTime;
+    public uint nFileSizeHigh;
+    public uint nFileSizeLow;
+    public uint dwReserved0;
+    public uint dwReserved1;
+    [MarshalAs(UnmanagedType.LPTStr, SizeConst = 260)]
+    public string cFileName;
+    [MarshalAs(UnmanagedType.LPTStr, SizeConst = 14)]
+    public string cAlternateFileName;
+  }
+
+
   //public enum TRANSFER_SOURCE_FLAGS {
   //  TSF_NORMAL = 0, 
   //  TSF_FAIL_EXIST = 0, 

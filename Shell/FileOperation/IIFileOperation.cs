@@ -1,8 +1,13 @@
 ﻿using BExplorer.Shell.Interop;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using BExplorer.Shell._Plugin_Interfaces;
 using System.Linq;
+using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace BExplorer.Shell {
   /// <summary>Contains file operations that has a callback for UI operations/display</summary>
@@ -14,8 +19,11 @@ namespace BExplorer.Shell {
     private bool _Disposed;
     private IFileOperation _FileOperation;
     private IFileOperationProgressSink _CallbackSink;
+    private FileOperation _ProgressDialog;
     private uint _SinkCookie;
     private Boolean _IsCopyInSameFolder { get; set; }
+    private IListItemEx _ControlItem { get; set; }
+    public ManualResetEvent Reset = new ManualResetEvent(true);
 
     /// <summary>
     /// 
@@ -65,13 +73,16 @@ namespace BExplorer.Shell {
       if (this._CallbackSink != null) this._FileOperation.Advise(_CallbackSink, out this._SinkCookie);
       if (owner != IntPtr.Zero) this._FileOperation.SetOwnerWindow((uint)owner);
       if (dialog != null) {
-        this._FileOperation.SetProgressDialog(dialog);
+        this._ProgressDialog = (FileOperation)dialog;
+        this._ProgressDialog.FOReset = this.Reset;
+        this._FileOperation.SetProgressDialog(this._ProgressDialog);
       }
     }
 
-    public IIFileOperation(IFileOperationProgressSink callbackSink, IntPtr owner, Boolean isRecycle, Boolean isCopyInSameFolder, IOperationsProgressDialog dialog = null) {
+    public IIFileOperation(IFileOperationProgressSink callbackSink, IntPtr owner, Boolean isRecycle, Boolean isCopyInSameFolder, IListItemEx controlItem, IOperationsProgressDialog dialog = null) {
       this._CallbackSink = callbackSink;
       this._IsCopyInSameFolder = isCopyInSameFolder;
+      this._ControlItem = controlItem;
       _FileOperation = (IFileOperation)Activator.CreateInstance(_FileOperationType);
 
       if (!isRecycle)
@@ -80,7 +91,9 @@ namespace BExplorer.Shell {
       if (_CallbackSink != null) _FileOperation.Advise(_CallbackSink, out this._SinkCookie);
       if (owner != IntPtr.Zero) _FileOperation.SetOwnerWindow((uint)owner);
       if (dialog != null) {
-        this._FileOperation.SetProgressDialog(dialog);
+        this._ProgressDialog = (FileOperation)dialog;
+        this._ProgressDialog.FOReset = this.Reset;
+        this._FileOperation.SetProgressDialog(this._ProgressDialog);
       }
     }
 
@@ -115,8 +128,47 @@ namespace BExplorer.Shell {
     /// <param name="destination">The destination you want to copy the <paramref name="source"/> items</param>
     public void CopyItems(IShellItemArray source, IListItemEx destination) {
       this.ThrowIfDisposed();
-      if (this._IsCopyInSameFolder) {
+      if (this._ControlItem.Equals(destination)) {
         this._FileOperation.SetOperationFlags(FileOperationFlags.FOF_RENAMEONCOLLISION | FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMMKDIR);
+      }
+
+      List<IListItemEx> flatItemsList = new List<IListItemEx>();
+      foreach (var shellItem in source.ToArray()) {
+        var iListItem = FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, shellItem);
+        if (iListItem.IsFolder) {
+            flatItemsList.Add(iListItem);
+            flatItemsList.AddRange(iListItem.GetContents(true, true));
+        } else {
+          flatItemsList.Add(iListItem);
+        }
+      }
+
+      var duplicatedItems = new List<IListItemEx>();
+      foreach (var lookupItem in flatItemsList.Where(w => !w.IsFolder)) {
+        if (File.Exists(lookupItem.ParsingName.Replace(this._ControlItem.ParsingName, destination.ParsingName))) {
+          duplicatedItems.Add(lookupItem);
+        }
+      }
+
+      if (duplicatedItems.Count > 0 && !this._IsCopyInSameFolder) {
+        Application.Current.Dispatcher.Invoke(DispatcherPriority.Render,
+          (Action) (() => {
+              this._ProgressDialog.pnlFileCollision.Visibility = Visibility.Visible;
+              this._ProgressDialog.pnlFileOp.Visibility = Visibility.Collapsed;
+              this._ProgressDialog.lblItemsCount.Text = flatItemsList.Count.ToString();
+              this._ProgressDialog.lblFrom.Text = this._ControlItem.DisplayName;
+              this._ProgressDialog.lblTo.Text = destination.DisplayName;
+              this._ProgressDialog.lblOperation.Text = "Copying ";
+              this._ProgressDialog.lblDuplicatedCount.Text = "Destination folder have " + duplicatedItems.Count + " duplicated items";
+              this._ProgressDialog.Owner.OperationDialog.AddFileOperation(this._ProgressDialog);
+              this.Reset.Reset();
+
+            }
+          ));
+        this.Reset.WaitOne();
+        if (this._ProgressDialog.IsReplaceAll) {
+          this._FileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMATION | FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMMKDIR);
+        }
       }
       this._FileOperation.CopyItems(source, destination.ComInterface);
     }

@@ -137,7 +137,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     IEnumerable<IntPtr> GetItemsForCount(Boolean isEnumHidden);
 
-    IEnumerable<IListItemEx> GetContents(Boolean isEnumHidden);
+    IEnumerable<IListItemEx> GetContents(Boolean isEnumHidden, Boolean isFlatList = false);
 
     IShellFolder GetIShellFolder();
 

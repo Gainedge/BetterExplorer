@@ -24,6 +24,7 @@ namespace RateBar {
     private Axis axis;
 
     private bool isloaded = false;
+    private Double _LastRate = 0d;
 
     /// <summary>
     /// The list of points
@@ -40,6 +41,7 @@ namespace RateBar {
       // Find the polygon once loaded, it's points
       // will be modified as we go along
       this.Loaded += (o, e) => {
+        this.ApplyTemplate();
         this.polygon = this.Template.FindName("graph", this) as Polygon;
         this.rectangle = this.Template.FindName("graphBck", this) as Rectangle;
         this.axis = this.Template.FindName("rcAxis", this) as Axis;
@@ -74,8 +76,17 @@ namespace RateBar {
           this.ratePoints.Add(new Double[] { this.Value, 0 });
 
         // Add on the new point
+        //if (this.Rate > 0) {
+        //  if (this.ratePoints.Last()[1] == 0) {
+        //    this.ratePoints[0] = new Double[] { 0, this.Rate };
+        //  }
+        //}
         this.ratePoints.Add(new Double[] { this.Value, this.Rate });
+        if (this._LastRate == 0d) {
+          //this.ratePoints.Add(new Double[] {0, this.Rate});
+        }
 
+        this._LastRate = this.Rate;
 
         this.polygon.Points = new PointCollection(this.ratePoints.Select(dba => {
           // Don't adjust the height for the line that runs alone the bottom

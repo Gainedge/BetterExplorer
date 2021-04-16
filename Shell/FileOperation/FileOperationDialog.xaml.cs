@@ -47,10 +47,15 @@ namespace BExplorer.Shell {
     }
 
     public void AddFileOperation(FileOperation op) {
-      this.Contents.Add(op);
-      if (this.Contents.Count == 1) {
-        this.LoadTimer.Start();
-        //this.Show();
+      if (!this.Contents.Contains(op)) {
+        this.Contents.Add(op);
+        if (this.Contents.Count == 1) {
+          this.LoadTimer.Start();
+          //this.Show();
+        }
+      } else {
+        op.pnlFileCollision.Visibility = Visibility.Collapsed;
+        op.pnlFileOp.Visibility = Visibility.Visible;
       }
     }
 
