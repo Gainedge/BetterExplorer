@@ -415,7 +415,7 @@ namespace BExplorer.Shell {
           var backgroundHoles = new SolidBrush(this._ShellViewEx.Theme.AdornerHoleColor.ToDrawingColor());
           for (int i = 0; i < 7; i++) {
             g.FillRectangle(backgroundHoles, xPos, (Int32)(yPos + Math.Ceiling(((width * 0.13 * 0.4) + (width * 0.13 * 0.40))*i)), (Int32)Math.Round((width * 0.13) - ((width * 0.16 * 0.4)), 0), (Int32)(Math.Round(width * 0.14 * 0.4, 0)));
-            g.FillRectangle(backgroundHoles, xPos + (Int32)Math.Round((width * 0.13) - (width * 0.13 * 0.42) + (width * 0.14 * 0.2 * 2) + (width - (Int32)Math.Ceiling(width * 0.1285 * 2)),0), (Int32)(yPos + Math.Ceiling(((width * 0.13 * 0.4) + (width * 0.13 * 0.40)) * i)), (Int32)Math.Round((width * 0.13) - ((width * 0.16 * 0.4)), 0), (Int32)(Math.Round(width * 0.14 * 0.4, 0)));
+            g.FillRectangle(backgroundHoles, width - (Int32)Math.Ceiling(width * 0.117 * 0.8), (Int32)(yPos + Math.Ceiling(((width * 0.13 * 0.4) + (width * 0.13 * 0.40)) * i)), (Int32)Math.Round((width * 0.13) - ((width * 0.16 * 0.4)), 0), (Int32)(Math.Round(width * 0.14 * 0.4, 0)));
             
           }
           backgroundHoles.Dispose();
