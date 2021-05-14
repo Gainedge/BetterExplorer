@@ -15,12 +15,12 @@ How to build and test Better Explorer
 ======================================
 **You can also download a test build from our website.**
 
-Important: This process includes the installation of either Visual Studio Express 2013 or SharpDevelop. It might take a bit of a while!
+Important: This process includes the installation of Visual Studio 2019 Community Edition. It might take a bit of a while!
 
 Anyway, here's how it's done (in just 3 steps!):
 
-1. **Download the builder** Download and install Visual Studio Express 2013 or SharpDevelop. (They can be found with a quick search online.)
-The developers use Visual Studio, but the instructions are the same if you use SharpDevelop.
+1. **Download the builder** Download and install Visual Studio 2019 Community Edition. (Can be found with a quick search online.)
+The developers use Visual Studio and that is the only way Better Explorer to be built.
 
 2. **Get the source code**
 On the top of this page, click on the "ZIP" button to download the latest build in a zip file. Unzip the file into a new, empty folder.
