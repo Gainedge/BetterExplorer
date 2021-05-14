@@ -1,3 +1,7 @@
+
+![master](https://github.com/Gainedge/BetterExplorer/actions/workflows/build.yml/badge.svg)
+
+
 BetterExplorer
 ==============
 A Better Explorer filemanager repository
