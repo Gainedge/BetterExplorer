@@ -442,6 +442,7 @@ namespace BExplorer.Shell {
         Gdi32.NativeDraw(hdc, hAddorner, left, top, width, height, width, height, isGhosted);
         Gdi32.DeleteObject(hAddorner);
         addorner.Dispose();
+
         Gdi32.NativeDrawCrop(hdc, hThumbnail, left + (Int32)Math.Ceiling(width*0.13),
           top + 1, (Int32)Math.Ceiling(width2 * 0.13), (Int32)Math.Ceiling(this._CurrentSize * 0.015 / 2),
           width - (Int32)Math.Ceiling(width * 0.1285)*2, height - 2, isGhosted);
