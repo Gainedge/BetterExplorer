@@ -420,6 +420,7 @@ namespace BExplorer.Shell {
           }
           backgroundHoles.Dispose();
         }
+
         //if (isWide) {
         //  Gdi32.NativeDrawCrop(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2 + (Int32)(this._CurrentSize * 0.12),
         //    iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2 + (Int32)(this._CurrentSize * 0.07 / 2), (Int32)(this._CurrentSize * 0.12), (Int32)(this._CurrentSize * 0.03 / 2),
