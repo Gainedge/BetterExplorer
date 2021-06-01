@@ -435,7 +435,6 @@ namespace BExplorer.Shell {
         //  Gdi32.NativeDraw(hdc, hAddorner, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width2, height2, width2,
         //    height + (Int32)(this._CurrentSize * 0.06) - (Int32)(this._CurrentSize * 0.07), isGhosted);
         //}
-
         //Gdi32.DeleteObject(hAddorner);
         var hAddorner = addorner.GetHbitmap();
         Gdi32.ConvertPixelByPixel(hAddorner, out width2, out height2);
