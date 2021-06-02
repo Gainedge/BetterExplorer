@@ -1139,6 +1139,12 @@
     <Resource Include="Explorer flat colors.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="x64\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="BENewIcon.ico" />
     <Content Include="BEUpdater.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1196,6 +1202,9 @@
     <PackageReference Include="Zlib.Portable.Signed">
       <Version>1.11.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Api\" />
   </ItemGroup>
   <!-- <ItemGroup>
     <Page Include="App.xaml">

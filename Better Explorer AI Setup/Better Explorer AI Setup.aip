@@ -247,7 +247,6 @@
     <ROW File="SevenZipSharp.dll" Component_="SevenZipSharp.dll" FileName="SEVENZ~1.DLL|SevenZipSharp.dll" Attributes="0" SourcePath="..\Deploy\SevenZipSharp.dll" SelfReg="false"/>
     <ROW File="StarRatingControl.dll" Component_="StarRatingControl.dll" FileName="STARRA~1.DLL|StarRatingControl.dll" Attributes="0" SourcePath="..\Deploy\StarRatingControl.dll" SelfReg="false"/>
     <ROW File="System.Data.SQLite.dll" Component_="System.Data.SQLite.dll" FileName="SYSTEM~4.DLL|System.Data.SQLite.dll" Attributes="0" SourcePath="..\Deploy\System.Data.SQLite.dll" SelfReg="false"/>
-    <ROW File="System.Net.Http.Primitives.xml" Component_="video_addorner.png" FileName="SYSTEM~3.XML|System.Net.Http.Primitives.xml" Attributes="0" SourcePath="..\Deploy\System.Net.Http.Primitives.xml" SelfReg="false"/>
     <ROW File="UsbEject.dll.config" Component_="video_addorner.png" FileName="USBEJE~1.CON|UsbEject.dll.config" Attributes="0" SourcePath="..\Deploy\UsbEject.dll.config" SelfReg="false"/>
     <ROW File="Wpf.TabControl.dll.config" Component_="video_addorner.png" FileName="WPFTAB~1.CON|Wpf.TabControl.dll.config" Attributes="0" SourcePath="..\Deploy\Wpf.TabControl.dll.config" SelfReg="false"/>
     <ROW File="WpfDocumentPreviewer.dll.config" Component_="video_addorner.png" FileName="WPFDOC~1.CON|WpfDocumentPreviewer.dll.config" Attributes="0" SourcePath="..\Deploy\WpfDocumentPreviewer.dll.config" SelfReg="false"/>
