@@ -18,8 +18,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
-using BetterExplorer.Api;
-using BetterExplorer.Api.ToastNotifications;
+using Windows.Foundation.Collections;
 using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
@@ -28,7 +27,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Win32;
 
 using SingleInstanceApplication;
-
+using Application = System.Windows.Application;
 using DragDropEffects = System.Windows.DragDropEffects;
 using MessageBox = System.Windows.MessageBox;
 
@@ -158,8 +157,21 @@ namespace BetterExplorer {
       Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
       var updaterThread = new Thread(new ThreadStart(this.RunAutomaticUpdateChecker));
       updaterThread.Start();
-      DesktopNotificationManagerCompat.RegisterAumidAndComServer<BetterExplorerNotificationActivator>("Gainedge.ORG.BetterExplorer");
-      DesktopNotificationManagerCompat.RegisterActivator<BetterExplorerNotificationActivator>();
+
+      ToastNotificationManagerCompat.OnActivated += toastArgs => {
+        // Obtain the arguments from the notification
+        ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
+
+        // Obtain any user input (text boxes, menu selections) from the notification
+        ValueSet userInput = toastArgs.UserInput;
+
+        // Need to dispatch to UI thread if performing UI operations
+        Application.Current.Dispatcher.Invoke(delegate {
+          // TODO: Show the corresponding content
+          MessageBox.Show("Toast activated. Args: " + toastArgs.Argument);
+        });
+      };
+
       Settings.BESettings.LoadSettings();
 
       //Process process = Process.GetCurrentProcess();

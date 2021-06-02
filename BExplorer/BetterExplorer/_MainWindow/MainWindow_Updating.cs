@@ -5,8 +5,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Windows.Data.Xml.Dom;
+using Windows.Foundation.Collections;
 using Windows.UI.Notifications;
-using BetterExplorer.Api;
 using BExplorer.Shell._Plugin_Interfaces;
 using Microsoft.Toolkit.Uwp.Notifications;
 
@@ -65,21 +65,21 @@ namespace BetterExplorer {
     }
 
     private void ButtonBase_OnClick(Object sender, RoutedEventArgs e) {
-      //var item = new FileSystemListItem();
-      //item.Initialize(IntPtr.Zero, @"D:\Movie\KnightRider", 0);
-      //var contents = item.GetContents(false, true);
-      //var count = contents.Count();
-      ToastContent toastContent = new ToastContentBuilder()
-        .AddToastActivationInfo("action=viewConversation&conversationId=5", ToastActivationType.Foreground)
-        .AddText("Hello world!")
-        .AddButton("Test", ToastActivationType.Foreground, "Alabala")
-        .GetToastContent();
-
-      // And create the toast notification #FIXME@DimitarCC 
-      var toast = new ToastNotification(toastContent.GetXml());
-
-      // And then show it
-      Microsoft.Toolkit.Uwp.Notifications.DesktopNotificationManagerCompat.CreateToastNotifier().Show(toast);
+      new ToastContentBuilder()
+        .AddArgument("action", "viewConversation")
+        .AddArgument("conversationId", 9813)
+        .AddText("Andrew sent you a picture")
+        .AddText("Check this out, The Enchantments in Washington!")
+        .AddButton(new ToastButton()
+          .SetContent("Test")
+          .AddArgument("action", "reply")
+          .SetBackgroundActivation())
+        .AddInlineImage(new Uri(@"G:\Picture Library\fKCzjJq.jpg"))
+        .AddHeroImage(new Uri(@"G:\Picture Library\nfs-prostreet-hot-girls.jpg"))
+        .AddAttributionText("Via BE")
+        .AddAppLogoOverride(new Uri(@"G:\Picture Library\Darth-Vader-Side-Profile.jpg"), ToastGenericAppLogoCrop.Circle)
+        .Show();
+      
     }
   }
 }
