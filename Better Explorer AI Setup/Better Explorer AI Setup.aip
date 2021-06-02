@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="16.9" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="18.3" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
+  <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
+    <ROW Name="Application_2_Args" Value="/checknow"/>
+    <ROW Name="Application_2_WorkingDir" Value="APPDIR"/>
+    <ROW Name="Application_WorkingDir" Value="APPDIR"/>
+    <ROW Name="AssetGenConvertedAttrNames" Value="true"/>
+    <ROW Name="AssetGenDestFolderPath" Value="Generated Assets" ValueType="1"/>
+    <ROW Name="AssetGenScalesWin10" Value="Scale 100, Scale 125, Scale 150, Scale 200, Scale 400"/>
+    <ROW Name="AssetGenVisualAssets" Value="Small Tile, Medium Tile, Wide Tile, Large Tile, App Icon, Splash Screen, Badge Logo"/>
+    <ROW Name="MigrationUninstallCode" Value="{5E93AAAE-AC44-47F5-BFC8-330F951A30F4}"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiValidationComponent">
     <ROW Table="File" Column="Sequence" MinValue="1" MaxValue="2147483647" Description="Sequence with respect to the media images; order must track cabinet order." Options="0" ColumnType="3" ColumnIndex="7" ColumnSize="4" MsiKey="File#Sequence"/>
     <ROW Table="Media" Column="LastSequence" MinValue="0" MaxValue="2147483647" Description="File sequence number for the last file for this media." Options="0" ColumnType="3" ColumnIndex="1" ColumnSize="4" MsiKey="Media#LastSequence"/>
@@ -8,6 +18,7 @@
     <ROW Property="AI_ARP_SIZE" Value="5000"/>
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_BackgroundColor" Value="lightblue" MultiBuildValue="ExeBuild:lightcoral" MsiKey="AI_BackgroundColor"/>
+    <ROW Property="AI_CURRENT_YEAR" Value="2021" ValueLocId="-"/>
     <ROW Property="AI_EXTERNALUIUNINSTALLERNAME" MultiBuildValue="ExeBuild:aiui"/>
     <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
     <ROW Property="AI_FrameBtnsColor" Value="powderblue" MsiKey="AI_FrameBtnsColor"/>
@@ -29,7 +40,7 @@
     <ROW Property="ARPCONTACT" Value="Dimitar Tsenev"/>
     <ROW Property="ARPHELPLINK" Value="https://github.com/Gainedge/BetterExplorer/issues"/>
     <ROW Property="ARPNOREPAIR" MultiBuildValue="ExeBuild:1"/>
-    <ROW Property="ARPPRODUCTICON" Value="BetterExplorer_1.exe" Type="8"/>
+    <ROW Property="ARPPRODUCTICON" Value="BENewIcon.exe" Type="8"/>
     <ROW Property="ARPSIZE" Value="15000"/>
     <ROW Property="ARPSYSTEMCOMPONENT" Value="1"/>
     <ROW Property="ARPURLINFOABOUT" Value="http://gainedge.org/better-explorer"/>
@@ -164,7 +175,6 @@
     <ROW Component="regid.201207.betterexplorer.com" ComponentId="{CDF00F28-9E44-4C9D-BAB1-EF0FDF244781}" Directory_="regid.201207.betterexplorer.com_Dir" Attributes="0"/>
     <ROW Component="updater.exe" ComponentId="{86FF428A-8B67-4D26-AD64-6817F2BE2786}" Directory_="APPDIR" Attributes="0" KeyPath="updater.exe"/>
     <ROW Component="video_addorner.png" ComponentId="{E248C720-A039-4DCC-B4D4-E4F9F55BE285}" Directory_="APPDIR" Attributes="0" KeyPath="video_addorner.png" Type="0"/>
-    <ROW Component="wyUpdate.exe" ComponentId="{394F00F8-0C2C-4929-A584-D9F778024D2D}" Directory_="APPDIR" Attributes="0" KeyPath="wyUpdate.exe"/>
     <ROW Component="x64" ComponentId="{F2F0E970-8215-4D80-BA68-F9854E48FC17}" Directory_="x64_Dir" Attributes="0"/>
     <ROW Component="x86" ComponentId="{FECD33E6-ED88-490F-A129-CC4B101582A6}" Directory_="x86_Dir" Attributes="0"/>
   </COMPONENT>
@@ -204,7 +214,6 @@
     <ROW File="Wpf.TabControl.dll" Component_="Wpf.TabControl.dll" FileName="WPFTAB~1.DLL|Wpf.TabControl.dll" Attributes="0" SourcePath="..\Deploy\Wpf.TabControl.dll" SelfReg="false"/>
     <ROW File="WpfDocumentPreviewer.dll" Component_="WpfDocumentPreviewer.dll" FileName="WPFDOC~1.DLL|WpfDocumentPreviewer.dll" Attributes="0" SourcePath="..\Deploy\WpfDocumentPreviewer.dll" SelfReg="false"/>
     <ROW File="WPFLocalizeExtension.dll" Component_="WPFLocalizeExtension.dll" FileName="WPFLOC~1.DLL|WPFLocalizeExtension.dll" Attributes="0" SourcePath="..\Deploy\WPFLocalizeExtension.dll" SelfReg="false"/>
-    <ROW File="wyUpdate.exe" Component_="wyUpdate.exe" FileName="wyUpdate.exe" Attributes="0" SourcePath="..\Deploy\wyUpdate.exe" SelfReg="false" DigSign="true"/>
     <ROW File="Xceed.Wpf.Toolkit.dll" Component_="Xceed.Wpf.Toolkit.dll" FileName="XCEEDW~1.DLL|Xceed.Wpf.Toolkit.dll" Attributes="0" SourcePath="..\Deploy\Xceed.Wpf.Toolkit.dll" SelfReg="false"/>
     <ROW File="Zlib.Portable.dll" Component_="Zlib.Portable.dll" FileName="ZLIBPO~1.DLL|Zlib.Portable.dll" Attributes="0" SourcePath="..\Deploy\Zlib.Portable.dll" SelfReg="false"/>
     <ROW File="AeroWizard.dll" Component_="AeroWizard.dll" FileName="AEROWI~1.DLL|AeroWizard.dll" Attributes="0" SourcePath="..\Deploy\AeroWizard.dll" SelfReg="false"/>
@@ -213,7 +222,6 @@
     <ROW File="BetterExplorerControls.dll" Component_="BetterExplorerControls.dll" FileName="BETTER~1.DLL|BetterExplorerControls.dll" Attributes="0" SourcePath="..\Deploy\BetterExplorerControls.dll" SelfReg="false"/>
     <ROW File="BExplorerShell.dll" Component_="BExplorerShell.dll" FileName="BEXPLO~1.DLL|BExplorerShell.dll" Attributes="0" SourcePath="..\Deploy\BExplorerShell.dll" SelfReg="false"/>
     <ROW File="BouncyCastle.Crypto.dll" Component_="BouncyCastle.Crypto.dll" FileName="BOUNCY~1.DLL|BouncyCastle.Crypto.dll" Attributes="0" SourcePath="..\Deploy\BouncyCastle.Crypto.dll" SelfReg="false"/>
-    <ROW File="client.wyc" Component_="video_addorner.png" FileName="client.wyc" Attributes="0" SourcePath="..\Deploy\client.wyc" SelfReg="false"/>
     <ROW File="ConsoleControl.dll" Component_="ConsoleControl.dll" FileName="CONSOL~1.DLL|ConsoleControl.dll" Attributes="0" SourcePath="..\Deploy\ConsoleControl.dll" SelfReg="false"/>
     <ROW File="ControlzEx.dll" Component_="ControlzEx.dll" FileName="CONTRO~1.DLL|ControlzEx.dll" Attributes="0" SourcePath="..\Deploy\ControlzEx.dll" SelfReg="false"/>
     <ROW File="Fluent.dll" Component_="Fluent.dll" FileName="Fluent.dll" Attributes="0" SourcePath="..\Deploy\Fluent.dll" SelfReg="false"/>
@@ -273,10 +281,10 @@
     <ROW File="SevenZipSharp.dll.config" Component_="video_addorner.png" FileName="SEVENZ~1.CON|SevenZipSharp.dll.config" Attributes="0" SourcePath="..\Deploy\SevenZipSharp.dll.config" SelfReg="false"/>
     <ROW File="SevenZipSharp.xml" Component_="video_addorner.png" FileName="SEVENZ~1.XML|SevenZipSharp.xml" Attributes="0" SourcePath="..\Deploy\SevenZipSharp.xml" SelfReg="false"/>
     <ROW File="System.Data.SQLite.dll.config" Component_="video_addorner.png" FileName="SYSTEM~1.CON|System.Data.SQLite.dll.config" Attributes="0" SourcePath="..\Deploy\System.Data.SQLite.dll.config" SelfReg="false"/>
-    <ROW File="updater.exe" Component_="updater.exe" FileName="BEUPDA~1.EXE|BEUpdater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="updater.exe" Component_="updater.exe" FileName="BEUPDA~1.EXE|BEUpdater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\BExplorer\BetterExplorer\BEUpdater.exe" SelfReg="false" DigSign="true"/>
     <ROW File="CheckforUpdatesSquare44x44Logo.scale100.png" Component_="BetterExplorerSquare44x44Logo.scale100.png" FileName="CHECKF~1.PNG|CheckforUpdatesSquare44x44Logo.scale-100.png" Attributes="0" SourcePath="..\BExplorer\BetterExplorer\BEUpdater.exe" SelfReg="false"/>
     <ROW File="CheckforUpdatesSquare150x150Logo.scale100.png" Component_="BetterExplorerSquare44x44Logo.scale100.png" FileName="CHECKF~2.PNG|CheckforUpdatesSquare150x150Logo.scale-100.png" Attributes="0" SourcePath="..\BExplorer\BetterExplorer\BEUpdater.exe" SelfReg="false"/>
-    <ATTRIBUTE name="IcoToPng" value="CheckforUpdatesSquare44x44Logo.scale100.png:0:44 CheckforUpdatesSquare150x150Logo.scale100.png:0:150"/>
+    <ATTRIBUTE name="IcoToPng" value="CheckforUpdatesSquare150x150Logo.scale100.png:0:150 CheckforUpdatesSquare44x44Logo.scale100.png:0:44"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.custcomp.MsiShortcutPropertyComponent">
     <ROW MsiShortcutProperty="BetterExplorer2" Shortcut_="BetterExplorer" PropertyKey="System.AppUserModel.ID" PropVariantValue="Gainedge.ORG.BetterExplorer"/>
@@ -284,7 +292,7 @@
     <ROW MsiShortcutProperty="CheckforUpdates0" Shortcut_="CheckforUpdates" PropertyKey="System.AppUserModel.PreventPinning" PropVariantValue="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AppXCfgComponent">
-    <ROW ID="Configuration" Order="1" ManifestFile="AppxManifest.xml" TargetOs="4"/>
+    <ROW ID="Configuration" Order="1" ManifestFile="AppxManifest.xml" TargetOs="4" AutoUpdatesFrequency="0" AutoUpdatesOptions="0" ManifestBundleFile="AppxBundleManifest.xml"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" GeneralOptions="h" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="4" UpdatesUrl="https://update.explorer.gainedge.org/download/updates.txt"/>
@@ -295,7 +303,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="BuildUwpAppX" BuildName="BuildUwpAppX" BuildOrder="2" BuildType="7" PackageFolder="..\Installer" PackageFileName="BetterExplorer" Languages="en" UwpTargetDesktop="TargetDeviceFamily"/>
     <ROW BuildKey="BuildUwpAppXSubBuild" BuildName="x64" BuildOrder="3" BuildType="8" ParentBuild="BuildUwpAppX"/>
-    <ROW BuildKey="ExeBuild" BuildName="ExeBuild" BuildOrder="1" BuildType="1" PackageFolder="..\Installer" PackageFileName="BetterExplorer" Languages="en;bg;de;ja;ru" LangOpt="1" InstallationType="2" CabsLocation="1" CompressCabs="false" UseLzma="true" LzmaMethod="2" LzmaCompressionLevel="2" PackageType="1" FilesInsideExe="true" ExeIconPath="..\BExplorer\BetterExplorer\Explorer.ico" CreateMd5="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName] [|ProductVersion]\install" ExtUI="true" Options="9" UseLargeSchema="true" Unicode="true" MsiPackageType="AI_ALL" UACExecutionLevel="2"/>
+    <ROW BuildKey="ExeBuild" BuildName="ExeBuild" BuildOrder="1" BuildType="0" PackageFolder="..\Installer" PackageFileName="BetterExplorer" Languages="en;bg;de;ja;ru" LangOpt="1" InstallationType="2" CabsLocation="1" CompressCabs="false" UseLzma="true" LzmaMethod="2" LzmaCompressionLevel="2" PackageType="1" FilesInsideExe="true" ExeIconPath="..\BExplorer\BetterExplorer\Explorer.ico" CreateMd5="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName] [|ProductVersion]\install" ExtUI="true" Options="9" UseLargeSchema="true" Unicode="true" MsiPackageType="AI_ALL" UACExecutionLevel="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
@@ -304,7 +312,7 @@
     <ROW Path="&lt;AI_DICTS&gt;ui_de.ail"/>
     <ROW Path="&lt;AI_DICTS&gt;ui_ja.ail"/>
     <ROW Path="&lt;AI_DICTS&gt;ui_ru.ail"/>
-    <ATTRIBUTE name="TranslateSegments" value="8116002816"/>
+    <ATTRIBUTE name="TranslateSegments" value="0b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111100011110000000110000000000000"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DigCertStoreComponent">
     <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="0" SignTool="0" UseSha256="1" Thumbprint="e610e5ca6ef6190778174c0d615ff954c4216194 Subject: Test01D424E0A39C49F0&#10;Issuer: Test01D424E0A39C49F0&#10;Valid from 07/26/2018 to 07/26/2019&#10;User\MY"/>
@@ -331,13 +339,8 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.GenericXmlAttributeComponent">
     <ROW XmlAttribute="AppListEntry" XmlElement="VisualElements_1" Name="AppListEntry" Flags="0" Order="0" Value="default"/>
-    <ROW XmlAttribute="Args" XmlElement="Application_2" Name="Args" Flags="0" Order="0" Value="/checknow"/>
     <ROW XmlAttribute="Arguments" XmlElement="Service" Name="Arguments" Flags="0" Order="0" Value="/runservice"/>
-    <ROW XmlAttribute="AssetGenConvertedAttrNames" XmlElement="Package" Name="AssetGenConvertedAttrNames" Flags="0" Order="0" Value="true"/>
-    <ROW XmlAttribute="AssetGenDestFolderPath" XmlElement="Package" Name="AssetGenDestFolderPath" Flags="0" Order="0" Value="G:\Developping\C#\Better Explorer\Better Explorer AI Setup\Generated Assets"/>
     <ROW XmlAttribute="AssetGenScalesSavedWin10" XmlElement="Package" Name="AssetGenScalesSavedWin10" Flags="0" Order="0" Value="true"/>
-    <ROW XmlAttribute="AssetGenScalesWin10" XmlElement="Package" Name="AssetGenScalesWin10" Flags="0" Order="0" Value="Scale 100, Scale 125, Scale 150, Scale 200, Scale 400"/>
-    <ROW XmlAttribute="AssetGenVisualAssets" XmlElement="Package" Name="AssetGenVisualAssets" Flags="0" Order="0" Value="Small Tile, Medium Tile, Wide Tile, Large Tile, App Icon, Splash Screen, Badge Logo"/>
     <ROW XmlAttribute="AssetGenVisualAssetsSaved" XmlElement="Package" Name="AssetGenVisualAssetsSaved" Flags="0" Order="0" Value="true"/>
     <ROW XmlAttribute="BackgroundColor" XmlElement="VisualElements" Name="BackgroundColor" Flags="0" Order="0" Value="transparent"/>
     <ROW XmlAttribute="BackgroundColor_1" XmlElement="VisualElements_1" Name="BackgroundColor" Flags="0" Order="0" Value="transparent"/>
@@ -366,10 +369,9 @@
     <ROW XmlAttribute="Id" XmlElement="Application" Name="Id" Flags="0" Order="0" Value="BetterExplorer"/>
     <ROW XmlAttribute="Id_1" XmlElement="Application_1" Name="Id" Flags="0" Order="0" Value="ServerExtensionsApp"/>
     <ROW XmlAttribute="Id_2" XmlElement="Application_2" Name="Id" Flags="0" Order="0" Value="CheckforUpdates"/>
-    <ROW XmlAttribute="IgnorableNamespaces" XmlElement="Package" Name="IgnorableNamespaces" Flags="0" Order="0" Value="uap rescap rescap3"/>
+    <ROW XmlAttribute="IgnorableNamespaces" XmlElement="Package" Name="IgnorableNamespaces" Flags="0" Order="0" Value="desktop6 rescap rescap3 serverpreview uap"/>
     <ROW XmlAttribute="Language" XmlElement="Resource" Name="Language" Flags="0" Order="0" Value="en-US"/>
     <ROW XmlAttribute="MaxVersionTested" XmlElement="TargetDeviceFamily" Name="MaxVersionTested" Flags="0" Order="0" Value="10.0.16299.0"/>
-    <ROW XmlAttribute="MigrationUninstallCode" XmlElement="Package" Name="MigrationUninstallCode" Flags="0" Order="0" Value="{5E93AAAE-AC44-47F5-BFC8-330F951A30F4}"/>
     <ROW XmlAttribute="MinVersion" XmlElement="TargetDeviceFamily" Name="MinVersion" Flags="0" Order="0" Value="10.0.14393.0"/>
     <ROW XmlAttribute="Name" XmlElement="Identity" Name="Name" Flags="0" Order="0" Value="Gainedge.org.BetterExplorer"/>
     <ROW XmlAttribute="Name_1" XmlElement="Capability" Name="Name" Flags="0" Order="0" Value="runFullTrust"/>
@@ -403,23 +405,24 @@
     <ROW XmlAttribute="StartupType" XmlElement="NTService" Name="StartupType" Flags="0" Order="0" Value="auto"/>
     <ROW XmlAttribute="StartupType_1" XmlElement="Service" Name="StartupType" Flags="0" Order="0" Value="manual"/>
     <ROW XmlAttribute="Version" XmlElement="Identity" Name="Version" Flags="0" Order="0" Value="2020.3.15.1304"/>
-    <ROW XmlAttribute="WorkingDirectory" XmlElement="Application" Name="WorkingDirectory" Flags="0" Order="0" Value="APPDIR"/>
-    <ROW XmlAttribute="WorkingDirectory_1" XmlElement="Application_2" Name="WorkingDirectory" Flags="0" Order="0" Value="APPDIR"/>
-    <ROW XmlAttribute="xmlns" XmlElement="Package" Name="xmlns" Flags="14" Order="1" Value="http://schemas.microsoft.com/appx/manifest/foundation/windows10"/>
-    <ROW XmlAttribute="xmlnsrescap" XmlElement="Package" Name="xmlns:rescap" Flags="14" Order="3" Value="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"/>
-    <ROW XmlAttribute="xmlnsrescap3" XmlElement="Package" Name="xmlns:rescap3" Flags="14" Order="4" Value="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities/3"/>
-    <ROW XmlAttribute="xmlnsuap" XmlElement="Package" Name="xmlns:uap" Flags="14" Order="2" Value="http://schemas.microsoft.com/appx/manifest/uap/windows10"/>
+    <ROW XmlAttribute="xmlns" XmlElement="Package" Name="xmlns" Flags="0" Order="1" Value="http://schemas.microsoft.com/appx/manifest/foundation/windows10"/>
+    <ROW XmlAttribute="xmlnsdesktop6" XmlElement="Package" Name="xmlns:desktop6" Flags="0" Order="12" Value="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"/>
+    <ROW XmlAttribute="xmlnsrescap" XmlElement="Package" Name="xmlns:rescap" Flags="0" Order="3" Value="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"/>
+    <ROW XmlAttribute="xmlnsrescap3" XmlElement="Package" Name="xmlns:rescap3" Flags="0" Order="4" Value="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities/3"/>
+    <ROW XmlAttribute="xmlnsserverpreview" XmlElement="Package" Name="xmlns:serverpreview" Flags="0" Order="13" Value="http://schemas.microsoft.com/appx/manifest/serverpreview/windows10"/>
+    <ROW XmlAttribute="xmlnsuap" XmlElement="Package" Name="xmlns:uap" Flags="0" Order="2" Value="http://schemas.microsoft.com/appx/manifest/uap/windows10"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.GenericXmlElementComponent">
     <ROW XmlElement="Application" ParentElement="Applications" Name="Application" Order="0" Flags="0" Type="4"/>
     <ROW XmlElement="Application_1" ParentElement="Applications" Name="Application" Order="1" Flags="0" Type="4"/>
     <ROW XmlElement="Application_2" ParentElement="Applications" Name="Application" Order="2" Flags="0" Type="4"/>
-    <ROW XmlElement="Applications" ParentElement="Package" Name="Applications" Order="4" Flags="0" Type="3"/>
-    <ROW XmlElement="Capabilities" ParentElement="Package" Name="Capabilities" Order="2" Flags="0" Type="0"/>
+    <ROW XmlElement="Applications" ParentElement="Package" Name="Applications" Order="5" Flags="0" Type="3"/>
+    <ROW XmlElement="Bundle" Name="Bundle" Order="0" Flags="0" Type="0"/>
+    <ROW XmlElement="Capabilities" ParentElement="Package" Name="Capabilities" Order="4" Flags="0" Type="0"/>
     <ROW XmlElement="Capability" ParentElement="Capabilities" Name="Capability" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="Capability_1" ParentElement="Capabilities" Name="Capability" Order="1" Flags="0" Type="0"/>
     <ROW XmlElement="Capability_2" ParentElement="Capabilities" Name="Capability" Order="2" Flags="0" Type="0"/>
-    <ROW XmlElement="Dependencies" ParentElement="Package" Name="Dependencies" Order="5" Flags="0" Type="0"/>
+    <ROW XmlElement="Dependencies" ParentElement="Package" Name="Dependencies" Order="3" Flags="0" Type="0"/>
     <ROW XmlElement="DesktopApp" ParentElement="DesktopAppMigration" Name="DesktopApp" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="DesktopAppMigration" ParentElement="Extension" Name="DesktopAppMigration" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="DesktopAppMigration_1" ParentElement="Extension_2" Name="DesktopAppMigration" Order="0" Flags="0" Type="0"/>
@@ -442,11 +445,11 @@
     <ROW XmlElement="NTService" ParentElement="NTServices" Name="NTService" Order="0" Flags="0" Type="30"/>
     <ROW XmlElement="NTServices" ParentElement="Extension_1" Name="NTServices" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="Package" Name="Package" Order="0" Flags="0" Type="6"/>
-    <ROW XmlElement="Properties" ParentElement="Package" Name="Properties" Order="3" Flags="0" Type="0"/>
+    <ROW XmlElement="Properties" ParentElement="Package" Name="Properties" Order="1" Flags="0" Type="0"/>
     <ROW XmlElement="PublisherDisplayName" ParentElement="Properties" Name="PublisherDisplayName" Order="0" Flags="0" Text="Gainedge.org" Type="0"/>
     <ROW XmlElement="Resource" ParentElement="Resources" Name="Resource" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="Resource_1" ParentElement="Resources" Name="Resource" Order="1" Flags="0" Type="0"/>
-    <ROW XmlElement="Resources" ParentElement="Package" Name="Resources" Order="1" Flags="0" Type="0"/>
+    <ROW XmlElement="Resources" ParentElement="Package" Name="Resources" Order="2" Flags="0" Type="0"/>
     <ROW XmlElement="Rotation" ParentElement="InitialRotationPreference" Name="Rotation" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="Rotation_1" ParentElement="InitialRotationPreference" Name="Rotation" Order="1" Flags="0" Type="0"/>
     <ROW XmlElement="Rotation_2" ParentElement="InitialRotationPreference_1" Name="Rotation" Order="0" Flags="0" Type="0"/>
@@ -460,6 +463,7 @@
     <ROW XmlElement="VisualElements_2" ParentElement="Application_2" Name="VisualElements" Order="0" Flags="0" Type="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.GenericXmlFileComponent">
+    <ROW XmlFile="AppxBundleManifest.xml" FileName="AppxBundleManifest.xml" RootElement="Bundle" Flags="89" Version="1.0" Encoding="UTF-8" IndentUnits="2"/>
     <ROW XmlFile="AppxManifest.xml" FileName="AppxManifest.xml" RootElement="Package" Flags="89" Version="1.0" Encoding="UTF-8" IndentUnits="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
@@ -603,7 +607,7 @@
     <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>
     <ROW Action="AI_ApplyShortcutFlags" Type="3073" Source="ShortcutFlags.dll" Target="UpdateShortcutFlags" WithoutSeq="true"/>
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH_ORIGINAL" Target="[AI_SETUPEXEPATH]"/>
-    <ROW Action="AI_DATA_SETTER" Type="51" Source="AI_ExtractFiles" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="CustomActionData" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DATA_SETTER_1" Type="51" Source="AI_DEL_EMPTY_SHORTCUTDIR" Target="[SHORTCUTDIR]"/>
     <ROW Action="AI_DATA_SETTER_4" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_5" Type="51" Source="CustomActionData" Target="[~]"/>
@@ -618,9 +622,8 @@
     <ROW Action="AI_DoRemoveExternalUIStub" Type="3585" Source="ExternalUICleaner.dll" Target="DoRemoveExternalUIStub" WithoutSeq="true"/>
     <ROW Action="AI_DpiContentScale" Type="1" Source="aicustact.dll" Target="DpiContentScale"/>
     <ROW Action="AI_EnableDebugLog" Type="321" Source="aicustact.dll" Target="EnableDebugLog"/>
-    <ROW Action="AI_EstimateExtractFiles" Type="1" Source="Prereq.dll" Target="EstimateExtractFiles"/>
     <ROW Action="AI_ExtractCadLzma" Type="51" Source="AI_ExtractLzma" Target="[AI_SETUPEXEPATH]"/>
-    <ROW Action="AI_ExtractFiles" Type="1025" Source="Prereq.dll" Target="ExtractSourceFiles" AdditionalSeq="AI_DATA_SETTER"/>
+    <ROW Action="AI_ExtractFiles" Type="1" Source="Prereq.dll" Target="ExtractSourceFiles" AdditionalSeq="AI_DATA_SETTER"/>
     <ROW Action="AI_ExtractLzma" Type="1025" Source="lzmaextractor.dll" Target="ExtractLZMAFiles"/>
     <ROW Action="AI_FindExeLzma" Type="1" Source="lzmaextractor.dll" Target="FindEXE"/>
     <ROW Action="AI_GetArpIconPath" Type="1" Source="aicustact.dll" Target="GetArpIconPath"/>
@@ -745,36 +748,36 @@
     <ROW Feature_="MainFeature" Component_="ico_2"/>
     <ROW Feature_="MainFeature" Component_="log4net.dll"/>
     <ROW Feature_="MainFeature" Component_="video_addorner.png"/>
-    <ROW Feature_="MainFeature" Component_="wyUpdate.exe"/>
     <ROW Feature_="MainFeature" Component_="x64"/>
     <ROW Feature_="MainFeature" Component_="x86"/>
     <ROW Feature_="MainFeature" Component_="APPDIR"/>
     <ROW Feature_="MainFeature" Component_="updater.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
+    <ROW Name="BENewIcon.exe" SourcePath="..\BExplorer\BetterExplorer\BENewIcon.ico" Index="0"/>
     <ROW Name="BetterExplorer_1.exe" SourcePath="..\BExplorer\BetterExplorer\Explorer.ico" Index="0"/>
     <ROW Name="SystemFoldermsiexec.exe" SourcePath="&lt;AI_RES&gt;uninstall.ico" Index="0"/>
     <ROW Name="updater_1.exe" SourcePath="..\BExplorer\BetterExplorer\BEUpdater.exe" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
-    <ROW IniFile="AppDir" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="AppDir" Value="[APPDIR]" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="AppId" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="AppId" Value="Gainedge.ORG.BetterExplorer" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="ApplicationName" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationName" Value="[ProductName]" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="ApplicationVersion" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationVersion" Value="[ProductVersion]" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="CheckFrequency" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="CheckFrequency" Value="2" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="CompanyName" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="CompanyName" Value="[Manufacturer]" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="DefaultCommandLine" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="DefaultCommandLine" Value="/silent" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="DownloadsFolder" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="DownloadsFolder" Value="[CommonAppDataFolder][Manufacturer]\[ProductName]\updates\" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="Flags" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="Flags" Value="PerMachine|ShowConfigOptionsButton" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="ID" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="ID" Value="[UpgradeCode]" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="SupportServiceName" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="SupportServiceName" Value="updater" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="URL" FileName="BEUPDA~1.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="URL" Value="https://update.explorer.gainedge.org/download/updates.txt" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="AppDir" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="AppDir" Value="[APPDIR]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="AppId" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="AppId" Value="Gainedge.ORG.BetterExplorer" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="ApplicationName" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationName" Value="[ProductName]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="ApplicationVersion" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationVersion" Value="[ProductVersion]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="CheckFrequency" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="CheckFrequency" Value="2" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="CompanyName" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="CompanyName" Value="[Manufacturer]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="DefaultCommandLine" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="DefaultCommandLine" Value="/silent" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="DownloadsFolder" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="DownloadsFolder" Value="[CommonAppDataFolder][Manufacturer]\[ProductName]\updates\" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="Flags" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="Flags" Value="PerMachine|ShowConfigOptionsButton" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="ID" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="ID" Value="[UpgradeCode]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="SupportServiceName" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="SupportServiceName" Value="updater" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="URL" FileName="BEUPDA~2.INI|BEUpdater.ini" DirProperty="APPDIR" Section="General" Key="URL" Value="https://update.explorer.gainedge.org/download/updates.txt" Action="0" Component_="updater.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="747"/>
     <ROW Action="AI_STORE_LOCATION" Condition="(Not Installed) OR REINSTALL" Sequence="1502"/>
-    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1397"/>
     <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
     <ROW Action="AI_REDIRECT_32BIT_FOLDER" Condition="NOT VersionNT64 AND NOT AI_Disable32BitRedirection" Sequence="702"/>
     <ROW Action="AI_REDIRECT_32BIT_SH_FOLDER" Condition="NOT VersionNT64 AND NOT AI_Disable32BitRedirection" Sequence="701"/>
@@ -799,9 +802,6 @@
     <ROW Action="AI_ExtractLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1549" Builds="ExeBuild"/>
     <ROW Action="AI_DeleteRLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1548" Builds="ExeBuild"/>
     <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="6597" Builds="ExeBuild"/>
-    <ROW Action="AI_ExtractFiles" Sequence="3998" Builds="ExeBuild"/>
-    <ROW Action="AI_DATA_SETTER" Sequence="3997"/>
-    <ROW Action="AI_EstimateExtractFiles" Sequence="3999" Builds="ExeBuild"/>
     <ROW Action="AI_GetArpIconPath" Sequence="1401"/>
     <ROW Action="AI_EnableDebugLog" Sequence="51"/>
     <ROW Action="AI_DetectSoftware" Sequence="101"/>
@@ -810,6 +810,8 @@
     <ROW Action="AI_PrepareShortcutFlags" Condition="(VersionNT &gt; 501) AND ((NOT Installed) OR (Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;)))" Sequence="4501"/>
     <ROW Action="AI_PinShortcuts" Condition="(VersionNT &gt; 600) AND ((NOT Installed) OR (Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;)))" Sequence="6499"/>
     <ROW Action="AI_UnpinShortcuts" Condition="(VersionNT &gt; 600) AND (REMOVE = &quot;ALL&quot;)" Sequence="3199"/>
+    <ROW Action="AI_ExtractFiles" Sequence="1399" Builds="ExeBuild"/>
+    <ROW Action="AI_DATA_SETTER" Sequence="1398"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="747"/>
@@ -844,13 +846,13 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="AIShRegAnswer" Root="-1" Key="Software\Caphyon\Advanced Installer\Installs\[ProductCode]" Name="AIShRegAnswer" Value="[AI_SHORTCUTSREG]" Component_="AIShRegAnswer"/>
     <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
-    <ROW Registry="AutoSwitchApplicationTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchApplicationTools" Value="#0" Component_="AutoSwitchApplicationTools"/>
-    <ROW Registry="AutoSwitchArchiveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchArchiveTools" Value="#1" Component_="AutoSwitchArchiveTools"/>
-    <ROW Registry="AutoSwitchDriveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchDriveTools" Value="#1" Component_="AutoSwitchDriveTools"/>
-    <ROW Registry="AutoSwitchFolderTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchFolderTools" Value="#0" Component_="AutoSwitchFolderTools"/>
-    <ROW Registry="AutoSwitchImageTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchImageTools" Value="#1" Component_="AutoSwitchImageTools"/>
-    <ROW Registry="AutoSwitchLibraryTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchLibraryTools" Value="#1" Component_="AutoSwitchLibraryTools"/>
-    <ROW Registry="AutoSwitchVirtualDriveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchVirtualDriveTools" Value="#0" Component_="AutoSwitchVirtualDriveTools"/>
+    <ROW Registry="AutoSwitchApplicationTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchApplicationTools" Value="#0" Component_="AutoSwitchApplicationTools" VirtualValue="#"/>
+    <ROW Registry="AutoSwitchArchiveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchArchiveTools" Value="#1" Component_="AutoSwitchArchiveTools" VirtualValue="#"/>
+    <ROW Registry="AutoSwitchDriveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchDriveTools" Value="#1" Component_="AutoSwitchDriveTools" VirtualValue="#"/>
+    <ROW Registry="AutoSwitchFolderTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchFolderTools" Value="#0" Component_="AutoSwitchFolderTools" VirtualValue="#"/>
+    <ROW Registry="AutoSwitchImageTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchImageTools" Value="#1" Component_="AutoSwitchImageTools" VirtualValue="#"/>
+    <ROW Registry="AutoSwitchLibraryTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchLibraryTools" Value="#1" Component_="AutoSwitchLibraryTools" VirtualValue="#"/>
+    <ROW Registry="AutoSwitchVirtualDriveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchVirtualDriveTools" Value="#0" Component_="AutoSwitchVirtualDriveTools" VirtualValue="#"/>
     <ROW Registry="Comments" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Comments" Value="[ARPCOMMENTS]" Component_="AI_CustomARPName"/>
     <ROW Registry="Contact" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Contact" Value="[ARPCONTACT]" Component_="AI_CustomARPName"/>
     <ROW Registry="CurrentTheme" Root="1" Key="Software\BExplorer" Name="CurrentTheme" Value="Dark" Component_="CurrentTheme"/>
@@ -861,30 +863,30 @@
     <ROW Registry="HelpLink" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpLink" Value="[ARPHELPLINK]" Component_="AI_CustomARPName"/>
     <ROW Registry="HelpTelephone" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpTelephone" Value="[ARPHELPTELEPHONE]" Component_="AI_CustomARPName"/>
     <ROW Registry="InstallLocation" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="InstallLocation" Value="[APPDIR]" Component_="AI_CustomARPName"/>
-    <ROW Registry="IsConsoleShown" Root="1" Key="Software\BExplorer" Name="IsConsoleShown" Value="#0" Component_="IsConsoleShown"/>
-    <ROW Registry="IsRestoreTabs" Root="1" Key="Software\BExplorer" Name="IsRestoreTabs" Value="#1" Component_="IsRestoreTabs"/>
+    <ROW Registry="IsConsoleShown" Root="1" Key="Software\BExplorer" Name="IsConsoleShown" Value="#0" Component_="IsConsoleShown" VirtualValue="#"/>
+    <ROW Registry="IsRestoreTabs" Root="1" Key="Software\BExplorer" Name="IsRestoreTabs" Value="#1" Component_="IsRestoreTabs" VirtualValue="#"/>
     <ROW Registry="IsRibonMinimized" Root="1" Key="Software\BExplorer" Name="IsRibonMinimized" Value="False" Component_="IsRibonMinimized"/>
     <ROW Registry="LastWindowHeight" Root="1" Key="Software\BExplorer" Name="LastWindowHeight" Value="1026" Component_="LastWindowHeight"/>
     <ROW Registry="LastWindowPosLeft" Root="1" Key="Software\BExplorer" Name="LastWindowPosLeft" Value="0" Component_="LastWindowPosLeft"/>
     <ROW Registry="LastWindowPosTop" Root="1" Key="Software\BExplorer" Name="LastWindowPosTop" Value="0" Component_="LastWindowPosTop"/>
-    <ROW Registry="LastWindowState" Root="1" Key="Software\BExplorer" Name="LastWindowState" Value="#2" Component_="LastWindowState"/>
+    <ROW Registry="LastWindowState" Root="1" Key="Software\BExplorer" Name="LastWindowState" Value="#2" Component_="LastWindowState" VirtualValue="#"/>
     <ROW Registry="LastWindowWidth" Root="1" Key="Software\BExplorer" Name="LastWindowWidth" Value="1696" Component_="LastWindowWidth"/>
-    <ROW Registry="LaunchExplorerFlags" Root="0" Key="Folder\shell\opennewwindow" Name="LaunchExplorerFlags" Value="#1" Component_="LaunchExplorerFlags"/>
+    <ROW Registry="LaunchExplorerFlags" Root="0" Key="Folder\shell\opennewwindow" Name="LaunchExplorerFlags" Value="#1" Component_="LaunchExplorerFlags" VirtualValue="#"/>
     <ROW Registry="MUIVerb" Root="0" Key="Folder\shell\opennewwindow" Name="MUIVerb" Value="@shell32.dll,-8517" Component_="MUIVerb"/>
     <ROW Registry="MultiSelectModel" Root="0" Key="Folder\shell\opennewwindow" Name="MultiSelectModel" Value="Document" Component_="MultiSelectModel"/>
     <ROW Registry="OpenedTabs" Root="1" Key="Software\BExplorer" Name="OpenedTabs" Component_="OpenedTabs"/>
     <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
     <ROW Registry="Publisher" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Publisher" Value="[Manufacturer]" Component_="AI_CustomARPName"/>
     <ROW Registry="RTLMode" Root="1" Key="Software\BExplorer" Name="RTLMode" Value="false" Component_="RTLMode"/>
-    <ROW Registry="ShowCheckboxes" Root="1" Key="Software\BExplorer" Name="ShowCheckboxes" Value="#0" Component_="ShowCheckboxes"/>
+    <ROW Registry="ShowCheckboxes" Root="1" Key="Software\BExplorer" Name="ShowCheckboxes" Value="#0" Component_="ShowCheckboxes" VirtualValue="#"/>
     <ROW Registry="TabBarAlignment" Root="1" Key="Software\BExplorer" Name="TabBarAlignment" Value="top" Component_="TabBarAlignment"/>
     <ROW Registry="URLInfoAbout" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLInfoAbout" Value="[ARPURLINFOABOUT]" Component_="AI_CustomARPName"/>
     <ROW Registry="URLUpdateInfo" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLUpdateInfo" Value="[ARPURLUPDATEINFO]" Component_="AI_CustomARPName"/>
     <ROW Registry="UninstallPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallPath" Value="[AI_UNINSTALLER] /i [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
     <ROW Registry="UninstallString" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallString" Value="[AI_UNINSTALLER] /i [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
-    <ROW Registry="VersionMajor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMajor" Value="#2" Component_="AI_CustomARPName"/>
-    <ROW Registry="VersionMinor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMinor" Value="#0" Component_="AI_CustomARPName"/>
+    <ROW Registry="VersionMajor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMajor" Value="#2" Component_="AI_CustomARPName" VirtualValue="#"/>
+    <ROW Registry="VersionMinor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMinor" Value="#0" Component_="AI_CustomARPName" VirtualValue="#"/>
     <ROW Registry="_" Root="0" Key="Folder\shell\openinbetterexplorer" Value="Open In Better Explorer" Component_="_"/>
     <ROW Registry="__1" Root="0" Key="Folder\shell" Value="openinbetterexplorer" Component_="__1"/>
     <ROW Registry="__38" Root="0" Key="Folder\shell\openinbetterexplorer\command" Value="[APPDIR]BetterExplorerShell.exe &quot;%1&quot;" Component_="__38"/>
@@ -939,28 +941,28 @@
     <ROW XmlAttribute="xsischemaLocation" XmlElement="swidsoftware_identification_tag" Name="xsi:schemaLocation" Flags="14" Order="3" Value="http://standards.iso.org/iso/19770/-2/2008/schema.xsd software_identification_tag.xsd"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.XmlElementComponent">
-    <ROW XmlElement="swidbuild" ParentElement="swidnumeric" Name="swid:build" Condition="1" Order="2" Flags="14" Text="15"/>
-    <ROW XmlElement="swidentitlement_required_indicator" ParentElement="swidsoftware_identification_tag" Name="swid:entitlement_required_indicator" Condition="1" Order="0" Flags="14" Text="false"/>
-    <ROW XmlElement="swidmajor" ParentElement="swidnumeric" Name="swid:major" Condition="1" Order="0" Flags="14" Text="2020"/>
-    <ROW XmlElement="swidminor" ParentElement="swidnumeric" Name="swid:minor" Condition="1" Order="1" Flags="14" Text="3"/>
-    <ROW XmlElement="swidname" ParentElement="swidproduct_version" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[ProductVersion]"/>
-    <ROW XmlElement="swidname_1" ParentElement="swidsoftware_creator" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[Manufacturer]"/>
-    <ROW XmlElement="swidname_2" ParentElement="swidsoftware_licensor" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[Manufacturer]"/>
-    <ROW XmlElement="swidname_3" ParentElement="swidtag_creator" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[Manufacturer]"/>
-    <ROW XmlElement="swidnumeric" ParentElement="swidproduct_version" Name="swid:numeric" Condition="1" Order="1" Flags="14"/>
-    <ROW XmlElement="swidproduct_title" ParentElement="swidsoftware_identification_tag" Name="swid:product_title" Condition="1" Order="1" Flags="14" Text="[ProductName]"/>
-    <ROW XmlElement="swidproduct_version" ParentElement="swidsoftware_identification_tag" Name="swid:product_version" Condition="1" Order="2" Flags="14"/>
-    <ROW XmlElement="swidregid" ParentElement="swidsoftware_creator" Name="swid:regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com"/>
-    <ROW XmlElement="swidregid_1" ParentElement="swidsoftware_licensor" Name="swid:regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com"/>
-    <ROW XmlElement="swidregid_2" ParentElement="swidtag_creator" Name="swid:regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com"/>
-    <ROW XmlElement="swidreview" ParentElement="swidnumeric" Name="swid:review" Condition="1" Order="3" Flags="14" Text="1304"/>
-    <ROW XmlElement="swidsoftware_creator" ParentElement="swidsoftware_identification_tag" Name="swid:software_creator" Condition="1" Order="3" Flags="14"/>
-    <ROW XmlElement="swidsoftware_id" ParentElement="swidsoftware_identification_tag" Name="swid:software_id" Condition="1" Order="5" Flags="14"/>
-    <ROW XmlElement="swidsoftware_identification_tag" Name="swid:software_identification_tag" Condition="1" Order="0" Flags="14"/>
-    <ROW XmlElement="swidsoftware_licensor" ParentElement="swidsoftware_identification_tag" Name="swid:software_licensor" Condition="1" Order="4" Flags="14"/>
-    <ROW XmlElement="swidtag_creator" ParentElement="swidsoftware_identification_tag" Name="swid:tag_creator" Condition="1" Order="6" Flags="14"/>
-    <ROW XmlElement="swidtag_creator_regid" ParentElement="swidsoftware_id" Name="swid:tag_creator_regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com"/>
-    <ROW XmlElement="swidunique_id" ParentElement="swidsoftware_id" Name="swid:unique_id" Condition="1" Order="0" Flags="14" Text="90679b50-5449-4f15-b34d-a8ebaec99827"/>
+    <ROW XmlElement="swidbuild" ParentElement="swidnumeric" Name="swid:build" Condition="1" Order="2" Flags="14" Text="15" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidentitlement_required_indicator" ParentElement="swidsoftware_identification_tag" Name="swid:entitlement_required_indicator" Condition="1" Order="0" Flags="14" Text="false" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidmajor" ParentElement="swidnumeric" Name="swid:major" Condition="1" Order="0" Flags="14" Text="2020" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidminor" ParentElement="swidnumeric" Name="swid:minor" Condition="1" Order="1" Flags="14" Text="3" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidname" ParentElement="swidproduct_version" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[ProductVersion]" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidname_1" ParentElement="swidsoftware_creator" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[Manufacturer]" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidname_2" ParentElement="swidsoftware_licensor" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[Manufacturer]" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidname_3" ParentElement="swidtag_creator" Name="swid:name" Condition="1" Order="0" Flags="14" Text="[Manufacturer]" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidnumeric" ParentElement="swidproduct_version" Name="swid:numeric" Condition="1" Order="1" Flags="14" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidproduct_title" ParentElement="swidsoftware_identification_tag" Name="swid:product_title" Condition="1" Order="1" Flags="14" Text="[ProductName]" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidproduct_version" ParentElement="swidsoftware_identification_tag" Name="swid:product_version" Condition="1" Order="2" Flags="14" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidregid" ParentElement="swidsoftware_creator" Name="swid:regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidregid_1" ParentElement="swidsoftware_licensor" Name="swid:regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidregid_2" ParentElement="swidtag_creator" Name="swid:regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidreview" ParentElement="swidnumeric" Name="swid:review" Condition="1" Order="3" Flags="14" Text="1304" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidsoftware_creator" ParentElement="swidsoftware_identification_tag" Name="swid:software_creator" Condition="1" Order="3" Flags="14" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidsoftware_id" ParentElement="swidsoftware_identification_tag" Name="swid:software_id" Condition="1" Order="5" Flags="14" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidsoftware_identification_tag" Name="swid:software_identification_tag" Condition="1" Order="0" Flags="14" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidsoftware_licensor" ParentElement="swidsoftware_identification_tag" Name="swid:software_licensor" Condition="1" Order="4" Flags="14" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidtag_creator" ParentElement="swidsoftware_identification_tag" Name="swid:tag_creator" Condition="1" Order="6" Flags="14" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidtag_creator_regid" ParentElement="swidsoftware_id" Name="swid:tag_creator_regid" Condition="1" Order="1" Flags="14" Text="regid.2012-07.better-explorer.com" UpdateIndexInParent="0"/>
+    <ROW XmlElement="swidunique_id" ParentElement="swidsoftware_id" Name="swid:unique_id" Condition="1" Order="0" Flags="14" Text="90679b50-5449-4f15-b34d-a8ebaec99827" UpdateIndexInParent="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.XmlFileComponent">
     <ROW XmlFile="regid.199509.com.example_ProductName.swidtag" FileName="regid2~1.swi|regid.2012-07.better-explorer.com_90679b50-5449-4f15-b34d-a8ebaec99827.swidtag" DirProperty="APPDIR" Component="ProductInformation" RootElement="swidsoftware_identification_tag" Flags="25" Version="1.0" Encoding="UTF-8" IndentUnits="2"/>
