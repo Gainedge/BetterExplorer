@@ -18,7 +18,6 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Windows.Foundation.Collections;
 using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
@@ -163,7 +162,7 @@ namespace BetterExplorer {
         ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
 
         // Obtain any user input (text boxes, menu selections) from the notification
-        ValueSet userInput = toastArgs.UserInput;
+        var userInput = toastArgs.UserInput;
 
         // Need to dispatch to UI thread if performing UI operations
         Application.Current.Dispatcher.Invoke(delegate {
