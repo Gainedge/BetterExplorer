@@ -100,7 +100,6 @@
     <ROW Component="AutoSwitchImageTools" ComponentId="{4555AE3F-1628-4DB9-87A3-CBFA3CD01DEB}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchImageTools"/>
     <ROW Component="AutoSwitchLibraryTools" ComponentId="{AB7313B8-6768-4BF7-B3D2-77D117F8E978}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchLibraryTools"/>
     <ROW Component="AutoSwitchVirtualDriveTools" ComponentId="{B56A48BE-7E3D-4079-9620-4904C7E66840}" Directory_="APPDIR" Attributes="260" KeyPath="AutoSwitchVirtualDriveTools"/>
-    <ROW Component="AutomaticUpdaterWPF.dll" ComponentId="{DABF4098-98B7-479E-A6A6-6A914AA6E56D}" Directory_="APPDIR" Attributes="0" KeyPath="AutomaticUpdaterWPF.dll"/>
     <ROW Component="BEHelper.dll" ComponentId="{E338F5ED-3EC1-4DEE-9B89-E87EE6613CBE}" Directory_="APPDIR" Attributes="0" KeyPath="BEHelper.dll"/>
     <ROW Component="BExplorerShell.dll" ComponentId="{4430E50A-665C-4F79-BB4C-F5EC5B9F4702}" Directory_="APPDIR" Attributes="0" KeyPath="BExplorerShell.dll"/>
     <ROW Component="BetterExplorer" ComponentId="{1EE56D12-660B-45C8-ADF0-BBA7CFB79A24}" Directory_="BetterExplorer_Dir" Attributes="0"/>
@@ -217,7 +216,6 @@
     <ROW File="Xceed.Wpf.Toolkit.dll" Component_="Xceed.Wpf.Toolkit.dll" FileName="XCEEDW~1.DLL|Xceed.Wpf.Toolkit.dll" Attributes="0" SourcePath="..\Deploy\Xceed.Wpf.Toolkit.dll" SelfReg="false"/>
     <ROW File="Zlib.Portable.dll" Component_="Zlib.Portable.dll" FileName="ZLIBPO~1.DLL|Zlib.Portable.dll" Attributes="0" SourcePath="..\Deploy\Zlib.Portable.dll" SelfReg="false"/>
     <ROW File="AeroWizard.dll" Component_="AeroWizard.dll" FileName="AEROWI~1.DLL|AeroWizard.dll" Attributes="0" SourcePath="..\Deploy\AeroWizard.dll" SelfReg="false"/>
-    <ROW File="AutomaticUpdaterWPF.dll" Component_="AutomaticUpdaterWPF.dll" FileName="AUTOMA~1.DLL|AutomaticUpdaterWPF.dll" Attributes="0" SourcePath="..\Deploy\AutomaticUpdaterWPF.dll" SelfReg="false"/>
     <ROW File="BEHelper.dll" Component_="BEHelper.dll" FileName="BEHelper.dll" Attributes="0" SourcePath="..\Deploy\BEHelper.dll" SelfReg="false"/>
     <ROW File="BetterExplorerControls.dll" Component_="BetterExplorerControls.dll" FileName="BETTER~1.DLL|BetterExplorerControls.dll" Attributes="0" SourcePath="..\Deploy\BetterExplorerControls.dll" SelfReg="false"/>
     <ROW File="BExplorerShell.dll" Component_="BExplorerShell.dll" FileName="BEXPLO~1.DLL|BExplorerShell.dll" Attributes="0" SourcePath="..\Deploy\BExplorerShell.dll" SelfReg="false"/>
@@ -249,37 +247,23 @@
     <ROW File="SevenZipSharp.dll" Component_="SevenZipSharp.dll" FileName="SEVENZ~1.DLL|SevenZipSharp.dll" Attributes="0" SourcePath="..\Deploy\SevenZipSharp.dll" SelfReg="false"/>
     <ROW File="StarRatingControl.dll" Component_="StarRatingControl.dll" FileName="STARRA~1.DLL|StarRatingControl.dll" Attributes="0" SourcePath="..\Deploy\StarRatingControl.dll" SelfReg="false"/>
     <ROW File="System.Data.SQLite.dll" Component_="System.Data.SQLite.dll" FileName="SYSTEM~4.DLL|System.Data.SQLite.dll" Attributes="0" SourcePath="..\Deploy\System.Data.SQLite.dll" SelfReg="false"/>
-    <ROW File="System.Data.SQLite.xml" Component_="video_addorner.png" FileName="SYSTEM~1.XML|System.Data.SQLite.xml" Attributes="0" SourcePath="..\Deploy\System.Data.SQLite.xml" SelfReg="false"/>
-    <ROW File="System.Net.Http.Extensions.xml" Component_="video_addorner.png" FileName="SYSTEM~2.XML|System.Net.Http.Extensions.xml" Attributes="0" SourcePath="..\Deploy\System.Net.Http.Extensions.xml" SelfReg="false"/>
     <ROW File="System.Net.Http.Primitives.xml" Component_="video_addorner.png" FileName="SYSTEM~3.XML|System.Net.Http.Primitives.xml" Attributes="0" SourcePath="..\Deploy\System.Net.Http.Primitives.xml" SelfReg="false"/>
-    <ROW File="TaskDialog.xml" Component_="video_addorner.png" FileName="TASKDI~1.XML|TaskDialog.xml" Attributes="0" SourcePath="..\Deploy\TaskDialog.xml" SelfReg="false"/>
     <ROW File="UsbEject.dll.config" Component_="video_addorner.png" FileName="USBEJE~1.CON|UsbEject.dll.config" Attributes="0" SourcePath="..\Deploy\UsbEject.dll.config" SelfReg="false"/>
     <ROW File="Wpf.TabControl.dll.config" Component_="video_addorner.png" FileName="WPFTAB~1.CON|Wpf.TabControl.dll.config" Attributes="0" SourcePath="..\Deploy\Wpf.TabControl.dll.config" SelfReg="false"/>
     <ROW File="WpfDocumentPreviewer.dll.config" Component_="video_addorner.png" FileName="WPFDOC~1.CON|WpfDocumentPreviewer.dll.config" Attributes="0" SourcePath="..\Deploy\WpfDocumentPreviewer.dll.config" SelfReg="false"/>
-    <ROW File="Zlib.Portable.xml" Component_="video_addorner.png" FileName="ZLIBPO~1.XML|Zlib.Portable.xml" Attributes="0" SourcePath="..\Deploy\Zlib.Portable.xml" SelfReg="false"/>
     <ROW File="BEHelper.dll.config" Component_="video_addorner.png" FileName="BEHELP~1.CON|BEHelper.dll.config" Attributes="0" SourcePath="..\Deploy\BEHelper.dll.config" SelfReg="false"/>
     <ROW File="BetterExplorer.exe.config" Component_="video_addorner.png" FileName="BETTER~1.CON|BetterExplorer.exe.config" Attributes="0" SourcePath="..\Deploy\BetterExplorer.exe.config" SelfReg="false"/>
     <ROW File="BetterExplorerControls.dll.config" Component_="video_addorner.png" FileName="BETTER~2.CON|BetterExplorerControls.dll.config" Attributes="0" SourcePath="..\Deploy\BetterExplorerControls.dll.config" SelfReg="false"/>
     <ROW File="BExplorerShell.dll.config" Component_="video_addorner.png" FileName="BEXPLO~1.CON|BExplorerShell.dll.config" Attributes="0" SourcePath="..\Deploy\BExplorerShell.dll.config" SelfReg="false"/>
     <ROW File="ConsoleControl.dll.config" Component_="video_addorner.png" FileName="CONSOL~1.CON|ConsoleControl.dll.config" Attributes="0" SourcePath="..\Deploy\ConsoleControl.dll.config" SelfReg="false"/>
     <ROW File="Fluent.xml" Component_="video_addorner.png" FileName="Fluent.xml" Attributes="0" SourcePath="..\Deploy\Fluent.xml" SelfReg="false"/>
-    <ROW File="Google.Apis.Auth.xml" Component_="video_addorner.png" FileName="GOOGLE~1.XML|Google.Apis.Auth.xml" Attributes="0" SourcePath="..\Deploy\Google.Apis.Auth.xml" SelfReg="false"/>
-    <ROW File="Google.Apis.Core.xml" Component_="video_addorner.png" FileName="GOOGLE~2.XML|Google.Apis.Core.xml" Attributes="0" SourcePath="..\Deploy\Google.Apis.Core.xml" SelfReg="false"/>
-    <ROW File="Google.Apis.Drive.v2.xml" Component_="video_addorner.png" FileName="GOOGLE~3.XML|Google.Apis.Drive.v2.xml" Attributes="0" SourcePath="..\Deploy\Google.Apis.Drive.v2.xml" SelfReg="false"/>
-    <ROW File="Google.Apis.xml" Component_="video_addorner.png" FileName="GOOGLE~4.XML|Google.Apis.xml" Attributes="0" SourcePath="..\Deploy\Google.Apis.xml" SelfReg="false"/>
     <ROW File="Hardcodet.Wpf.TaskbarNotification.dll.config" Component_="video_addorner.png" FileName="HARDCO~1.CON|Hardcodet.Wpf.TaskbarNotification.dll.config" Attributes="0" SourcePath="..\Deploy\Hardcodet.Wpf.TaskbarNotification.dll.config" SelfReg="false"/>
     <ROW File="ImDiskNet.dll.config" Component_="video_addorner.png" FileName="IMDISK~1.CON|ImDiskNet.dll.config" Attributes="0" SourcePath="..\Deploy\ImDiskNet.dll.config" SelfReg="false"/>
     <ROW File="ImDiskNet.xml" Component_="video_addorner.png" FileName="IMDISK~1.XML|ImDiskNet.xml" Attributes="0" SourcePath="..\Deploy\ImDiskNet.xml" SelfReg="false"/>
-    <ROW File="log4net.xml" Component_="video_addorner.png" FileName="log4net.xml" Attributes="0" SourcePath="..\Deploy\log4net.xml" SelfReg="false"/>
-    <ROW File="Microsoft.Threading.Tasks.Extensions.Desktop.xml" Component_="video_addorner.png" FileName="MICROS~1.XML|Microsoft.Threading.Tasks.Extensions.Desktop.xml" Attributes="0" SourcePath="..\Deploy\Microsoft.Threading.Tasks.Extensions.Desktop.xml" SelfReg="false"/>
-    <ROW File="Microsoft.Threading.Tasks.Extensions.xml" Component_="video_addorner.png" FileName="MICROS~2.XML|Microsoft.Threading.Tasks.Extensions.xml" Attributes="0" SourcePath="..\Deploy\Microsoft.Threading.Tasks.Extensions.xml" SelfReg="false"/>
-    <ROW File="Microsoft.Threading.Tasks.xml" Component_="video_addorner.png" FileName="MICROS~3.XML|Microsoft.Threading.Tasks.xml" Attributes="0" SourcePath="..\Deploy\Microsoft.Threading.Tasks.xml" SelfReg="false"/>
-    <ROW File="Newtonsoft.Json.xml" Component_="video_addorner.png" FileName="NEWTON~1.XML|Newtonsoft.Json.xml" Attributes="0" SourcePath="..\Deploy\Newtonsoft.Json.xml" SelfReg="false"/>
     <ROW File="NLog.config" Component_="video_addorner.png" FileName="NLOG~1.CON|NLog.config" Attributes="0" SourcePath="..\Deploy\NLog.config" SelfReg="false"/>
     <ROW File="Odyssey.dll.config" Component_="video_addorner.png" FileName="ODYSSE~1.CON|Odyssey.dll.config" Attributes="0" SourcePath="..\Deploy\Odyssey.dll.config" SelfReg="false"/>
     <ROW File="RateBar.dll.config" Component_="video_addorner.png" FileName="RATEBA~1.CON|RateBar.dll.config" Attributes="0" SourcePath="..\Deploy\RateBar.dll.config" SelfReg="false"/>
     <ROW File="SevenZipSharp.dll.config" Component_="video_addorner.png" FileName="SEVENZ~1.CON|SevenZipSharp.dll.config" Attributes="0" SourcePath="..\Deploy\SevenZipSharp.dll.config" SelfReg="false"/>
-    <ROW File="SevenZipSharp.xml" Component_="video_addorner.png" FileName="SEVENZ~1.XML|SevenZipSharp.xml" Attributes="0" SourcePath="..\Deploy\SevenZipSharp.xml" SelfReg="false"/>
     <ROW File="System.Data.SQLite.dll.config" Component_="video_addorner.png" FileName="SYSTEM~1.CON|System.Data.SQLite.dll.config" Attributes="0" SourcePath="..\Deploy\System.Data.SQLite.dll.config" SelfReg="false"/>
     <ROW File="updater.exe" Component_="updater.exe" FileName="BEUPDA~1.EXE|BEUpdater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\BExplorer\BetterExplorer\BEUpdater.exe" SelfReg="false" DigSign="true"/>
     <ROW File="CheckforUpdatesSquare44x44Logo.scale100.png" Component_="BetterExplorerSquare44x44Logo.scale100.png" FileName="CHECKF~1.PNG|CheckforUpdatesSquare44x44Logo.scale-100.png" Attributes="0" SourcePath="..\BExplorer\BetterExplorer\BEUpdater.exe" SelfReg="false"/>
@@ -683,7 +667,6 @@
     <ROW Feature_="MainFeature" Component_="AutoSwitchImageTools"/>
     <ROW Feature_="MainFeature" Component_="AutoSwitchLibraryTools"/>
     <ROW Feature_="MainFeature" Component_="AutoSwitchVirtualDriveTools"/>
-    <ROW Feature_="MainFeature" Component_="AutomaticUpdaterWPF.dll"/>
     <ROW Feature_="MainFeature" Component_="BEHelper.dll"/>
     <ROW Feature_="MainFeature" Component_="BExplorerShell.dll"/>
     <ROW Feature_="MainFeature" Component_="BetterExplorer"/>
