@@ -1,5 +1,6 @@
 
 ![master](https://github.com/Gainedge/BetterExplorer/actions/workflows/build.yml/badge.svg)
+[![Build Status](https://dev.azure.com/dimitarcc/Better%20Explorer/_apis/build/status/Deploy/Better%20Explorer-.NET%20Desktop-CI-Installer?branchName=master)](https://dev.azure.com/dimitarcc/Better%20Explorer/_build/latest?definitionId=3&branchName=master)
 
 
 BetterExplorer
