@@ -433,7 +433,7 @@ namespace BExplorer.Shell {
           case ShellViewStyle.Tile:
             var isComputer = this.RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName);
             User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_TILE, 0);
-            if (isComputer) { 
+            if (isComputer) {
               var tvi = new LVTILEVIEWINFO {
                 cLines = 2,
                 rcLabelMargin = new User32.RECT() { Left = 2, Right = 0, Bottom = 60, Top = 5 },
@@ -2725,9 +2725,8 @@ namespace BExplorer.Shell {
         thread.SetApartmentState(ApartmentState.STA);
         //thread.IsBackground = true;
         thread.Start();
-      }
-      catch (ThreadAbortException ex) {
-        
+      } catch (ThreadAbortException ex) {
+
       }
       Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
       GC.WaitForFullGCComplete(1000);
@@ -3722,7 +3721,9 @@ namespace BExplorer.Shell {
       if (destination.IsFileSystem) {
         if (this._FsWatcher != null) {
           this._FsWatcher.EnableRaisingEvents = false;
-          this._FsWatcher.Dispose();
+          this._FsWatcher.Path = @destination.ParsingName;
+          this._FsWatcher.EnableRaisingEvents = true;
+        } else {
           try {
             this._FsWatcher = new FileSystemWatcher(@destination.ParsingName);
             this._FsWatcher.Changed += (sender, args) => {
@@ -4204,7 +4205,7 @@ namespace BExplorer.Shell {
       var dlg = new FileOperation(this);
       var thread = new Thread(() => {
         try {
-          
+
           var fo = new IIFileOperation(dlg, handle, false, dlg);
           foreach (var item in items) {
             if (copy) {
@@ -4213,7 +4214,7 @@ namespace BExplorer.Shell {
               fo.MoveItem(item, destination, null);
             }
           }
-          
+
           fo.PerformOperations();
         } catch (SecurityException) {
           throw;

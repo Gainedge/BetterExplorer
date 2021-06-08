@@ -149,7 +149,7 @@ namespace BetterExplorer {
         dllPath = Path.Combine(dllPath, "X64");
       } else {
         // X32
-        dllPath = Path.Combine(dllPath, "X86");
+        dllPath = Path.Combine(dllPath, "X86"); 
       }
       Kernel32.SetDllDirectory(dllPath);
 
