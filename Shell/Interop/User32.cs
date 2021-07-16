@@ -821,6 +821,9 @@ public static extern UInt32 PrivateExtractIcons(String lpszFile, int nIconIndex,
     [DllImport("user32.dll")]
     public static extern bool SetMenuInfo(IntPtr hmenu, ref MENUINFO lpcmi);
 
+    [DllImport("user32.dll")]
+    public static extern bool SetMenu(IntPtr hwnd, IntPtr hMenu);
+
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);

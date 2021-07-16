@@ -216,13 +216,13 @@
           </Grid.RowDefinitions>
           <DockPanel Grid.Row="0" Height="{TemplateBinding TitleBarHeight}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{TemplateBinding TitleBackground}" LastChildFill="True" Margin="5,0,0,0">
             <Image x:Name="PART_Icon" Width="16" Height="16" Margin="4,1,0,0" DockPanel.Dock="Left" SnapsToDevicePixels="True" Source="{TemplateBinding Icon,&#xD;&#xA;                                       Converter={StaticResource IconConvert}}" Visibility="{TemplateBinding IsIconVisible,&#xD;&#xA;                                           Converter={StaticResource BooleanToVisibilityConverter}}" />
-            <ContentPresenter x:Name="PART_WindowCommands" Grid.Row="0" HorizontalAlignment="Right" Panel.ZIndex="1" Content="{TemplateBinding WindowCommands}" DockPanel.Dock="Right" />
+            <ContentPresenter x:Name="PART_WindowCommands" Grid.Row="0" HorizontalAlignment="Right" Panel.ZIndex="1" Margin="0,1,1,0" Content="{TemplateBinding WindowCommands}" DockPanel.Dock="Right" />
             <Fluent:RibbonTitleBar x:Name="PART_RibbonTitleBar" Foreground="{TemplateBinding TitleForeground}" Header="{TemplateBinding Title}" IsCollapsed="{TemplateBinding IsCollapsed}" />
           </DockPanel>
           <ContentPresenter x:Name="PART_ContentPresenter" Grid.Row="1" />
         </Grid>
       </AdornerDecorator>
-      <Border x:Name="PART_Border" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{x:Null}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" UseLayoutRounding="True" />
+      <Border x:Name="PART_Border" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{x:Null}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Margin="0" UseLayoutRounding="True" Visibility="Collapsed" />
       <ResizeGrip x:Name="WindowResizeGrip" HorizontalAlignment="Right" VerticalAlignment="Bottom" IsTabStop="false" Visibility="Collapsed" />
     </Grid>
     <ControlTemplate.Triggers>
@@ -234,12 +234,12 @@
           <Condition Property="ResizeMode" Value="CanResizeWithGrip" />
           <Condition Property="WindowState" Value="Normal" />
         </MultiTrigger.Conditions>
-        <Setter TargetName="PART_Border" Property="Visibility" Value="Visible" />
+        <Setter TargetName="PART_Border" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="WindowResizeGrip" Property="Visibility" Value="Visible" />
       </MultiTrigger>
       <Trigger Property="WindowState" Value="Maximized">
-        <Setter TargetName="Adorner" Property="Margin" Value="0" />
-        <Setter TargetName="PART_Icon" Property="Margin" Value="2,0,0,0" />
+        <Setter TargetName="Adorner" Property="Margin" Value="0,-2,0,0" />
+        <Setter TargetName="PART_Icon" Property="Margin" Value="5,0,0,0" />
         <Setter TargetName="PART_Border" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="WindowResizeGrip" Property="Visibility" Value="Collapsed" />
       </Trigger>
@@ -3070,13 +3070,19 @@
     <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}" />
   </Style>
   <Style x:Key="RibbonWindowStyle" TargetType="{x:Type Fluent:RibbonWindow}">
+    <Setter Property="WindowChrome.WindowChrome">
+      <Setter.Value>
+        <WindowChrome GlassFrameThickness="0,1,0,0" UseAeroCaptionButtons="False" ResizeBorderThickness="4" CornerRadius="4" NonClientFrameEdges="None" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="BorderThickness" Value="1" />
     <Setter Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.AccentBaseColorBrush}" />
     <Setter Property="Background" Value="{DynamicResource WhiteBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
     <Setter Property="TitleBackground" Value="{Binding Background, RelativeSource={RelativeSource Self}}" />
     <Setter Property="TitleForeground" Value="{Binding Foreground, RelativeSource={RelativeSource Self}}" />
     <Setter Property="Template" Value="{StaticResource RibbonWindowControlTemplate}" />
-    <Setter Property="TitleBarHeight" Value="{DynamicResource {x:Static SystemParameters.WindowCaptionHeightKey}}" />
+    <Setter Property="TitleBarHeight" Value="27" />
   </Style>
   <Style BasedOn="{StaticResource SpinnerStyle}" TargetType="{x:Type Fluent:Spinner}" />
   <Style BasedOn="{StaticResource TwoLineLabelStyle}" TargetType="{x:Type Fluent:TwoLineLabel}" />
@@ -3200,20 +3206,20 @@
                 </ItemsPanelTemplate>
               </ItemsControl.ItemsPanel>
             </ItemsControl>
-            <Button x:Name="PART_Min" Uid="{Binding Minimize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" Padding="0" Focusable="False" Style="{DynamicResource CaptionButtonStyle}" ToolTip="{Binding Minimize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}">
+            <Button x:Name="PART_Min" Uid="{Binding Minimize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" Padding="0" Focusable="False" WindowChrome.IsHitTestVisibleInChrome="True" Style="{DynamicResource CaptionButtonStyle}" ToolTip="{Binding Minimize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}">
               <Line HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1.5" UseLayoutRounding="True" X1="0" X2="10" Y1="0" Y2="0" />
             </Button>
-            <Button x:Name="PART_Max" Uid="{Binding Maximize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" Padding="0" Focusable="False" Style="{DynamicResource CaptionButtonStyle}" ToolTip="{Binding Maximize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" Visibility="{Binding WindowState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Converter={x:Static Converters:StaticConverters.EqualsToVisibilityConverter}, ConverterParameter={x:Static WindowState.Normal}}">
+            <Button x:Name="PART_Max" Uid="{Binding Maximize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" Padding="0" Focusable="False" Style="{DynamicResource CaptionButtonStyle}" ToolTip="{Binding Maximize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" WindowChrome.IsHitTestVisibleInChrome="True" Visibility="{Binding WindowState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Converter={x:Static Converters:StaticConverters.EqualsToVisibilityConverter}, ConverterParameter={x:Static WindowState.Normal}}">
               <Canvas Width="12" Height="12" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Path Data="M2,2 2,10 10,10 10,2 2,2Z M1,11 1,1 11,1 11,11 1,11Z" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True" Stretch="Uniform" />
               </Canvas>
             </Button>
-            <Button x:Name="PART_Restore" Uid="{Binding Restore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" Padding="0" Focusable="False" Style="{DynamicResource CaptionButtonStyle}" ToolTip="{Binding Restore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" Visibility="{Binding WindowState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Converter={x:Static Converters:StaticConverters.EqualsToVisibilityConverter}, ConverterParameter={x:Static WindowState.Maximized}}">
+            <Button x:Name="PART_Restore" Uid="{Binding Restore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" Padding="0" Focusable="False" WindowChrome.IsHitTestVisibleInChrome="True" Style="{DynamicResource CaptionButtonStyle}" ToolTip="{Binding Restore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" Visibility="{Binding WindowState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Converter={x:Static Converters:StaticConverters.EqualsToVisibilityConverter}, ConverterParameter={x:Static WindowState.Maximized}}">
               <Canvas Width="12" Height="12" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Path Data="M10,9 9,9 9,3 3,3 3,2 10,2 10,9Z M8,11 1,11 1,4 8,4 8,11Z M2,1 2,3 0,3 0,12 9,12 9,10 11,10 11,1 2,1Z" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True" Stretch="Uniform" />
               </Canvas>
             </Button>
-            <Button x:Name="PART_Close" Uid="{Binding Close, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" Padding="0" Focusable="False" Style="{DynamicResource CaptionButtonStyle}" ToolTip="{Binding Close, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}">
+            <Button x:Name="PART_Close" Uid="{Binding Close, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}" Padding="0" Focusable="False" WindowChrome.IsHitTestVisibleInChrome="True" Style="{DynamicResource CaptionButtonStyle}" ToolTip="{Binding Close, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}">
               <Grid>
                 <Line HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" X1="0" X2="10" Y1="0" Y2="10" />
                 <Line HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" X1="0" X2="10" Y1="10" Y2="0" />

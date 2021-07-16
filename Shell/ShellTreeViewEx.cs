@@ -279,7 +279,7 @@ namespace BExplorer.Shell {
       this.AllowDrop = true;
       this.ShellTreeView = new TreeViewBase();
       this.ShellTreeView.Dock = DockStyle.Fill;
-      this.ShellTreeView.BackColor = Color.White;
+      this.ShellTreeView.BackColor = Color.Black;
       this.ShellTreeView.BorderStyle = BorderStyle.None;
       this.ShellTreeView.AllowDrop = true;
       this.ShellTreeView.HideSelection = false;
@@ -305,7 +305,6 @@ namespace BExplorer.Shell {
       this.ShellTreeView.MouseMove += this.ShellListView_MouseMove;
       this.ShellTreeView.MouseEnter += this.ShellTreeView_MouseEnter;
       this.ShellTreeView.MouseLeave += this.ShellTreeView_MouseLeave;
-
       // this.ShellTreeView.MouseWheel += ShellTreeView_MouseWheel;
       // this.ShellTreeView.VerticalScroll += ShellTreeView_VerticalScroll;
       // this.ShellTreeView.BeforeSelect += ShellTreeView_BeforeSelect;

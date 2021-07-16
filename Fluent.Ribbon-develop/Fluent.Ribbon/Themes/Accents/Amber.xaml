@@ -9,7 +9,7 @@
   <!--  COLORS  -->
 
   <!--  Accent colors  -->
-  <Color x:Key="Fluent.Ribbon.Colors.AccentBaseColor">#FFF0A30A</Color>
+  <Color x:Key="Fluent.Ribbon.Colors.AccentBaseColor">#B3474646</Color>
   <!--  80%  -->
   <Color x:Key="Fluent.Ribbon.Colors.AccentColor80">#CCF0A30A</Color>
   <!--  60%  -->

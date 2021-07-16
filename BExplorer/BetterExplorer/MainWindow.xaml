@@ -554,7 +554,7 @@
       </Ribbon:Ribbon.QuickAccessItems>
       <Ribbon:Ribbon.Menu>
         <Ribbon:Backstage
-          x:Name="backstage"
+          x:Name="backstage" Margin="1,0,0,0"
           Ribbon:KeyTip.Keys="F"
           Background="DarkOrange"
           Header="Menu"
@@ -4152,7 +4152,7 @@
       Grid.Row="4"
       Grid.ColumnSpan="2"
       Background="{DynamicResource WhiteBrush}"
-      Margin="1,0,1,0">
+      Margin="0">
       <Grid.ColumnDefinitions>
         <ColumnDefinition />
         <ColumnDefinition x:Name="clPreviewSplitter" Width="2" />
@@ -4169,7 +4169,7 @@
         Grid.ColumnSpan="3"
         Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}"
         Height="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type RowDefinition}}}"
-        Margin="0" />
+        Margin="0" Visibility="Collapsed"/>
       <GridSplitter
         Grid.Row="1"
         Grid.ColumnSpan="3"
@@ -4179,6 +4179,7 @@
         Background="LightBlue" />
       <Grid
         x:Name="TreeGrid"
+        Margin="2,0,2,0"
         Grid.Row="2"
         Grid.Column="0"
         Background="{DynamicResource WhiteBrush}">

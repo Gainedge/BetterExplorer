@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -63,8 +64,12 @@ namespace BetterExplorer {
     private void MainWindow_OnClosed(Object sender, EventArgs e) {
       
     }
-
+    [return: MarshalAs(UnmanagedType.Bool)]
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern Boolean PostMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
     private void ButtonBase_OnClick(Object sender, RoutedEventArgs e) {
+      var b = PostMessage(this.Handle, 0x0084, IntPtr.Zero, (IntPtr) ((10 << 16) | (10 & 0xFFFF)));
+
       new ToastContentBuilder()
         .AddArgument("action", "viewConversation")
         .AddArgument("conversationId", 9813)

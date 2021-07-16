@@ -43,6 +43,7 @@
               Grid.Row="0"
               HorizontalAlignment="Right"
               Panel.ZIndex="1"
+              Margin="0,1,1,0"
               Content="{TemplateBinding WindowCommands}"
               DockPanel.Dock="Right" />
 
@@ -64,7 +65,9 @@
         Background="{x:Null}"
         BorderBrush="{TemplateBinding BorderBrush}"
         BorderThickness="{TemplateBinding BorderThickness}"
-        UseLayoutRounding="True" />
+        CornerRadius="6"
+        Margin="0"
+        UseLayoutRounding="True" Visibility="Collapsed"/>
 
       <ResizeGrip
         x:Name="WindowResizeGrip"
@@ -83,12 +86,12 @@
           <Condition Property="ResizeMode" Value="CanResizeWithGrip" />
           <Condition Property="WindowState" Value="Normal" />
         </MultiTrigger.Conditions>
-        <Setter TargetName="PART_Border" Property="Visibility" Value="Visible" />
+        <Setter TargetName="PART_Border" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="WindowResizeGrip" Property="Visibility" Value="Visible" />
       </MultiTrigger>
       <Trigger Property="WindowState" Value="Maximized">
-        <Setter TargetName="Adorner" Property="Margin" Value="0" />
-        <Setter TargetName="PART_Icon" Property="Margin" Value="2,0,0,0" />
+        <Setter TargetName="Adorner" Property="Margin" Value="0,-2,0,0" />
+        <Setter TargetName="PART_Icon" Property="Margin" Value="5,0,0,0" />
         <Setter TargetName="PART_Border" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="WindowResizeGrip" Property="Visibility" Value="Collapsed" />
       </Trigger>
@@ -96,12 +99,19 @@
   </ControlTemplate>
 
   <Style x:Key="RibbonWindowStyle" TargetType="{x:Type Fluent:RibbonWindow}">
+    <Setter Property="WindowChrome.WindowChrome">  
+        <Setter.Value>  
+            <WindowChrome GlassFrameThickness="0,1,0,0" UseAeroCaptionButtons="False" ResizeBorderThickness="4" CornerRadius="4" 
+                      NonClientFrameEdges="None" />  
+        </Setter.Value>  
+    </Setter>  
+    <Setter Property="BorderThickness" Value="1" />
     <Setter Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.AccentBaseColorBrush}" />
     <Setter Property="Background" Value="{DynamicResource WhiteBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
     <Setter Property="TitleBackground" Value="{Binding Background, RelativeSource={RelativeSource Self}}" />
     <Setter Property="TitleForeground" Value="{Binding Foreground, RelativeSource={RelativeSource Self}}" />
     <Setter Property="Template" Value="{StaticResource RibbonWindowControlTemplate}" />
-    <Setter Property="TitleBarHeight" Value="{DynamicResource {x:Static SystemParameters.WindowCaptionHeightKey}}" />
+    <Setter Property="TitleBarHeight" Value="27" />
   </Style>
 </ResourceDictionary>

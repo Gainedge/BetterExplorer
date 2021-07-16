@@ -41,6 +41,7 @@
               Uid="{Binding Minimize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
               Padding="0"
               Focusable="False"
+              WindowChrome.IsHitTestVisibleInChrome="True"
               Style="{DynamicResource CaptionButtonStyle}"
               ToolTip="{Binding Minimize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}">
               <Line
@@ -63,6 +64,7 @@
               Focusable="False"
               Style="{DynamicResource CaptionButtonStyle}"
               ToolTip="{Binding Maximize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
+              WindowChrome.IsHitTestVisibleInChrome="True"
               Visibility="{Binding WindowState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Converter={x:Static Converters:StaticConverters.EqualsToVisibilityConverter}, ConverterParameter={x:Static WindowState.Normal}}">
               <Canvas
                 Width="12"
@@ -83,6 +85,7 @@
               Uid="{Binding Restore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
               Padding="0"
               Focusable="False"
+              WindowChrome.IsHitTestVisibleInChrome="True"
               Style="{DynamicResource CaptionButtonStyle}"
               ToolTip="{Binding Restore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
               Visibility="{Binding WindowState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Converter={x:Static Converters:StaticConverters.EqualsToVisibilityConverter}, ConverterParameter={x:Static WindowState.Maximized}}">
@@ -105,6 +108,7 @@
               Uid="{Binding Close, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
               Padding="0"
               Focusable="False"
+              WindowChrome.IsHitTestVisibleInChrome="True"
               Style="{DynamicResource CaptionButtonStyle}"
               ToolTip="{Binding Close, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}">
               <Grid>

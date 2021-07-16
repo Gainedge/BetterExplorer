@@ -210,8 +210,8 @@ namespace Fluent
             }
 
             this.restoreButton = this.Template.FindName("PART_Restore", this) as System.Windows.Controls.Button;
-            if (this.restoreButton != null)
-            {
+            if (this.restoreButton != null) {
+              var rw = this.GetParentWindow() as RibbonWindow;
                 this.restoreButton.Click += this.RestoreClick;
             }
 

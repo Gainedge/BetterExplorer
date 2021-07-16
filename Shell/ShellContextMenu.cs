@@ -395,7 +395,7 @@ namespace BExplorer.Shell {
               break;
           }
         }
-
+        
         User32.DestroyMenu(mnu.Handle);
         view.Dispose();
         User32.DestroyMenu(view.Handle);

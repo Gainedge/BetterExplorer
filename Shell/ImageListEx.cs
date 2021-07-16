@@ -71,7 +71,7 @@ namespace BExplorer.Shell {
       this._IconLoadingThread.IsBackground = true;
       this._IconLoadingThread.SetApartmentState(ApartmentState.STA);
       this._IconLoadingThread.Start();
-      this._IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
+      this._IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
       this._IconCacheLoadingThread.SetApartmentState(ApartmentState.STA);
       this._IconCacheLoadingThread.IsBackground = true;
       this._IconCacheLoadingThread.Start();
@@ -198,6 +198,7 @@ namespace BExplorer.Shell {
         IntPtr hThumbnail = IntPtr.Zero;
         if ((!sho.IsThumbnailLoaded && sho.IsIconLoaded) || (sho.IsThumbnailLoaded && !sho.IsIconLoaded) || (sho.IsThumbnailLoaded && sho.IsIconLoaded) || (!sho.IsThumbnailLoaded && !sho.IsIconLoaded)) {
           hThumbnail = sho.GetHBitmap(addornerType == 2 ? this._CurrentSize - 7 : this._CurrentSize, true);
+         
           if (hThumbnail != IntPtr.Zero) {
             Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
             if (addornerType > 0) {
@@ -228,7 +229,9 @@ namespace BExplorer.Shell {
 
         if (hThumbnail == IntPtr.Zero && (sho.IsIconLoaded || !isPerInstance)) {
           if (!sho.IsRCWSet && isPerInstance) {
-            Task.Run(() => { this._IconsForRetreval.Enqueue(index); });
+            Task.Run(() => {
+              this._IconsForRetreval.Enqueue(index);
+            });
             this.DrawDefaultIcons(hdc, sho, iconBounds);
           } else {
             hThumbnail = sho.GetHBitmap(this._CurrentSize, false);
@@ -414,9 +417,9 @@ namespace BExplorer.Shell {
           var yPos = (Int32)Math.Ceiling(height * 0.04);
           var backgroundHoles = new SolidBrush(this._ShellViewEx.Theme.AdornerHoleColor.ToDrawingColor());
           for (int i = 0; i < 7; i++) {
-            g.FillRectangle(backgroundHoles, xPos, (Int32)(yPos + Math.Ceiling(((width * 0.13 * 0.4) + (width * 0.13 * 0.40))*i)), (Int32)Math.Round((width * 0.13) - ((width * 0.16 * 0.4)), 0), (Int32)(Math.Round(width * 0.14 * 0.4, 0)));
+            g.FillRectangle(backgroundHoles, xPos, (Int32)(yPos + Math.Ceiling(((width * 0.13 * 0.4) + (width * 0.13 * 0.40)) * i)), (Int32)Math.Round((width * 0.13) - ((width * 0.16 * 0.4)), 0), (Int32)(Math.Round(width * 0.14 * 0.4, 0)));
             g.FillRectangle(backgroundHoles, width - (Int32)Math.Ceiling(width * 0.117 * 0.8), (Int32)(yPos + Math.Ceiling(((width * 0.13 * 0.4) + (width * 0.13 * 0.40)) * i)), (Int32)Math.Round((width * 0.13) - ((width * 0.16 * 0.4)), 0), (Int32)(Math.Round(width * 0.14 * 0.4, 0)));
-            
+
           }
           backgroundHoles.Dispose();
         }
@@ -442,9 +445,9 @@ namespace BExplorer.Shell {
         Gdi32.DeleteObject(hAddorner);
         addorner.Dispose();
 
-        Gdi32.NativeDrawCrop(hdc, hThumbnail, left + (Int32)Math.Ceiling(width*0.13),
+        Gdi32.NativeDrawCrop(hdc, hThumbnail, left + (Int32)Math.Ceiling(width * 0.13),
           top + 1, (Int32)Math.Ceiling(width2 * 0.13), (Int32)Math.Ceiling(this._CurrentSize * 0.015 / 2),
-          width - (Int32)Math.Ceiling(width * 0.1285)*2, height - 2, isGhosted);
+          width - (Int32)Math.Ceiling(width * 0.1285) * 2, height - 2, isGhosted);
       }
     }
 
@@ -531,8 +534,9 @@ namespace BExplorer.Shell {
 
             var result = sho.GetHBitmap(addornerType == 2 ? this._CurrentSize - 7 : this._CurrentSize, true, true);
             sho.IsThumbnailLoaded = true;
-            sho.IsNeedRefreshing = false;
             sho.IsIconLoaded = true;
+            sho.IsNeedRefreshing = false;
+            //sho.IsIconLoaded = true;
             if (result != IntPtr.Zero) {
               var width = 0;
               var height = 0;
@@ -571,10 +575,10 @@ namespace BExplorer.Shell {
         Application.DoEvents();
         var index = -1;
         if (this._RedrawQueue.TryDequeue(out index)) {
-        if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero)
-          continue;
-        //Thread.Sleep(1);
-        this._ShellViewEx.RedrawItem(index);
+          if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero)
+            continue;
+          //Thread.Sleep(1);
+          this._ShellViewEx.RedrawItem(index);
         }
       }
     }
@@ -588,53 +592,53 @@ namespace BExplorer.Shell {
         }
         Tuple<int, int, PROPERTYKEY> index;
         if (this._ItemsForSubitemsUpdate.TryDequeue(out index)) {
-        //index = this._ItemsForSubitemsUpdate.Dequeue();
-        Thread.Sleep(1);
-        Application.DoEvents();
-        if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero) {
-          var currentItem = this._ShellViewEx.Items[index.Item1];
-          var temp = currentItem.Clone();
-          var isi2 = (IShellItem2)temp.ComInterface;
-          var pvar = new PropVariant();
-          var pk = index.Item3;
-          if (pk.fmtid == SystemProperties.DriveFreeSpace.fmtid && pk.pid == SystemProperties.DriveFreeSpace.pid) {
-            continue;
-          }
-
-          if (isi2 != null && isi2.GetProperty(ref pk, pvar) == HResult.S_OK) {
-            if (currentItem.ColumnValues.Keys.ToArray().Count(s => s.fmtid == pk.fmtid && s.pid == pk.pid) == 0) {
-              try {
-                currentItem.ColumnValues.Add(pk, pvar.Value);
-                if (!this._RedrawQueue.Contains(index.Item1)) {
-                  this._RedrawQueue.Enqueue(index.Item1);
-                }
-
-                //this._ShellViewEx.RedrawItem(index.Item1);
-              } catch {
-                // TODO: Fix this try-catch!!!!!
-              }
-            } else {
-              if (pvar.Value != null && !pvar.Value.Equals(currentItem.ColumnValues[pk])) {
-                currentItem.ColumnValues[pk] = pvar.Value;
-                if (!this._RedrawQueue.Contains(index.Item1)) {
-                  this._RedrawQueue.Enqueue(index.Item1);
-                }
-
-                //this._ShellViewEx.RedrawItem(index.Item1);
-              }
+          //index = this._ItemsForSubitemsUpdate.Dequeue();
+          Thread.Sleep(1);
+          Application.DoEvents();
+          if (User32.SendMessage(this._ShellViewEx.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero) {
+            var currentItem = this._ShellViewEx.Items[index.Item1];
+            var temp = currentItem.Clone();
+            var isi2 = (IShellItem2)temp.ComInterface;
+            var pvar = new PropVariant();
+            var pk = index.Item3;
+            if (pk.fmtid == SystemProperties.DriveFreeSpace.fmtid && pk.pid == SystemProperties.DriveFreeSpace.pid) {
+              continue;
             }
 
-            pvar.Dispose();
+            if (isi2 != null && isi2.GetProperty(ref pk, pvar) == HResult.S_OK) {
+              if (currentItem.ColumnValues.Keys.ToArray().Count(s => s.fmtid == pk.fmtid && s.pid == pk.pid) == 0) {
+                try {
+                  currentItem.ColumnValues.Add(pk, pvar.Value);
+                  if (!this._RedrawQueue.Contains(index.Item1)) {
+                    this._RedrawQueue.Enqueue(index.Item1);
+                  }
 
+                  //this._ShellViewEx.RedrawItem(index.Item1);
+                } catch {
+                  // TODO: Fix this try-catch!!!!!
+                }
+              } else {
+                if (pvar.Value != null && !pvar.Value.Equals(currentItem.ColumnValues[pk])) {
+                  currentItem.ColumnValues[pk] = pvar.Value;
+                  if (!this._RedrawQueue.Contains(index.Item1)) {
+                    this._RedrawQueue.Enqueue(index.Item1);
+                  }
+
+                  //this._ShellViewEx.RedrawItem(index.Item1);
+                }
+              }
+
+              pvar.Dispose();
+
+            }
+
+            if (isi2 != null) {
+              Marshal.ReleaseComObject(isi2);
+            }
+
+            temp.Dispose();
+            currentItem.Dispose();
           }
-
-          if (isi2 != null) {
-            Marshal.ReleaseComObject(isi2);
-          }
-
-          temp.Dispose();
-          currentItem.Dispose();
-        }
         }
       }
     }

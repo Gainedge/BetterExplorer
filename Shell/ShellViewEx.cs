@@ -627,6 +627,7 @@ namespace BExplorer.Shell {
     private void _UnvalidateTimer_Tick(Object sender, EventArgs e) {
       this._UnvalidateTimer.Stop();
       this._FastUnvalidateTimer.Stop();
+
       if (this.CurrentFolder == null) {
         return;
       }
@@ -1674,14 +1675,13 @@ namespace BExplorer.Shell {
               }
               //var currentItem = this.IsSearchNavigating ? this.Items[nmlv.item.iItem].Clone() : this.Items[nmlv.item.iItem];
               var currentItem = this.Items[nmlv.item.iItem];
-              if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
-                var hh = nmlv.item.iSubItem;
-              }
 
-              if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT && (this.View != ShellViewStyle.Tile || (nmlv.item.mask & LVIF.LVIF_IMAGE) == LVIF.LVIF_IMAGE)) {
+              if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT && (this.View != ShellViewStyle.Tile)) {
                 if (nmlv.item.iSubItem == 0) {
                   nmlv.item.pszText = currentItem.DisplayName;
                   Marshal.StructureToPtr(nmlv, m.LParam, false);
+                } else {
+                  break;
                 }
               }
 
@@ -2799,7 +2799,7 @@ namespace BExplorer.Shell {
         this.LargeImageList.ResizeImages(value);
         this.LargeImageList.AttachToListView(this, 0);
         this.SmallImageList.AttachToListView(this, 1);
-        User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, new IntPtr(((value + 38) * 65536) + (value + 20)));
+        User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, new IntPtr(((value + 42) * 65536) + (value + 25)));
       } catch (Exception) { }
     }
 
@@ -3480,34 +3480,31 @@ namespace BExplorer.Shell {
       }
     }
 
-    private async void RetrieveThumbnailByIndex(Int32 index) {
-      await Task.Run(() => {
-        if (this.IsCancelRequested) {
-          return;
+    private async void RetrieveThumbnailByIndex(Int32 index) => await Task.Run(() => {
+      if (this.IsCancelRequested) {
+        return;
+      }
+
+      // F.Application.DoEvents();
+      var itemBounds = default(User32.RECT);
+      var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
+      User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+
+      var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+
+      if (r.IntersectsWith(this.ClientRectangle)) {
+        var sho = this.Items[index];
+        var icon = sho.GetHBitmap(this.IconSize, true, true);
+        sho.IsThumbnailLoaded = true;
+        sho.IsNeedRefreshing = false;
+        if (icon != IntPtr.Zero) {
+          Gdi32.ConvertPixelByPixel(icon, out var width, out var height);
+          sho.IsOnlyLowQuality = (width > height && width != this.IconSize) || (width < height && height != this.IconSize) || (width == height && width != this.IconSize);
+          Gdi32.DeleteObject(icon);
+          this.RedrawItem(index);
         }
-
-        // F.Application.DoEvents();
-        var itemBounds = default(User32.RECT);
-        var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-        User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-
-        var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
-
-        if (r.IntersectsWith(this.ClientRectangle)) {
-          var sho = this.Items[index];
-          var icon = sho.GetHBitmap(this.IconSize, true, true);
-          sho.IsThumbnailLoaded = true;
-          sho.IsNeedRefreshing = false;
-          if (icon != IntPtr.Zero) {
-            Int32 width = 0, height = 0;
-            Gdi32.ConvertPixelByPixel(icon, out width, out height);
-            sho.IsOnlyLowQuality = (width > height && width != this.IconSize) || (width < height && height != this.IconSize) || (width == height && width != this.IconSize);
-            Gdi32.DeleteObject(icon);
-            this.RedrawItem(index);
-          }
-        }
-      });
-    }
+      }
+    });
 
     private String PrepareSearchQuery(String query) {
       var prefix = "System.Generic.String:";
@@ -4724,7 +4721,7 @@ namespace BExplorer.Shell {
                 labelBoundsReal.Left = labelBoundsReal.Left + 2;
               }
               //User32.DrawText(hdc, sho.DisplayName, -1, ref labelBounds, User32.TextFormatFlags.Center | User32.TextFormatFlags.EditControl |User32.TextFormatFlags.CalcRect | User32.TextFormatFlags.WordBreak | User32.TextFormatFlags.EndEllipsis);
-              if (index != this._ItemForRename) {
+              if (index != this._ItemForRename && this.View != ShellViewStyle.Tile) {
                 User32.DrawText(hdc, sho.DisplayName, -1, ref labelBoundsReal, align | User32.TextFormatFlags.EditControl | User32.TextFormatFlags.WordBreak | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.NoPrefix);
               }
             }
@@ -4734,9 +4731,16 @@ namespace BExplorer.Shell {
               var size = new Interop.Size();
               Gdi32.GetTextExtentPoint32(hdc, sho.DisplayName, sho.DisplayName.Length, ref size);
               var isDoubleLine = (size.Height > nmlvcd.nmcd.rc.Width - 53) && sho.DisplayName.Contains(" ");
+              var align = User32.TextFormatFlags.Default;
+              if (!isDoubleLine) {
+                align = User32.TextFormatFlags.Default | User32.TextFormatFlags.SingleLine;
+              } else {
+                labelBoundsReal.Height = labelBoundsReal.Height * 2;
+              }
+              User32.DrawText(hdc, sho.DisplayName, -1, ref labelBoundsReal, align | User32.TextFormatFlags.EditControl | User32.TextFormatFlags.WordBreak | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.NoPrefix);
               labelBounds.Left = labelBounds.Left - 2;
               labelBounds.Top = labelBounds.Top + (isDoubleLine ? 20 : 8);
-              var numberOfSubItems = isDoubleLine ? 1 : 2;
+              var numberOfSubItems = sho.cColumns.Length > 2 ? isDoubleLine ? 1 : 2 : sho.cColumns.Length;
               for (int i = 0; i < numberOfSubItems; i++) {
                 var shoCColumn = sho.cColumns[i];
                 var currentCollumn = this.AllAvailableColumns.Values.First();
@@ -4799,9 +4803,10 @@ namespace BExplorer.Shell {
                 multiplier++;
                 labelBounds.Top = labelBounds.Top + 15;
                 labelBounds.Bottom = labelBounds.Top + 15;
-
-                Gdi32.SetTextColor(hdc, textColor == null ? (int)Color.SlateGray.ToWin32Color() : (int)textColor.Value.ToWin32Color());
-                User32.DrawText(hdc, val, -1, ref labelBounds, User32.TextFormatFlags.EditControl | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter | User32.TextFormatFlags.NoPrefix);
+                if (!String.IsNullOrEmpty(val)) {
+                  Gdi32.SetTextColor(hdc, textColor == null ? (int)Color.SlateGray.ToWin32Color() : (int)textColor.Value.ToWin32Color());
+                  User32.DrawText(hdc, val, -1, ref labelBounds, User32.TextFormatFlags.EditControl | User32.TextFormatFlags.EndEllipsis | User32.TextFormatFlags.SingleLine | User32.TextFormatFlags.VCenter | User32.TextFormatFlags.NoPrefix);
+                }
               }
             }
 
@@ -4894,10 +4899,10 @@ namespace BExplorer.Shell {
 
       Color? textColor = null;
       if (sho != null && this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0 && !String.IsNullOrEmpty(sho.Extension)) {
-        var extItemsAvailable = this.LVItemsColorCodes.Any(c => c.ExtensionList.Contains(sho.Extension));
+        var extItemsAvailable = this.LVItemsColorCodes.Any(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension.ToLowerInvariant()));
         if (extItemsAvailable) {
-          var color = this.LVItemsColorCodes.SingleOrDefault(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).TextColor;
-          textColor = Color.FromArgb(color.A, color.R, color.G, color.B);
+          var color = this.LVItemsColorCodes?.SingleOrDefault(c => c.ExtensionList != null && sho.Extension != null && c.ExtensionList.ToLowerInvariant().Contains(sho.Extension.ToLowerInvariant()))?.TextColor;
+          textColor = Color.FromArgb(color.Value.A, color.Value.R, color.Value.G, color.Value.B);
         }
       }
 
@@ -5015,18 +5020,18 @@ namespace BExplorer.Shell {
               var isHot = (nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (nmlvcd.nmcd.uItemState & CDIS.DROPHILITED) == CDIS.DROPHILITED;
               if (isSelected || isHot) {
                 var gr = Graphics.FromHdc(hdc);
-                gr.CompositingQuality = CompositingQuality.HighSpeed;
-                gr.InterpolationMode = InterpolationMode.NearestNeighbor;
-                gr.SmoothingMode = SmoothingMode.HighSpeed;
+                gr.CompositingQuality = CompositingQuality.HighQuality;
+                gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gr.SmoothingMode = SmoothingMode.AntiAlias;
                 var brush = new SolidBrush(isHot ? isSelected ? this.Theme.SelectionFocusedColor.ToDrawingColor() : this.Theme.MouseOverColor.ToDrawingColor() :
                   isFocused ? this.Theme.SelectionFocusedColor.ToDrawingColor() : this.Theme.SelectionColor.ToDrawingColor());
 
-                var rectSel = new Rectangle(itemBounds.X, itemBounds.Y, itemBounds.Width, itemBounds.Height - 1);
-                var rect = new Rectangle(itemBounds.X, itemBounds.Y, itemBounds.Width - 1, itemBounds.Height - 1);
-                gr.FillRectangle(brush, rectSel);
+                var rectSel = new Rectangle(itemBounds.X + 1, itemBounds.Y + 1, itemBounds.Width - (this.View == ShellViewStyle.Details ? 4 : 2), itemBounds.Height - 2);
+                var rect = new Rectangle(itemBounds.X + 1, itemBounds.Y + 1, itemBounds.Width - (this.View == ShellViewStyle.Details ? 4 : 2), itemBounds.Height - 2);
+                gr.FillRoundedRectangle(brush, rectSel, 2);
                 if (isSelected && this.View != ShellViewStyle.Details) {
                   var pen = new Pen(this.Theme.SelectionBorderColor.ToDrawingColor());
-                  gr.DrawRectangle(pen, rect);
+                  gr.DrawRoundedRectangle(pen, rect, 2);
                   pen.Dispose();
                 }
                 brush.Dispose();
@@ -5035,7 +5040,7 @@ namespace BExplorer.Shell {
 
               nmlvcd.clrFace = -1;
 
-              Marshal.StructureToPtr(nmlvcd, m.LParam, false);
+              //Marshal.StructureToPtr(nmlvcd, m.LParam, false);
               this.ProcessCustomDrawPostPaint(ref m, nmlvcd, index, hdc, sho, textColor, lvi);
               m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
             } else {
