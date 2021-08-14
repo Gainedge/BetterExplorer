@@ -1,0 +1,8 @@
+﻿<Window x:Class="BetterExplorer.PictureViewerPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PictureViewerPopup" Height="300" Width="500" ShowInTaskbar="True" ResizeMode="NoResize" Background="White" ShowActivated="False" WindowStyle="None" Visibility="Visible" Topmost="True" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Image Name="imgPicture" Stretch="Fill"/>
+    </Grid>
+</Window>

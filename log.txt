@@ -1,0 +1,1062 @@
+2021-07-16 10:23:42.494 +03:00 [INF] Loaded 3 extensions
+2021-07-16 10:23:42.866 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-16 10:23:46.338 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-07-16 10:23:46.342 +03:00 [INF] Setting entrypoint to user selected project: I:\Developping\C#\Better Explorer\BExplorer\BetterExplorer\BetterExplorer.csproj
+2021-07-16 10:23:46.352 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-16 10:23:46.551 +03:00 [INF] Initializing upgrade step Back up project
+2021-07-16 10:24:00.757 +03:00 [INF] Applying upgrade step Back up project
+2021-07-16 10:24:19.241 +03:00 [INF] Backing up I:\Developping\C#\Better Explorer\BExplorer\BetterExplorer to I:\Developping\C#\Better Explorer\BExplorer\BetterExplorer.backup
+2021-07-16 10:24:28.666 +03:00 [INF] Project backed up to I:\Developping\C#\Better Explorer\BExplorer\BetterExplorer.backup
+2021-07-16 10:24:28.668 +03:00 [INF] Upgrade step Back up project applied successfully
+2021-07-16 10:24:43.314 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-07-16 10:24:51.844 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-07-16 10:24:51.847 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2021-07-16 10:24:53.832 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: NuGet.targets
+2021-07-16 10:24:57.514 +03:00 [INF] [dotnet] Conversion complete!
+2021-07-16 10:24:58.626 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-07-16 10:25:04.006 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-07-16 10:25:07.901 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-07-16 10:25:10.820 +03:00 [INF] Marking package Newtonsoft.Json for removal because it appears to be a transitive dependency
+2021-07-16 10:25:10.835 +03:00 [INF] Marking package System.Data.SQLite.Core for removal because it appears to be a transitive dependency
+2021-07-16 10:25:10.861 +03:00 [INF] Marking package Microsoft.Net.Http for removal based on package mapping configuration HTTP packages
+2021-07-16 10:25:10.865 +03:00 [INF] Adding package System.Net.Http based on package mapping configuration HTTP packages
+2021-07-16 10:25:10.867 +03:00 [INF] Marking assembly reference System.Net.Http.WebRequest for removal based on package mapping configuration HTTP packages
+2021-07-16 10:25:10.868 +03:00 [INF] Marking assembly reference System.ServiceModel for removal based on package mapping configuration System.ServiceModel
+2021-07-16 10:25:10.870 +03:00 [INF] Adding package System.ServiceModel.Primitives based on package mapping configuration System.ServiceModel
+2021-07-16 10:25:10.871 +03:00 [INF] Adding package System.ServiceModel.Http based on package mapping configuration System.ServiceModel
+2021-07-16 10:25:10.872 +03:00 [INF] Adding package System.ServiceModel.Duplex based on package mapping configuration System.ServiceModel
+2021-07-16 10:25:10.873 +03:00 [INF] Adding package System.ServiceModel.NetTcp based on package mapping configuration System.ServiceModel
+2021-07-16 10:25:10.874 +03:00 [INF] Adding package System.ServiceModel.Security based on package mapping configuration System.ServiceModel
+2021-07-16 10:25:10.876 +03:00 [INF] Adding package System.ServiceModel.Federation based on package mapping configuration System.ServiceModel
+2021-07-16 10:25:13.779 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.236301) needs added
+2021-07-16 10:25:13.792 +03:00 [INF] References to be removed: System.Net.Http.WebRequest
+System.ServiceModel
+2021-07-16 10:25:13.793 +03:00 [INF] Packages to be removed: Newtonsoft.Json, Version=12.0.3
+System.Data.SQLite.Core, Version=1.0.113.7
+Microsoft.Net.Http, Version=2.2.29
+2021-07-16 10:25:13.794 +03:00 [INF] Packages to be added: System.Net.Http, Version=4.3.0
+System.ServiceModel.Primitives, Version=4.8.1
+System.ServiceModel.Http, Version=4.8.1
+System.ServiceModel.Duplex, Version=4.8.1
+System.ServiceModel.NetTcp, Version=4.8.1
+System.ServiceModel.Security, Version=4.8.1
+System.ServiceModel.Federation, Version=4.8.1
+Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-16 10:25:19.812 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-07-16 10:25:19.817 +03:00 [INF] Removing outdated assembly reference: System.Net.Http.WebRequest
+2021-07-16 10:25:19.818 +03:00 [INF] Removing outdated assembly reference: System.ServiceModel
+2021-07-16 10:25:19.820 +03:00 [INF] Removing outdated package reference: Microsoft.Net.Http, Version=2.2.29
+2021-07-16 10:25:19.821 +03:00 [INF] Removing outdated package reference: Newtonsoft.Json, Version=12.0.3
+2021-07-16 10:25:19.822 +03:00 [INF] Removing outdated package reference: System.Data.SQLite.Core, Version=1.0.113.7
+2021-07-16 10:25:19.823 +03:00 [INF] Adding package reference: System.Net.Http, Version=4.3.0
+2021-07-16 10:25:19.824 +03:00 [INF] Adding package reference: System.ServiceModel.Primitives, Version=4.8.1
+2021-07-16 10:25:19.825 +03:00 [INF] Adding package reference: System.ServiceModel.Http, Version=4.8.1
+2021-07-16 10:25:19.826 +03:00 [INF] Adding package reference: System.ServiceModel.Duplex, Version=4.8.1
+2021-07-16 10:25:19.827 +03:00 [INF] Adding package reference: System.ServiceModel.NetTcp, Version=4.8.1
+2021-07-16 10:25:19.828 +03:00 [INF] Adding package reference: System.ServiceModel.Security, Version=4.8.1
+2021-07-16 10:25:19.830 +03:00 [INF] Adding package reference: System.ServiceModel.Federation, Version=4.8.1
+2021-07-16 10:25:19.831 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-16 10:25:26.312 +03:00 [INF] Marking package System.Net.Http, Version=4.3.0 for removal because it is referenced elsewhere in the project with a higher version
+2021-07-16 10:25:26.389 +03:00 [INF] Marking package System.ServiceModel.Primitives for removal because it appears to be a transitive dependency
+2021-07-16 10:25:26.396 +03:00 [INF] Marking package System.ServiceModel.Http for removal because it appears to be a transitive dependency
+2021-07-16 10:25:26.408 +03:00 [INF] Marking package System.ServiceModel.Security for removal because it appears to be a transitive dependency
+2021-07-16 10:25:26.437 +03:00 [INF] Removing outdated package reference: System.Net.Http, Version=4.3.0
+2021-07-16 10:25:26.438 +03:00 [INF] Removing outdated package reference: System.ServiceModel.Primitives, Version=4.8.1
+2021-07-16 10:25:26.440 +03:00 [INF] Removing outdated package reference: System.ServiceModel.Http, Version=4.8.1
+2021-07-16 10:25:26.441 +03:00 [INF] Removing outdated package reference: System.ServiceModel.Security, Version=4.8.1
+2021-07-16 10:25:29.868 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-07-16 10:25:32.295 +03:00 [INF] Initializing upgrade step Update TFM
+2021-07-16 10:25:32.435 +03:00 [INF] TFM needs updated to net5.0-windows10.0.19041
+2021-07-16 10:25:35.851 +03:00 [INF] Applying upgrade step Update TFM
+2021-07-16 10:25:45.519 +03:00 [INF] Updated TFM to net5.0-windows10.0.19041
+2021-07-16 10:25:45.520 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-07-16 10:25:54.539 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-07-16 10:25:56.998 +03:00 [INF] Marking package ControlzEx, Version=3.0.2.4 for removal because it doesn't support the target framework but a newer version (4.4.0) does
+2021-07-16 10:25:57.000 +03:00 [WRN] Package ControlzEx has been upgraded across major versions (3.0.2.4 -> 4.4.0) which may introduce breaking changes
+2021-07-16 10:25:57.149 +03:00 [WRN] No version of Microsoft.Bcl.Async found that supports ["net5.0-windows10.0.19041"]; leaving unchanged
+2021-07-16 10:25:57.700 +03:00 [WRN] No version of Zlib.Portable found that supports ["net5.0-windows10.0.19041"]; leaving unchanged
+2021-07-16 10:25:57.705 +03:00 [WRN] No version of Zlib.Portable.Signed found that supports ["net5.0-windows10.0.19041"]; leaving unchanged
+2021-07-16 10:25:59.926 +03:00 [INF] Adding Microsoft.Windows.Compatibility 5.0.2
+2021-07-16 10:25:59.932 +03:00 [INF] Packages to be removed: ControlzEx, Version=3.0.2.4
+2021-07-16 10:25:59.933 +03:00 [INF] Packages to be added: ControlzEx, Version=4.4.0
+Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-16 10:26:14.397 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-07-16 10:26:14.399 +03:00 [INF] Removing outdated package reference: ControlzEx, Version=3.0.2.4
+2021-07-16 10:26:14.400 +03:00 [INF] Adding package reference: ControlzEx, Version=4.4.0
+2021-07-16 10:26:14.401 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-16 10:26:22.747 +03:00 [INF] Marking package System.ComponentModel.Composition for removal because it appears to be a transitive dependency
+2021-07-16 10:26:22.754 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2021-07-16 10:26:22.766 +03:00 [INF] Marking package System.DirectoryServices for removal because it appears to be a transitive dependency
+2021-07-16 10:26:22.771 +03:00 [INF] Marking package System.Management for removal because it appears to be a transitive dependency
+2021-07-16 10:26:22.839 +03:00 [WRN] No version of Microsoft.Bcl.Async found that supports ["net5.0-windows10.0.19041"]; leaving unchanged
+2021-07-16 10:26:22.853 +03:00 [WRN] No version of Zlib.Portable found that supports ["net5.0-windows10.0.19041"]; leaving unchanged
+2021-07-16 10:26:22.856 +03:00 [WRN] No version of Zlib.Portable.Signed found that supports ["net5.0-windows10.0.19041"]; leaving unchanged
+2021-07-16 10:26:22.869 +03:00 [INF] Removing outdated package reference: System.ComponentModel.Composition, Version=5.0.0
+2021-07-16 10:26:22.870 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2021-07-16 10:26:22.871 +03:00 [INF] Removing outdated package reference: System.DirectoryServices, Version=5.0.0
+2021-07-16 10:26:22.872 +03:00 [INF] Removing outdated package reference: System.Management, Version=5.0.0
+2021-07-16 10:26:26.380 +03:00 [WRN] No version of Microsoft.Bcl.Async found that supports ["net5.0-windows10.0.19041"]; leaving unchanged
+2021-07-16 10:26:26.390 +03:00 [WRN] No version of Zlib.Portable found that supports ["net5.0-windows10.0.19041"]; leaving unchanged
+2021-07-16 10:26:26.393 +03:00 [WRN] No version of Zlib.Portable.Signed found that supports ["net5.0-windows10.0.19041"]; leaving unchanged
+2021-07-16 10:26:26.402 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-07-16 10:26:28.394 +03:00 [INF] Initializing upgrade step Add template files
+2021-07-16 10:26:28.401 +03:00 [INF] 0 expected template items needed
+2021-07-16 10:26:28.403 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-07-16 10:26:28.427 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-07-16 10:26:28.431 +03:00 [INF] Found 0 connection strings for upgrade: 
+2021-07-16 10:26:28.438 +03:00 [INF] Initializing upgrade step Update source code
+2021-07-16 10:26:37.637 +03:00 [INF] Initializing upgrade step Move to next project
+2021-07-16 10:26:45.228 +03:00 [INF] Applying upgrade step Move to next project
+2021-07-16 10:26:45.230 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-07-16 10:26:47.780 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-16 10:26:47.789 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2021-07-16 10:27:12.510 +03:00 [INF] Applying upgrade step Finalize upgrade
+2021-07-16 10:27:12.511 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2021-07-16 10:27:20.989 +03:00 [INF] Upgrade has completed. Please review any changes.
+2021-07-16 15:25:33.571 +03:00 [INF] Loaded 3 extensions
+2021-07-16 15:25:34.138 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-16 15:25:36.464 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-07-16 15:25:36.467 +03:00 [INF] Setting entrypoint to user selected project: I:\Developping\C#\Better Explorer\Shell\Shell.csproj
+2021-07-16 15:25:36.471 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-16 15:25:36.487 +03:00 [INF] Initializing upgrade step Back up project
+2021-07-16 15:25:42.793 +03:00 [INF] Applying upgrade step Back up project
+2021-07-16 15:25:46.377 +03:00 [INF] Backing up I:\Developping\C#\Better Explorer\Shell to I:\Developping\C#\Better Explorer\Shell.backup
+2021-07-16 15:25:47.189 +03:00 [INF] Project backed up to I:\Developping\C#\Better Explorer\Shell.backup
+2021-07-16 15:25:47.191 +03:00 [INF] Upgrade step Back up project applied successfully
+2021-07-16 15:26:03.653 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-07-16 15:26:07.998 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-07-16 15:26:08.002 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2021-07-16 15:26:08.771 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: NuGet.targets
+2021-07-16 15:26:10.404 +03:00 [INF] [dotnet] Conversion complete!
+2021-07-16 15:26:10.892 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-07-16 15:26:14.242 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-07-16 15:26:23.660 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-07-16 15:26:25.628 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.236301) needs added
+2021-07-16 15:26:25.635 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-16 15:26:29.238 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-07-16 15:26:29.246 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-16 15:26:30.797 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-07-16 15:26:37.393 +03:00 [INF] Initializing upgrade step Update TFM
+2021-07-16 15:26:37.466 +03:00 [ERR] Unexpected error initializing step
+Microsoft.Build.Exceptions.InvalidProjectFileException: The imported project "I:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  I:\Developping\C#\Better Explorer\Progress\RateBar.csproj
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject(String errorSubCategoryResourceName, IElementLocation elementLocation, String resourceName, Object[] args)
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject[T1,T2](IElementLocation elementLocation, String resourceName, T1 arg0, T2 arg1)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpression(String directoryOfImportingFile, ProjectImportElement importElement, String unescapedExpression, Boolean throwOnFileNotExistsError, List`1& imports)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpressionConditioned(String directoryOfImportingFile, ProjectImportElement importElement, List`1& projects, SdkResult& sdkResult, Boolean throwOnFileNotExistsError)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImports(String directoryOfImportingFile, ProjectImportElement importElement, SdkResult& sdkResult)
+   at Microsoft.Build.Evaluation.Evaluator`4.EvaluateImportElement(String directoryOfImportingFile, ProjectImportElement importElement)
+   at Microsoft.Build.Evaluation.Evaluator`4.PerformDepthFirstPass(ProjectRootElement currentProjectOrImport)
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Reevaluate(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Initialize(IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project..ctor(String projectFile, IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectCollection projectCollection, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName, IDictionary`2 globalProperties, String toolsVersion)
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.GetPropertyValue(String propertyName) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 174
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetNonSdkTargetFramework(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 106
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetFrameworkMonikers(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 88
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetEnumerator()+MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 76
+   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source, Int32& length)
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.OrderedEnumerable`1.GetEnumerator()+MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.DependencyMinimumTargetFrameworkSelectorFilter.Process(ITargetFrameworkSelectorFilterState tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/DependencyMinimumTargetFrameworkSelectorFilter.cs:line 32
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.TargetFrameworkSelector.SelectTargetFrameworkAsync(IProject project, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/TargetFrameworkSelector.cs:line 61
+   at Microsoft.DotNet.UpgradeAssistant.Steps.ProjectFormat.SetTFMStep.InitializeImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.InitializeAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 126
+2021-07-16 15:26:49.992 +03:00 [INF] Applying upgrade step Update TFM
+2021-07-16 15:26:49.997 +03:00 [ERR] Unexpected error applying step
+Microsoft.Build.Exceptions.InvalidProjectFileException: The imported project "I:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  I:\Developping\C#\Better Explorer\Progress\RateBar.csproj
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject(String errorSubCategoryResourceName, IElementLocation elementLocation, String resourceName, Object[] args)
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject[T1,T2](IElementLocation elementLocation, String resourceName, T1 arg0, T2 arg1)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpression(String directoryOfImportingFile, ProjectImportElement importElement, String unescapedExpression, Boolean throwOnFileNotExistsError, List`1& imports)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpressionConditioned(String directoryOfImportingFile, ProjectImportElement importElement, List`1& projects, SdkResult& sdkResult, Boolean throwOnFileNotExistsError)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImports(String directoryOfImportingFile, ProjectImportElement importElement, SdkResult& sdkResult)
+   at Microsoft.Build.Evaluation.Evaluator`4.EvaluateImportElement(String directoryOfImportingFile, ProjectImportElement importElement)
+   at Microsoft.Build.Evaluation.Evaluator`4.PerformDepthFirstPass(ProjectRootElement currentProjectOrImport)
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Reevaluate(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Initialize(IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project..ctor(String projectFile, IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectCollection projectCollection, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName, IDictionary`2 globalProperties, String toolsVersion)
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.GetPropertyValue(String propertyName) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 174
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetNonSdkTargetFramework(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 106
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetFrameworkMonikers(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 88
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetEnumerator()+MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 76
+   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source, Int32& length)
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.OrderedEnumerable`1.GetEnumerator()+MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.DependencyMinimumTargetFrameworkSelectorFilter.Process(ITargetFrameworkSelectorFilterState tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/DependencyMinimumTargetFrameworkSelectorFilter.cs:line 32
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.TargetFrameworkSelector.SelectTargetFrameworkAsync(IProject project, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/TargetFrameworkSelector.cs:line 61
+   at Microsoft.DotNet.UpgradeAssistant.Steps.ProjectFormat.SetTFMStep.ApplyImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.ApplyAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 170
+2021-07-16 15:26:57.735 +03:00 [INF] Applying upgrade step Update TFM
+2021-07-16 15:26:57.740 +03:00 [ERR] Unexpected error applying step
+Microsoft.Build.Exceptions.InvalidProjectFileException: The imported project "I:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  I:\Developping\C#\Better Explorer\Progress\RateBar.csproj
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject(String errorSubCategoryResourceName, IElementLocation elementLocation, String resourceName, Object[] args)
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject[T1,T2](IElementLocation elementLocation, String resourceName, T1 arg0, T2 arg1)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpression(String directoryOfImportingFile, ProjectImportElement importElement, String unescapedExpression, Boolean throwOnFileNotExistsError, List`1& imports)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpressionConditioned(String directoryOfImportingFile, ProjectImportElement importElement, List`1& projects, SdkResult& sdkResult, Boolean throwOnFileNotExistsError)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImports(String directoryOfImportingFile, ProjectImportElement importElement, SdkResult& sdkResult)
+   at Microsoft.Build.Evaluation.Evaluator`4.EvaluateImportElement(String directoryOfImportingFile, ProjectImportElement importElement)
+   at Microsoft.Build.Evaluation.Evaluator`4.PerformDepthFirstPass(ProjectRootElement currentProjectOrImport)
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Reevaluate(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Initialize(IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project..ctor(String projectFile, IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectCollection projectCollection, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName, IDictionary`2 globalProperties, String toolsVersion)
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.GetPropertyValue(String propertyName) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 174
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetNonSdkTargetFramework(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 106
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetEnumerator()+MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 76
+   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source, Int32& length)
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.OrderedEnumerable`1.GetEnumerator()+MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.DependencyMinimumTargetFrameworkSelectorFilter.Process(ITargetFrameworkSelectorFilterState tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/DependencyMinimumTargetFrameworkSelectorFilter.cs:line 32
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.TargetFrameworkSelector.SelectTargetFrameworkAsync(IProject project, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/TargetFrameworkSelector.cs:line 61
+   at Microsoft.DotNet.UpgradeAssistant.Steps.ProjectFormat.SetTFMStep.ApplyImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.ApplyAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 170
+2021-07-16 15:27:03.647 +03:00 [INF] Skipping upgrade step Update TFM
+2021-07-16 15:27:03.649 +03:00 [INF] Upgrade step Update TFM skipped
+2021-07-16 15:27:06.889 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-07-16 15:27:07.927 +03:00 [INF] No package updates needed
+2021-07-16 15:27:07.929 +03:00 [INF] Initializing upgrade step Add template files
+2021-07-16 15:27:07.936 +03:00 [INF] 0 expected template items needed
+2021-07-16 15:27:07.936 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-07-16 15:27:07.951 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-07-16 15:27:07.955 +03:00 [INF] Found 0 connection strings for upgrade: 
+2021-07-16 15:27:07.960 +03:00 [INF] Initializing upgrade step Update source code
+2021-07-16 15:27:19.347 +03:00 [INF] Initializing upgrade step Move to next project
+2021-07-16 15:27:28.855 +03:00 [INF] Applying upgrade step Move to next project
+2021-07-16 15:27:28.857 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-07-16 15:27:33.292 +03:00 [INF] Saving upgrade progress file at I:\Developping\C#\Better Explorer\Shell\.upgrade-assistant
+2021-07-16 15:27:33.305 +03:00 [ERR] Unexpected error
+Microsoft.Build.Exceptions.InvalidProjectFileException: The imported project "I:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  I:\Developping\C#\Better Explorer\Progress\RateBar.csproj
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject(String errorSubCategoryResourceName, IElementLocation elementLocation, String resourceName, Object[] args)
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject[T1,T2](IElementLocation elementLocation, String resourceName, T1 arg0, T2 arg1)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpression(String directoryOfImportingFile, ProjectImportElement importElement, String unescapedExpression, Boolean throwOnFileNotExistsError, List`1& imports)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpressionConditioned(String directoryOfImportingFile, ProjectImportElement importElement, List`1& projects, SdkResult& sdkResult, Boolean throwOnFileNotExistsError)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImports(String directoryOfImportingFile, ProjectImportElement importElement, SdkResult& sdkResult)
+   at Microsoft.Build.Evaluation.Evaluator`4.EvaluateImportElement(String directoryOfImportingFile, ProjectImportElement importElement)
+   at Microsoft.Build.Evaluation.Evaluator`4.PerformDepthFirstPass(ProjectRootElement currentProjectOrImport)
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Reevaluate(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Initialize(IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project..ctor(String projectFile, IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectCollection projectCollection, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName, IDictionary`2 globalProperties, String toolsVersion)
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.GetPropertyValue(String propertyName) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 174
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetNonSdkTargetFramework(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 106
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetEnumerator()+MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 76
+   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source, Int32& length)
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.OrderedEnumerable`1.GetEnumerator()+MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.DependencyMinimumTargetFrameworkSelectorFilter.Process(ITargetFrameworkSelectorFilterState tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/DependencyMinimumTargetFrameworkSelectorFilter.cs:line 32
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.TargetFrameworkSelector.SelectTargetFrameworkAsync(IProject project, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/TargetFrameworkSelector.cs:line 61
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsCompletedAsync(IUpgradeContext context, IProject project, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.<>c__DisplayClass16_0.<<IsApplicableImplAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 83
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 81
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsApplicableImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.IsApplicableAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 222
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.<>c__DisplayClass9_0.<<GetStepsForContextAsync>b__0>d.MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 163
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.WhereEnumerableAsyncIteratorWithTaskAndCancellation`1.MoveNextCore() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Where.cs:line 339
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 77
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 77
+   at System.Linq.AsyncEnumerable.<AnyAsync>g__Core|210_0[TSource](IAsyncEnumerable`1 source, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 33
+   at System.Linq.AsyncEnumerable.<AnyAsync>g__Core|210_0[TSource](IAsyncEnumerable`1 source, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 33
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.GetNextStepAsync(IUpgradeContext context, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 66
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 70
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 78
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleRunner.StartAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/ConsoleRunner.cs:line 62
+2021-07-16 15:29:31.724 +03:00 [INF] Loaded 3 extensions
+2021-07-16 15:29:31.912 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-16 15:29:33.582 +03:00 [INF] Loading upgrade progress file at I:\Developping\C#\Better Explorer\Shell\.upgrade-assistant
+2021-07-16 15:29:33.880 +03:00 [INF] Saving upgrade progress file at I:\Developping\C#\Better Explorer\Shell\.upgrade-assistant
+2021-07-16 15:29:33.895 +03:00 [ERR] Unexpected error
+Microsoft.Build.Exceptions.InvalidProjectFileException: The imported project "I:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  I:\Developping\C#\Better Explorer\Progress\RateBar.csproj
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject(String errorSubCategoryResourceName, IElementLocation elementLocation, String resourceName, Object[] args)
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject[T1,T2](IElementLocation elementLocation, String resourceName, T1 arg0, T2 arg1)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpression(String directoryOfImportingFile, ProjectImportElement importElement, String unescapedExpression, Boolean throwOnFileNotExistsError, List`1& imports)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpressionConditioned(String directoryOfImportingFile, ProjectImportElement importElement, List`1& projects, SdkResult& sdkResult, Boolean throwOnFileNotExistsError)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImports(String directoryOfImportingFile, ProjectImportElement importElement, SdkResult& sdkResult)
+   at Microsoft.Build.Evaluation.Evaluator`4.EvaluateImportElement(String directoryOfImportingFile, ProjectImportElement importElement)
+   at Microsoft.Build.Evaluation.Evaluator`4.PerformDepthFirstPass(ProjectRootElement currentProjectOrImport)
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Reevaluate(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Initialize(IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project..ctor(String projectFile, IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectCollection projectCollection, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName, IDictionary`2 globalProperties, String toolsVersion)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName)
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.get_Project() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.cs:line 70
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.GetPropertyValue(String propertyName) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 174
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetNonSdkTargetFramework(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 106
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetFrameworkMonikers(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 88
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetEnumerator()+MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 76
+   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source, Int32& length)
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.OrderedEnumerable`1.GetEnumerator()+MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.DependencyMinimumTargetFrameworkSelectorFilter.Process(ITargetFrameworkSelectorFilterState tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/DependencyMinimumTargetFrameworkSelectorFilter.cs:line 32
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.TargetFrameworkSelector.SelectTargetFrameworkAsync(IProject project, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/TargetFrameworkSelector.cs:line 61
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsCompletedAsync(IUpgradeContext context, IProject project, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.<>c__DisplayClass16_0.<<IsApplicableImplAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 83
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 81
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsApplicableImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.IsApplicableAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 212
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.<>c__DisplayClass9_0.<<GetStepsForContextAsync>b__0>d.MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 163
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.WhereEnumerableAsyncIteratorWithTaskAndCancellation`1.MoveNextCore() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Where.cs:line 339
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 70
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 75
+   at System.Linq.AsyncEnumerable.<AnyAsync>g__Core|210_0[TSource](IAsyncEnumerable`1 source, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 33
+   at System.Linq.AsyncEnumerable.<AnyAsync>g__Core|210_0[TSource](IAsyncEnumerable`1 source, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 33
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.GetNextStepAsync(IUpgradeContext context, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 66
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 62
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 78
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleRunner.StartAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/ConsoleRunner.cs:line 62
+2021-07-16 15:30:03.740 +03:00 [INF] Loaded 3 extensions
+2021-07-16 15:30:03.919 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-16 15:30:05.772 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-07-16 15:30:05.775 +03:00 [INF] Setting entrypoint to user selected project: I:\Developping\C#\Better Explorer\Shell\Shell.csproj
+2021-07-16 15:30:05.790 +03:00 [INF] Saving upgrade progress file at I:\Developping\C#\Better Explorer\Shell\.upgrade-assistant
+2021-07-16 15:30:05.805 +03:00 [ERR] Unexpected error
+Microsoft.Build.Exceptions.InvalidProjectFileException: The imported project "I:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  I:\Developping\C#\Better Explorer\Progress\RateBar.csproj
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject(String errorSubCategoryResourceName, IElementLocation elementLocation, String resourceName, Object[] args)
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject[T1,T2](IElementLocation elementLocation, String resourceName, T1 arg0, T2 arg1)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpression(String directoryOfImportingFile, ProjectImportElement importElement, String unescapedExpression, Boolean throwOnFileNotExistsError, List`1& imports)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpressionConditioned(String directoryOfImportingFile, ProjectImportElement importElement, List`1& projects, SdkResult& sdkResult, Boolean throwOnFileNotExistsError)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImports(String directoryOfImportingFile, ProjectImportElement importElement, SdkResult& sdkResult)
+   at Microsoft.Build.Evaluation.Evaluator`4.EvaluateImportElement(String directoryOfImportingFile, ProjectImportElement importElement)
+   at Microsoft.Build.Evaluation.Evaluator`4.PerformDepthFirstPass(ProjectRootElement currentProjectOrImport)
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Reevaluate(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Initialize(IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project..ctor(String projectFile, IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectCollection projectCollection, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName, IDictionary`2 globalProperties, String toolsVersion)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName)
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.get_Project() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.cs:line 70
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.GetPropertyValue(String propertyName) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 174
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetNonSdkTargetFramework(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 106
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetFrameworkMonikers(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 88
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetEnumerator()+MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 76
+   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source, Int32& length)
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.OrderedEnumerable`1.GetEnumerator()+MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.DependencyMinimumTargetFrameworkSelectorFilter.Process(ITargetFrameworkSelectorFilterState tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/DependencyMinimumTargetFrameworkSelectorFilter.cs:line 32
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.TargetFrameworkSelector.SelectTargetFrameworkAsync(IProject project, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/TargetFrameworkSelector.cs:line 61
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsCompletedAsync(IUpgradeContext context, IProject project, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.<>c__DisplayClass16_0.<<IsApplicableImplAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 83
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 81
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsApplicableImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.IsApplicableAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 212
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.<>c__DisplayClass9_0.<<GetStepsForContextAsync>b__0>d.MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 163
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.WhereEnumerableAsyncIteratorWithTaskAndCancellation`1.MoveNextCore() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Where.cs:line 339
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 70
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 75
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.GetNextStepInternalAsync(IAsyncEnumerable`1 steps, IUpgradeContext context, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 112
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.GetNextStepInternalAsync(IAsyncEnumerable`1 steps, IUpgradeContext context, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 112
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.GetNextStepAsync(IUpgradeContext context, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 78
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 62
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 78
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleRunner.StartAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/ConsoleRunner.cs:line 62
+2021-07-16 16:17:53.374 +03:00 [INF] Loaded 3 extensions
+2021-07-16 16:17:53.553 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-16 16:17:55.172 +03:00 [INF] Loading upgrade progress file at I:\Developping\C#\Better Explorer\Shell\.upgrade-assistant
+2021-07-16 16:17:55.460 +03:00 [INF] Saving upgrade progress file at I:\Developping\C#\Better Explorer\Shell\.upgrade-assistant
+2021-07-16 16:17:55.473 +03:00 [ERR] Unexpected error
+Microsoft.Build.Exceptions.InvalidProjectFileException: The imported project "I:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  I:\Developping\C#\Better Explorer\Progress\RateBar.csproj
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject(String errorSubCategoryResourceName, IElementLocation elementLocation, String resourceName, Object[] args)
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject[T1,T2](IElementLocation elementLocation, String resourceName, T1 arg0, T2 arg1)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpression(String directoryOfImportingFile, ProjectImportElement importElement, String unescapedExpression, Boolean throwOnFileNotExistsError, List`1& imports)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpressionConditioned(String directoryOfImportingFile, ProjectImportElement importElement, List`1& projects, SdkResult& sdkResult, Boolean throwOnFileNotExistsError)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImports(String directoryOfImportingFile, ProjectImportElement importElement, SdkResult& sdkResult)
+   at Microsoft.Build.Evaluation.Evaluator`4.EvaluateImportElement(String directoryOfImportingFile, ProjectImportElement importElement)
+   at Microsoft.Build.Evaluation.Evaluator`4.PerformDepthFirstPass(ProjectRootElement currentProjectOrImport)
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Reevaluate(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Initialize(IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project..ctor(String projectFile, IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectCollection projectCollection, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName, IDictionary`2 globalProperties, String toolsVersion)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName)
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.get_Project() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.cs:line 70
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.GetPropertyValue(String propertyName) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 174
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetNonSdkTargetFramework(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 106
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetFrameworkMonikers(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 88
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetEnumerator()+MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 76
+   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source, Int32& length)
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.OrderedEnumerable`1.GetEnumerator()+MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.DependencyMinimumTargetFrameworkSelectorFilter.Process(ITargetFrameworkSelectorFilterState tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/DependencyMinimumTargetFrameworkSelectorFilter.cs:line 32
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.TargetFrameworkSelector.SelectTargetFrameworkAsync(IProject project, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/TargetFrameworkSelector.cs:line 61
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsCompletedAsync(IUpgradeContext context, IProject project, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.<>c__DisplayClass16_0.<<IsApplicableImplAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 83
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 81
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsApplicableImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.IsApplicableAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 212
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.<>c__DisplayClass9_0.<<GetStepsForContextAsync>b__0>d.MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 163
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.WhereEnumerableAsyncIteratorWithTaskAndCancellation`1.MoveNextCore() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Where.cs:line 339
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 70
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 75
+   at System.Linq.AsyncEnumerable.<AnyAsync>g__Core|210_0[TSource](IAsyncEnumerable`1 source, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 33
+   at System.Linq.AsyncEnumerable.<AnyAsync>g__Core|210_0[TSource](IAsyncEnumerable`1 source, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 33
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.GetNextStepAsync(IUpgradeContext context, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 66
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 62
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 78
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleRunner.StartAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/ConsoleRunner.cs:line 62
+2021-07-16 16:19:05.667 +03:00 [INF] Loaded 3 extensions
+2021-07-16 16:19:05.847 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-16 16:19:07.606 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-07-16 16:19:07.609 +03:00 [INF] Setting entrypoint to user selected project: I:\Developping\C#\Better Explorer\Shell\Shell.csproj
+2021-07-16 16:19:07.623 +03:00 [INF] Saving upgrade progress file at I:\Developping\C#\Better Explorer\Shell\.upgrade-assistant
+2021-07-16 16:19:07.637 +03:00 [ERR] Unexpected error
+Microsoft.Build.Exceptions.InvalidProjectFileException: The imported project "I:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  I:\Developping\C#\Better Explorer\Progress\RateBar.csproj
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject(String errorSubCategoryResourceName, IElementLocation elementLocation, String resourceName, Object[] args)
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject[T1,T2](IElementLocation elementLocation, String resourceName, T1 arg0, T2 arg1)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpression(String directoryOfImportingFile, ProjectImportElement importElement, String unescapedExpression, Boolean throwOnFileNotExistsError, List`1& imports)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpressionConditioned(String directoryOfImportingFile, ProjectImportElement importElement, List`1& projects, SdkResult& sdkResult, Boolean throwOnFileNotExistsError)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImports(String directoryOfImportingFile, ProjectImportElement importElement, SdkResult& sdkResult)
+   at Microsoft.Build.Evaluation.Evaluator`4.EvaluateImportElement(String directoryOfImportingFile, ProjectImportElement importElement)
+   at Microsoft.Build.Evaluation.Evaluator`4.PerformDepthFirstPass(ProjectRootElement currentProjectOrImport)
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Reevaluate(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Initialize(IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project..ctor(String projectFile, IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectCollection projectCollection, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName, IDictionary`2 globalProperties, String toolsVersion)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName)
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.get_Project() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.cs:line 70
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.GetPropertyValue(String propertyName) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 174
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetNonSdkTargetFramework(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 106
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetFrameworkMonikers(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 88
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetEnumerator()+MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 76
+   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source, Int32& length)
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.OrderedEnumerable`1.GetEnumerator()+MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.DependencyMinimumTargetFrameworkSelectorFilter.Process(ITargetFrameworkSelectorFilterState tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/DependencyMinimumTargetFrameworkSelectorFilter.cs:line 32
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.TargetFrameworkSelector.SelectTargetFrameworkAsync(IProject project, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/TargetFrameworkSelector.cs:line 61
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsCompletedAsync(IUpgradeContext context, IProject project, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.<>c__DisplayClass16_0.<<IsApplicableImplAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 83
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 81
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsApplicableImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.IsApplicableAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 212
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.<>c__DisplayClass9_0.<<GetStepsForContextAsync>b__0>d.MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 163
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.WhereEnumerableAsyncIteratorWithTaskAndCancellation`1.MoveNextCore() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Where.cs:line 339
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 70
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 75
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.GetNextStepInternalAsync(IAsyncEnumerable`1 steps, IUpgradeContext context, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 112
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.GetNextStepInternalAsync(IAsyncEnumerable`1 steps, IUpgradeContext context, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 112
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.GetNextStepAsync(IUpgradeContext context, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 78
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 62
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 78
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleRunner.StartAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/ConsoleRunner.cs:line 62
+2021-07-16 16:29:57.786 +03:00 [INF] Loaded 3 extensions
+2021-07-16 16:29:58.160 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-16 16:29:59.604 +03:00 [INF] Loading upgrade progress file at I:\Developping\C#\Better Explorer\Shell\.upgrade-assistant
+2021-07-16 16:29:59.829 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-16 16:29:59.847 +03:00 [INF] Initializing upgrade step Back up project
+2021-07-16 16:29:59.851 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-07-16 16:30:05.718 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-07-16 16:30:05.720 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2021-07-16 16:30:06.439 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: NuGet.targets
+2021-07-16 16:30:08.003 +03:00 [INF] [dotnet] Conversion complete!
+2021-07-16 16:30:08.513 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-07-16 16:30:10.844 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-07-16 16:30:14.507 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-07-16 16:30:16.688 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.236301) needs added
+2021-07-16 16:30:16.695 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-16 16:30:21.339 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-07-16 16:30:21.346 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-16 16:30:22.874 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-07-16 16:30:30.320 +03:00 [INF] Initializing upgrade step Update TFM
+2021-07-16 16:30:30.399 +03:00 [ERR] Unexpected error initializing step
+Microsoft.Build.Exceptions.InvalidProjectFileException: The imported project "I:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  I:\Developping\C#\Better Explorer\Progress\RateBar.csproj
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject(String errorSubCategoryResourceName, IElementLocation elementLocation, String resourceName, Object[] args)
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject[T1,T2](IElementLocation elementLocation, String resourceName, T1 arg0, T2 arg1)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpression(String directoryOfImportingFile, ProjectImportElement importElement, String unescapedExpression, Boolean throwOnFileNotExistsError, List`1& imports)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpressionConditioned(String directoryOfImportingFile, ProjectImportElement importElement, List`1& projects, SdkResult& sdkResult, Boolean throwOnFileNotExistsError)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImports(String directoryOfImportingFile, ProjectImportElement importElement, SdkResult& sdkResult)
+   at Microsoft.Build.Evaluation.Evaluator`4.EvaluateImportElement(String directoryOfImportingFile, ProjectImportElement importElement)
+   at Microsoft.Build.Evaluation.Evaluator`4.PerformDepthFirstPass(ProjectRootElement currentProjectOrImport)
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Reevaluate(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Initialize(IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project..ctor(String projectFile, IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectCollection projectCollection, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName, IDictionary`2 globalProperties, String toolsVersion)
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.GetPropertyValue(String propertyName) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 174
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetNonSdkTargetFramework(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 106
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetFrameworkMonikers(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 88
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetEnumerator()+MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 76
+   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source, Int32& length)
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.OrderedEnumerable`1.GetEnumerator()+MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.DependencyMinimumTargetFrameworkSelectorFilter.Process(ITargetFrameworkSelectorFilterState tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/DependencyMinimumTargetFrameworkSelectorFilter.cs:line 32
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.TargetFrameworkSelector.SelectTargetFrameworkAsync(IProject project, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/TargetFrameworkSelector.cs:line 61
+   at Microsoft.DotNet.UpgradeAssistant.Steps.ProjectFormat.SetTFMStep.InitializeImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.InitializeAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 126
+2021-07-16 16:31:28.123 +03:00 [INF] Applying upgrade step Update TFM
+2021-07-16 16:31:28.128 +03:00 [ERR] Unexpected error applying step
+Microsoft.Build.Exceptions.InvalidProjectFileException: The imported project "I:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  I:\Developping\C#\Better Explorer\Progress\RateBar.csproj
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject(String errorSubCategoryResourceName, IElementLocation elementLocation, String resourceName, Object[] args)
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject[T1,T2](IElementLocation elementLocation, String resourceName, T1 arg0, T2 arg1)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpression(String directoryOfImportingFile, ProjectImportElement importElement, String unescapedExpression, Boolean throwOnFileNotExistsError, List`1& imports)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpressionConditioned(String directoryOfImportingFile, ProjectImportElement importElement, List`1& projects, SdkResult& sdkResult, Boolean throwOnFileNotExistsError)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImports(String directoryOfImportingFile, ProjectImportElement importElement, SdkResult& sdkResult)
+   at Microsoft.Build.Evaluation.Evaluator`4.EvaluateImportElement(String directoryOfImportingFile, ProjectImportElement importElement)
+   at Microsoft.Build.Evaluation.Evaluator`4.PerformDepthFirstPass(ProjectRootElement currentProjectOrImport)
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Reevaluate(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Initialize(IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project..ctor(String projectFile, IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectCollection projectCollection, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName, IDictionary`2 globalProperties, String toolsVersion)
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.GetPropertyValue(String propertyName) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 174
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetNonSdkTargetFramework(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 106
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetFrameworkMonikers(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 88
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetEnumerator()+MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 76
+   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source, Int32& length)
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.OrderedEnumerable`1.GetEnumerator()+MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.DependencyMinimumTargetFrameworkSelectorFilter.Process(ITargetFrameworkSelectorFilterState tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/DependencyMinimumTargetFrameworkSelectorFilter.cs:line 32
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.TargetFrameworkSelector.SelectTargetFrameworkAsync(IProject project, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/TargetFrameworkSelector.cs:line 61
+   at Microsoft.DotNet.UpgradeAssistant.Steps.ProjectFormat.SetTFMStep.ApplyImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.ApplyAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 170
+2021-07-16 16:31:37.947 +03:00 [INF] Skipping upgrade step Update TFM
+2021-07-16 16:31:37.948 +03:00 [INF] Upgrade step Update TFM skipped
+2021-07-16 16:31:42.550 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-07-16 16:31:44.009 +03:00 [INF] Marking package Microsoft.CSharp for removal because it appears to be a transitive dependency
+2021-07-16 16:31:44.022 +03:00 [INF] Packages to be removed: Microsoft.CSharp, Version=4.7.0
+2021-07-16 16:31:48.595 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-07-16 16:31:48.596 +03:00 [INF] Removing outdated package reference: Microsoft.CSharp, Version=4.7.0
+2021-07-16 16:31:50.404 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-07-16 16:31:57.433 +03:00 [INF] Initializing upgrade step Add template files
+2021-07-16 16:31:57.442 +03:00 [INF] 0 expected template items needed
+2021-07-16 16:31:57.444 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-07-16 16:31:57.459 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-07-16 16:31:57.463 +03:00 [INF] Found 0 connection strings for upgrade: 
+2021-07-16 16:31:57.467 +03:00 [INF] Initializing upgrade step Update source code
+2021-07-16 16:32:03.652 +03:00 [INF] Initializing upgrade step Move to next project
+2021-07-16 16:32:26.876 +03:00 [INF] Applying upgrade step Move to next project
+2021-07-16 16:32:26.878 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-07-16 16:32:28.465 +03:00 [INF] Saving upgrade progress file at I:\Developping\C#\Better Explorer\Shell\.upgrade-assistant
+2021-07-16 16:32:28.479 +03:00 [ERR] Unexpected error
+Microsoft.Build.Exceptions.InvalidProjectFileException: The imported project "I:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  I:\Developping\C#\Better Explorer\Progress\RateBar.csproj
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject(String errorSubCategoryResourceName, IElementLocation elementLocation, String resourceName, Object[] args)
+   at Microsoft.Build.Shared.ProjectErrorUtilities.ThrowInvalidProject[T1,T2](IElementLocation elementLocation, String resourceName, T1 arg0, T2 arg1)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpression(String directoryOfImportingFile, ProjectImportElement importElement, String unescapedExpression, Boolean throwOnFileNotExistsError, List`1& imports)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImportsFromUnescapedImportExpressionConditioned(String directoryOfImportingFile, ProjectImportElement importElement, List`1& projects, SdkResult& sdkResult, Boolean throwOnFileNotExistsError)
+   at Microsoft.Build.Evaluation.Evaluator`4.ExpandAndLoadImports(String directoryOfImportingFile, ProjectImportElement importElement, SdkResult& sdkResult)
+   at Microsoft.Build.Evaluation.Evaluator`4.EvaluateImportElement(String directoryOfImportingFile, ProjectImportElement importElement)
+   at Microsoft.Build.Evaluation.Evaluator`4.PerformDepthFirstPass(ProjectRootElement currentProjectOrImport)
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+   at Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Reevaluate(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.ReevaluateIfNecessary(ILoggingService loggingServiceForEvaluation, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project.ProjectImpl.Initialize(IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.Project..ctor(String projectFile, IDictionary`2 globalProperties, String toolsVersion, String subToolsetVersion, ProjectCollection projectCollection, ProjectLoadSettings loadSettings, EvaluationContext evaluationContext)
+   at Microsoft.Build.Evaluation.ProjectCollection.LoadProject(String fileName, IDictionary`2 globalProperties, String toolsVersion)
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.GetPropertyValue(String propertyName) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 174
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetNonSdkTargetFramework(IProjectFile file) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 106
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.GetEnumerator()+MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 76
+   at System.Collections.Generic.EnumerableHelpers.ToArray[T](IEnumerable`1 source, Int32& length)
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.OrderedEnumerable`1.GetEnumerator()+MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.DependencyMinimumTargetFrameworkSelectorFilter.Process(ITargetFrameworkSelectorFilterState tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/DependencyMinimumTargetFrameworkSelectorFilter.cs:line 32
+   at Microsoft.DotNet.UpgradeAssistant.TargetFramework.TargetFrameworkSelector.SelectTargetFrameworkAsync(IProject project, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/TargetFramework/TargetFrameworkSelector.cs:line 61
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsCompletedAsync(IUpgradeContext context, IProject project, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.<>c__DisplayClass16_0.<<IsApplicableImplAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 83
+   at System.Linq.AsyncEnumerable.<AnyAwaitAsyncCore>g__Core|212_0[TSource](IAsyncEnumerable`1 source, Func`2 predicate, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 81
+   at Microsoft.DotNet.UpgradeAssistant.Steps.Solution.CurrentProjectSelectionStep.IsApplicableImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.IsApplicableAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 222
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.<>c__DisplayClass9_0.<<GetStepsForContextAsync>b__0>d.MoveNext() in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 163
+--- End of stack trace from previous location ---
+   at System.Linq.AsyncEnumerable.WhereEnumerableAsyncIteratorWithTaskAndCancellation`1.MoveNextCore() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Where.cs:line 339
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 77
+   at System.Linq.AsyncIteratorBase`1.MoveNextAsync() in /_/Ix.NET/Source/System.Linq.Async/System/Linq/AsyncIterator.cs:line 77
+   at System.Linq.AsyncEnumerable.<AnyAsync>g__Core|210_0[TSource](IAsyncEnumerable`1 source, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 33
+   at System.Linq.AsyncEnumerable.<AnyAsync>g__Core|210_0[TSource](IAsyncEnumerable`1 source, CancellationToken cancellationToken) in /_/Ix.NET/Source/System.Linq.Async/System/Linq/Operators/Any.cs:line 33
+   at Microsoft.DotNet.UpgradeAssistant.UpgraderManager.GetNextStepAsync(IUpgradeContext context, CancellationToken token) in /_/src/components/Microsoft.DotNet.UpgradeAssistant/UpgraderManager.cs:line 66
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 70
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleUpgrade.RunAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/Commands/Upgrade/ConsoleUpgrade.cs:line 78
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleRunner.StartAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/ConsoleRunner.cs:line 62
+2021-07-18 18:02:01.200 +03:00 [INF] Loaded 3 extensions
+2021-07-18 18:02:01.636 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-18 18:02:03.021 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-07-18 18:02:03.024 +03:00 [INF] Setting entrypoint to user selected project: I:\Developping\C#\Better Explorer\WpfControlLibrary1\BetterExplorerControls.csproj
+2021-07-18 18:02:03.029 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-18 18:02:03.045 +03:00 [INF] Initializing upgrade step Back up project
+2021-07-18 18:02:07.882 +03:00 [INF] Applying upgrade step Back up project
+2021-07-18 18:02:11.122 +03:00 [INF] Backing up I:\Developping\C#\Better Explorer\WpfControlLibrary1 to I:\Developping\C#\Better Explorer\WpfControlLibrary1.backup
+2021-07-18 18:02:11.953 +03:00 [INF] Project backed up to I:\Developping\C#\Better Explorer\WpfControlLibrary1.backup
+2021-07-18 18:02:11.956 +03:00 [INF] Upgrade step Back up project applied successfully
+2021-07-18 18:02:13.451 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-07-18 18:02:24.944 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-07-18 18:02:24.948 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2021-07-18 18:02:25.208 +03:00 [INF] [dotnet] I:\Developping\C#\Better Explorer\WpfControlLibrary1\BetterExplorerControls.csproj contains a reference to System.Web, which is not supported on .NET Core. You may have significant work ahead of you to fully port this project.
+2021-07-18 18:02:25.896 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2021-07-18 18:02:25.897 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2021-07-18 18:02:27.832 +03:00 [INF] [dotnet] Conversion complete!
+2021-07-18 18:02:28.521 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-07-18 18:02:30.152 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-07-18 18:02:34.389 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-07-18 18:02:35.501 +03:00 [INF] Marking package Microsoft.Xaml.Behaviors.Wpf for removal because it appears to be a transitive dependency
+2021-07-18 18:02:36.404 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.236301) needs added
+2021-07-18 18:02:36.412 +03:00 [INF] Packages to be removed: Microsoft.Xaml.Behaviors.Wpf, Version=1.1.19
+2021-07-18 18:02:36.413 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:02:40.056 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-07-18 18:02:40.061 +03:00 [INF] Removing outdated package reference: Microsoft.Xaml.Behaviors.Wpf, Version=1.1.19
+2021-07-18 18:02:40.063 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:02:41.187 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-07-18 18:02:45.279 +03:00 [INF] Initializing upgrade step Update TFM
+2021-07-18 18:02:45.297 +03:00 [INF] TFM needs updated to net5.0-windows
+2021-07-18 18:02:48.026 +03:00 [INF] Applying upgrade step Update TFM
+2021-07-18 18:02:49.456 +03:00 [INF] Updated TFM to net5.0-windows
+2021-07-18 18:02:49.457 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-07-18 18:02:54.055 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-07-18 18:02:54.993 +03:00 [INF] Marking package Microsoft.CSharp for removal because it appears to be a transitive dependency
+2021-07-18 18:02:54.999 +03:00 [INF] Marking assembly reference System.Web for removal based on package mapping configuration ASP.NET
+2021-07-18 18:02:55.002 +03:00 [INF] Adding framework reference Microsoft.AspNetCore.App based on package mapping configuration ASP.NET
+2021-07-18 18:02:55.003 +03:00 [INF] Marking assembly reference System.Web.Extensions for removal based on package mapping configuration ASP.NET
+2021-07-18 18:02:55.869 +03:00 [INF] Adding Microsoft.Windows.Compatibility 5.0.2
+2021-07-18 18:02:55.875 +03:00 [INF] References to be removed: System.Web
+System.Web.Extensions
+2021-07-18 18:02:55.876 +03:00 [INF] Packages to be removed: Microsoft.CSharp, Version=4.7.0
+2021-07-18 18:02:55.877 +03:00 [INF] Packages to be added: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:02:55.877 +03:00 [INF] Framework references to be added: Microsoft.AspNetCore.App
+2021-07-18 18:02:59.967 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-07-18 18:02:59.969 +03:00 [INF] Removing outdated assembly reference: System.Web
+2021-07-18 18:02:59.970 +03:00 [INF] Removing outdated assembly reference: System.Web.Extensions
+2021-07-18 18:02:59.970 +03:00 [INF] Removing outdated package reference: Microsoft.CSharp, Version=4.7.0
+2021-07-18 18:02:59.971 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:02:59.972 +03:00 [INF] Adding framework reference: Microsoft.AspNetCore.App
+2021-07-18 18:03:02.956 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2021-07-18 18:03:03.012 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2021-07-18 18:03:04.551 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-07-18 18:03:16.261 +03:00 [INF] Initializing upgrade step Add template files
+2021-07-18 18:03:16.268 +03:00 [INF] 0 expected template items needed
+2021-07-18 18:03:16.269 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-07-18 18:03:16.291 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-07-18 18:03:16.294 +03:00 [INF] Found 0 connection strings for upgrade: 
+2021-07-18 18:03:16.299 +03:00 [INF] 0 web page namespace imports need upgraded: 
+2021-07-18 18:03:16.304 +03:00 [INF] Initializing upgrade step Update source code
+2021-07-18 18:03:17.991 +03:00 [INF] Initializing upgrade step Move to next project
+2021-07-18 18:03:21.576 +03:00 [INF] Applying upgrade step Move to next project
+2021-07-18 18:03:21.578 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-07-18 18:03:23.801 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-18 18:03:23.806 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2021-07-18 18:03:28.735 +03:00 [INF] Applying upgrade step Finalize upgrade
+2021-07-18 18:03:28.736 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2021-07-18 18:03:30.788 +03:00 [INF] Upgrade has completed. Please review any changes.
+2021-07-18 18:06:15.686 +03:00 [INF] Loaded 3 extensions
+2021-07-18 18:06:15.880 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-18 18:06:17.281 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-07-18 18:06:17.284 +03:00 [INF] Setting entrypoint to only project in solution: I:\Developping\C#\Better Explorer\BEHelper\BEHelper.csproj
+2021-07-18 18:06:17.289 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-18 18:06:17.304 +03:00 [INF] Initializing upgrade step Back up project
+2021-07-18 18:06:19.114 +03:00 [INF] Applying upgrade step Back up project
+2021-07-18 18:06:20.850 +03:00 [INF] Backing up I:\Developping\C#\Better Explorer\BEHelper to I:\Developping\C#\Better Explorer\BEHelper.backup
+2021-07-18 18:06:21.155 +03:00 [INF] Project backed up to I:\Developping\C#\Better Explorer\BEHelper.backup
+2021-07-18 18:06:21.157 +03:00 [INF] Upgrade step Back up project applied successfully
+2021-07-18 18:06:22.151 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-07-18 18:06:24.544 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-07-18 18:06:24.549 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2021-07-18 18:06:24.792 +03:00 [INF] [dotnet] I:\Developping\C#\Better Explorer\BEHelper\BEHelper.csproj contains an App.config file. App.config is replaced by appsettings.json in .NET Core. You will need to delete App.config and migrate to appsettings.json if it's applicable to your project.
+2021-07-18 18:06:25.246 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2021-07-18 18:06:25.248 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2021-07-18 18:06:27.356 +03:00 [INF] [dotnet] Conversion complete!
+2021-07-18 18:06:27.566 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-07-18 18:06:28.459 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-07-18 18:06:31.172 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-07-18 18:06:31.976 +03:00 [INF] Marking assembly reference System.ServiceModel for removal based on package mapping configuration System.ServiceModel
+2021-07-18 18:06:31.981 +03:00 [INF] Adding package System.ServiceModel.Primitives based on package mapping configuration System.ServiceModel
+2021-07-18 18:06:31.982 +03:00 [INF] Adding package System.ServiceModel.Http based on package mapping configuration System.ServiceModel
+2021-07-18 18:06:31.983 +03:00 [INF] Adding package System.ServiceModel.Duplex based on package mapping configuration System.ServiceModel
+2021-07-18 18:06:31.984 +03:00 [INF] Adding package System.ServiceModel.NetTcp based on package mapping configuration System.ServiceModel
+2021-07-18 18:06:31.984 +03:00 [INF] Adding package System.ServiceModel.Security based on package mapping configuration System.ServiceModel
+2021-07-18 18:06:31.985 +03:00 [INF] Adding package System.ServiceModel.Federation based on package mapping configuration System.ServiceModel
+2021-07-18 18:06:32.148 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.236301) needs added
+2021-07-18 18:06:32.155 +03:00 [INF] References to be removed: System.ServiceModel
+2021-07-18 18:06:32.156 +03:00 [INF] Packages to be added: System.ServiceModel.Primitives, Version=4.8.1
+System.ServiceModel.Http, Version=4.8.1
+System.ServiceModel.Duplex, Version=4.8.1
+System.ServiceModel.NetTcp, Version=4.8.1
+System.ServiceModel.Security, Version=4.8.1
+System.ServiceModel.Federation, Version=4.8.1
+Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:06:33.688 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-07-18 18:06:33.695 +03:00 [INF] Removing outdated assembly reference: System.ServiceModel
+2021-07-18 18:06:33.698 +03:00 [INF] Adding package reference: System.ServiceModel.Primitives, Version=4.8.1
+2021-07-18 18:06:33.700 +03:00 [INF] Adding package reference: System.ServiceModel.Http, Version=4.8.1
+2021-07-18 18:06:33.701 +03:00 [INF] Adding package reference: System.ServiceModel.Duplex, Version=4.8.1
+2021-07-18 18:06:33.702 +03:00 [INF] Adding package reference: System.ServiceModel.NetTcp, Version=4.8.1
+2021-07-18 18:06:33.704 +03:00 [INF] Adding package reference: System.ServiceModel.Security, Version=4.8.1
+2021-07-18 18:06:33.705 +03:00 [INF] Adding package reference: System.ServiceModel.Federation, Version=4.8.1
+2021-07-18 18:06:33.706 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:06:34.821 +03:00 [INF] Marking package System.ServiceModel.Primitives for removal because it appears to be a transitive dependency
+2021-07-18 18:06:34.824 +03:00 [INF] Marking package System.ServiceModel.Http for removal because it appears to be a transitive dependency
+2021-07-18 18:06:34.827 +03:00 [INF] Marking package System.ServiceModel.Security for removal because it appears to be a transitive dependency
+2021-07-18 18:06:34.838 +03:00 [INF] Removing outdated package reference: System.ServiceModel.Primitives, Version=4.8.1
+2021-07-18 18:06:34.839 +03:00 [INF] Removing outdated package reference: System.ServiceModel.Http, Version=4.8.1
+2021-07-18 18:06:34.840 +03:00 [INF] Removing outdated package reference: System.ServiceModel.Security, Version=4.8.1
+2021-07-18 18:06:35.830 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-07-18 18:06:38.232 +03:00 [INF] Initializing upgrade step Update TFM
+2021-07-18 18:06:38.243 +03:00 [INF] TFM needs updated to net5.0-windows
+2021-07-18 18:06:41.752 +03:00 [INF] Applying upgrade step Update TFM
+2021-07-18 18:06:43.243 +03:00 [INF] Updated TFM to net5.0-windows
+2021-07-18 18:06:43.244 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-07-18 18:06:44.955 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-07-18 18:06:45.818 +03:00 [INF] Marking package Microsoft.CSharp for removal because it appears to be a transitive dependency
+2021-07-18 18:06:45.931 +03:00 [INF] Adding Microsoft.Windows.Compatibility 5.0.2
+2021-07-18 18:06:45.935 +03:00 [INF] Packages to be removed: Microsoft.CSharp, Version=4.7.0
+2021-07-18 18:06:45.936 +03:00 [INF] Packages to be added: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:06:49.424 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-07-18 18:06:49.426 +03:00 [INF] Removing outdated package reference: Microsoft.CSharp, Version=4.7.0
+2021-07-18 18:06:49.427 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:06:50.775 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2021-07-18 18:06:50.824 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2021-07-18 18:06:52.194 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-07-18 18:06:56.062 +03:00 [INF] Initializing upgrade step Add template files
+2021-07-18 18:06:56.072 +03:00 [INF] 0 expected template items needed
+2021-07-18 18:06:56.077 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-07-18 18:06:56.099 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-07-18 18:06:56.103 +03:00 [INF] Found 0 connection strings for upgrade: 
+2021-07-18 18:06:56.106 +03:00 [INF] Initializing upgrade step Update source code
+2021-07-18 18:06:57.106 +03:00 [INF] Initializing upgrade step Move to next project
+2021-07-18 18:06:58.713 +03:00 [INF] Applying upgrade step Move to next project
+2021-07-18 18:06:58.714 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-07-18 18:06:59.559 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2021-07-18 18:07:00.881 +03:00 [INF] Applying upgrade step Finalize upgrade
+2021-07-18 18:07:00.882 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2021-07-18 18:07:01.621 +03:00 [INF] Upgrade has completed. Please review any changes.
+2021-07-18 18:08:25.998 +03:00 [INF] Loaded 3 extensions
+2021-07-18 18:08:26.180 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-18 18:08:28.016 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-07-18 18:08:28.019 +03:00 [INF] Setting entrypoint to user selected project: I:\Developping\C#\Better Explorer\ConsoleControl\ConsoleControl.csproj
+2021-07-18 18:08:28.022 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-18 18:08:28.072 +03:00 [INF] Initializing upgrade step Back up project
+2021-07-18 18:08:29.708 +03:00 [INF] Applying upgrade step Back up project
+2021-07-18 18:08:31.211 +03:00 [INF] Backing up I:\Developping\C#\Better Explorer\ConsoleControl to I:\Developping\C#\Better Explorer\ConsoleControl.backup
+2021-07-18 18:08:31.352 +03:00 [INF] Project backed up to I:\Developping\C#\Better Explorer\ConsoleControl.backup
+2021-07-18 18:08:31.356 +03:00 [INF] Upgrade step Back up project applied successfully
+2021-07-18 18:08:35.148 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-07-18 18:08:36.704 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-07-18 18:08:36.708 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2021-07-18 18:08:37.361 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2021-07-18 18:08:37.362 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2021-07-18 18:08:39.431 +03:00 [INF] [dotnet] Conversion complete!
+2021-07-18 18:08:39.753 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-07-18 18:08:40.916 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-07-18 18:08:41.797 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-07-18 18:08:43.029 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.236301) needs added
+2021-07-18 18:08:43.036 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:08:44.378 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-07-18 18:08:44.385 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:08:45.743 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-07-18 18:08:47.538 +03:00 [INF] Initializing upgrade step Update TFM
+2021-07-18 18:08:47.577 +03:00 [INF] TFM needs updated to net5.0-windows
+2021-07-18 18:08:49.681 +03:00 [INF] Applying upgrade step Update TFM
+2021-07-18 18:08:51.367 +03:00 [INF] Updated TFM to net5.0-windows
+2021-07-18 18:08:51.368 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-07-18 18:08:53.477 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-07-18 18:08:54.524 +03:00 [INF] Marking package EntityFramework for removal because it appears to be a transitive dependency
+2021-07-18 18:08:54.529 +03:00 [INF] Marking package System.ComponentModel.Annotations for removal because it appears to be a transitive dependency
+2021-07-18 18:08:54.536 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2021-07-18 18:08:54.557 +03:00 [INF] Packages to be removed: EntityFramework, Version=6.4.4
+System.ComponentModel.Annotations, Version=5.0.0
+System.Data.DataSetExtensions, Version=4.5.0
+2021-07-18 18:08:56.120 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-07-18 18:08:56.123 +03:00 [INF] Removing outdated package reference: EntityFramework, Version=6.4.4
+2021-07-18 18:08:56.124 +03:00 [INF] Removing outdated package reference: System.ComponentModel.Annotations, Version=5.0.0
+2021-07-18 18:08:56.125 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2021-07-18 18:08:57.785 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-07-18 18:09:04.039 +03:00 [INF] Initializing upgrade step Add template files
+2021-07-18 18:09:04.049 +03:00 [INF] 0 expected template items needed
+2021-07-18 18:09:04.051 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-07-18 18:09:04.067 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-07-18 18:09:04.071 +03:00 [INF] Found 0 connection strings for upgrade: 
+2021-07-18 18:09:04.074 +03:00 [INF] Initializing upgrade step Update source code
+2021-07-18 18:09:05.453 +03:00 [INF] Initializing upgrade step Move to next project
+2021-07-18 18:09:10.970 +03:00 [INF] Applying upgrade step Move to next project
+2021-07-18 18:09:10.971 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-07-18 18:09:11.772 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2021-07-18 18:09:12.841 +03:00 [INF] Applying upgrade step Finalize upgrade
+2021-07-18 18:09:12.843 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2021-07-18 18:09:13.387 +03:00 [INF] Upgrade has completed. Please review any changes.
+2021-07-18 18:23:19.989 +03:00 [INF] Loaded 3 extensions
+2021-07-18 18:23:20.180 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-18 18:23:21.395 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-07-18 18:23:21.398 +03:00 [INF] Setting entrypoint to only project in solution: I:\Developping\C#\Better Explorer\BreadcrumbBar\Odyssey.Controls.csproj
+2021-07-18 18:23:21.403 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-18 18:23:21.418 +03:00 [INF] Initializing upgrade step Back up project
+2021-07-18 18:23:22.614 +03:00 [INF] Applying upgrade step Back up project
+2021-07-18 18:23:24.212 +03:00 [INF] Backing up I:\Developping\C#\Better Explorer\BreadcrumbBar to I:\Developping\C#\Better Explorer\BreadcrumbBar.backup
+2021-07-18 18:23:24.326 +03:00 [INF] Project backed up to I:\Developping\C#\Better Explorer\BreadcrumbBar.backup
+2021-07-18 18:23:24.329 +03:00 [INF] Upgrade step Back up project applied successfully
+2021-07-18 18:23:26.090 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-07-18 18:23:27.466 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-07-18 18:23:27.469 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2021-07-18 18:23:28.127 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2021-07-18 18:23:28.129 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2021-07-18 18:23:29.157 +03:00 [INF] [dotnet] Conversion complete!
+2021-07-18 18:23:29.413 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-07-18 18:23:30.276 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-07-18 18:23:31.697 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-07-18 18:23:32.609 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.236301) needs added
+2021-07-18 18:23:32.617 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:23:34.402 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-07-18 18:23:34.410 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:23:35.437 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-07-18 18:23:38.068 +03:00 [INF] Initializing upgrade step Update TFM
+2021-07-18 18:23:38.079 +03:00 [INF] TFM needs updated to net5.0-windows
+2021-07-18 18:23:39.698 +03:00 [INF] Applying upgrade step Update TFM
+2021-07-18 18:23:40.858 +03:00 [INF] Updated TFM to net5.0-windows
+2021-07-18 18:23:40.859 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-07-18 18:23:43.615 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-07-18 18:23:44.550 +03:00 [INF] Adding Microsoft.Windows.Compatibility 5.0.2
+2021-07-18 18:23:44.553 +03:00 [INF] Packages to be added: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:23:47.284 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-07-18 18:23:47.285 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:23:48.630 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2021-07-18 18:23:48.642 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2021-07-18 18:23:49.937 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-07-18 18:23:51.079 +03:00 [INF] Initializing upgrade step Add template files
+2021-07-18 18:23:51.089 +03:00 [INF] 0 expected template items needed
+2021-07-18 18:23:51.091 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-07-18 18:23:51.107 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-07-18 18:23:51.110 +03:00 [INF] Found 0 connection strings for upgrade: 
+2021-07-18 18:23:51.114 +03:00 [INF] Initializing upgrade step Update source code
+2021-07-18 18:23:52.585 +03:00 [INF] Initializing upgrade step Move to next project
+2021-07-18 18:23:53.970 +03:00 [INF] Applying upgrade step Move to next project
+2021-07-18 18:23:53.972 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-07-18 18:23:55.080 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2021-07-18 18:23:56.491 +03:00 [INF] Applying upgrade step Finalize upgrade
+2021-07-18 18:23:56.492 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2021-07-18 18:23:57.335 +03:00 [INF] Upgrade has completed. Please review any changes.
+2021-07-18 18:30:40.134 +03:00 [INF] Loaded 3 extensions
+2021-07-18 18:30:40.321 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-18 18:30:41.690 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-07-18 18:30:41.693 +03:00 [INF] Setting entrypoint to user selected project: I:\Developping\C#\Better Explorer\TabControl\Wpf.TabControl.csproj
+2021-07-18 18:30:41.698 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-18 18:30:41.714 +03:00 [INF] Initializing upgrade step Back up project
+2021-07-18 18:30:43.173 +03:00 [INF] Applying upgrade step Back up project
+2021-07-18 18:30:47.125 +03:00 [INF] Backing up I:\Developping\C#\Better Explorer\TabControl to I:\Developping\C#\Better Explorer\TabControl.backup
+2021-07-18 18:30:47.268 +03:00 [INF] Project backed up to I:\Developping\C#\Better Explorer\TabControl.backup
+2021-07-18 18:30:47.270 +03:00 [INF] Upgrade step Back up project applied successfully
+2021-07-18 18:30:52.496 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-07-18 18:30:53.842 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-07-18 18:30:53.846 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2021-07-18 18:30:54.085 +03:00 [INF] [dotnet] I:\Developping\C#\Better Explorer\TabControl\Wpf.TabControl.csproj contains a reference to System.Web, which is not supported on .NET Core. You may have significant work ahead of you to fully port this project.
+2021-07-18 18:30:54.086 +03:00 [INF] [dotnet] I:\Developping\C#\Better Explorer\TabControl\Wpf.TabControl.csproj contains an App.config file. App.config is replaced by appsettings.json in .NET Core. You will need to delete App.config and migrate to appsettings.json if it's applicable to your project.
+2021-07-18 18:30:54.526 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2021-07-18 18:30:54.528 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2021-07-18 18:30:55.383 +03:00 [INF] [dotnet] Conversion complete!
+2021-07-18 18:30:55.684 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-07-18 18:30:56.982 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-07-18 18:30:58.029 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-07-18 18:30:58.950 +03:00 [INF] Marking package Microsoft.Xaml.Behaviors.Wpf for removal because it appears to be a transitive dependency
+2021-07-18 18:30:59.101 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.236301) needs added
+2021-07-18 18:30:59.108 +03:00 [INF] Packages to be removed: Microsoft.Xaml.Behaviors.Wpf, Version=1.1.19
+2021-07-18 18:30:59.109 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:31:00.659 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-07-18 18:31:00.666 +03:00 [INF] Removing outdated package reference: Microsoft.Xaml.Behaviors.Wpf, Version=1.1.19
+2021-07-18 18:31:00.668 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:31:01.848 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-07-18 18:31:02.842 +03:00 [INF] Initializing upgrade step Update TFM
+2021-07-18 18:31:02.865 +03:00 [INF] TFM needs updated to net5.0-windows
+2021-07-18 18:31:05.298 +03:00 [INF] Applying upgrade step Update TFM
+2021-07-18 18:31:06.652 +03:00 [INF] Updated TFM to net5.0-windows
+2021-07-18 18:31:06.654 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-07-18 18:31:08.504 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-07-18 18:31:09.490 +03:00 [INF] Marking assembly reference System.Web for removal based on package mapping configuration ASP.NET
+2021-07-18 18:31:09.494 +03:00 [INF] Adding framework reference Microsoft.AspNetCore.App based on package mapping configuration ASP.NET
+2021-07-18 18:31:09.494 +03:00 [INF] Marking assembly reference System.Web.Extensions for removal based on package mapping configuration ASP.NET
+2021-07-18 18:31:09.589 +03:00 [INF] Adding Microsoft.Windows.Compatibility 5.0.2
+2021-07-18 18:31:09.593 +03:00 [INF] References to be removed: System.Web
+System.Web.Extensions
+2021-07-18 18:31:09.594 +03:00 [INF] Packages to be added: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:31:09.595 +03:00 [INF] Framework references to be added: Microsoft.AspNetCore.App
+2021-07-18 18:31:11.202 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-07-18 18:31:11.204 +03:00 [INF] Removing outdated assembly reference: System.Web
+2021-07-18 18:31:11.206 +03:00 [INF] Removing outdated assembly reference: System.Web.Extensions
+2021-07-18 18:31:11.207 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:31:11.208 +03:00 [INF] Adding framework reference: Microsoft.AspNetCore.App
+2021-07-18 18:31:12.822 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-07-18 18:31:12.838 +03:00 [INF] Initializing upgrade step Add template files
+2021-07-18 18:31:12.845 +03:00 [INF] 0 expected template items needed
+2021-07-18 18:31:12.849 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-07-18 18:31:12.872 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-07-18 18:31:12.875 +03:00 [INF] Found 0 connection strings for upgrade: 
+2021-07-18 18:31:12.880 +03:00 [INF] 0 web page namespace imports need upgraded: 
+2021-07-18 18:31:12.884 +03:00 [INF] Initializing upgrade step Update source code
+2021-07-18 18:31:14.611 +03:00 [INF] Initializing upgrade step Move to next project
+2021-07-18 18:31:19.188 +03:00 [INF] Applying upgrade step Move to next project
+2021-07-18 18:31:19.190 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-07-18 18:31:26.665 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-18 18:31:26.669 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2021-07-18 18:31:29.723 +03:00 [INF] Applying upgrade step Finalize upgrade
+2021-07-18 18:31:29.725 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2021-07-18 18:31:30.189 +03:00 [INF] Upgrade has completed. Please review any changes.
+2021-07-18 18:37:03.663 +03:00 [INF] Loaded 3 extensions
+2021-07-18 18:37:03.850 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-18 18:37:05.044 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-07-18 18:37:05.047 +03:00 [INF] Setting entrypoint to only project in solution: I:\Developping\C#\Better Explorer\WpfDocumentPreviewer\WpfDocumentPreviewer.csproj
+2021-07-18 18:37:05.051 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-18 18:37:05.066 +03:00 [INF] Initializing upgrade step Back up project
+2021-07-18 18:37:07.365 +03:00 [INF] Applying upgrade step Back up project
+2021-07-18 18:37:09.221 +03:00 [INF] Backing up I:\Developping\C#\Better Explorer\WpfDocumentPreviewer to I:\Developping\C#\Better Explorer\WpfDocumentPreviewer.backup
+2021-07-18 18:37:09.433 +03:00 [INF] Project backed up to I:\Developping\C#\Better Explorer\WpfDocumentPreviewer.backup
+2021-07-18 18:37:09.436 +03:00 [INF] Upgrade step Back up project applied successfully
+2021-07-18 18:37:14.593 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-07-18 18:37:15.972 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-07-18 18:37:15.976 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2021-07-18 18:37:16.209 +03:00 [INF] [dotnet] I:\Developping\C#\Better Explorer\WpfDocumentPreviewer\WpfDocumentPreviewer.csproj contains an App.config file. App.config is replaced by appsettings.json in .NET Core. You will need to delete App.config and migrate to appsettings.json if it's applicable to your project.
+2021-07-18 18:37:16.629 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2021-07-18 18:37:16.631 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2021-07-18 18:37:17.789 +03:00 [INF] [dotnet] Conversion complete!
+2021-07-18 18:37:17.995 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-07-18 18:37:18.936 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-07-18 18:37:20.150 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-07-18 18:37:21.822 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.236301) needs added
+2021-07-18 18:37:21.829 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:37:22.867 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-07-18 18:37:22.875 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:37:23.856 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-07-18 18:37:25.290 +03:00 [INF] Initializing upgrade step Update TFM
+2021-07-18 18:37:25.298 +03:00 [INF] TFM needs updated to net5.0-windows
+2021-07-18 18:37:26.459 +03:00 [INF] Applying upgrade step Update TFM
+2021-07-18 18:37:27.619 +03:00 [INF] Updated TFM to net5.0-windows
+2021-07-18 18:37:27.620 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-07-18 18:37:29.469 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-07-18 18:37:30.280 +03:00 [INF] Marking package Microsoft.CSharp for removal because it appears to be a transitive dependency
+2021-07-18 18:37:31.196 +03:00 [INF] Adding Microsoft.Windows.Compatibility 5.0.2
+2021-07-18 18:37:31.199 +03:00 [INF] Packages to be removed: Microsoft.CSharp, Version=4.7.0
+2021-07-18 18:37:31.199 +03:00 [INF] Packages to be added: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:37:32.635 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-07-18 18:37:32.637 +03:00 [INF] Removing outdated package reference: Microsoft.CSharp, Version=4.7.0
+2021-07-18 18:37:32.639 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:37:33.964 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2021-07-18 18:37:33.974 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2021-07-18 18:37:35.283 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-07-18 18:37:37.421 +03:00 [INF] Initializing upgrade step Add template files
+2021-07-18 18:37:37.435 +03:00 [INF] 0 expected template items needed
+2021-07-18 18:37:37.437 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-07-18 18:37:37.453 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-07-18 18:37:37.458 +03:00 [INF] Found 0 connection strings for upgrade: 
+2021-07-18 18:37:37.462 +03:00 [INF] Initializing upgrade step Update source code
+2021-07-18 18:37:38.613 +03:00 [INF] Initializing upgrade step Move to next project
+2021-07-18 18:37:40.179 +03:00 [INF] Applying upgrade step Move to next project
+2021-07-18 18:37:40.181 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-07-18 18:37:42.155 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2021-07-18 18:37:43.395 +03:00 [INF] Applying upgrade step Finalize upgrade
+2021-07-18 18:37:43.398 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2021-07-18 18:37:44.213 +03:00 [INF] Upgrade has completed. Please review any changes.
+2021-07-18 18:54:05.778 +03:00 [INF] Loaded 3 extensions
+2021-07-18 18:54:05.988 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.301\
+2021-07-18 18:54:07.272 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-07-18 18:54:07.275 +03:00 [INF] Setting entrypoint to only project in solution: I:\Developping\C#\Better Explorer\Fluent.Ribbon-develop\Fluent.Ribbon\Fluent.Ribbon.NET 4.6.csproj
+2021-07-18 18:54:07.280 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-07-18 18:54:07.296 +03:00 [INF] Initializing upgrade step Back up project
+2021-07-18 18:54:09.702 +03:00 [INF] Applying upgrade step Back up project
+2021-07-18 18:54:12.287 +03:00 [INF] Backing up I:\Developping\C#\Better Explorer\Fluent.Ribbon-develop\Fluent.Ribbon to I:\Developping\C#\Better Explorer\Fluent.Ribbon-develop\Fluent.Ribbon.backup
+2021-07-18 18:54:12.707 +03:00 [INF] Project backed up to I:\Developping\C#\Better Explorer\Fluent.Ribbon-develop\Fluent.Ribbon.backup
+2021-07-18 18:54:12.708 +03:00 [INF] Upgrade step Back up project applied successfully
+2021-07-18 18:54:13.860 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-07-18 18:54:15.078 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-07-18 18:54:15.082 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2021-07-18 18:54:15.338 +03:00 [INF] [dotnet] I:\Developping\C#\Better Explorer\Fluent.Ribbon-develop\Fluent.Ribbon\Fluent.Ribbon.NET 4.6.csproj contains a reference to System.Web, which is not supported on .NET Core. You may have significant work ahead of you to fully port this project.
+2021-07-18 18:54:16.535 +03:00 [INF] [dotnet] Conversion complete!
+2021-07-18 18:54:16.809 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-07-18 18:54:19.813 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-07-18 18:54:20.759 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-07-18 18:54:21.593 +03:00 [INF] Marking package Microsoft.Xaml.Behaviors.Wpf for removal because it appears to be a transitive dependency
+2021-07-18 18:54:21.732 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.236301) needs added
+2021-07-18 18:54:21.742 +03:00 [INF] Packages to be removed: Microsoft.Xaml.Behaviors.Wpf, Version=1.1.19
+2021-07-18 18:54:21.744 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:54:24.013 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-07-18 18:54:24.020 +03:00 [INF] Removing outdated package reference: Microsoft.Xaml.Behaviors.Wpf, Version=1.1.19
+2021-07-18 18:54:24.023 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.236301
+2021-07-18 18:54:25.108 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-07-18 18:54:30.043 +03:00 [INF] Initializing upgrade step Update TFM
+2021-07-18 18:54:30.054 +03:00 [INF] TFM needs updated to net5.0-windows
+2021-07-18 18:54:31.468 +03:00 [INF] Applying upgrade step Update TFM
+2021-07-18 18:54:32.694 +03:00 [INF] Updated TFM to net5.0-windows
+2021-07-18 18:54:32.695 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-07-18 18:54:35.225 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-07-18 18:54:36.166 +03:00 [INF] Marking assembly reference System.Web for removal based on package mapping configuration ASP.NET
+2021-07-18 18:54:36.170 +03:00 [INF] Adding framework reference Microsoft.AspNetCore.App based on package mapping configuration ASP.NET
+2021-07-18 18:54:36.171 +03:00 [INF] Marking assembly reference System.Web.Extensions for removal based on package mapping configuration ASP.NET
+2021-07-18 18:54:36.245 +03:00 [INF] Adding Microsoft.Windows.Compatibility 5.0.2
+2021-07-18 18:54:36.248 +03:00 [INF] References to be removed: System.Web
+System.Web.Extensions
+2021-07-18 18:54:36.249 +03:00 [INF] Packages to be added: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:54:36.249 +03:00 [INF] Framework references to be added: Microsoft.AspNetCore.App
+2021-07-18 18:54:37.476 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-07-18 18:54:37.479 +03:00 [INF] Removing outdated assembly reference: System.Web
+2021-07-18 18:54:37.480 +03:00 [INF] Removing outdated assembly reference: System.Web.Extensions
+2021-07-18 18:54:37.481 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-07-18 18:54:37.482 +03:00 [INF] Adding framework reference: Microsoft.AspNetCore.App
+2021-07-18 18:54:39.021 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-07-18 18:54:44.487 +03:00 [INF] Initializing upgrade step Add template files
+2021-07-18 18:54:44.495 +03:00 [INF] 0 expected template items needed
+2021-07-18 18:54:44.498 +03:00 [INF] Initializing upgrade step Update source code
+2021-07-18 18:54:50.578 +03:00 [INF] Initializing upgrade step Move to next project
+2021-07-18 18:54:52.189 +03:00 [INF] Applying upgrade step Move to next project
+2021-07-18 18:54:52.191 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-07-18 18:54:53.722 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2021-07-18 18:54:55.773 +03:00 [INF] Applying upgrade step Finalize upgrade
+2021-07-18 18:54:55.776 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2021-07-18 18:54:56.339 +03:00 [INF] Upgrade has completed. Please review any changes.

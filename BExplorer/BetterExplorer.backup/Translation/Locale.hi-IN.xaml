@@ -1,0 +1,345 @@
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <!--  String resource that can be localized  -->
+  <system:String x:Key="btiInformationCP">सूचना</system:String>
+  <system:String x:Key="mmSupportCP">समर्थन</system:String>
+  <system:String x:Key="btnUpdateCheckCP">अब देखें</system:String>
+  <system:String x:Key="btnUpdateCheckHCP">अद्यतन के लिए जाँच</system:String>
+  <system:String x:Key="btnUpdateCheckICP">अद्यतन जाँचता लिए सुनिश्चित करें कि आप नवीनतम संस्करण है बनाना</system:String>
+  <system:String x:Key="stUpdateAvailableCP">नया संस्करण (VER) उपलब्ध है</system:String>
+  <system:String x:Key="stUpdateNotAvailableCP">बेहतर एक्सप्लोरर अप करने की तारीख:.</system:String>
+  <system:String x:Key="btnOpenWebsite">ओपन वेबसाइट</system:String>
+  <system:String x:Key="btnOpenWebsiteHCP">BetterExplorer वेबसाइट पर जाएं</system:String>
+  <system:String x:Key="btnOpenWebsiteICP">नवीनतम परीक्षण बनाता है की कोशिश के लिए इस वेबसाइट पर जाएँ, मदद के लिए पूछना, एक मुद्दे की रिपोर्ट करने के लिए, और अधिक</system:String>
+  <system:String x:Key="lblBetterExText">बेहतर एक्सप्लोरर replacment:  बेहतर एक्सप्लोरर</system:String>
+  <system:String x:Key="lblBetterExInfo">यह एक Windows Explorer प्रतिस्थापन है कि रिबन टैब्स, और अन्य चीजों के रूप में इस तरह के कई काम सुविधाओं, जोड़ता है</system:String>
+  <system:String x:Key="lblAboutBEHeader">बेहतर एक्सप्लोरर के बारे</system:String>
+  <system:String x:Key="lblDevelopersHeader">मुख्य डेवलपर्स:</system:String>
+  <system:String x:Key="lblDevTeamCP">डेवलपर्स टीम</system:String>
+  <system:String x:Key="btiOptionsCP">विकल्प</system:String>
+  <system:String x:Key="chkTreeExpandTTX">जब नए स्थान पर नेविगेट, नेविगेशन फलक का विस्तार करने के लिए वर्तमान में खुले फ़ोल्डर दिखाने (पुनरारंभ आवश्यक)</system:String>
+  <system:String x:Key="sepGeneral">जनरल</system:String>
+  <system:String x:Key="tabShell">शैल</system:String>
+  <system:String x:Key="sepStartup">स्टार्टअप स्थान</system:String>
+  <system:String x:Key="btnSetCurrentasStartupHCP">डिफ़ॉल्ट स्थान के रूप में सेट</system:String>
+  <system:String x:Key="btnSetCurrentasStartupICP">सेट स्थान आप वर्तमान डिफ़ॉल्ट स्थान के रूप में देख रहे हैं. BetterExplorer डिफ़ॉल्ट स्थान को खोलता है जब आप प्रोग्राम शुरू करने या एक नया टैब खोलने</system:String>
+  <system:String x:Key="btnSetCurrentasStartupDesc">वर्तमान में देखी स्थान डिफ़ॉल्ट / स्टार्टअप स्थान बदलने के लिए क्लिक करें</system:String>
+  <system:String x:Key="chkIsDefault">BetterExplorer डिफ़ॉल्ट दर्शक बनाओ</system:String>
+  <system:String x:Key="chkIsDefaultICP">डिफ़ॉल्ट दर्शक BetterExplorer.  ध्यान दें कि यह पूर्ण एकीकरण नहीं है (केवल काम करता है जब आप एक्सप्लोरर आइकन पर क्लिक करें और जब आप WinKey उपयोग + E शॉर्टकट)</system:String>
+  <system:String x:Key="chkIsTerraCopyEnabled">तीसरे पक्ष के फ़ाइल आपरेशन प्रतिस्थापन * की अनुमति दें</system:String>
+  <system:String x:Key="chkIsTerraCopyEnabledICP">तीसरे दल के अनुप्रयोगों (जैसे TeraCopy के रूप में) नकल, चलती, या फ़ाइलों को हटाने के रूप में कुछ फ़ाइल आपरेशनों जगह करने की अनुमति है. (आवेदन को पुनः आरंभ की आवश्यकता है)</system:String>
+  <system:String x:Key="cbIsResttoreCP">स्टार्टअप पर अपने पहले खोला टैब पुनर्स्थापित</system:String>
+  <system:String x:Key="cbIsResttoreTTX">जब BetterExplorer खोलने, यह टैब आप जब आप पिछले इस कार्यक्रम को बंद कर दिया खुला था फिर से खोलना होगा.</system:String>
+  <system:String x:Key="txtImageEditing">छवि संपादन</system:String>
+  <system:String x:Key="chkEditOverwrite">मूल छवि अधिलेखित करें जब</system:String>
+  <system:String x:Key="chkLogHistoryCP">अपने कार्यों के एक लॉग रखें</system:String>
+  <system:String x:Key="chkLogHistoryHCP">BetterExplorer एक लॉग प्रविष्टि हर बार जब आप चलती है, नाम, या फ़ाइलों को हटाने के रूप में एक कार्रवाई करते लिखना होगा. यह अच्छा है करने के लिए भविष्य में संदर्भ के लिए और सुरक्षा उद्देश्यों के लिए है. एक खिड़की के लिए एक अलग लॉग फ़ाइल है.</system:String>
+  <system:String x:Key="tabLanguageCP">भाषा</system:String>
+  <system:String x:Key="sepLanguageCP">भाषा बदलें</system:String>
+  <system:String x:Key="lblLanguageCP">भाषा जो BetterExplorer में उपयोग करने के लिए चुनें: (पुनरारंभ आवश्यक)</system:String>
+  <system:String x:Key="txtTranslationHelp">सहायता</system:String>
+  <system:String x:Key="txtHelpWebpage">अगर किसी को अनुवाद के साथ मदद करना चाहते हैं, बस इस वेबपेज पर यहाँ जाना: (अंग्रेजी में)</system:String>
+  <system:String x:Key="txtTranslationCredits">इसके अलावा, हम करने के लिए हर कोई है जो मदद की है अनुवाद अब तक का शुक्रिया अदा करना चाहता हूँ.</system:String>
+  <system:String x:Key="tabUpdateCP">अद्यतन</system:String>
+  <system:String x:Key="txtAutoUpdate">ऑटो अद्यतन</system:String>
+  <system:String x:Key="chkAutoCheck">अद्यतन करने के लिए स्वत: जाँच</system:String>
+  <system:String x:Key="txtCheckHowOften">चेक कितनी बार:</system:String>
+  <system:String x:Key="chkEveryday">हर दिन</system:String>
+  <system:String x:Key="chkEveryweek">हर सप्ताह</system:String>
+  <system:String x:Key="chkEverymonth">हर महीने</system:String>
+  <system:String x:Key="txtUpdateChannel">अद्यतन चैनल</system:String>
+  <system:String x:Key="chkReleasesChannel">केवल (अनुशंसित) विज्ञप्ति</system:String>
+  <system:String x:Key="chkDevChannel">विज्ञप्ति और टेस्ट  बनाता है</system:String>
+  <system:String x:Key="txtTestBuildWarning">चेतावनी! टेस्ट बनाता है नई सुविधाओं की कोशिश करने के लिए उपयोगी हो सकते हैं, लेकिन वे भी कभी - कभी खतरनाक हो सकता है</system:String>
+  <system:String x:Key="txtAdvancedUpdateSettings">उन्नत सेटिंग्स</system:String>
+  <system:String x:Key="txtUpdateURL">अद्यतन डेटा ऑनलाइन स्थान (यूआरएल)</system:String>
+  <system:String x:Key="txtAvailableUpdates">उपलब्ध अपडेट</system:String>
+  <system:String x:Key="txtDownloading">अपडेट डाउनलोड कर रहा है</system:String>
+  <system:String x:Key="txtReadyToInstall">स्थापित तैयार</system:String>
+  <system:String x:Key="sepAppearanceCP">रूप</system:String>
+  <system:String x:Key="tabRibbonCP">रिबन</system:String>
+  <system:String x:Key="sepRibbonColorCP">रिबन रंग</system:String>
+  <system:String x:Key="btnSilverCP">रजत</system:String>
+  <system:String x:Key="btnBlueCP">ब्लू</system:String>
+  <system:String x:Key="btnBlackCP">काले</system:String>
+  <system:String x:Key="btnGreenCP">ग्रीन</system:String>
+  <system:String x:Key="sepContextualTabsCP">प्रासंगिक टैब्स</system:String>
+  <system:String x:Key="lblAutoSwitchCP">स्वचालित रूप से इन टैब स्विच जब वे दिखाए जाते हैं:</system:String>
+  <system:String x:Key="tabTabsCP">टैब्स</system:String>
+  <system:String x:Key="sepAlignmentCP">संरेखण</system:String>
+  <system:String x:Key="lblShowTabBarCP">दिखाएँ टैब बार:</system:String>
+  <system:String x:Key="chkTabBarTopCP">शीर्ष</system:String>
+  <system:String x:Key="chkTabBarBottomCP">नीचे</system:String>
+  <system:String x:Key="sepSavedTabsCP">बचाया टैब्स प्रबंधन</system:String>
+  <system:String x:Key="btnShowTabManagerCP">दिखाएँ टैब प्रबंधक</system:String>
+  <system:String x:Key="lblDefSavedTabsLocCP">डिफ़ॉल्ट टैब स्थान बचाया:</system:String>
+  <system:String x:Key="lblSavedTabsWarningCP">चेतावनी: डिफ़ॉल्ट स्थान बदलने अपने वर्तमान बचाया टैब को खोने में परिणाम देगा</system:String>
+  <system:String x:Key="tabPanesItemsCP">/ शीशे आइटम</system:String>
+  <system:String x:Key="chkTreeExpandCP">वर्तमान फ़ोल्डर * नेविगेशन फलक का विस्तार</system:String>
+  <system:String x:Key="chkTreeExpandTCP">वर्तमान फ़ोल्डर नेविगेशन फलक का विस्तार</system:String>
+  <system:String x:Key="sepOptionalCP">वैकल्पिक सुविधाओं प्रदर्शन</system:String>
+  <system:String x:Key="chkShowCheckBoxesCP">दिखाएँ जांचपेटी</system:String>
+  <system:String x:Key="tbHomeCP">घर</system:String>
+  <system:String x:Key="tgClipboardCP">क्लिपबोर्ड</system:String>
+  <system:String x:Key="btnCopyCP">कॉपी</system:String>
+  <system:String x:Key="btnCopyTCP">कॉपी आइटम (Ctrl + C)</system:String>
+  <system:String x:Key="btnCopyTTX">क्लिपबोर्ड के लिए चयनित आइटम्स की प्रतिलिपि</system:String>
+  <system:String x:Key="btnPasteCP">चिपकाएँ</system:String>
+  <system:String x:Key="btnPasteTCP">चिपकाएँ (Ctrl + V)</system:String>
+  <system:String x:Key="btnPasteTTX">इस फ़ोल्डर में क्लिपबोर्ड में फ़ाइलों को चिपकाएँ</system:String>
+  <system:String x:Key="btnCutCP">Cut</system:String>
+  <system:String x:Key="btnCopyPathCP">कॉपी पथ</system:String>
+  <system:String x:Key="btnCopyPTTX">प्रतियां चयनित मद (s) या वर्तमान में खुले फ़ोल्डर के पथ, अगर कोई आइटम चयनित है</system:String>
+  <system:String x:Key="btnPasteScCP">चिपकाएँ शॉर्टकट</system:String>
+  <system:String x:Key="tgOrganizeCP">व्यवस्थित</system:String>
+  <system:String x:Key="btnCopyToCP">कॉपी</system:String>
+  <system:String x:Key="btnMoveToCP">हटो</system:String>
+  <system:String x:Key="btnctDocumentsCP">दस्तावेज़</system:String>
+  <system:String x:Key="btnctDesktopCP">डेस्कटॉप</system:String>
+  <system:String x:Key="btnctDownloadsCP">डाउनलोड्स</system:String>
+  <system:String x:Key="miOtherDestCP">अन्य गंतव्य</system:String>
+  <system:String x:Key="btnDeleteCP">हटाएँ</system:String>
+  <system:String x:Key="miDeltoRB">रीसायकल बिन हटाएँ</system:String>
+  <system:String x:Key="miDeltoP">स्थायी रूप से हटाएं</system:String>
+  <system:String x:Key="btnRenameCP">नाम बदलें</system:String>
+  <system:String x:Key="tgNewCP">नई</system:String>
+  <system:String x:Key="btnNewFolderCP">नया फ़ोल्डर</system:String>
+  <system:String x:Key="btnNewLibraryCP">नई लाइब्रेरी</system:String>
+  <system:String x:Key="tgOpenCP">ओपन</system:String>
+  <system:String x:Key="btnPropertiesCP">गुण</system:String>
+  <system:String x:Key="btnOpenCP">ओपन</system:String>
+  <system:String x:Key="btnEditCP">संपादित करें</system:String>
+  <system:String x:Key="btnHistoryCP">इतिहास</system:String>
+  <system:String x:Key="btnFavoritesCP">पसंदीदा</system:String>
+  <system:String x:Key="tgSelectCP">का चयन करें</system:String>
+  <system:String x:Key="btnSelectAllCP">सभी चुनें</system:String>
+  <system:String x:Key="btnSelectNoneCP">कुछनहींचुनें</system:String>
+  <system:String x:Key="btnInvertSelectionCP">चयन को कैपिटलाइज़</system:String>
+  <system:String x:Key="btnConditionalSelectCP">सशर्त चयन</system:String>
+  <system:String x:Key="miSelAllByTypeCP">एक ही प्रकार का चयन करें</system:String>
+  <system:String x:Key="miSelAllByDateCP">चुनें सभी एक ही दिन बनाया</system:String>
+  <system:String x:Key="miCondSelectCP">अधिक ... शर्तों द्वारा चयन करें</system:String>
+  <system:String x:Key="tgTabsCP">टैब्स</system:String>
+  <system:String x:Key="btnNewTabCP">नई टैब</system:String>
+  <system:String x:Key="btnCloneTabCP">क्लोन टैब</system:String>
+  <system:String x:Key="btnCloseTabCP">बंद वर्तमान टैब</system:String>
+  <system:String x:Key="btnNewTabTCP">नया टैब बनाएँ (Ctrl + T)</system:String>
+  <system:String x:Key="btnNewTabTTX">एक नया टैब वर्तमान एक के लिए अगले डिफ़ॉल्ट स्थान में बनाएँ</system:String>
+  <system:String x:Key="btnCloneTabTTX">एक ही स्थान के रूप में स्थान वर्तमान में देखा जा रहा है के साथ एक नया टैब बनाएँ</system:String>
+  <system:String x:Key="btnUndoCloseCP">टैब बंद करें पूर्ववत करें</system:String>
+  <system:String x:Key="btnUndoCloseHCP">सबसे हाल ही में बंद कर दिया टैब पुन खोलता है.</system:String>
+  <system:String x:Key="miClearList">स्पष्ट सूची</system:String>
+  <system:String x:Key="btnSavedTabsCP">टैब्स सहेजे गए</system:String>
+  <system:String x:Key="btnSavedTabsHCP">अपने पसंदीदा टैब का एक संग्रह की दुकान या एक संग्रह को खोलने के पहले संग्रहीत</system:String>
+  <system:String x:Key="miSaveTabs">वर्तमान टैब्स सहेजें</system:String>
+  <system:String x:Key="tbShareCP">शेयर</system:String>
+  <system:String x:Key="tgCompressCP">संपीड़ित</system:String>
+  <system:String x:Key="btnMakeArchiveCP">पुरालेख बनाओ</system:String>
+  <system:String x:Key="btnMakeArchiveICP">बनाएँ पुरालेख विजार्ड, जो आप चयनित फाइलों के साथ एक संग्रह बनाने में एड्स खोलता है. एक संग्रह एक विशेष फ़ोल्डर है कि compresses, बनाता है या छोटा है, इसे में फ़ाइलों की सभी</system:String>
+  <system:String x:Key="btnShareCP">शेयर</system:String>
+  <system:String x:Key="tgNetworkCP">नेटवर्क</system:String>
+  <system:String x:Key="btnMapDriveCP">मानचित्र नेटवर्क ड्राइव</system:String>
+  <system:String x:Key="btnDiscDriveCP">Disconect नेटवर्क ड्राइव</system:String>
+  <system:String x:Key="btnAdvSecurityCP">उन्नत सुरक्षा</system:String>
+  <system:String x:Key="btnAdvSecurityTTX">सुरक्षा सेटिंग खोलता है, आप का चयन करने के लिए जो उपयोग या इस फ़ोल्डर संपादित कर सकते हैं की अनुमति</system:String>
+  <system:String x:Key="tbViewCP">देखें</system:String>
+  <system:String x:Key="tgShowHideCP">दिखाएँ / छुपाएँ</system:String>
+  <system:String x:Key="tbPanesCP">शीशे</system:String>
+  <system:String x:Key="btnNavigationCP">नेविगेशन फलक</system:String>
+  <system:String x:Key="btnNavigationTCP">नेविगेशन फलक</system:String>
+  <system:String x:Key="btnNavigationTTX">. दिखाएँ या विंडो के बाईं ओर है, जो फ़ोल्डर्स, पुस्तकालयों, और ड्राइव की सूची पर नेविगेशन फलक छिपाने.</system:String>
+  <system:String x:Key="btnInfoCP">विवरण फलक</system:String>
+  <system:String x:Key="btnInfoTCP">विवरण फलक</system:String>
+  <system:String x:Key="btnInfoTTX">दिखाएँ या विवरण फलक, दिखाता है जो चयनित आइटम के बारे में अधिक जानकारी के छिपाना.</system:String>
+  <system:String x:Key="btnPreviewCP">पूर्वावलोकन फलक</system:String>
+  <system:String x:Key="btnPreviewTCP">पूर्वावलोकन फलक</system:String>
+  <system:String x:Key="btnPreviewTTX">दिखाएँ या विंडो के बाईं ओर है, जो आप फ़ाइल खोलने के बिना एक फ़ाइल की सामग्री को देखने के लिए, अगर आपके कंप्यूटर कि फ़ाइल के लिए आवश्यक पूर्वावलोकन प्रहस्तक की अनुमति देता है पर पूर्वावलोकन फलक छुपाने</system:String>
+  <system:String x:Key="btnExtraLargeICP">अतिरिक्त बड़े प्रतीक</system:String>
+  <system:String x:Key="btnLargeICP">बड़े प्रतीक</system:String>
+  <system:String x:Key="btnMediumICP">मध्यम प्रतीक</system:String>
+  <system:String x:Key="btnSmallICP">लघु प्रतीक</system:String>
+  <system:String x:Key="btnListICP">सूची</system:String>
+  <system:String x:Key="btnDetailsICP">विवरण</system:String>
+  <system:String x:Key="btnTilesICP">टाइलें</system:String>
+  <system:String x:Key="btnContentICP">सामग्री</system:String>
+  <system:String x:Key="tgLayoutCP">लेआउट</system:String>
+  <system:String x:Key="tgCurrentViewCP">वर्तमान</system:String>
+  <system:String x:Key="btnSortByCP">द्वारा क्रमबद्ध करें</system:String>
+  <system:String x:Key="btnSortICP">बदलें कैसे फ़ोल्डर सामग्री को हल कर रहे हैं, और वर्ग क्या वे के अनुसार क्रमबद्ध हैं</system:String>
+  <system:String x:Key="miDescending">अवरोही</system:String>
+  <system:String x:Key="miAscending">आरोही</system:String>
+  <system:String x:Key="btnGroupByCP">द्वारा समूह</system:String>
+  <system:String x:Key="btnAutoSizeColCP">ऑटो आकार स्तंभ</system:String>
+  <system:String x:Key="btnAutoSizeColICP">स्तंभों की चौड़ाई परिवर्तित करने के लिए अपने सामग्री फिट</system:String>
+  <system:String x:Key="btnMoreColCP">अधिक स्तंभ</system:String>
+  <system:String x:Key="chkImagefilenameCP">छवि Filenames</system:String>
+  <system:String x:Key="chkHiddenItemsCP">हिडन आइटम</system:String>
+  <system:String x:Key="chkExtensionsCP">फ़ाइलनाम एक्सटेंशन</system:String>
+  <system:String x:Key="chkExtensionsICP">चुनें कि फ़ाइलों या नहीं के अंत पर एक्सटेंशन को दिखाने के लिए. एक्सटेंशन की पहचान क्या एक फ़ाइल प्रकार है. उदाहरण के लिए, एक पाठ दस्तावेज़. Txt एक्सटेंशन है, यह एक पाठ दस्तावेज़ के रूप में पहचान है. सावधान जब फ़ाइलें renaming रहो, क्योंकि इसके विस्तार को बदलने फ़ाइल या एक कार्यक्रम के साथ मुद्दों को पैदा कर सकता है</system:String>
+  <system:String x:Key="btnHideSelCP">चयनित आइटम छिपाएँ</system:String>
+  <system:String x:Key="miHideSelCP">चयनित आइटम छिपाएं</system:String>
+  <system:String x:Key="miHideItemsCP">चयनित वस्तुओं और सभी बच्चों छिपाएँ</system:String>
+  <system:String x:Key="grpWindowsCP">Windows</system:String>
+  <system:String x:Key="btnNewWindowCP">नई विंडो</system:String>
+  <system:String x:Key="btnRefreshCP">ताज़ा</system:String>
+  <system:String x:Key="ctbLibrariesCP">पुस्तकालय</system:String>
+  <system:String x:Key="tbManageCP">प्रबंधन</system:String>
+  <system:String x:Key="tgLibraryCP">पुस्तकालय</system:String>
+  <system:String x:Key="btnManageLibCP">पुस्तकालय प्रबंधन</system:String>
+  <system:String x:Key="btnDefSaveCP">मूलभूत स्थान बचाने के</system:String>
+  <system:String x:Key="btnOptimizeCP">ऑप्टिमाइज़ पुस्तकालय</system:String>
+  <system:String x:Key="miGeneralCP">सामान्य उपयोग</system:String>
+  <system:String x:Key="miDocumentsCP">दस्तावेज़</system:String>
+  <system:String x:Key="miMusicCP">संगीत</system:String>
+  <system:String x:Key="miPicturesCP">तस्वीर</system:String>
+  <system:String x:Key="miVideosCP">वीडियो</system:String>
+  <system:String x:Key="btnChangeLibIconCP">बदलें चिह्न</system:String>
+  <system:String x:Key="chkPinNavCP">नेविगेशन फलक में दिखाएँ</system:String>
+  <system:String x:Key="chkPinNavHCP">नेविगेशन फलक में दिखाएँ पुस्तकालय</system:String>
+  <system:String x:Key="chkPinNavICP">चुनें कि फलक में विंडो के बाईं ओर पर इस पुस्तकालय को दिखाने के लिए. इस पुस्तकालय में अभी भी पुस्तकालय फ़ोल्डर के माध्यम से पहुँचा जा सकता है अगर यह नेविगेशन फलक में नहीं है</system:String>
+  <system:String x:Key="btnResetCP">डिफ़ॉल्ट रीसेट</system:String>
+  <system:String x:Key="ctgFolderToolsCP">फ़ोल्डर उपकरण</system:String>
+  <system:String x:Key="tgFolderIconCP">चिह्न</system:String>
+  <system:String x:Key="btnChangeFIconCP">बदलें फ़ोल्डर चिह्न</system:String>
+  <system:String x:Key="btnClearFIconCP">साफ फ़ोल्डर चिह्न</system:String>
+  <system:String x:Key="btnFSizeChartCP">फ़ोल्डर आकार चार्ट</system:String>
+  <system:String x:Key="ctbDriveToolsCP">ड्राइव उपकरण</system:String>
+  <system:String x:Key="tabDriveCP">ड्राइव</system:String>
+  <system:String x:Key="btnFormatDriveCP">प्रारूप ड्राइव</system:String>
+  <system:String x:Key="btnCleanDriveCP">ड्राइव साफ</system:String>
+  <system:String x:Key="btnDefragDriveCP">ऑप्टिमाइज़ ड्राइव</system:String>
+  <system:String x:Key="btnDSizeChartCP">ड्राइव आकार चार्ट</system:String>
+  <system:String x:Key="ctbApplicationsCP">अनुप्रयोग उपकरण</system:String>
+  <system:String x:Key="tabApplicationCP">आवेदन</system:String>
+  <system:String x:Key="tgRunCP">चलाएँ</system:String>
+  <system:String x:Key="btnPinCP">टास्कबार पिन</system:String>
+  <system:String x:Key="btnRunAsAdminCP">प्रशासक के रूप में चलाएँ</system:String>
+  <system:String x:Key="ctbImageToolsCP">छवि उपकरण</system:String>
+  <system:String x:Key="tgImgEditCP">संपादित करें</system:String>
+  <system:String x:Key="btnRotateLeftCP">घुमाएँ वाम</system:String>
+  <system:String x:Key="btnRotateRightCP">सही घुमाएँ</system:String>
+  <system:String x:Key="btnFlipXCP">आड़ापलटें</system:String>
+  <system:String x:Key="btnFlipYCP">फ्लिप को लम्बाकार में</system:String>
+  <system:String x:Key="btnConvertImageCP">परिवर्तित</system:String>
+  <system:String x:Key="miJPGfCP">To JPEG</system:String>
+  <system:String x:Key="miPNGfCP">To PNG</system:String>
+  <system:String x:Key="miGIFfCP">To GIF</system:String>
+  <system:String x:Key="miBMPfCP">To BMP बीएमपी</system:String>
+  <system:String x:Key="miWMFfCP">To WMF</system:String>
+  <system:String x:Key="grpSizeCP">साइज</system:String>
+  <system:String x:Key="lblWidthCP">चौड़ाई:</system:String>
+  <system:String x:Key="lblHeightCP">लंबाई:</system:String>
+  <system:String x:Key="btnResizeCP">का आकार बदलें</system:String>
+  <system:String x:Key="btnCropImageCP">फसल</system:String>
+  <system:String x:Key="tgImgViewCP">देखें</system:String>
+  <system:String x:Key="btnSlideShowCP">स्लाइड शो</system:String>
+  <system:String x:Key="btnWallpaperCP">वॉलपेपर के रूप में सेट</system:String>
+  <system:String x:Key="miWallFillCP">स्क्रीन भरें</system:String>
+  <system:String x:Key="miWallFitCP">फ़िट स्क्रीन के अंदर</system:String>
+  <system:String x:Key="miWallStretchCP">तनी</system:String>
+  <system:String x:Key="miWallTileCP">टाइलों</system:String>
+  <system:String x:Key="miWallCenterCP">केंद्रित</system:String>
+  <system:String x:Key="ctbArchiveToolsCP">आर्काइव उपकरण</system:String>
+  <system:String x:Key="tgExtractCP">निकालें</system:String>
+  <system:String x:Key="btnExtractHereCP">निकालें</system:String>
+  <system:String x:Key="btnExtractHereHCP">निकालें</system:String>
+  <system:String x:Key="btnExtractHereICP">इस संग्रह की सामग्री को यहाँ एक नया फ़ोल्डर में देता है.</system:String>
+  <system:String x:Key="lblExtractCP">निकालें:</system:String>
+  <system:String x:Key="btnChooseLocationCP">बदले उत्पादन फ़ोल्डर</system:String>
+  <system:String x:Key="btnExtractNowCP">निकालें Archive</system:String>
+  <system:String x:Key="chkUseNewFolderCP">नए फ़ोल्डर में निकालें</system:String>
+  <system:String x:Key="chkOpenResultsCP">दिखाएँ फ़ाइलें जब करेंकिया गया</system:String>
+  <system:String x:Key="btnCheckArchiveCP">अखंडता की जाँच</system:String>
+  <system:String x:Key="btnViewArchiveCP">पुराने लेख देखें</system:String>
+  <system:String x:Key="btnExitCP">बाहर निकलें</system:String>
+  <system:String x:Key="SearchBarResetCP">रीसेट साइज</system:String>
+  <system:String x:Key="ctbSearchToolsCP">खोज उपकरण</system:String>
+  <system:String x:Key="tabSearchCP">खोज</system:String>
+  <system:String x:Key="tsgKindCP">तरह</system:String>
+  <system:String x:Key="btnKindAllCP">सभी प्रकार</system:String>
+  <system:String x:Key="btnKindDocsCP">दस्तावेज़</system:String>
+  <system:String x:Key="btnKindPicsCP">तस्वीर</system:String>
+  <system:String x:Key="btnKindMusicCP">संगीत</system:String>
+  <system:String x:Key="btnKindVideosCP">वीडियो</system:String>
+  <system:String x:Key="btnKindFoldersCP">फ़ोल्डर</system:String>
+  <system:String x:Key="btnKindProgramsCP">कार्यक्रम</system:String>
+  <system:String x:Key="tsgOtherCP">अन्य स्थितियां</system:String>
+  <system:String x:Key="btnOSizeCP">साइज</system:String>
+  <system:String x:Key="miSizeVLargeCP">वैरी लार्ज</system:String>
+  <system:String x:Key="miSizeLargeCP">बड़े</system:String>
+  <system:String x:Key="miSizeMiddleCP">मध्यम आकार</system:String>
+  <system:String x:Key="miSizeSmallCP">लघु</system:String>
+  <system:String x:Key="miSizeTinyCP">टिनी</system:String>
+  <system:String x:Key="miCustomSizeCP">... कस्टम</system:String>
+  <system:String x:Key="btnODateCCP">तारीख बनाया</system:String>
+  <system:String x:Key="miDateTodayCP">आज</system:String>
+  <system:String x:Key="miDateYesterdayCP">कल</system:String>
+  <system:String x:Key="miDateThisWeekCP">इस सप्ताह</system:String>
+  <system:String x:Key="miDateLastWeekCP">पिछले हफ्ते</system:String>
+  <system:String x:Key="miPastMonthCP">गत महीने</system:String>
+  <system:String x:Key="miDateCustomCP">कस्टम समय सीमा ...</system:String>
+  <system:String x:Key="btnODateModCP">तारीख संशोधित</system:String>
+  <system:String x:Key="btnExtCP">एक्सटेंशन</system:String>
+  <system:String x:Key="btnAuthorCP">लेखक / कलाकार</system:String>
+  <system:String x:Key="btnSubjectCP">विषय</system:String>
+  <system:String x:Key="btnSearchCP">अब खोज</system:String>
+  <system:String x:Key="btnSave">सहेजें</system:String>
+  <system:String x:Key="btnSaveAs">के रूप में सहेजें</system:String>
+  <system:String x:Key="btnAddTab">जोडे टैब</system:String>
+  <system:String x:Key="txtTabManager">टैब प्रबंधक</system:String>
+  <system:String x:Key="btnClose">बंद</system:String>
+  <system:String x:Key="btnOpenFolder">ओपन फ़ोल्डर</system:String>
+  <system:String x:Key="txtName">नाम</system:String>
+  <system:String x:Key="txtPath">पथ</system:String>
+  <system:String x:Key="txtChooseName">इस टैब संग्रह के लिए एक नाम चुनें</system:String>
+  <system:String x:Key="txtOverwriteSavedTabs">यदि इस नाम पहले से ही मौजूद है, पुराने संग्रह प्रतिस्थापित किया जाएगा</system:String>
+  <system:String x:Key="txtIllegalCharacters">इन वर्ण नहीं हो सकते: \ / : * ? &lt; &gt; |</system:String>
+  <system:String x:Key="txtConfirmDelete">क्या आप वाकई इस टैब संग्रह को नष्ट करना चाहते हैं.</system:String>
+  <system:String x:Key="txtSizeChart">फ़ोल्डर / ड्राइव साइज चार्ट</system:String>
+  <system:String x:Key="txtLoadingSizeChart">subfolders के आकार ...</system:String>
+  <system:String x:Key="txtResizeImage">आकार छवि</system:String>
+  <system:String x:Key="txtPercentage">सेट प्रतिशत</system:String>
+  <system:String x:Key="txtSpecificSize">या विशिष्ट आकार निर्धारित करने के लिए:</system:String>
+  <system:String x:Key="txtArchiveWizard">बनाएँ पुरालेख</system:String>
+  <system:String x:Key="txtReviewFiles">समीक्षा फ़ाइलें</system:String>
+  <system:String x:Key="txtAddFiles">फ़ाइलें जोड़ें</system:String>
+  <system:String x:Key="txtRemoveFiles">फ़ाइलें निकालें</system:String>
+  <system:String x:Key="txtArchiveFormat">पुरालेख स्वरूप</system:String>
+  <!--<system:String x:Key="txtArchiveSpeed">Compression Speed</system:String> <system:String x:Key="txtArchiveSpeed"> संपीड़न गति </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtNamePassword">Archive Name / Password</system:String> <system:String x:Key="txtNamePassword"> पुरालेख नाम / पासवर्ड </ सिस्टम: स्ट्रिंग>
+    <system:String x:Key="chkProtectArchive">Password-protect this archive:</system:String> </ प्रणाली: स्ट्रिंग> <system:String x:Key="chkProtectArchive"> इस संग्रह पासवर्ड की रक्षा
+    <system:String x:Key="txtPassword">Password:</system:String> <system:String x:Key="txtPassword"> पासवर्ड: </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtConditionalSelect">Conditionally Select Files</system:String> <system:String x:Key="txtConditionalSelect"> सशर्त फ़ाइलें </ प्रणाली: स्ट्रिंग> चुनें
+    <system:String x:Key="txtSelectFiles">Select files in this folder that meet these conditions:</system:String> </ प्रणाली: स्ट्रिंग> <system:String x:Key="txtSelectFiles"> इस फ़ोल्डर में फ़ाइलें है कि इन शर्तों को पूरा का चयन करें
+    <system:String x:Key="txtFilename">Filename</system:String> <system:String x:Key="txtFilename"> फ़ाइलनाम </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtContains">contains</system:String> <system:String x:Key="txtContains"> </ प्रणाली: स्ट्रिंग> शामिल हैं
+    <system:String x:Key="txtStartsWith">starts with</system:String> <system:String x:Key="txtStartsWith"> के साथ शुरू होता है </ सिस्टम: स्ट्रिंग>
+    <system:String x:Key="txtEndsWith">ends with</system:String> <system:String x:Key="txtEndsWith"> के साथ समाप्त होता है </ सिस्टम: स्ट्रिंग>
+    <system:String x:Key="txtIs">is</system:String> <system:String x:Key="txtIs"> </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtDoesNotContain">does not contain</system:String> <system:String x:Key="txtDoesNotContain"> </ सिस्टम: स्ट्रिंग> शामिल नहीं करता है
+    <system:String x:Key="txtIsNot">is not</system:String> <system:String x:Key="txtIsNot"> </ प्रणाली: स्ट्रिंग> नहीं है.
+    <system:String x:Key="txtMatchCase">Match case</system:String> <system:String x:Key="txtMatchCase"> मिलान मामले </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtFileSize">File Size</system:String> <system:String x:Key="txtFileSize"> फ़ाइल का आकार </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtLargerThan">is larger than</system:String> <system:String x:Key="txtLargerThan"> </ प्रणाली: स्ट्रिंग> से बड़ा है
+    <system:String x:Key="txtSmallerThan">is smaller than</system:String> <system:String x:Key="txtSmallerThan"> </ प्रणाली: स्ट्रिंग> की तुलना में छोटी है
+    <system:String x:Key="txtExactly">is exactly</system:String> <system:String x:Key="txtExactly"> बिल्कुल </ सिस्टम: स्ट्रिंग>
+    <system:String x:Key="txtIsBetween">is between</system:String> <system:String x:Key="txtIsBetween"> </ प्रणाली: स्ट्रिंग> के बीच है
+    <system:String x:Key="txtIsNotBetween">is not between</system:String> <system:String x:Key="txtIsNotBetween"> </ प्रणाली: स्ट्रिंग> के बीच में नहीं है
+    <system:String x:Key="txtDateAccessed">Date Accessed</system:String> <system:String x:Key="txtDateAccessed"> तारीख </ प्रणाली: स्ट्रिंग> को अभिगमित
+    <system:String x:Key="txtAnd">and</system:String> <system:String x:Key="txtAnd"> और </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtIsBefore">is before</system:String> <system:String x:Key="txtIsBefore"> </ प्रणाली: स्ट्रिंग> पहले है
+    <system:String x:Key="txtIsAfter">is after</system:String> <system:String x:Key="txtIsAfter"> </ प्रणाली: स्ट्रिंग> के बाद है
+    <system:String x:Key="txtDateIs">is the same as</system:String> <system:String x:Key="txtDateIs"> </ प्रणाली: स्ट्रिंग> रूप में ही है
+    <system:String x:Key="txtRemoveFilter">To remove filter, leave all values blank</system:String> </ सिस्टम: स्ट्रिंग> फ़िल्टर को हटाने x:Key="txtRemoveFilter"> <system:String, सभी रिक्त मानों छोड़
+    <system:String x:Key="txtSetFilter">Set <value> filter:</system:String> <system:String x:Key="]Filter"> सेट <value> फिल्टर: </ सिस्टम: स्ट्रिंग>
+    <system:String x:Key="txtCurrentValue">Current Value:</system:String> <system:String x:Key="txtCurrentValue"> वर्तमान मूल्य: </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtSelect">Select</system:String> <system:String x:Key="txtSelect"> का चयन करें </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtCancel">Cancel</system:String> <system:String x:Key="txtCancel"> रद्द </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtOK">OK</system:String> <system:String x:Key="txtOK"> ठीक </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtNext">Next</system:String> <system:String x:Key="txtNext"> अगला </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="txtBrowse">Browse...</system:String> <system:String x:Key="txtBrowse"> ब्राउज़ ... </ प्रणाली: स्ट्रिंग>-->
+
+</ResourceDictionary>

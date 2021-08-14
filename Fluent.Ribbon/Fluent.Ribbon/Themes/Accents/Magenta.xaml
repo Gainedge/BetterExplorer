@@ -1,0 +1,159 @@
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Fluent="clr-namespace:Fluent"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+  mc:Ignorable="options d">
+  <!--  COLORS  -->
+
+  <!--  Accent colors  -->
+  <Color x:Key="Fluent.Ribbon.Colors.AccentBaseColor">#FFD80073</Color>
+  <!--  80%  -->
+  <Color x:Key="Fluent.Ribbon.Colors.AccentColor80">#CCD80073</Color>
+  <!--  60%  -->
+  <Color x:Key="Fluent.Ribbon.Colors.AccentColor60">#99D80073</Color>
+  <!--  40%  -->
+  <Color x:Key="Fluent.Ribbon.Colors.AccentColor40">#66D80073</Color>
+  <!--  20%  -->
+  <Color x:Key="Fluent.Ribbon.Colors.AccentColor20">#33D80073</Color>
+
+  <Color x:Key="Fluent.Ribbon.Colors.HighlightColor">#FF9F0055</Color>
+
+  <!--  Foreground  -->
+  <Color x:Key="Fluent.Ribbon.Colors.IdealForegroundColor">White</Color>
+  <Color x:Key="Fluent.Ribbon.Colors.DarkIdealForegroundDisabledColor">#ADADAD</Color>
+
+  <!--  Misc colors  -->
+  <Color x:Key="Fluent.Ribbon.Colors.ExtremeHighlightColor">#FFFFD232</Color>
+  <Color x:Key="Fluent.Ribbon.Colors.DarkExtremeHighlightColor">#FFF29536</Color>
+
+  <!--  END COLORS  -->
+
+  <!--  BRUSHES  -->
+
+  <!--  Accent brushes  -->
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.AccentBaseColorBrush"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentBaseColor}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.AccentColorBrush80"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor80}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.AccentColorBrush60"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor60}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.AccentColorBrush40"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.AccentColorBrush20"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" />
+
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.HighlightBrush"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.HighlightColor}" />
+
+  <!--  Misc brushes  -->
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.ExtremeHighlightBrush"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.ExtremeHighlightColor}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.DarkExtremeHighlightBrush"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.DarkExtremeHighlightColor}" />
+
+  <!--  Foreground  -->
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.IdealForegroundColorBrush"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.IdealForegroundDisabledBrush"
+    options:Freeze="True"
+    Opacity="0.4"
+    Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.DarkIdealForegroundDisabledBrush"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.DarkIdealForegroundDisabledColor}" />
+
+  <!--  Button  -->
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.Button.MouseOver.Background"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor60}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.Button.Pressed.Background"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" />
+
+  <!--  ToggleButton  -->
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.ToggleButton.Checked.Background"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.HighlightColor}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.ToggleButton.CheckedMouseOver.Background"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.ToggleButton.CheckedMouseOver.BorderBrush"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor60}" />
+
+  <!--  GalleryItem  -->
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.GalleryItem.MouseOver"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.GalleryItem.Selected"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.GalleryItem.Pressed"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor60}" />
+
+  <!--  MenuItem  -->
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.ApplicationMenuItem.CheckBox.Background"
+    options:Freeze="True"
+    Color="#FFFCF1C2" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.ApplicationMenuItem.CheckBox.BorderBrush"
+    options:Freeze="True"
+    Color="#FFF29536" />
+
+  <!--  WindowCommands  -->
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.MouseOver.Background"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" />
+  <SolidColorBrush
+    x:Key="Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Pressed.Background"
+    options:Freeze="True"
+    Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" />
+
+  <!--  END BRUSHES  -->
+</ResourceDictionary>

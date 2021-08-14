@@ -131,12 +131,6 @@
     <None Include="packages.config" />
     <None Include="RuleSet1.ruleset" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Shell\Shell.csproj">
-      <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
-      <Name>Shell</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

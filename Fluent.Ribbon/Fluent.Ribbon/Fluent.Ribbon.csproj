@@ -1,0 +1,131 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Fluent</RootNamespace>
+    <AssemblyName>Fluent</AssemblyName>
+    <ExpressionBlendVersion>4.0.20621.0</ExpressionBlendVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>$(SolutionDir)\bin\$(AssemblyName)\$(Configuration)$(TargetFrameworkVersion)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)\obj\$(AssemblyName)\$(Configuration)$(TargetFrameworkVersion)\</IntermediateOutputPath>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;NET45</DefineConstants>
+    <DocumentationFile>$(OutputPath)\Fluent.xml</DocumentationFile>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRules>
+    </CodeAnalysisRules>
+    <CodeAnalysisRuleSet>..\Fluent.Ribbon.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>$(SolutionDir)\bin\$(AssemblyName)\$(Configuration)$(TargetFrameworkVersion)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)\obj\$(AssemblyName)\$(Configuration)$(TargetFrameworkVersion)\</IntermediateOutputPath>
+    <DefineConstants>TRACE;CODE_ANALYSIS;NET45</DefineConstants>
+    <DocumentationFile>$(OutputPath)\Fluent.XML</DocumentationFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRules>
+    </CodeAnalysisRules>
+    <CodeAnalysisRuleSet>..\Fluent.Ribbon.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Shared\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Effects\Grayscale.ps" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\Warning.png" />
+    <Resource Include="Themes\Images\Copy.png" />
+    <Resource Include="Themes\Images\Cut.png" />
+    <Resource Include="Themes\Images\Paste.png" />
+    <Resource Include="Themes\Images\MoreColors.png" />
+    <Resource Include="Themes\Images\Help.png" />
+    <Resource Include="Themes\Images\Checked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\DefaultSmallIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\ApplicationMenu.png" />
+    <Resource Include="Themes\Images\DialogLauncher.png" />
+    <Resource Include="Themes\Images\QuickAccessToolbarDropDown.png" />
+    <Resource Include="Themes\Images\QuickAccessToolbarExtender.png" />
+    <Resource Include="Themes\Images\RibbonCollapse.png" />
+    <Resource Include="Themes\Images\RibbonExpand.png" />
+    <Resource Include="Themes\Images\RibbonPin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="BackstageButton.cs" />
+    <Compile Remove="RibbonGroupBoxPanel.cs" />
+    <Compile Remove="RibbonToolBarTray.cs" />
+    <Page Remove="Themes\Accents\Accent.Template.xaml" />
+    <Page Remove="Themes\Common.xaml" />
+    <Page Remove="Themes\Controls\ApplicationMenu.xaml" />
+    <Page Remove="Themes\Controls\ApplicationMenuItem.xaml" />
+    <Page Remove="Themes\Controls\Backstage.xaml" />
+    <Page Remove="Themes\Controls\BackstageControls.xaml" />
+    <Page Remove="Themes\Controls\BackstageTabControl.xaml" />
+    <Page Remove="Themes\Controls\BackstageTabItem.xaml" />
+    <Page Remove="Themes\Controls\Button.xaml" />
+    <Page Remove="Themes\Controls\CheckBox.xaml" />
+    <Page Remove="Themes\Controls\ColorGallery.xaml" />
+    <Page Remove="Themes\Controls\ComboBox.xaml" />
+    <Page Remove="Themes\Controls\ComboBoxItem.xaml" />
+    <Page Remove="Themes\Controls\DropDownButton.xaml" />
+    <Page Remove="Themes\Controls\EmptyFocusStyle.xaml" />
+    <Page Remove="Themes\Controls\Gallery.xaml" />
+    <Page Remove="Themes\Controls\GalleryGroupContainer.xaml" />
+    <Page Remove="Themes\Controls\GalleryItem.xaml" />
+    <Page Remove="Themes\Controls\InRibbonGallery.xaml" />
+    <Page Remove="Themes\Controls\KeyTip.xaml" />
+    <Page Remove="Themes\Controls\Menu.xaml" />
+    <Page Remove="Themes\Controls\MenuItem.xaml" />
+    <Page Remove="Themes\Controls\MenuSeparator.xaml" />
+    <Page Remove="Themes\Controls\RadioButton.xaml" />
+    <Page Remove="Themes\Controls\Ribbon.xaml" />
+    <Page Remove="Themes\Controls\RibbonContextualTabGroup.xaml" />
+    <Page Remove="Themes\Controls\RibbonGroupBox.xaml" />
+    <Page Remove="Themes\Controls\RibbonMenu.xaml" />
+    <Page Remove="Themes\Controls\RibbonScrollViewer.xaml" />
+    <Page Remove="Themes\Controls\RibbonSeparator.xaml" />
+    <Page Remove="Themes\Controls\RibbonTabControl.xaml" />
+    <Page Remove="Themes\Controls\RibbonTabItem.xaml" />
+    <Page Remove="Themes\Controls\RibbonTextBox.xaml" />
+    <Page Remove="Themes\Controls\RibbonToolBar.xaml" />
+    <Page Remove="Themes\Controls\RibbonToolBarControlGroup.xaml" />
+    <Page Remove="Themes\Controls\ScreenTip.xaml" />
+    <Page Remove="Themes\Controls\ScrollBar.xaml" />
+    <Page Remove="Themes\Controls\SeparatorTabItem.xaml" />
+    <Page Remove="Themes\Controls\Spinner.xaml" />
+    <Page Remove="Themes\Controls\SplitButton.xaml" />
+    <Page Remove="Themes\Controls\StartScreen.xaml" />
+    <Page Remove="Themes\Controls\StartScreenTabControl.xaml" />
+    <Page Remove="Themes\Controls\ToggleButton.xaml" />
+    <Page Remove="Themes\Controls\TwoLineLabel.xaml" />
+    <Page Remove="Themes\Images\Images.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Metro\Behaviours\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ControlzEx" Version="5.0.1" />
+  </ItemGroup>
+  <PropertyGroup />
+  <Target Name="GenerateXamlFiles" BeforeTargets="DispatchToInnerBuilds;PrepareForBuild">
+    <PropertyGroup>
+      <XamlCombinePath>$(MSBuildProjectDirectory)/Themes/XamlCombine.exe</XamlCombinePath>
+      <!-- <XamlCombinePath>C:/DEV/OSS_Own/FluentRibbon/XamlCombine/bin/Debug/netcoreapp3.0/XamlCombine.exe</XamlCombinePath> -->
+    </PropertyGroup>
+    <Message Text="Generating XAML files ($(TargetFramework))" Importance="high" />
+    <!-- Generate theme files -->
+    <Exec Command="&quot;$(MSBuildProjectDirectory)/Themes/Accents/XamlColorSchemeGenerator.exe&quot; GeneratorParameters.json" WorkingDirectory="$(MSBuildProjectDirectory)/Themes/Accents" />
+    <!-- Combine xaml files -->
+    <Exec Command="&quot;$(XamlCombinePath)&quot; &quot;Styles.txt&quot; &quot;Styles.xaml&quot;" WorkingDirectory="$(MSBuildProjectDirectory)/Themes" />
+  </Target>
+
+</Project>

@@ -1,0 +1,197 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/419/trunk/NetFxIS/scripts/products
+END
+dotnetfx40full.iss
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/dotnetfx40full.iss
+END
+wic.iss
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/wic.iss
+END
+ie6.iss
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/ie6.iss
+END
+sql2008express.iss
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/sql2008express.iss
+END
+iis.iss
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/iis.iss
+END
+vcredist2010.iss
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/408/trunk/NetFxIS/scripts/products/vcredist2010.iss
+END
+dotnetfx35sp1.iss
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/dotnetfx35sp1.iss
+END
+kb835732.iss
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/kb835732.iss
+END
+dotnetfx11lp.iss
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/408/trunk/NetFxIS/scripts/products/dotnetfx11lp.iss
+END
+msi31.iss
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/410/trunk/NetFxIS/scripts/products/msi31.iss
+END
+dotnetfx20.iss
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/dotnetfx20.iss
+END
+dotnetfx40client.iss
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/dotnetfx40client.iss
+END
+dotnetfx35lp.iss
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/dotnetfx35lp.iss
+END
+jet4sp8.iss
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/jet4sp8.iss
+END
+dotnetfxversion.iss
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/dotnetfxversion.iss
+END
+stringversion.iss
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/stringversion.iss
+END
+mdac28.iss
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/mdac28.iss
+END
+sql2005express.iss
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/sql2005express.iss
+END
+dotnetfx20sp1.iss
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/dotnetfx20sp1.iss
+END
+dotnetfx20sp2.iss
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/dotnetfx20sp2.iss
+END
+dotnetfx35sp1lp.iss
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/dotnetfx35sp1lp.iss
+END
+fileversion.iss
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/fileversion.iss
+END
+dotnetfx20lp.iss
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/dotnetfx20lp.iss
+END
+msi20.iss
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/408/trunk/NetFxIS/scripts/products/msi20.iss
+END
+dotnetfx11.iss
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/dotnetfx11.iss
+END
+msi45.iss
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/408/trunk/NetFxIS/scripts/products/msi45.iss
+END
+dotnetfx35.iss
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/dotnetfx35.iss
+END
+winversion.iss
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/winversion.iss
+END
+sqlcompact35sp2.iss
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/419/trunk/NetFxIS/scripts/products/sqlcompact35sp2.iss
+END
+dotnetfx20sp1lp.iss
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/dotnetfx20sp1lp.iss
+END
+dotnetfx20sp2lp.iss
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/407/trunk/NetFxIS/scripts/products/dotnetfx20sp2lp.iss
+END
+dotnetfx11sp1.iss
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/405/trunk/NetFxIS/scripts/products/dotnetfx11sp1.iss
+END

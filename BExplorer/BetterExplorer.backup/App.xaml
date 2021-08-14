@@ -1,0 +1,39 @@
+﻿<Application
+  x:Class="BetterExplorer.App"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  StartupUri="MainWindow.xaml">
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml" />
+        <!--<ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Colors/BaseDark.xaml" />-->
+        <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Accents/Amber.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.bg-BG.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.it-IT.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.es-ES.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.pt-BR.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.fi-FI.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.tr-TR.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.hr-HR.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.de-DE.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.fr-FR.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.zh-CN.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.ru-RU.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.pl-PL.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.zh-TW.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.sv-SE.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.nl-NL.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.cs-CZ.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.ja-JP.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.hu-HU.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.vi-VN.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.uk-UA.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.ko-KR.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.en-GB.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.el-GR.xaml" />
+        <ResourceDictionary Source="/BetterExplorer;component/Translation/DefaultLocale.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
+</Application>

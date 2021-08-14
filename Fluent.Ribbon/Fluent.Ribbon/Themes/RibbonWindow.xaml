@@ -1,0 +1,119 @@
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Converters="clr-namespace:Fluent.Converters"
+  xmlns:Fluent="clr-namespace:Fluent"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="d">
+
+  <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+  <Fluent:IconConverter x:Key="IconConvert" />
+
+  <ControlTemplate x:Key="RibbonWindowControlTemplate" TargetType="{x:Type Fluent:RibbonWindow}">
+    <Grid LayoutTransform="{Binding LayoutTransform, RelativeSource={RelativeSource TemplatedParent}}" RenderTransform="{Binding RenderTransform, RelativeSource={RelativeSource TemplatedParent}}">
+      <AdornerDecorator x:Name="Adorner">
+        <Grid Background="{TemplateBinding Background}">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+
+          <DockPanel
+            Grid.Row="0"
+            Height="{TemplateBinding TitleBarHeight}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
+            Background="{TemplateBinding TitleBackground}"
+            LastChildFill="True" Margin="5,0,0,0">
+            <Image
+              x:Name="PART_Icon"
+              Width="16"
+              Height="16"
+              Margin="4,1,0,0"
+              DockPanel.Dock="Left"
+              SnapsToDevicePixels="True"
+              WindowChrome.IsHitTestVisibleInChrome="True"
+              Source="{TemplateBinding Icon,
+                                       Converter={StaticResource IconConvert}}"
+              Visibility="{TemplateBinding IsIconVisible,
+                                           Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+            <ContentPresenter
+              x:Name="PART_WindowCommands"
+              Grid.Row="0"
+              HorizontalAlignment="Right"
+              Panel.ZIndex="1"
+              Margin="0,1,0,0"
+              Content="{TemplateBinding WindowCommands}"
+              DockPanel.Dock="Right" />
+
+            <Fluent:RibbonTitleBar
+              x:Name="PART_RibbonTitleBar"
+              Margin="0,0,0,0"
+              Foreground="{TemplateBinding TitleForeground}"
+              Header="{TemplateBinding Title}"
+              IsCollapsed="{TemplateBinding IsCollapsed}" />
+          </DockPanel>
+
+          <ContentPresenter x:Name="PART_ContentPresenter" Grid.Row="1" />
+        </Grid>
+      </AdornerDecorator>
+
+      <!--<Border
+        x:Name="PART_Border"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Background="{x:Null}"
+        BorderBrush="{TemplateBinding BorderBrush}"
+        BorderThickness="{TemplateBinding BorderThickness}"
+        CornerRadius="6"
+        Margin="0"
+        UseLayoutRounding="True" />-->
+
+      <ResizeGrip
+        x:Name="WindowResizeGrip"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Bottom"
+        IsTabStop="false"
+        Visibility="Collapsed" />
+    </Grid>
+
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsActive" Value="False">
+        <Setter TargetName="PART_WindowCommands" Property="Opacity" Value="0.5" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="ResizeMode" Value="CanResizeWithGrip" />
+          <Condition Property="WindowState" Value="Normal" />
+        </MultiTrigger.Conditions>
+        <!--<Setter TargetName="PART_Border" Property="Visibility" Value="Visible" />-->
+        <Setter TargetName="WindowResizeGrip" Property="Visibility" Value="Visible" />
+      </MultiTrigger>
+      <Trigger Property="WindowState" Value="Maximized">
+        <Setter TargetName="Adorner" Property="Margin" Value="0,-2,0,0" />
+        <Setter TargetName="PART_Icon" Property="Margin" Value="5,0,0,0" />
+        <!--<Setter TargetName="PART_Border" Property="Visibility" Value="Collapsed" />-->
+        <Setter TargetName="WindowResizeGrip" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <Style x:Key="RibbonWindowStyle" TargetType="{x:Type Fluent:RibbonWindow}">
+    <!--<Setter Property="WindowChrome.WindowChrome">  
+        <Setter.Value>  
+            <WindowChrome GlassFrameThickness="0,1,0,0" UseAeroCaptionButtons="True" ResizeBorderThickness="4" CornerRadius="4" 
+                      NonClientFrameEdges="None" />  
+        </Setter.Value>  
+    </Setter>-->  
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.AccentBaseColorBrush}" />
+    <Setter Property="Background" Value="{DynamicResource WhiteBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+    <Setter Property="TitleBackground" Value="{Binding Background, RelativeSource={RelativeSource Self}}" />
+    <Setter Property="TitleForeground" Value="{Binding Foreground, RelativeSource={RelativeSource Self}}" />
+    <Setter Property="Template" Value="{StaticResource RibbonWindowControlTemplate}" />
+    <Setter Property="TitleBarHeight" Value="27" />
+  </Style>
+</ResourceDictionary>

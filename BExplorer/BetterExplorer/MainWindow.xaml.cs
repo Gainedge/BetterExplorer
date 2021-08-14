@@ -1618,6 +1618,23 @@ namespace BetterExplorer {
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e) {
+      //try {
+      //  switch (Settings.BESettings.CurrentTheme) {
+      //    case "Dark":
+      //      ThemeManager.ChangeAppTheme(this, "BaseDark");
+      //      UxTheme.AllowDarkModeForApp(true);
+      //      break;
+      //    default:
+      //      ThemeManager.ChangeAppTheme(this, "BaseLight");
+      //      UxTheme.AllowDarkModeForApp(false);
+      //      break;
+      //  }
+      //} catch (Exception ex) {
+      //  // MessageBox.Show(String.Format("An error occurred while trying to load the theme data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "RibbonTheme Error - " + ex.ToString());
+      //  MessageBox.Show(
+      //    $"An error occurred while trying to load the theme data from the Registry. \n\r \n\rRibbonTheme Error - {ex}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/",
+      //    ex.Message);
+      //}
       //this.sbLVVertical.Track.Thumb.DragDelta += (o, args) => {
       //  this._IsScrollingManually = true;
       //  User32.SendMessage(this._ShellListView.LVHandle, 0x1000 + 20, 0, (Int32)Math.Ceiling(args.VerticalChange * (8.5)));
@@ -1914,10 +1931,10 @@ namespace BetterExplorer {
     public void ChangeRibbonTheme(string themeName, bool IsMetro = false) => this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
       switch (themeName) {
         case "Dark":
-          ThemeManager.ChangeAppTheme(Application.Current, "BaseDark");
+          ThemeManager.ChangeAppTheme(this, "BaseDark");
           break;
         default:
-          ThemeManager.ChangeAppTheme(Application.Current, "BaseLight");
+          ThemeManager.ChangeAppTheme(this, "BaseLight");
           break;
       }
       Settings.BESettings.CurrentTheme = themeName;
@@ -2646,10 +2663,8 @@ namespace BetterExplorer {
       if (!this.TheRibbon.IsMinimized) {
       } else if (this.chkRibbonMinimizedGlass.IsChecked.Value) {
         var p = this.ShellViewHost.TransformToAncestor(this).Transform(new WIN.Point(0, 0));
-        this.GlassFrameThickness = new Thickness(8, p.Y, 8, 8);
       } else {
         var p = this.backstage.TransformToAncestor(this).Transform(new WIN.Point(0, 0));
-        this.GlassFrameThickness = new Thickness(8, p.Y + this.backstage.ActualHeight, 8, 8);
       }
     }
 
@@ -3468,8 +3483,8 @@ namespace BetterExplorer {
     void ShellListView_SelectionChanged(object sender, EventArgs e) {
       if (!this._ShellListView.IsNavigationInProgress && !this._ShellListView.IsSearchNavigating)
         this.SetupUIOnSelectOrNavigate();
-      if (BESettings.IsInfoPaneEnabled)
-        Task.Run(() => this.DetailsPanel.FillPreviewPane(this._ShellListView));
+      //if (BESettings.IsInfoPaneEnabled)
+      //  Task.Run(() => this.DetailsPanel.FillPreviewPane(this._ShellListView));
       this.SetUpStatusBarOnSelectOrNavigate(this._ShellListView.GetSelectedCount());
     }
 
@@ -3509,9 +3524,9 @@ namespace BetterExplorer {
       }));
 
       if (BESettings.IsInfoPaneEnabled) {
-        Task.Run(() => {
-          this.DetailsPanel.FillPreviewPane(this._ShellListView);
-        });
+        //Task.Run(() => {
+        //  this.DetailsPanel.FillPreviewPane(this._ShellListView);
+        //});
       }
 
       this.Dispatcher.Invoke(DispatcherPriority.Render, (Action)(() => {
@@ -3753,10 +3768,10 @@ namespace BetterExplorer {
       try {
         switch (Settings.BESettings.CurrentTheme) {
           case "Dark":
-            ThemeManager.ChangeAppTheme(Application.Current, "BaseDark");
+            ThemeManager.ChangeAppTheme(this, "BaseDark");
             break;
           default:
-            ThemeManager.ChangeAppTheme(Application.Current, "BaseLight");
+            ThemeManager.ChangeAppTheme(this, "BaseLight");
             break;
         }
       } catch (Exception ex) {

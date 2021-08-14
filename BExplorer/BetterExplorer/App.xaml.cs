@@ -24,8 +24,7 @@ using BExplorer.Shell.Interop;
 using Fluent;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Win32;
-
-using SingleInstanceApplication;
+using SingleInstanceCore;
 using Application = System.Windows.Application;
 using DragDropEffects = System.Windows.DragDropEffects;
 using MessageBox = System.Windows.MessageBox;
@@ -38,7 +37,7 @@ namespace BetterExplorer {
   /// <summary>
   /// Interaction logic for App
   /// </summary>
-  public partial class App {
+  public partial class App: ISingleInstance {
     /// <summary>
     /// Gets or sets a value indicating whether app starting in minimized state
     /// </summary>
@@ -65,11 +64,11 @@ namespace BetterExplorer {
 
       // We want our specific culture      
       String requestedCulture = $"Locale.{culture}.xaml";
-      ResourceDictionary resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
+      ResourceDictionary resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source?.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
       if (resourceDictionary == null) {
         // If not found, we select our default language         
         requestedCulture = "DefaultLocale.xaml";
-        resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
+        resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source?.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
       }
 
       // If we have the requested resource, remove it from the list and place at the end.\      
@@ -101,11 +100,11 @@ namespace BetterExplorer {
       if (resourceDictionary == null) {
         // if not found, then try from the application's resources
         String requestedCulture = $"Locale.{culture}.xaml";
-        resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
+        resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source?.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
         if (resourceDictionary == null) {
           // If not found, we select our default language             
           requestedCulture = "DefaultLocale.xaml";
-          resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
+          resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source?.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
         }
       }
 
@@ -224,8 +223,12 @@ namespace BetterExplorer {
         }
       }
 
-      if (!ApplicationInstanceManager.CreateSingleInstance(Assembly.GetExecutingAssembly().GetName().Name, this.SingleInstanceCallback) && dmi) {
-        return; // exit, if same app. is running
+      bool isFirstInstance = this.InitializeAsFirstInstance("BetterExplorer_SI_IPC");
+      if (!isFirstInstance) {
+        //If it's not the first instance, arguments are automatically passed to the first instance
+        //OnInstanceInvoked will be raised on the first instance
+        //You may shut down the current instance
+        Current.Shutdown();
       }
 
       base.OnStartup(e);
@@ -247,6 +250,7 @@ namespace BetterExplorer {
     }
     protected override void OnExit(ExitEventArgs e) {
       base.OnExit(e);
+      SingleInstance.Cleanup();
       Environment.Exit(Environment.ExitCode);
     }
 
@@ -309,65 +313,65 @@ namespace BetterExplorer {
     /// </summary>
     /// <param name="sender">The sender.</param>
     /// <param name="args">The <see cref="SingleInstanceApplication.InstanceCallbackEventArgs"/> instance containing the event data.</param>
-    private void SingleInstanceCallback(Object sender, InstanceCallbackEventArgs args) {
-      if (args == null || this.Dispatcher == null) {
-        return;
-      }
+    //private void SingleInstanceCallback(Object sender, InstanceCallbackEventArgs args) {
+    //  if (args == null || this.Dispatcher == null) {
+    //    return;
+    //  }
 
-      var startUpLocation = Settings.BESettings.StartupLocation;
+    //  var startUpLocation = Settings.BESettings.StartupLocation;
 
-      Action<Boolean> d = x => {
-        var win = this.MainWindow as MainWindow;
-        var windowsActivate = new CombinedWindowActivator();
-        if (!x || win == null) {
-          return;
-        }
+    //  Action<Boolean> d = x => {
+    //    var win = this.MainWindow as MainWindow;
+    //    var windowsActivate = new CombinedWindowActivator();
+    //    if (!x || win == null) {
+    //      return;
+    //    }
 
-        win.StateChanged += this.Win_StateChanged;
-        if (args.CommandLineArgs == null || !args.CommandLineArgs.Any()) {
-          return;
-        }
+    //    win.StateChanged += this.Win_StateChanged;
+    //    if (args.CommandLineArgs == null || !args.CommandLineArgs.Any()) {
+    //      return;
+    //    }
 
-        if (args.CommandLineArgs.Length == 1) {
-          win.Visibility = Visibility.Visible;
-          windowsActivate.ActivateForm(win, null, IntPtr.Zero);
-        } else {
-          if (args.CommandLineArgs[1] == "/nw") {
-            new MainWindow() { IsMultipleWindowsOpened = true }.Show();
-          } else {
-            IListItemEx sho;
-            if (args.CommandLineArgs[1] == "t") {
-              win.Visibility = Visibility.Visible;
-              windowsActivate.ActivateForm(win, null, IntPtr.Zero);
+    //    if (args.CommandLineArgs.Length == 1) {
+    //      win.Visibility = Visibility.Visible;
+    //      windowsActivate.ActivateForm(win, null, IntPtr.Zero);
+    //    } else {
+    //      if (args.CommandLineArgs[1] == "/nw") {
+    //        new MainWindow() { IsMultipleWindowsOpened = true }.Show();
+    //      } else {
+    //        IListItemEx sho;
+    //        if (args.CommandLineArgs[1] == "t") {
+    //          win.Visibility = Visibility.Visible;
+    //          windowsActivate.ActivateForm(win, null, IntPtr.Zero);
 
-              sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, startUpLocation.ToShellParsingName());
-            } else {
-              sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, args.CommandLineArgs[1].ToShellParsingName());
-            }
+    //          sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, startUpLocation.ToShellParsingName());
+    //        } else {
+    //          sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, args.CommandLineArgs[1].ToShellParsingName());
+    //        }
 
-            if (!IsStartMinimized || win.tcMain.Items.Count == 0) {
-              this.CreateInitialTab(win, sho);
-            } else if (Settings.BESettings.IsRestoreTabs) {
-              win.tcMain.Items.Clear();
-              this.CreateInitialTab(win, sho);
-            } else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
-              if (args.CommandLineArgs[1] == "t") {
-                this.CreateInitialTab(win, sho);
-              } else {
-                var cmd = args.CommandLineArgs[1];
-                sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd.ToShellParsingName());
-                this.CreateInitialTab(win, sho);
-              }
-            } else {
-              this.CreateInitialTab(win, sho);
-            }
-          }
+    //        if (!IsStartMinimized || win.tcMain.Items.Count == 0) {
+    //          this.CreateInitialTab(win, sho);
+    //        } else if (Settings.BESettings.IsRestoreTabs) {
+    //          win.tcMain.Items.Clear();
+    //          this.CreateInitialTab(win, sho);
+    //        } else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
+    //          if (args.CommandLineArgs[1] == "t") {
+    //            this.CreateInitialTab(win, sho);
+    //          } else {
+    //            var cmd = args.CommandLineArgs[1];
+    //            sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd.ToShellParsingName());
+    //            this.CreateInitialTab(win, sho);
+    //          }
+    //        } else {
+    //          this.CreateInitialTab(win, sho);
+    //        }
+    //      }
 
-          windowsActivate.ActivateForm(win, null, IntPtr.Zero);
-        }
-      };
-      this.Dispatcher.BeginInvoke(d, true);
-    }
+    //      windowsActivate.ActivateForm(win, null, IntPtr.Zero);
+    //    }
+    //  };
+    //  this.Dispatcher.BeginInvoke(d, true);
+    //}
 
     /// <summary>
     /// Rise on change of Main Window state
@@ -393,6 +397,66 @@ namespace BetterExplorer {
       if (tabItem != null && Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed) {
         DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
       }
+    }
+
+    public void OnInstanceInvoked(string[] args) {
+      if (args == null || this.Dispatcher == null) {
+        return;
+      }
+
+      var startUpLocation = Settings.BESettings.StartupLocation;
+
+      Action<Boolean> d = x => {
+        var win = this.MainWindow as MainWindow;
+        var windowsActivate = new CombinedWindowActivator();
+        if (!x || win == null) {
+          return;
+        }
+
+        win.StateChanged += this.Win_StateChanged;
+        if (!args.Any()) {
+          return;
+        }
+
+        if (args.Length == 1) {
+          win.Visibility = Visibility.Visible;
+          windowsActivate.ActivateForm(win, null, IntPtr.Zero);
+        } else {
+          if (args[1] == "/nw") {
+            new MainWindow() { IsMultipleWindowsOpened = true }.Show();
+          } else {
+            IListItemEx sho;
+            if (args[1] == "t") {
+              win.Visibility = Visibility.Visible;
+              windowsActivate.ActivateForm(win, null, IntPtr.Zero);
+
+              sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, startUpLocation.ToShellParsingName());
+            } else {
+              sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, args[1].ToShellParsingName());
+            }
+
+            if (!IsStartMinimized || win.tcMain.Items.Count == 0) {
+              this.CreateInitialTab(win, sho);
+            } else if (Settings.BESettings.IsRestoreTabs) {
+              win.tcMain.Items.Clear();
+              this.CreateInitialTab(win, sho);
+            } else if (args.Length > 1 && args[1] != null) {
+              if (args[1] == "t") {
+                this.CreateInitialTab(win, sho);
+              } else {
+                var cmd = args[1];
+                sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd.ToShellParsingName());
+                this.CreateInitialTab(win, sho);
+              }
+            } else {
+              this.CreateInitialTab(win, sho);
+            }
+          }
+
+          windowsActivate.ActivateForm(win, null, IntPtr.Zero);
+        }
+      };
+      this.Dispatcher.BeginInvoke(d, true);
     }
   }
 }

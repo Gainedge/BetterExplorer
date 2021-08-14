@@ -55,10 +55,18 @@ namespace BEHelper {
           (int)rcBoundingBox.Y,
           (int)rcBoundingBox.Width,
           (int)rcBoundingBox.Height,
-          SWP_ASYNCWINDOWPOS| 
+          SWP_ASYNCWINDOWPOS |
           SWP_NOZORDER
           | SWP_NOACTIVATE);
       }
+    }
+
+    protected override IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {
+      if (msg == 0x0014) {
+        handled = true;
+        return IntPtr.Zero;
+      }
+      return base.WndProc(hwnd, msg, wParam, lParam, ref handled);
     }
   }
 }

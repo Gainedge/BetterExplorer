@@ -1,0 +1,141 @@
+﻿using BExplorer.Shell.Interop;
+using System;
+using System.Drawing;
+using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Settings;
+
+namespace BExplorer.Shell {
+  public class TreeViewBase : TreeView {
+    #region Event Handlers
+    public event EventHandler VerticalScroll;
+    #endregion
+
+    #region Public Members
+    public const int TVS_EX_AUTOHSCROLL = 0x0020;
+    public const int TVS_EX_FADEINOUTEXPANDOS = 0x0040;
+    #endregion
+
+    #region Private Members
+    private const int PRF_CLIENT = 4;
+
+    private const int WM_PRINTCLIENT = 0x0318;
+    private const int TVS_EX_DOUBLEBUFFER = 0x0004;
+    private const int TVM_SETEXTENDEDSTYLE = TV_FIRST + 44;
+    private const int TVM_SETBKCOLOR = TV_FIRST + 29;
+    private const int TVM_SETTEXTCOLOR = TV_FIRST + 30;
+
+    private const int TV_FIRST = 0x1100;
+    private const int WM_ERASEBKGND = 0x0014;
+    #endregion
+
+    #region Initializer
+    public TreeViewBase() {
+      //SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.EnableNotifyMessage | ControlStyles.AllPaintingInWmPaint, true);
+      //ResizeRedraw = true;
+      this.Resize += (sender, args) => {
+        this.Refresh();
+      };
+    }
+    #endregion
+
+    #region Overrides
+    //protected override void OnPaint(PaintEventArgs e) {
+    //  if (GetStyle(ControlStyles.UserPaint)) {
+    //    Message m = new Message();
+    //    m.HWnd = Handle;
+    //    m.Msg = WM_PRINTCLIENT;
+    //    m.WParam = e.Graphics.GetHdc();
+    //    m.LParam = (IntPtr)PRF_CLIENT;
+    //    DefWndProc(ref m);
+    //    e.Graphics.ReleaseHdc(m.WParam);
+    //  }
+    //  base.OnPaint(e);
+    //}
+    //protected override void OnNotifyMessage(Message m) {
+    //  //Filter out the WM_ERASEBKGND message
+    //  if (m.Msg != WM_ERASEBKGND) {
+    //    base.OnNotifyMessage(m);
+    //  }
+    //}
+
+    protected override void OnHandleCreated(EventArgs e) {
+      base.OnHandleCreated(e);
+      SetDoubleBuffer();
+      SetExpandoesStyle();
+      SendMessage(this.Handle, TVM_SETEXTENDEDSTYLE, (IntPtr)TVS_EX_AUTOHSCROLL, (IntPtr)TVS_EX_AUTOHSCROLL);
+      //SendMessage(this.Handle, TVM_SETBKCOLOR, IntPtr.Zero, Color.Black.ToWin32Color());
+      //SendMessage(this.Handle, TVM_SETTEXTCOLOR, IntPtr.Zero, Color.White.ToWin32Color());
+      //UxTheme.AllowDarkModeForApp(true);
+      //UxTheme.AllowDarkModeForWindow(this.Handle, true);
+      UxTheme.SetWindowTheme(this.Handle, "Explorer", 0);
+      //this.ChangeTheme(ThemeColors.Dark);
+
+    }
+    public void ChangeTheme(ThemeColors theme) {
+      var themeStruct = new LVTheme(theme);
+      //UxTheme.AllowDarkModeForApp(theme == ThemeColors.Dark);
+      SendMessage(this.Handle, TVM_SETBKCOLOR, IntPtr.Zero, themeStruct.BackgroundColorTree.ToDrawingColor().ToWin32Color());
+      SendMessage(this.Handle, TVM_SETTEXTCOLOR, IntPtr.Zero, themeStruct.TextColor.ToDrawingColor().ToWin32Color());
+      UxTheme.AllowDarkModeForWindow(this.Handle, theme == ThemeColors.Dark);
+      UxTheme.SetWindowTheme(this.Handle, "Explorer", 0);
+      //UxTheme.FlushMenuThemes();
+      //this.Theme = new LVTheme(theme);
+      //this.VScroll.Theme = this.Theme;
+      //this._IIListView.SetBackgroundColor(this.Theme.HeaderBackgroundColor.ToDrawingColor().ToWin32Color());
+      //this._IIListView.SetTextColor(this.Theme.TextColor.ToDrawingColor().ToWin32Color());
+      //this._IIVisualProperties.SetColor(VPCOLORFLAGS.VPCF_SORTCOLUMN, this.Theme.SortColumnColor.ToDrawingColor().ToWin32Color());
+
+    }
+    //[HandleProcessCorruptedStateExceptions]
+    //protected override void WndProc(ref Message m) {
+    //  try {
+    //    if (m.Msg == WM_ERASEBKGND) {
+    //      m.Result = IntPtr.Zero;
+    //      return;
+    //    }
+    //    //if (m.Msg == 0x0115) {
+    //    //  if (VerticalScroll != null) {
+    //    //    VerticalScroll.Invoke(this, EventArgs.Empty);
+    //    //  }
+    //    //}
+
+    //    base.WndProc(ref m);
+    //  } catch (AccessViolationException) { }
+    //}
+    protected override CreateParams CreateParams {
+      get {
+        CreateParams cp = base.CreateParams;
+        cp.Style |= 0x8000; // TVS_NOHSCROLL
+        return cp;
+      }
+    }
+    #endregion
+
+    #region Unmanaged
+    [DllImport("user32.dll")]
+    public static extern int SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+    #endregion
+
+    #region Private Methods
+
+    private void SetExpandoesStyle() {
+      int Style = 0;
+
+      Style |= TVS_EX_FADEINOUTEXPANDOS;
+
+      if (Style != 0)
+        SendMessage(this.Handle, TVM_SETEXTENDEDSTYLE, (IntPtr)TVS_EX_FADEINOUTEXPANDOS, (IntPtr)Style);
+    }
+    private void SetDoubleBuffer() {
+      int Style = 0;
+
+      Style |= TVS_EX_DOUBLEBUFFER;
+
+      if (Style != 0)
+        SendMessage(this.Handle, TVM_SETEXTENDEDSTYLE, (IntPtr)TVS_EX_DOUBLEBUFFER, (IntPtr)Style);
+    }
+    #endregion
+  }
+}

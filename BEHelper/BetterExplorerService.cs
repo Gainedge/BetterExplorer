@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace BEHelper {
 
-	[ServiceBehavior(IncludeExceptionDetailInFaults = true)]
+	//[ServiceBehavior(IncludeExceptionDetailInFaults = true)]
 	public class BetterExplorerService : IBetterExplorerCommunication {
 		public Boolean CreateLink(LinkData data) {
 			foreach (var link in data.Items) {

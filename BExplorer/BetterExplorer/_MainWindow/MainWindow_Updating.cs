@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using Windows.Data.Xml.Dom;
-using Windows.Foundation.Collections;
-using Windows.UI.Notifications;
+//using Windows.Data.Xml.Dom;
+//using Windows.Foundation.Collections;
+//using Windows.UI.Notifications;
 using BExplorer.Shell._Plugin_Interfaces;
 using Microsoft.Toolkit.Uwp.Notifications;
 
@@ -68,7 +68,6 @@ namespace BetterExplorer {
     [DllImport("user32.dll", SetLastError = true)]
     private static extern Boolean PostMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
     private void ButtonBase_OnClick(Object sender, RoutedEventArgs e) {
-      var b = PostMessage(this.Handle, 0x0084, IntPtr.Zero, (IntPtr) ((10 << 16) | (10 & 0xFFFF)));
 
       new ToastContentBuilder()
         .AddArgument("action", "viewConversation")
@@ -79,12 +78,12 @@ namespace BetterExplorer {
           .SetContent("Test")
           .AddArgument("action", "reply")
           .SetBackgroundActivation())
-        .AddInlineImage(new Uri(@"G:\Picture Library\fKCzjJq.jpg"))
-        .AddHeroImage(new Uri(@"G:\Picture Library\nfs-prostreet-hot-girls.jpg"))
+        .AddInlineImage(new Uri(@"I:\Picture Library\fKCzjJq.jpg"))
+        .AddHeroImage(new Uri(@"I:\Picture Library\nfs-prostreet-hot-girls.jpg"))
         .AddAttributionText("Via BE")
-        .AddAppLogoOverride(new Uri(@"G:\Picture Library\Darth-Vader-Side-Profile.jpg"), ToastGenericAppLogoCrop.Circle)
+        .AddAppLogoOverride(new Uri(@"I:\Picture Library\Darth-Vader-Side-Profile.jpg"), ToastGenericAppLogoCrop.Circle)
         .Show();
-      
+
     }
   }
 }

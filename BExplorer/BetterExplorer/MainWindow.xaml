@@ -15,11 +15,11 @@
   xmlns:my2="http://schemas.microsoft.com/winfx/2006/xaml/presentation/ribbon"
   xmlns:ni="http://www.hardcodet.net/taskbar"
   xmlns:odc="clr-namespace:Odyssey.Controls;assembly=Odyssey"
-  xmlns:shell="clr-namespace:BExplorer.Shell;assembly=BExplorerShell"
   xmlns:tabcontrol="clr-namespace:Wpf.Controls;assembly=Wpf.TabControl"
   xmlns:toggleswitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch"
   xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
   xmlns:utils="clr-namespace:ToggleSwitch.Utils;assembly=ToggleSwitch"
+  xmlns:shell="clr-namespace:BExplorer.Shell;assembly=ShellLibrary"
   Title="Better Explorer"
   MinWidth="640"
   MinHeight="480"
@@ -36,7 +36,6 @@
   SizeChanged="RibbonWindow_SizeChanged"
   StateChanged="RibbonWindow_StateChanged"
   TextOptions.TextFormattingMode="Display"
-  WindowState="Maximized"
   mc:Ignorable="d">
 
   <Ribbon:RibbonWindow.Resources>
@@ -478,7 +477,7 @@
         Height="*"
         MinHeight="100" />
       <RowDefinition x:Name="rTabbarBot" Height="0" />
-      <RowDefinition x:Name="rStatusbar" Height="20" />
+      <RowDefinition x:Name="rStatusbar" Height="25" />
     </Grid.RowDefinitions>
 
     <ni:TaskbarIcon
@@ -4163,13 +4162,7 @@
         <RowDefinition x:Name="rPreviewPaneSplitter" Height="1" />
         <RowDefinition />
       </Grid.RowDefinitions>
-      <controls:DetailsPane
-        x:Name="DetailsPanel"
-        Grid.Row="0"
-        Grid.ColumnSpan="3"
-        Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}"
-        Height="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type RowDefinition}}}"
-        Margin="0" Visibility="Collapsed"/>
+
       <GridSplitter
         Grid.Row="1"
         Grid.ColumnSpan="3"
@@ -4302,20 +4295,20 @@
       x:Name="TheStatusBar"
       Grid.Row="8"
       Grid.ColumnSpan="2"
-      Margin="0,0,0,-2">
+      Margin="0,0,0,0">
       <Ribbon:StatusBarItem
         x:Name="sbiItemsCount"
         Title="Items Count"
         HorizontalAlignment="Left"
         Content="0 items"
-        Foreground="{DynamicResource BackstageFontBrush}" />
+        Foreground="{DynamicResource BlackBrush}" />
       <Separator HorizontalAlignment="Left" />
       <Ribbon:StatusBarItem
         x:Name="sbiSelItemsCount"
         Title="{DynamicResource sbiSelItemsCount_Title}"
         HorizontalAlignment="Left"
         Content="0 selected items"
-        Foreground="{DynamicResource BackstageFontBrush}" />
+        Foreground="{DynamicResource BlackBrush}" />
       <Separator
         x:Name="spSelItems"
         HorizontalAlignment="Left"
@@ -4347,7 +4340,7 @@
         x:Name="sbiView"
         Title="View Style"
         HorizontalAlignment="Right"
-        VerticalAlignment="Top"
+        VerticalAlignment="Center"
         HorizontalContentAlignment="Right">
         <StackPanel Orientation="Horizontal">
           <Ribbon:ToggleButton
@@ -4378,7 +4371,7 @@
         <StackPanel Height="18" Orientation="Horizontal">
           <TextBlock
             VerticalAlignment="Center"
-            Foreground="{DynamicResource BackstageFontBrush}"
+            Foreground="{DynamicResource BlackBrush}"
             Text="{Binding Value, ElementName=zoomSlider, StringFormat=\{0:0\}}" />
           <Slider
             x:Name="zoomSlider"

@@ -1,0 +1,208 @@
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Converters="clr-namespace:Fluent.Converters"
+  xmlns:Fluent="clr-namespace:Fluent"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="d">
+
+  <Style x:Key="CaptionButtonStyle" TargetType="{x:Type Button}">
+    <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Foreground}" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    <Setter Property="Padding" Value="1" />
+    <Setter Property="Width" Value="46" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Grid Background="{TemplateBinding Background}">
+            <ContentPresenter
+              x:Name="contentPresenter"
+              Margin="{TemplateBinding Padding}"
+              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+              RecognizesAccessKey="True"
+              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="contentPresenter" Property="Opacity" Value="1" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="False">
+              <Setter TargetName="contentPresenter" Property="Opacity" Value="0.5" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.WhiteBrush}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.MouseOver.Background}" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Pressed.Background}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="FluentButtonStyle" TargetType="{x:Type Button}">
+    <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Foreground}" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    <Setter Property="Padding" Value="1" />
+    <Setter Property="Width" Value="46" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Grid Background="{TemplateBinding Background}">
+            <Border VerticalAlignment="Stretch" BorderThickness="1" BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BorderBrush}">
+              <ContentPresenter
+                x:Name="contentPresenter"
+                Margin="{TemplateBinding Padding}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                VerticalAlignment="Center"
+                RecognizesAccessKey="True"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            </Border>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="contentPresenter" Property="Opacity" Value="1" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="False">
+              <Setter TargetName="contentPresenter" Property="Opacity" Value="0.5" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.WhiteBrush}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.MouseOver.Background}" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Pressed.Background}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <ControlTemplate x:Key="RibbonButtonControlTemplate" TargetType="{x:Type Fluent:Button}">
+    <Border
+      x:Name="border"
+      Height="Auto"
+      HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+      VerticalAlignment="{TemplateBinding VerticalAlignment}"
+      Background="{TemplateBinding Background}"
+      BorderBrush="{TemplateBinding BorderBrush}"
+      BorderThickness="{TemplateBinding BorderThickness}"
+      CornerRadius="{TemplateBinding CornerRadius}">
+      <StackPanel
+        x:Name="stackPanel"
+        Width="Auto"
+        Orientation="Vertical"
+        d:LayoutOverrides="Width, Height">
+        <ContentPresenter
+          x:Name="iconImage"
+          Width="32"
+          Height="32"
+          Margin="3,2,3,1"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Content="{Binding LargeIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
+          SnapsToDevicePixels="True" />
+        <Fluent:TwoLineLabel
+          x:Name="controlLabel"
+          Margin="2,0,2,0"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Center"
+          Style="{DynamicResource TwoLineLabelStyle}"
+          Text="{TemplateBinding Header}" />
+      </StackPanel>
+    </Border>
+    <ControlTemplate.Triggers>
+      <Trigger Property="Size" Value="Small">
+        <Setter TargetName="stackPanel" Property="Orientation" Value="Horizontal" />
+        <Setter TargetName="controlLabel" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="controlLabel" Property="HasTwoLines" Value="False" />
+        <Setter TargetName="iconImage" Property="Width" Value="16" />
+        <Setter TargetName="iconImage" Property="Height" Value="16" />
+        <Setter TargetName="iconImage" Property="Margin" Value="2,0,2,0" />
+        <Setter TargetName="iconImage" Property="Content" Value="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}" />
+        <Setter TargetName="controlLabel" Property="Margin" Value="2,0,2,0" />
+      </Trigger>
+      <Trigger Property="Size" Value="Middle">
+        <Setter TargetName="stackPanel" Property="Orientation" Value="Horizontal" />
+        <Setter TargetName="stackPanel" Property="Width" Value="Auto" />
+        <Setter TargetName="iconImage" Property="VerticalAlignment" Value="Center" />
+        <Setter TargetName="controlLabel" Property="HasTwoLines" Value="False" />
+        <Setter TargetName="controlLabel" Property="Margin" Value="2,0,2,0" />
+        <Setter TargetName="border" Property="VerticalAlignment" Value="Stretch" />
+        <Setter TargetName="iconImage" Property="Width" Value="16" />
+        <Setter TargetName="iconImage" Property="Height" Value="16" />
+        <Setter TargetName="iconImage" Property="Margin" Value="2,0,2,0" />
+        <Setter TargetName="iconImage" Property="Content" Value="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}" />
+        <Setter TargetName="controlLabel" Property="VerticalAlignment" Value="Center" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
+        <Setter TargetName="border" Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter TargetName="iconImage" Property="Opacity" Value="0.5" />
+        <Setter TargetName="controlLabel" Property="Opacity" Value="0.5" />
+        <Setter TargetName="iconImage" Property="Effect">
+          <Setter.Value>
+            <Fluent:GrayscaleEffect />
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsMouseOver" Value="True" />
+          <Condition Property="IsPressed" Value="False" />
+          <Condition Property="IsEnabled" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="border" Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+        <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+      </MultiTrigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <Style x:Key="RibbonButtonStyle" TargetType="{x:Type Fluent:Button}">
+    <Setter Property="Template" Value="{DynamicResource RibbonButtonControlTemplate}" />
+    <Setter Property="Height" Value="68" />
+    <Setter Property="Width" Value="Auto" />
+    <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="SnapsToDevicePixels" Value="False" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="0" />
+    <Style.Triggers>
+      <Trigger Property="Size" Value="Large">
+        <Setter Property="Height" Value="68" />
+      </Trigger>
+      <Trigger Property="Size" Value="Middle">
+        <Setter Property="Height" Value="22" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+      </Trigger>
+      <Trigger Property="Size" Value="Small">
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Width" Value="22" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+</ResourceDictionary>

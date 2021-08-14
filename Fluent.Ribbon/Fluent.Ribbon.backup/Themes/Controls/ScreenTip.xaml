@@ -1,0 +1,207 @@
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Fluent="clr-namespace:Fluent"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="d">
+  <Style x:Key="ToolTipStyle" TargetType="{x:Type ToolTip}">
+    <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+    <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.ScreenTip.Background}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.ScreenTip.BorderBrush}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ToolTip}">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="5" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*" />
+              <RowDefinition Height="5" />
+            </Grid.RowDefinitions>
+            <Border
+              Grid.RowSpan="1"
+              Background="{TemplateBinding Background}"
+              BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="1">
+              <ContentPresenter Margin="4,4,4,4" />
+            </Border>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <ControlTemplate x:Key="ScreenTipControlTemplate" TargetType="{x:Type Fluent:ScreenTip}">
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="5" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+        <RowDefinition Height="5" />
+      </Grid.RowDefinitions>
+      <Border
+        Grid.RowSpan="1"
+        Background="{TemplateBinding Background}"
+        BorderBrush="{TemplateBinding BorderBrush}"
+        BorderThickness="1">
+        <Grid>
+          <StackPanel x:Name="screenTipPanel">
+            <TextBlock
+              x:Name="title"
+              Margin="7,8,7,10"
+              FontWeight="Bold"
+              Text="{TemplateBinding Property=Title}"
+              TextWrapping="Wrap" />
+            <Grid x:Name="imageAndTextSection">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Image
+                x:Name="image"
+                MaxHeight="48"
+                Margin="7,5,3,7"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Source="{TemplateBinding Property=Image}" />
+              <TextBlock
+                Grid.Column="1"
+                Margin="8,0,8,6"
+                Text="{TemplateBinding Property=Text}"
+                TextWrapping="Wrap" />
+            </Grid>
+            <Border
+              x:Name="separator"
+              Width="Auto"
+              Height="2"
+              Margin="5"
+              HorizontalAlignment="Stretch"
+              Background="{DynamicResource GrayBrush6}"
+              BorderThickness="0,0,0,1"
+              IsEnabled="{Binding Path=(IsEnabled), RelativeSource={RelativeSource FindAncestor, AncestorType=Control, AncestorLevel=2}}"
+              Visibility="{Binding ElementName=disableReasonSection, Path=Visibility}" />
+            <Grid x:Name="disableReasonSection">
+              <Image
+                Width="16"
+                Height="16"
+                Margin="5,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Source="{DynamicResource ScreenTipWarningImage}" />
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                  x:Name="disableReasonHeader"
+                  x:Uid="disableReasonHeader"
+                  Grid.Row="0"
+                  Margin="28,0,5,2"
+                  HorizontalAlignment="Stretch"
+                  FontWeight="Bold"
+                  Text="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.ScreenTipDisableReasonHeader, Mode=OneWay}"
+                  TextWrapping="Wrap" />
+                <TextBlock
+                  x:Name="disableReasonText"
+                  Grid.Row="1"
+                  Margin="28,0,5,6"
+                  HorizontalAlignment="Stretch"
+                  Text="{TemplateBinding Property=DisableReason}"
+                  TextWrapping="Wrap" />
+                <TextBlock
+                  x:Name="helpText"
+                  Grid.Row="2"
+                  Grid.RowSpan="1"
+                  Margin="28,0,5,6"
+                  HorizontalAlignment="Stretch"
+                  Text="{Binding Text, ElementName=textBlock, Mode=Default}"
+                  TextWrapping="Wrap" />
+              </Grid>
+            </Grid>
+            <Border
+              x:Name="separator2"
+              Width="Auto"
+              Height="2"
+              Margin="5"
+              HorizontalAlignment="Stretch"
+              Background="{DynamicResource GrayBrush6}"
+              BorderThickness="0,0,0,1"
+              Visibility="{TemplateBinding Property=HelpLabelVisibility}" />
+            <Grid x:Name="helpSection" Visibility="{TemplateBinding Property=HelpLabelVisibility}">
+              <Image
+                Width="16"
+                Height="16"
+                Margin="5,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Source="{DynamicResource ScreenTipHelpImage}" />
+              <TextBlock
+                x:Name="textBlock"
+                x:Uid="HelpText"
+                Margin="28,0,6,6"
+                HorizontalAlignment="Stretch"
+                FontWeight="Bold"
+                Text="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.ScreenTipF1LabelHeader, Mode=OneWay}"
+                TextWrapping="Wrap" />
+              <ContentControl
+                x:Name="helpTopic"
+                Content="{TemplateBinding Property=HelpTopic}"
+                Visibility="Collapsed" />
+            </Grid>
+          </StackPanel>
+        </Grid>
+      </Border>
+    </Grid>
+    <ControlTemplate.Triggers>
+      <Trigger SourceName="separator" Property="IsEnabled" Value="False">
+        <Setter TargetName="disableReasonSection" Property="Visibility" Value="Visible" />
+      </Trigger>
+      <Trigger SourceName="separator" Property="IsEnabled" Value="True">
+        <Setter TargetName="disableReasonSection" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition SourceName="helpTopic" Property="Content" Value="{x:Null}" />
+          <Condition SourceName="disableReasonText" Property="Text" Value="" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="separator" Property="Visibility" Value="Collapsed" />
+      </MultiTrigger>
+      <Trigger SourceName="disableReasonText" Property="Text" Value="">
+        <Setter TargetName="disableReasonSection" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+      <Trigger SourceName="helpTopic" Property="Content" Value="{x:Null}">
+        <Setter TargetName="helpText" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="helpSection" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="separator2" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+      <Trigger SourceName="disableReasonSection" Property="Visibility" Value="Visible">
+        <Setter TargetName="helpText" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Text" Value="" />
+          <Condition Property="Image" Value="{x:Null}" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="imageAndTextSection" Property="Visibility" Value="Collapsed" />
+      </MultiTrigger>
+      <Trigger Property="Image" Value="{x:Null}">
+        <Setter TargetName="image" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <Style x:Key="ScreenTipStyle" TargetType="{x:Type Fluent:ScreenTip}">
+    <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+    <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.ScreenTip.Background}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.ScreenTip.BorderBrush}" />
+    <Setter Property="Width" Value="205" />
+    <Setter Property="Template" Value="{DynamicResource ScreenTipControlTemplate}" />
+  </Style>
+</ResourceDictionary>

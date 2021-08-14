@@ -138,12 +138,6 @@
   <ItemGroup>
     <Content Include="BetterOperations.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BEHelper\BEHelper.csproj">
-      <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
-      <Name>BEHelper</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

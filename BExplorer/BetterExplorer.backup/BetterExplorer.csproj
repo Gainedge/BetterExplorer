@@ -1,0 +1,1249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BBD6B64A-5617-4F6C-A5CE-5156365BF33E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BetterExplorer</RootNamespace>
+    <AssemblyName>BetterExplorer</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <ShouldCreateLogs>True</ShouldCreateLogs>
+    <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
+    <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>False</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>
+    </AssemblyVersionSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Deploy\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationIcon>BENewIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <OutputPath>..\..\Deploy\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <ShouldCreateLogs>True</ShouldCreateLogs>
+    <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
+    <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>False</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>None.None.DateStamp.TimeStamp</AssemblyVersionSettings>
+    <AssemblyFileVersionSettings>None.None.DateStamp.TimeStamp</AssemblyFileVersionSettings>
+    <UpdatePackageVersion>False</UpdatePackageVersion>
+    <AssemblyInfoVersionType>SettingsVersion</AssemblyInfoVersionType>
+    <InheritWinAppVersionFrom>None</InheritWinAppVersionFrom>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>..\..\Deploy\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AeroWizard">
+      <HintPath>..\..\External References\AeroWizard.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="NAppUpdate.Framework, Version=0.1.0.0, Culture=neutral, PublicKeyToken=d1f1d1f19f9e5a56, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External References\NAppUpdate.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External References\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Management.Instrumentation" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="TAFactory.IconPack, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External References\TAFactory.IconPack.dll</HintPath>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="Windows.Data" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="WPFLocalizeExtension">
+      <HintPath>..\..\External References\WPFLocalizeExtension.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Application\ApplicationInstanceManager.cs" />
+    <Compile Include="ArchiveView\ArchiveCreateWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ArchiveView\ArchiveCreateWizard.Designer.cs">
+      <DependentUpon>ArchiveCreateWizard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ArchiveView\ArchiveDetailView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ArchiveView\ArchiveDetailView.designer.cs">
+      <DependentUpon>ArchiveDetailView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ArchiveView\ArchiveProcressScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ArchiveView\ArchiveProcressScreen.designer.cs">
+      <DependentUpon>ArchiveProcressScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Application\AppCommands.cs" />
+    <Compile Include="ConditionalSelect\ConditionalSelectClasses.cs" />
+    <Compile Include="ConditionalSelect\ConditionalSelectComboBoxItem.xaml.cs">
+      <DependentUpon>ConditionalSelectComboBoxItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConditionalSelect\ConditionalSelectForm.xaml.cs">
+      <DependentUpon>ConditionalSelectForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Customize\CustomizeQAT.xaml.cs">
+      <DependentUpon>CustomizeQAT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Customize\RibbonItemListDisplay.xaml.cs">
+      <DependentUpon>RibbonItemListDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="HelperClasses\SafeThread.cs" />
+    <Compile Include="HelperClasses\Utilities.cs" />
+    <Compile Include="HelperClasses\WindowExtensions.cs" />
+    <Compile Include="PieChart\PieChart\ColourConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MountIso.xaml.cs">
+      <DependentUpon>MountIso.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RunExeAsUser.xaml.cs">
+      <DependentUpon>RunExeAsUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PieChart\BaseWPFHelpers.cs" />
+    <Compile Include="PieChart\PieChart\IColorSelector.cs" />
+    <Compile Include="PieChart\PieChart\IndexedColourSelector.cs" />
+    <Compile Include="PieChart\PieChart\Legend.xaml.cs">
+      <DependentUpon>Legend.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PieChart\PieChart\LegendConverter.cs" />
+    <Compile Include="PieChart\PieChart\PieChartLayout.xaml.cs">
+      <DependentUpon>PieChartLayout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PieChart\PieChart\PiePlotter.xaml.cs">
+      <DependentUpon>PiePlotter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PieChart\Shapes\PiePiece.cs" />
+    <Compile Include="PieChart\UserControl1.xaml.cs">
+      <DependentUpon>UserControl1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PieChart\Util\FileSizeConverter.cs" />
+    <Compile Include="PieChart\Util\FormattingConverter.cs" />
+    <Compile Include="PieChart\Util\Utils.cs" />
+    <Compile Include="ResizeImage.xaml.cs">
+      <DependentUpon>ResizeImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\SavedTabsListGalleryItem.xaml.cs">
+      <DependentUpon>SavedTabsListGalleryItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\NameTabList.xaml.cs">
+      <DependentUpon>NameTabList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\SavedTabsList.cs" />
+    <Compile Include="ConditionalSelect\SDateSearchCriteriaDialog.xaml.cs">
+      <DependentUpon>SDateSearchCriteriaDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConditionalSelect\SizeSearchCriteriaDialog.xaml.cs">
+      <DependentUpon>SizeSearchCriteriaDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ArchiveView\CreateArchive.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ArchiveView\CreateArchive.designer.cs">
+      <DependentUpon>CreateArchive.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fmAbout.xaml.cs">
+      <DependentUpon>fmAbout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FolderSizeWindow.xaml.cs">
+      <DependentUpon>FolderSizeWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HelperClasses\FriendlySizeConverter.cs" />
+    <Compile Include="ItemPopup.xaml.cs">
+      <DependentUpon>ItemPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PreviewMedia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PreviewMedia.Designer.cs">
+      <DependentUpon>PreviewMedia.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IconClasses\IconView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IconClasses\IconView.Designer.cs">
+      <DependentUpon>IconView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Application\InstanceProxy.cs" />
+    <Compile Include="MoreColumns.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MoreColumns.Designer.cs">
+      <DependentUpon>MoreColumns.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConditionalSelect\StringSearchCriteriaDialog.xaml.cs">
+      <DependentUpon>StringSearchCriteriaDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ArchiveView\SysImageList.cs" />
+    <Compile Include="Tabs\TabListEditor.xaml.cs">
+      <DependentUpon>TabListEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\TabListEditorItem.xaml.cs">
+      <DependentUpon>TabListEditorItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\TabManager.xaml.cs">
+      <DependentUpon>TabManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\UndoCloseGalleryItem.xaml.cs">
+      <DependentUpon>UndoCloseGalleryItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Updater\Updater.cs" />
+    <Compile Include="_MainWindow\MainWindow_Tabs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="_MainWindow\MainWindow_Updating.cs" />
+    <Page Include="ConditionalSelect\ConditionalSelectComboBoxItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConditionalSelect\ConditionalSelectForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Customize\CustomizeQAT.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Customize\RibbonItemListDisplay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MountIso.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RunExeAsUser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PieChart\PieChart\Legend.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PieChart\PieChart\PieChartLayout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PieChart\PieChart\PiePlotter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PieChart\UserControl1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResizeImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\SavedTabsListGalleryItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConditionalSelect\SDateSearchCriteriaDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConditionalSelect\SizeSearchCriteriaDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="fmAbout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FolderSizeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ItemPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="HelperClasses\ClipBoardMonitor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="ConditionalSelect\StringSearchCriteriaDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\NameTabList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\TabListEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\TabListEditorItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\TabManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="themes\generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.cs-CZ.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.en-GB.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.el-GR.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.hi-IN.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.hu-HU.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.ja-JP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.ko-KR.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.nl-NL.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.it-IT.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.fr-FR.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.de-DE.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.hr-HR.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.pl-PL.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.ru-RU.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.sv-SE.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.tr-TR.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.fi-FI.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.es-ES.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.pt-BR.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\DefaultLocale.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Translation\Locale.bg-BG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Translation\Locale.uk-UA.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.vi-VN.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.zh-CN.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.zh-TW.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tabs\UndoCloseGalleryItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="ArchiveView\ArchiveCreateWizard.resx">
+      <DependentUpon>ArchiveCreateWizard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ArchiveView\ArchiveDetailView.resx">
+      <DependentUpon>ArchiveDetailView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ArchiveView\ArchiveProcressScreen.resx">
+      <DependentUpon>ArchiveProcressScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ArchiveView\CreateArchive.resx">
+      <DependentUpon>CreateArchive.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PreviewMedia.resx">
+      <DependentUpon>PreviewMedia.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IconClasses\IconView.resx">
+      <DependentUpon>IconView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MoreColumns.resx">
+      <DependentUpon>MoreColumns.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="BetterExplorer.ruleset" />
+    <None Include="BEUpdater.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="client.wyc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Images\jsdm32.pdn" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <None Include="System.Data.SQLite.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BEHelper\BEHelper.csproj">
+      <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
+      <Name>BEHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BreadcrumbBar\Odyssey.Controls.csproj">
+      <Project>{333fdc55-6b47-4a64-a2df-a4c5823fac74}</Project>
+      <Name>Odyssey.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ConsoleControl\ConsoleControl.csproj">
+      <Project>{737CC7F2-EC7C-4800-B7EB-72637E892C42}</Project>
+      <Name>ConsoleControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Fluent.Ribbon-develop\Fluent.Ribbon\Fluent.Ribbon.NET 4.6.csproj">
+      <Project>{4c92fcf4-3561-499f-bc5b-f2f089863047}</Project>
+      <Name>Fluent.Ribbon.NET 4.6</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\IconExtractor\IconExtractor.csproj">
+      <Project>{fdfd4eeb-c202-4d93-a6e9-d8984a12d014}</Project>
+      <Name>IconExtractor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ImDiskNet\ImDiskNet.vbproj">
+      <Project>{3efcb6f8-ef7e-4f60-a0de-bb197240fcc9}</Project>
+      <Name>ImDiskNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NotifyIcon\NotifyIconWpf\NotifyIconWpf.csproj">
+      <Project>{7ac63864-7638-41c4-969c-d3197ef2bed9}</Project>
+      <Name>NotifyIconWpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rating control\CustomControls\StarRatingControl.csproj">
+      <Project>{2f36cce1-9d03-4518-9bfd-82e36ea1a64e}</Project>
+      <Name>StarRatingControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Settings\Settings.csproj">
+      <Project>{b40d0f31-9d30-4292-9717-bb21fc94c49c}</Project>
+      <Name>Settings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj">
+      <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
+      <Name>SevenZip2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Shell\Shell.csproj">
+      <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
+      <Name>Shell</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TabControl\Wpf.TabControl.csproj">
+      <Project>{509d06bd-aeb6-4e92-8e5b-21188ebdbd9c}</Project>
+      <Name>Wpf.TabControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TaskDialog\TaskDialog.csproj">
+      <Project>{37fd53f7-8a8f-4427-8ff4-6299e2933a7e}</Project>
+      <Name>TaskDialog</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\toggle-switch-control\WPF\ToggleSwitch\ToggleSwitch.csproj">
+      <Project>{f9426059-27db-45f0-9012-b1234965fbe0}</Project>
+      <Name>ToggleSwitch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\UsbEject\UsbEject.csproj">
+      <Project>{ae269158-dfa5-4dd7-8afc-f45faf2b958c}</Project>
+      <Name>UsbEject</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WpfControlLibrary1\BetterExplorerControls.csproj">
+      <Project>{04270710-e358-46d4-83e5-eb7a9323cce7}</Project>
+      <Name>BetterExplorerControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WpfDocumentPreviewer\WpfDocumentPreviewer.csproj">
+      <Project>{6a63405a-b6bb-4095-b48c-e720de021482}</Project>
+      <Name>WpfDocumentPreviewer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj">
+      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
+      <Name>Xceed.Wpf.Toolkit</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Explorer.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\downar2.png" />
+    <Resource Include="Images\downar3.png" />
+    <Resource Include="Images\downar4.png" />
+    <Resource Include="Images\Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\badge16.png" />
+    <Resource Include="Images\badge32.png" />
+    <Resource Include="Images\badge48.png" />
+    <Resource Include="Images\stack16.png" />
+    <Resource Include="Images\stack32.png" />
+    <Resource Include="Images\stack48.png" />
+    <Resource Include="Translation\Flags\GR.gif" />
+    <Resource Include="Images\bexplorerscr.png" />
+    <Resource Include="Images\bexplorerlogo.png" />
+    <Resource Include="Images\update64.png" />
+    <Resource Include="Images\fh16.png" />
+    <Resource Include="Images\fh32.png" />
+    <Resource Include="Images\fh48.png" />
+    <Resource Include="Images\fv16.png" />
+    <Resource Include="Images\fv32.png" />
+    <Resource Include="Images\fv48.png" />
+    <Resource Include="Images\fcust16.png" />
+    <Resource Include="Images\fcust32.png" />
+    <Resource Include="Images\fcust48.png" />
+    <Resource Include="Images\fcustc16.png" />
+    <Resource Include="Images\fcustc32.png" />
+    <Resource Include="Images\fcustc48.png" />
+    <Resource Include="Images\webconnect_16.png" />
+    <Resource Include="Images\webconnect_32.png" />
+    <Resource Include="Images\updater16.png" />
+    <Resource Include="Images\updater32.png" />
+    <Resource Include="Images\exit16.png" />
+    <Resource Include="Images\exit32.png" />
+    <Resource Include="Images\advsec16.png" />
+    <Resource Include="Images\advsec32.png" />
+    <Resource Include="Images\advsec48.png" />
+    <Resource Include="Images\detailpane16.png" />
+    <Resource Include="Images\detailpane32.png" />
+    <Resource Include="Images\detailpane48.png" />
+    <Resource Include="Images\navpane16.png" />
+    <Resource Include="Images\navpane32.png" />
+    <Resource Include="Images\navpane48.png" />
+    <Resource Include="Images\prevpane16.png" />
+    <Resource Include="Images\prevpane32.png" />
+    <Resource Include="Images\prevpane48.png" />
+    <Resource Include="Images\filter16.png" />
+    <Resource Include="Images\filter32.png" />
+    <Resource Include="Images\filter48.png" />
+    <Resource Include="Images\arrow.png" />
+    <Resource Include="Images\search16.png" />
+    <Resource Include="Images\search32.png" />
+    <Resource Include="Images\search48.png" />
+    <Resource Include="Images\author16.png" />
+    <Resource Include="Images\author32.png" />
+    <Resource Include="Images\author48.png" />
+    <Resource Include="Images\date16.png" />
+    <Resource Include="Images\date32.png" />
+    <Resource Include="Images\date48.png" />
+    <Resource Include="Images\docs32.png" />
+    <Resource Include="Images\docs48.png" />
+    <Resource Include="Images\fold16.png" />
+    <Resource Include="Images\fold32.png" />
+    <Resource Include="Images\fold48.png" />
+    <Resource Include="Images\music16.png" />
+    <Resource Include="Images\music32.png" />
+    <Resource Include="Images\music48.png" />
+    <Resource Include="Images\pics32.png" />
+    <Resource Include="Images\pics48.png" />
+    <Resource Include="Images\soft16.png" />
+    <Resource Include="Images\soft32.png" />
+    <Resource Include="Images\soft48.png" />
+    <Resource Include="Images\vid16.png" />
+    <Resource Include="Images\vid32.png" />
+    <Resource Include="Images\vid48.png" />
+    <Resource Include="Images\fsize16.png" />
+    <Resource Include="Images\fsize32.png" />
+    <Resource Include="Images\fsize48.png" />
+    <Resource Include="Images\searchadv16.png" />
+    <Resource Include="Images\searchadv32.png" />
+    <Resource Include="Images\searchadv48.png" />
+    <Resource Include="Images\jsauthor16.png" />
+    <Resource Include="Images\jsauthor32.png" />
+    <Resource Include="Images\jsauthor48.png" />
+    <Resource Include="Images\jsdc16.png" />
+    <Resource Include="Images\jsdc32.png" />
+    <Resource Include="Images\jsdc48.png" />
+    <Resource Include="Images\jsdocs16.png" />
+    <Resource Include="Images\jsdocs32.png" />
+    <Resource Include="Images\jsdocs48.png" />
+    <Resource Include="Images\jseverything16.png" />
+    <Resource Include="Images\jseverything32.png" />
+    <Resource Include="Images\jseverything48.png" />
+    <Resource Include="Images\jsext16.png" />
+    <Resource Include="Images\jsext32.png" />
+    <Resource Include="Images\jsext48.png" />
+    <Resource Include="Images\jsfolders16.png" />
+    <Resource Include="Images\jsfolders32.png" />
+    <Resource Include="Images\jsfolders48.png" />
+    <Resource Include="Images\jsimages16.png" />
+    <Resource Include="Images\jsimages32.png" />
+    <Resource Include="Images\jsimages48.png" />
+    <Resource Include="Images\jsmodedit.png" />
+    <Resource Include="Images\jsmusic16.png" />
+    <Resource Include="Images\jsmusic32.png" />
+    <Resource Include="Images\jsmusic48.png" />
+    <Resource Include="Images\jsprograms16.png" />
+    <Resource Include="Images\jsprograms32.png" />
+    <Resource Include="Images\jsprograms48.png" />
+    <Resource Include="Images\jssearch16.png" />
+    <Resource Include="Images\jssearch28.png" />
+    <Resource Include="Images\jssearch32.png" />
+    <Resource Include="Images\jssize16.png" />
+    <Resource Include="Images\jssize32.png" />
+    <Resource Include="Images\jssize48.png" />
+    <Resource Include="Images\jssubject16.png" />
+    <Resource Include="Images\jssubject32.png" />
+    <Resource Include="Images\jssubject48.png" />
+    <Resource Include="Images\jsvideos16.png" />
+    <Resource Include="Images\jsvideos32.png" />
+    <Resource Include="Images\jsvideos48.png" />
+    <Resource Include="Images\jsdm32.png" />
+    <Resource Include="Images\new_window32.png" />
+    <Resource Include="Images\resize16.png" />
+    <Resource Include="Images\resize32.png" />
+    <Resource Include="Images\shell32-167.ico" />
+    <Resource Include="Images\cancel.png" />
+    <Resource Include="Images\check.png" />
+    <Resource Include="Images\edit.png" />
+    <Resource Include="Images\delete_16x16-4.png" />
+    <None Include="Badges\Ubuntu Human\1.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Badges\Ubuntu Human\10.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Badges\Ubuntu Human\2.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Badges\Ubuntu Human\3.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Badges\Ubuntu Human\4.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Badges\Ubuntu Human\5.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Badges\Ubuntu Human\6.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Badges\Ubuntu Human\7.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Badges\Ubuntu Human\8.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Badges\Ubuntu Human\9.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Resource Include="Images\savetabs16.png" />
+    <Resource Include="Images\savetabs32.png" />
+    <Resource Include="Images\undotab16.png" />
+    <Resource Include="Images\undotab32.png" />
+    <Resource Include="Tabs\Images\New.png" />
+    <Resource Include="Images\Save.png" />
+    <Resource Include="Tabs\Images\add_item.png" />
+    <Resource Include="Tabs\Images\delete_item.png" />
+    <Resource Include="Tabs\Images\Save.png" />
+    <Resource Include="Images\options.png" />
+    <Resource Include="Images\bugtrac_16.png" />
+    <Resource Include="Images\bugtrac_32.png" />
+    <Resource Include="Images\console16.png" />
+    <Resource Include="Images\console32.png" />
+    <Resource Include="Images\console48.png" />
+    <Resource Include="Images\Archive-icon.png" />
+    <Resource Include="Images\docs16.png" />
+    <Resource Include="Images\icon_folder_edit.png" />
+    <Resource Include="Images\icon_folder1.png" />
+    <Resource Include="Images\pics16.png" />
+    <Resource Include="Images\browsefldr16.png" />
+    <Resource Include="Images\browsefldr32.png" />
+    <Resource Include="Translation\Flags\BG.gif" />
+    <Resource Include="Translation\Flags\BR.gif" />
+    <Resource Include="Translation\Flags\CN.gif" />
+    <Resource Include="Translation\Flags\CZ.gif" />
+    <Resource Include="Translation\Flags\DE.gif" />
+    <Resource Include="Translation\Flags\ES.gif" />
+    <Resource Include="Translation\Flags\FI.gif" />
+    <Resource Include="Translation\Flags\FR.gif" />
+    <Resource Include="Translation\Flags\HR.gif" />
+    <Resource Include="Translation\Flags\HU.gif" />
+    <Resource Include="Translation\Flags\IN.gif" />
+    <Resource Include="Translation\Flags\IT.gif" />
+    <Resource Include="Translation\Flags\JP.gif" />
+    <Resource Include="Translation\Flags\KR.gif" />
+    <Resource Include="Translation\Flags\NL.gif" />
+    <Resource Include="Translation\Flags\PL.gif" />
+    <Resource Include="Translation\Flags\RU.gif" />
+    <Resource Include="Translation\Flags\SE.gif" />
+    <Resource Include="Translation\Flags\TR.gif" />
+    <Resource Include="Translation\Flags\TW.gif" />
+    <Resource Include="Translation\Flags\UA.gif" />
+    <Resource Include="Translation\Flags\US.gif" />
+    <Resource Include="Translation\Flags\VI.gif" />
+    <Resource Include="Translation\Flags\VN.gif" />
+    <Resource Include="Images\pause.png" />
+    <Resource Include="Images\resume.png" />
+    <Resource Include="Images\stop.png" />
+    <Resource Include="Images\speed16.png" />
+    <Resource Include="Images\timeelapsed24.png" />
+    <Resource Include="Images\timeremaining24.png" />
+    <Resource Include="Translation\Flags\GB.gif" />
+    <Resource Include="Images\libicon16.png" />
+    <Resource Include="Images\libicon32.png" />
+    <Resource Include="Images\resetlib16.png" />
+    <Resource Include="Images\resetlib32.png" />
+    <Resource Include="Images\libsaveloc16.png" />
+    <Resource Include="Images\libsaveloc32.png" />
+    <Resource Include="Images\libtype16.png" />
+    <Resource Include="Images\libtype32.png" />
+    <Resource Include="Images\explorer16.png" />
+    <Resource Include="Images\explorer32.png" />
+    <Resource Include="Images\favorites16.png" />
+    <Resource Include="Images\favorites32.png" />
+    <Resource Include="Images\newtab16.png" />
+    <Resource Include="Images\newtab32.png" />
+    <Resource Include="Images\BlackTheme.png" />
+    <Resource Include="Images\BlueTheme.png" />
+    <Resource Include="Images\SilverTheme.png" />
+    <Resource Include="Images\archiver16.png" />
+    <Resource Include="Images\archiver32.png" />
+    <Resource Include="Images\archivecheck16.png" />
+    <Resource Include="Images\archivecheck32.png" />
+    <Resource Include="Images\archiveview16.png" />
+    <Resource Include="Images\archiveview32.png" />
+    <Resource Include="Images\condrive16.png" />
+    <Resource Include="Images\condrive32.png" />
+    <Resource Include="Images\disdrive16.png" />
+    <Resource Include="Images\disdrive32.png" />
+    <Resource Include="Images\Share16.png" />
+    <Resource Include="Images\share32.png" />
+    <Resource Include="Images\new_window.png" />
+    <Resource Include="Images\newlib16.png" />
+    <Resource Include="Images\newlib32.png" />
+    <Resource Include="Images\uac16.png" />
+    <Resource Include="Images\uac32.png" />
+    <Resource Include="Images\Copy48.png" />
+    <Resource Include="Images\paste48.png" />
+    <Resource Include="Images\delete48.png" />
+    <Resource Include="Images\uac48.png" />
+    <Resource Include="Images\convert16.png" />
+    <Resource Include="Images\convert32.png" />
+    <Resource Include="Images\flipx16.png" />
+    <Resource Include="Images\flipx32.png" />
+    <Resource Include="Images\flipy16.png" />
+    <Resource Include="Images\flipy32.png" />
+    <Resource Include="Images\RecycleBinEmpty16.png" />
+    <Resource Include="Images\RecycleBinEmpty32.png" />
+    <Resource Include="Images\RecycleBinFull16.png" />
+    <Resource Include="Images\RecycleBinFull32.png" />
+    <Resource Include="Images\add16.png" />
+    <Resource Include="Images\add32.png" />
+    <Resource Include="Images\cancel16.png" />
+    <Resource Include="Images\cancel32.png" />
+    <Resource Include="Images\confirm16.png" />
+    <Resource Include="Images\confirm32.png" />
+    <Resource Include="Images\users16.png" />
+    <Resource Include="Images\users32.png" />
+    <Resource Include="Images\users48.png" />
+    <Resource Include="Images\newitems16.png" />
+    <Resource Include="Images\easyacc16.png" />
+    <Resource Include="Images\check16.png" />
+    <Resource Include="Images\formatd16.png" />
+    <Resource Include="Images\cdtray16.png" />
+    <Resource Include="Images\cdtray32.png" />
+    <Resource Include="Images\removeusb16.png" />
+    <Resource Include="Images\removeusb32.png" />
+    <Resource Include="Images\burn16.png" />
+    <Resource Include="Images\burn32.png" />
+    <Resource Include="Images\burn48.png" />
+    <Resource Include="Images\mount16.png" />
+    <Resource Include="Images\mount32.png" />
+    <Resource Include="Images\mount48.png" />
+    <Resource Include="Images\unmount16.png" />
+    <Resource Include="Images\unmount32.png" />
+    <Resource Include="Images\unmount48.png" />
+    <Resource Include="Images\qmount16.png" />
+    <Resource Include="Images\qmount32.png" />
+    <Resource Include="Images\qmount48.png" />
+    <Resource Include="Images\sync16.png" />
+    <Resource Include="Images\Sync32.png" />
+    <Resource Include="Images\Sync48.png" />
+    <Resource Include="Images\clear16.png" />
+    <Resource Include="Images\clear32.png" />
+    <Resource Include="Images\clear48.png" />
+    <Resource Include="Images\cmd16.png" />
+    <Resource Include="Images\cmd32.png" />
+    <Resource Include="Images\cmd48.png" />
+    <Resource Include="Images\powershell16.png" />
+    <Resource Include="Images\powershell32.png" />
+    <Resource Include="Images\powershell48.png" />
+    <Resource Include="Images\paypal.png" />
+    <Resource Include="Images\sawall16.png" />
+    <Resource Include="Images\sawall32.png" />
+    <Resource Include="Images\rl16.png" />
+    <Resource Include="Images\rl32.png" />
+    <Resource Include="Images\rr16.png" />
+    <Resource Include="Images\rr32.png" />
+    <Resource Include="Images\slideshow16.png" />
+    <Resource Include="Images\slideshow32.png" />
+    <Resource Include="Images\zipeztract16.png" />
+    <Resource Include="Images\zipeztract32.png" />
+    <Resource Include="Images\admin16.png" />
+    <Resource Include="Images\admin32.png" />
+    <Resource Include="Images\about16.PNG" />
+    <Resource Include="Images\defrag16.png" />
+    <Resource Include="Images\defrag32.png" />
+    <Resource Include="Images\pint16.png" />
+    <Resource Include="Images\pint32.png" />
+    <Resource Include="Images\back.png" />
+    <Resource Include="Images\downnav.png" />
+    <Resource Include="Images\left1.png" />
+    <Resource Include="Images\left2.png" />
+    <Resource Include="Images\left3.png" />
+    <Resource Include="Images\left4.png" />
+    <Resource Include="Images\right1.png" />
+    <Resource Include="Images\right2.png" />
+    <Resource Include="Images\right3.png" />
+    <Resource Include="Images\right4.png" />
+    <Resource Include="Images\downar1.png" />
+    <Resource Include="Images\cleand16.png" />
+    <Resource Include="Images\cleand32.png" />
+    <Resource Include="Images\formatd.png" />
+    <Resource Include="Images\upadisabled.png" />
+    <Resource Include="Images\upahover.png" />
+    <Resource Include="Images\upanormal.png" />
+    <Resource Include="Images\upapressed.png" />
+    <Resource Include="Images\ascol16.png" />
+    <Resource Include="Images\delrb16.png" />
+    <Resource Include="Images\hideitems16.png" />
+    <Resource Include="Images\hideitems48.png" />
+    <Resource Include="Images\morecols16.png" />
+    <Resource Include="Images\open16.png" />
+    <Resource Include="Web.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\closetab.png" />
+    <Resource Include="Images\clonetab.png" />
+    <Resource Include="Images\folder_up.png" />
+    <Resource Include="Images\changeicon16.png" />
+    <Resource Include="Images\changeicon32.png" />
+    <Resource Include="Images\col16.png" />
+    <Resource Include="Images\col32.png" />
+    <Resource Include="Images\copypath16.png" />
+    <Resource Include="Images\copypath32.png" />
+    <Resource Include="Images\copyto16.png" />
+    <Resource Include="Images\copyto32.png" />
+    <Resource Include="Images\deletetorb32.png" />
+    <Resource Include="Images\detetorb16.png" />
+    <Resource Include="Images\edit16.png" />
+    <Resource Include="Images\edit32.png" />
+    <Resource Include="Images\groupby16.png" />
+    <Resource Include="Images\groupby32.png" />
+    <Resource Include="Images\hide16.png" />
+    <Resource Include="Images\hide32.png" />
+    <Resource Include="Images\invsel16.png" />
+    <Resource Include="Images\invsel32.png" />
+    <Resource Include="Images\moveto16.png" />
+    <Resource Include="Images\moveto32.png" />
+    <Resource Include="Images\pastet16.png" />
+    <Resource Include="Images\pastet32.png" />
+    <Resource Include="Images\Refresh16.png" />
+    <Resource Include="Images\Refresh32.png" />
+    <Resource Include="Images\selectall16.png" />
+    <Resource Include="Images\selectall32.png" />
+    <Resource Include="Images\selectnone16.png" />
+    <Resource Include="Images\selectnone32.png" />
+    <Resource Include="Images\sort16.png" />
+    <Resource Include="Images\sort32.png" />
+    <Resource Include="Images\history16.png" />
+    <Resource Include="Images\prop16.png" />
+    <Resource Include="Images\prop32.png" />
+    <Resource Include="Images\delete16.png" />
+    <Resource Include="Images\delete32.png" />
+    <Resource Include="Images\folder_new16.png" />
+    <Resource Include="Images\folder_new32.png" />
+    <Resource Include="Images\rename16.png" />
+    <Resource Include="Images\rename32.png" />
+    <Resource Include="Images\cut16.png" />
+    <Resource Include="Images\Copy16.png" />
+    <Resource Include="Images\Copy32.png" />
+    <Resource Include="Images\paste16.png" />
+    <Resource Include="Images\paste32.png" />
+    <Resource Include="Images\clear.png" />
+    <Resource Include="Images\search.png" />
+    <Resource Include="Images\content216.png" />
+    <Resource Include="Images\libgeneral16.png" />
+    <Resource Include="Images\libiconchange16.png" />
+    <Resource Include="Images\content16.png" />
+    <Resource Include="Images\details16.png" />
+    <Resource Include="Images\large16.png" />
+    <Resource Include="Images\medium16.png" />
+    <Resource Include="Images\small16.png" />
+    <Resource Include="Images\tiles16.png" />
+    <Resource Include="Images\elarge16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Shell32">
+      <Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Explorer flat colors.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="x64\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="BENewIcon.ico" />
+    <Content Include="BEUpdater.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Images\documents_files_icon_d.png" />
+    <Resource Include="Images\folder_full_delete_d.png" />
+    <Resource Include="Images\delete-file-d.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle">
+      <Version>1.8.2</Version>
+    </PackageReference>
+    <PackageReference Include="ControlzEx">
+      <Version>3.0.2.4</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Drive.v2">
+      <Version>1.51.0.2265</Version>
+    </PackageReference>
+    <PackageReference Include="log4net">
+      <Version>2.0.12</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Bcl.Async">
+      <Version>1.0.168</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Bcl.Build">
+      <Version>1.0.21</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Net.Http">
+      <Version>2.2.29</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
+      <Version>7.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="NETStandard.Library">
+      <Version>2.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite.Core">
+      <Version>1.0.113.7</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Http">
+      <Version>4.3.4</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Algorithms">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.X509Certificates">
+      <Version>4.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="Zlib.Portable">
+      <Version>1.11.0</Version>
+    </PackageReference>
+    <PackageReference Include="Zlib.Portable.Signed">
+      <Version>1.11.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Api\" />
+  </ItemGroup>
+  <!-- <ItemGroup>
+    <Page Include="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup> -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!--   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target> -->
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <Target Name="DisableAnalyzersForVisualStudioBuild" BeforeTargets="CoreCompile" Condition="'$(BuildingInsideVisualStudio)' == 'True' And '$(BuildingProject)' == 'True'">
+    <!--
+      Disable analyzers when building a project inside Visual Studio. Note that analyzer behavior for IntelliSense
+      purposes is not altered by this.
+    -->
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)" />
+    </ItemGroup>
+  </Target>
+</Project>

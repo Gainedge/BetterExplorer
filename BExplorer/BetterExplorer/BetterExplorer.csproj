@@ -1,22 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <TargetFramework>net5.0-windows10.0.17763.0</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BBD6B64A-5617-4F6C-A5CE-5156365BF33E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BetterExplorer</RootNamespace>
-    <AssemblyName>BetterExplorer</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -42,8 +29,6 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
     <ShouldCreateLogs>True</ShouldCreateLogs>
     <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
     <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
@@ -51,80 +36,51 @@
     <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
     <AssemblyVersionSettings>
     </AssemblyVersionSettings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>false</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\..\Deploy\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
     <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>false</Prefer32Bit>
     <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup />
   <PropertyGroup>
     <ApplicationIcon>BENewIcon.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup />
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
+    <StartupObject>BetterExplorer.App</StartupObject>
+    <MinimumPlatformVersion>10.0.17763.0</MinimumPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <OutputPath>..\..\Deploy\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
     <ShouldCreateLogs>True</ShouldCreateLogs>
     <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
     <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
@@ -138,21 +94,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\..\Deploy\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BetterExplorer.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AeroWizard">
       <HintPath>..\..\External References\AeroWizard.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NAppUpdate.Framework, Version=0.1.0.0, Culture=neutral, PublicKeyToken=d1f1d1f19f9e5a56, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External References\NAppUpdate.Framework.dll</HintPath>
@@ -161,535 +111,55 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External References\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.DirectoryServices" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Management.Instrumentation" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http.WebRequest" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Runtime.Remoting" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
     <Reference Include="TAFactory.IconPack, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External References\TAFactory.IconPack.dll</HintPath>
     </Reference>
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="UIAutomationTypes" />
-    <Reference Include="Windows.Data" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="WindowsFormsIntegration" />
     <Reference Include="WPFLocalizeExtension">
       <HintPath>..\..\External References\WPFLocalizeExtension.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Application\ApplicationInstanceManager.cs" />
-    <Compile Include="ArchiveView\ArchiveCreateWizard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ArchiveView\ArchiveCreateWizard.Designer.cs">
-      <DependentUpon>ArchiveCreateWizard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ArchiveView\ArchiveDetailView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ArchiveView\ArchiveDetailView.designer.cs">
-      <DependentUpon>ArchiveDetailView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ArchiveView\ArchiveProcressScreen.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ArchiveView\ArchiveProcressScreen.designer.cs">
-      <DependentUpon>ArchiveProcressScreen.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Application\AppCommands.cs" />
-    <Compile Include="ConditionalSelect\ConditionalSelectClasses.cs" />
-    <Compile Include="ConditionalSelect\ConditionalSelectComboBoxItem.xaml.cs">
-      <DependentUpon>ConditionalSelectComboBoxItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ConditionalSelect\ConditionalSelectForm.xaml.cs">
-      <DependentUpon>ConditionalSelectForm.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Customize\CustomizeQAT.xaml.cs">
-      <DependentUpon>CustomizeQAT.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Customize\RibbonItemListDisplay.xaml.cs">
-      <DependentUpon>RibbonItemListDisplay.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="HelperClasses\SafeThread.cs" />
-    <Compile Include="HelperClasses\Utilities.cs" />
-    <Compile Include="HelperClasses\WindowExtensions.cs" />
-    <Compile Include="PieChart\PieChart\ColourConverter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MountIso.xaml.cs">
-      <DependentUpon>MountIso.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="RunExeAsUser.xaml.cs">
-      <DependentUpon>RunExeAsUser.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PieChart\BaseWPFHelpers.cs" />
-    <Compile Include="PieChart\PieChart\IColorSelector.cs" />
-    <Compile Include="PieChart\PieChart\IndexedColourSelector.cs" />
-    <Compile Include="PieChart\PieChart\Legend.xaml.cs">
-      <DependentUpon>Legend.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PieChart\PieChart\LegendConverter.cs" />
-    <Compile Include="PieChart\PieChart\PieChartLayout.xaml.cs">
-      <DependentUpon>PieChartLayout.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PieChart\PieChart\PiePlotter.xaml.cs">
-      <DependentUpon>PiePlotter.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PieChart\Shapes\PiePiece.cs" />
-    <Compile Include="PieChart\UserControl1.xaml.cs">
-      <DependentUpon>UserControl1.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PieChart\Util\FileSizeConverter.cs" />
-    <Compile Include="PieChart\Util\FormattingConverter.cs" />
-    <Compile Include="PieChart\Util\Utils.cs" />
-    <Compile Include="ResizeImage.xaml.cs">
-      <DependentUpon>ResizeImage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Tabs\SavedTabsListGalleryItem.xaml.cs">
-      <DependentUpon>SavedTabsListGalleryItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Tabs\NameTabList.xaml.cs">
-      <DependentUpon>NameTabList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Tabs\SavedTabsList.cs" />
-    <Compile Include="ConditionalSelect\SDateSearchCriteriaDialog.xaml.cs">
-      <DependentUpon>SDateSearchCriteriaDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ConditionalSelect\SizeSearchCriteriaDialog.xaml.cs">
-      <DependentUpon>SizeSearchCriteriaDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ArchiveView\CreateArchive.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ArchiveView\CreateArchive.designer.cs">
-      <DependentUpon>CreateArchive.cs</DependentUpon>
-    </Compile>
-    <Compile Include="fmAbout.xaml.cs">
-      <DependentUpon>fmAbout.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FolderSizeWindow.xaml.cs">
-      <DependentUpon>FolderSizeWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="HelperClasses\FriendlySizeConverter.cs" />
-    <Compile Include="ItemPopup.xaml.cs">
-      <DependentUpon>ItemPopup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PreviewMedia.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PreviewMedia.Designer.cs">
-      <DependentUpon>PreviewMedia.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IconClasses\IconView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="IconClasses\IconView.Designer.cs">
-      <DependentUpon>IconView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Application\InstanceProxy.cs" />
-    <Compile Include="MoreColumns.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MoreColumns.Designer.cs">
-      <DependentUpon>MoreColumns.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ConditionalSelect\StringSearchCriteriaDialog.xaml.cs">
-      <DependentUpon>StringSearchCriteriaDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ArchiveView\SysImageList.cs" />
-    <Compile Include="Tabs\TabListEditor.xaml.cs">
-      <DependentUpon>TabListEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Tabs\TabListEditorItem.xaml.cs">
-      <DependentUpon>TabListEditorItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Tabs\TabManager.xaml.cs">
-      <DependentUpon>TabManager.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Tabs\UndoCloseGalleryItem.xaml.cs">
-      <DependentUpon>UndoCloseGalleryItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Updater\Updater.cs" />
-    <Compile Include="_MainWindow\MainWindow_Tabs.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="_MainWindow\MainWindow_Updating.cs" />
-    <Page Include="ConditionalSelect\ConditionalSelectComboBoxItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ConditionalSelect\ConditionalSelectForm.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Customize\CustomizeQAT.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Customize\RibbonItemListDisplay.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="MountIso.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="RunExeAsUser.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="PieChart\PieChart\Legend.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="PieChart\PieChart\PieChartLayout.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="PieChart\PieChart\PiePlotter.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="PieChart\UserControl1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ResizeImage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Tabs\SavedTabsListGalleryItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ConditionalSelect\SDateSearchCriteriaDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ConditionalSelect\SizeSearchCriteriaDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="fmAbout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="FolderSizeWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ItemPopup.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="HelperClasses\ClipBoardMonitor.cs">
+    <Compile Update="HelperClasses\ClipBoardMonitor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="ConditionalSelect\StringSearchCriteriaDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Tabs\NameTabList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Tabs\TabListEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Tabs\TabListEditorItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Tabs\TabManager.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="themes\generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.cs-CZ.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.en-GB.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.el-GR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.hi-IN.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.hu-HU.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.ja-JP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.ko-KR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.nl-NL.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.it-IT.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.fr-FR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.de-DE.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.hr-HR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.pl-PL.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.ru-RU.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.sv-SE.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.tr-TR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.fi-FI.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.es-ES.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.pt-BR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\DefaultLocale.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Translation\Locale.bg-BG.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Translation\Locale.uk-UA.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.vi-VN.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.zh-CN.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Translation\Locale.zh-TW.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Tabs\UndoCloseGalleryItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="ArchiveView\ArchiveCreateWizard.resx">
-      <DependentUpon>ArchiveCreateWizard.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ArchiveView\ArchiveDetailView.resx">
-      <DependentUpon>ArchiveDetailView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ArchiveView\ArchiveProcressScreen.resx">
-      <DependentUpon>ArchiveProcressScreen.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ArchiveView\CreateArchive.resx">
-      <DependentUpon>CreateArchive.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PreviewMedia.resx">
-      <DependentUpon>PreviewMedia.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="IconClasses\IconView.resx">
-      <DependentUpon>IconView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MoreColumns.resx">
-      <DependentUpon>MoreColumns.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="app.config" />
-    <None Include="app.manifest">
+    <None Update="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="BetterExplorer.ruleset" />
-    <None Include="BEUpdater.ini">
+    <None Update="BEUpdater.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="client.wyc">
+    <None Update="client.wyc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Images\jsdm32.pdn" />
-    <None Include="NLog.config">
+    <None Update="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="System.Data.SQLite.dll.config">
+    <None Update="System.Data.SQLite.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BEHelper\BEHelper.csproj">
-      <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
-      <Name>BEHelper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\BreadcrumbBar\Odyssey.Controls.csproj">
-      <Project>{333fdc55-6b47-4a64-a2df-a4c5823fac74}</Project>
-      <Name>Odyssey.Controls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ConsoleControl\ConsoleControl.csproj">
-      <Project>{737CC7F2-EC7C-4800-B7EB-72637E892C42}</Project>
-      <Name>ConsoleControl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Fluent.Ribbon-develop\Fluent.Ribbon\Fluent.Ribbon.NET 4.6.csproj">
-      <Project>{4c92fcf4-3561-499f-bc5b-f2f089863047}</Project>
-      <Name>Fluent.Ribbon.NET 4.6</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\IconExtractor\IconExtractor.csproj">
-      <Project>{fdfd4eeb-c202-4d93-a6e9-d8984a12d014}</Project>
-      <Name>IconExtractor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ImDiskNet\ImDiskNet.vbproj">
-      <Project>{3efcb6f8-ef7e-4f60-a0de-bb197240fcc9}</Project>
-      <Name>ImDiskNet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NotifyIcon\NotifyIconWpf\NotifyIconWpf.csproj">
-      <Project>{7ac63864-7638-41c4-969c-d3197ef2bed9}</Project>
-      <Name>NotifyIconWpf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Rating control\CustomControls\StarRatingControl.csproj">
-      <Project>{2f36cce1-9d03-4518-9bfd-82e36ea1a64e}</Project>
-      <Name>StarRatingControl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Settings\Settings.csproj">
-      <Project>{b40d0f31-9d30-4292-9717-bb21fc94c49c}</Project>
-      <Name>Settings</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj">
-      <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
-      <Name>SevenZip2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Shell\Shell.csproj">
-      <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
-      <Name>Shell</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TabControl\Wpf.TabControl.csproj">
-      <Project>{509d06bd-aeb6-4e92-8e5b-21188ebdbd9c}</Project>
-      <Name>Wpf.TabControl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TaskDialog\TaskDialog.csproj">
-      <Project>{37fd53f7-8a8f-4427-8ff4-6299e2933a7e}</Project>
-      <Name>TaskDialog</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\toggle-switch-control\WPF\ToggleSwitch\ToggleSwitch.csproj">
-      <Project>{f9426059-27db-45f0-9012-b1234965fbe0}</Project>
-      <Name>ToggleSwitch</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\UsbEject\UsbEject.csproj">
-      <Project>{ae269158-dfa5-4dd7-8afc-f45faf2b958c}</Project>
-      <Name>UsbEject</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\WpfControlLibrary1\BetterExplorerControls.csproj">
-      <Project>{04270710-e358-46d4-83e5-eb7a9323cce7}</Project>
-      <Name>BetterExplorerControls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\WpfDocumentPreviewer\WpfDocumentPreviewer.csproj">
-      <Project>{6a63405a-b6bb-4095-b48c-e720de021482}</Project>
-      <Name>WpfDocumentPreviewer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj">
-      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
-      <Name>Xceed.Wpf.Toolkit</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\BreadcrumbBar\Odyssey.Controls.csproj" />
+    <ProjectReference Include="..\..\ConsoleControl\ConsoleControl.csproj" />
+    <ProjectReference Include="..\..\Fluent.Ribbon\Fluent.Ribbon\Fluent.Ribbon.csproj" />
+    <ProjectReference Include="..\..\IconExtractor\IconExtractor.csproj" />
+    <ProjectReference Include="..\..\ImDiskNet\ImDiskNet.vbproj" />
+    <ProjectReference Include="..\..\NotifyIcon\NotifyIconWpf\NotifyIconWpf.csproj" />
+    <ProjectReference Include="..\..\Rating control\CustomControls\StarRatingControl.csproj" />
+    <ProjectReference Include="..\..\Settings\Settings.csproj" />
+    <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj" />
+    <ProjectReference Include="..\..\ShellLibrary\ShellLibrary.csproj" />
+    <ProjectReference Include="..\..\TabControl\Wpf.TabControl.csproj" />
+    <ProjectReference Include="..\..\TaskDialog\TaskDialog.csproj" />
+    <ProjectReference Include="..\..\toggle-switch-control\WPF\ToggleSwitch\ToggleSwitch.csproj" />
+    <ProjectReference Include="..\..\UsbEject\UsbEject.csproj" />
+    <ProjectReference Include="..\..\WpfControlLibrary1\BetterExplorerControls.csproj" />
+    <ProjectReference Include="..\..\WpfDocumentPreviewer\WpfDocumentPreviewer.csproj" />
+    <ProjectReference Include="..\..\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Explorer.ico" />
@@ -825,34 +295,34 @@
     <Resource Include="Images\check.png" />
     <Resource Include="Images\edit.png" />
     <Resource Include="Images\delete_16x16-4.png" />
-    <None Include="Badges\Ubuntu Human\1.ico">
+    <None Update="Badges\Ubuntu Human\1.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Badges\Ubuntu Human\10.ico">
+    <None Update="Badges\Ubuntu Human\10.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Badges\Ubuntu Human\2.ico">
+    <None Update="Badges\Ubuntu Human\2.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Badges\Ubuntu Human\3.ico">
+    <None Update="Badges\Ubuntu Human\3.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Badges\Ubuntu Human\4.ico">
+    <None Update="Badges\Ubuntu Human\4.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Badges\Ubuntu Human\5.ico">
+    <None Update="Badges\Ubuntu Human\5.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Badges\Ubuntu Human\6.ico">
+    <None Update="Badges\Ubuntu Human\6.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Badges\Ubuntu Human\7.ico">
+    <None Update="Badges\Ubuntu Human\7.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Badges\Ubuntu Human\8.ico">
+    <None Update="Badges\Ubuntu Human\8.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Badges\Ubuntu Human\9.ico">
+    <None Update="Badges\Ubuntu Human\9.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Resource Include="Images\savetabs16.png" />
@@ -1154,94 +624,56 @@
     <Resource Include="Images\delete-file-d.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BouncyCastle">
-      <Version>1.8.2</Version>
-    </PackageReference>
-    <PackageReference Include="ControlzEx">
-      <Version>3.0.2.4</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Drive.v2">
-      <Version>1.51.0.2265</Version>
-    </PackageReference>
-    <PackageReference Include="log4net">
-      <Version>2.0.12</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Bcl.Async">
-      <Version>1.0.168</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Bcl.Build">
-      <Version>1.0.21</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Net.Http">
-      <Version>2.2.29</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
-      <Version>7.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="NETStandard.Library">
-      <Version>2.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="System.Data.SQLite.Core">
-      <Version>1.0.113.7</Version>
-    </PackageReference>
-    <PackageReference Include="System.Net.Http">
-      <Version>4.3.4</Version>
-    </PackageReference>
-    <PackageReference Include="System.Security.Cryptography.Algorithms">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Security.Cryptography.X509Certificates">
-      <Version>4.3.2</Version>
-    </PackageReference>
-    <PackageReference Include="Zlib.Portable">
-      <Version>1.11.0</Version>
-    </PackageReference>
-    <PackageReference Include="Zlib.Portable.Signed">
-      <Version>1.11.0</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Api\" />
   </ItemGroup>
-  <!-- <ItemGroup>
-    <Page Include="App.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup> -->
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Remove="FolderItem.cs" />
+    <Compile Remove="Networks\AccountAuthWindow.xaml.cs" />
+    <Compile Remove="Networks\AccountData.cs" />
+    <Compile Remove="Networks\ActionResult.cs" />
+    <Compile Remove="Networks\AddAccountEntry.xaml.cs" />
+    <Compile Remove="Networks\AddServer.xaml.cs" />
+    <Compile Remove="Networks\AuthWindow.xaml.cs" />
+    <Compile Remove="Networks\BackButton.xaml.cs" />
+    <Compile Remove="Networks\Common.cs" />
+    <Compile Remove="Networks\DropBoxAccount.cs" />
+    <Compile Remove="Networks\FileSystem\Directory.cs" />
+    <Compile Remove="Networks\FileSystem\File.cs" />
+    <Compile Remove="Networks\FileSystem\FileSystemObject.cs" />
+    <Compile Remove="Networks\FileSystem\NetworkFileSystem.cs" />
+    <Compile Remove="Networks\FileSystem\SymbolicLink.cs" />
+    <Compile Remove="Networks\FTPServer.cs" />
+    <Compile Remove="Networks\FTPSserver.cs" />
+    <Compile Remove="Networks\NetworkItem.cs" />
+    <Compile Remove="Networks\ServerItem.xaml.cs" />
+    <Compile Remove="Networks\SkyDriveAccount.cs" />
+    <Compile Remove="Networks\SocialMedia\Pastebin.cs" />
+    <Compile Remove="Networks\WebDAVserver.cs" />
+    <Compile Remove="PictureViewerPopup.xaml.cs" />
+    <Compile Remove="Settings.cs" />
+    <EmbeddedResource Remove="UpdateWizzard.resx" />
+    <Page Remove="Networks\AccountAuthWindow.xaml" />
+    <Page Remove="Networks\AddAccountEntry.xaml" />
+    <Page Remove="Networks\AddServer.xaml" />
+    <Page Remove="Networks\AuthWindow.xaml" />
+    <Page Remove="Networks\BackButton.xaml" />
+    <Page Remove="Networks\ServerItem.xaml" />
+    <Page Remove="PictureViewerPopup.xaml" />
+    <Page Remove="Translation\Locale.gl-ES.xaml" />
+    <Page Remove="Translation\Locale.nb-NO.xaml" />
+    <Page Remove="Translation\Locale.ta-IN.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.0.2" />
+    <PackageReference Include="SingleInstanceCore" Version="2.1.0" />
+  </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
-  <!--   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
-  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
-    <Error Condition="!Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
-    <Error Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
-  </Target> -->
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <Target Name="DisableAnalyzersForVisualStudioBuild" BeforeTargets="CoreCompile" Condition="'$(BuildingInsideVisualStudio)' == 'True' And '$(BuildingProject)' == 'True'">
-    <!--
-      Disable analyzers when building a project inside Visual Studio. Note that analyzer behavior for IntelliSense
-      purposes is not altered by this.
-    -->
     <ItemGroup>
       <Analyzer Remove="@(Analyzer)" />
     </ItemGroup>

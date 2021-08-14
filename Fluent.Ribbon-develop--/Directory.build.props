@@ -1,0 +1,61 @@
+<Project>
+  <PropertyGroup>
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile> -->
+    <!-- <RestoreLockedMode>true</RestoreLockedMode> -->
+    <IsBuildingWpfTempProj Condition="$(MSBuildProjectName.Contains('_wpftmp')) != 'true'">false</IsBuildingWpfTempProj>
+    <IsBuildingWpfTempProj Condition="$(MSBuildProjectName.Contains('_wpftmp')) == 'true'">true</IsBuildingWpfTempProj>
+    <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0-windows;netcoreapp3.1;net462;net452</TargetFrameworks>
+    <LangVersion>latestmajor</LangVersion>
+    
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)/Fluent.Ribbon.ruleset</CodeAnalysisRuleSet>
+    <OutputPath Condition="$(IsBuildingWpfTempProj) != 'true'">$(MSBuildThisFileDirectory)/bin/$(MSBuildProjectName)/$(Configuration)/</OutputPath>
+    <RestoreSources Condition="Exists('C:/DEV/OSS_Own/ControlzEx/Publish')">C:/DEV/OSS_Own/ControlzEx/Publish</RestoreSources>    
+
+    <AutoGenerateBindingRedirects Condition="$(DefineConstants.Contains(NETCOREAPP)) == false">true</AutoGenerateBindingRedirects>
+
+    <UseWpf>true</UseWpf>
+    <UseWindowsForms>true</UseWindowsForms>
+    <NoWarn>$(NoWarn);NU1701;NU1603;NU1605;SA1652</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode Condition="'$(RestoreLockedMode)' == ''">true</RestoreLockedMode> -->
+  </PropertyGroup>
+
+  <!-- Sign assembly -->
+  <PropertyGroup>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)/Shared/SharedKey.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="**/*.png;**/*.ico;**/*.ps" />
+
+    <Compile Include="$(MSBuildThisFileDirectory)/Shared/GlobalAssemblyInfo.cs">
+      <Link>Properties/GlobalAssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" PrivateAssets="all" IncludeAssets="build;compile" />
+
+  	<PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" IncludeAssets="build;analyzers" Condition="$(DefineConstants.Contains(NETCOREAPP))" />
+    <!-- <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" version="*" privateAssets="all" includeAssets="build;analyzers" /> -->
+    <!-- <PackageReference Include="PropertyChangedAnalyzers" version="2.7.0" privateAssets="all" includeAssets="build;analyzers" />
+    <PackageReference Include="ReflectionAnalyzers" version="0.1.19-dev" privateAssets="all" includeAssets="build;analyzers" /> -->
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" IncludeAssets="build;analyzers" />
+    <PackageReference Include="WpfAnalyzers" PrivateAssets="all" IncludeAssets="build;analyzers" />
+  </ItemGroup>
+</Project>

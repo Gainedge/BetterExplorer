@@ -2329,8 +2329,9 @@ namespace BExplorer.Shell {
       ShellItem.MessageHandle = this.LVHandle;
       //this.IsViewSelectionAllowed = true;
 
-      this._OldWndProc = User32.SetWindowLong(this.LVHandle, User32.GWL_WNDPROC, this._newWndProc);
-      this._OldHeaderWndProc = User32.SetWindowLong(this.LVHeaderHandle, User32.GWL_WNDPROC, this._newHeaderWndProc);
+      this._OldWndProc = User32.SetWindowLongPtr(this.LVHandle, User32.GWL_WNDPROC, this._newWndProc);
+      var le = Marshal.GetLastWin32Error();
+      this._OldHeaderWndProc = User32.SetWindowLongPtr(this.LVHeaderHandle, User32.GWL_WNDPROC, this._newHeaderWndProc);
     }
 
     /// <inheritdoc/>
@@ -2350,7 +2351,7 @@ namespace BExplorer.Shell {
         });
         t.IsBackground = true;
         t.Start();
-      } catch (ThreadAbortException) {
+      } catch (ThreadInterruptedException) {
       } catch {
       }
       base.OnHandleDestroyed(e);
@@ -2725,7 +2726,7 @@ namespace BExplorer.Shell {
         thread.SetApartmentState(ApartmentState.STA);
         //thread.IsBackground = true;
         thread.Start();
-      } catch (ThreadAbortException ex) {
+      } catch (ThreadInterruptedException ex) {
 
       }
       Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -3555,7 +3556,7 @@ namespace BExplorer.Shell {
         this.LargeImageList.ResetEvent.Set();
         this.SmallImageList.ResetEvent.Set();
         foreach (var thread in this._Threads.ToArray()) {
-          thread.Abort();
+          thread.Interrupt();
           this._Threads.Remove(thread);
         }
       }
