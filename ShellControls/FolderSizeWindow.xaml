@@ -1,0 +1,40 @@
+﻿<controls:UIWindow x:Class="ShellControls.FolderSizeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Ribbon="clr-namespace:Fluent;assembly=Fluent"
+        Title="Folder/Drive Size Chart" Height="610" Width="800" MinHeight="610" MinWidth="800" xmlns:my="clr-namespace:BetterExplorer.PieChart"
+        xmlns:controls="clr-namespace:WPFUI.Controls;assembly=WPFUI"
+        xmlns:pieChart="clr-namespace:ShellControls.PieChart.PieChart"
+        Closing="Window_Closing" Icon="/BetterExplorer;component/Images/shell32-167.ico" WindowStartupLocation="CenterOwner" ResizeMode="CanMinimize">
+    <Window.Resources>
+        <ResourceDictionary>       
+            <x:ArrayExtension Type="{x:Type Brush}" x:Key="brushes">
+                <SolidColorBrush Color="#9F15C3"/>
+                <SolidColorBrush Color="#FF8E01"/>
+                <SolidColorBrush Color="#339933"/>
+                <SolidColorBrush Color="#00AAFF"/>
+                <SolidColorBrush Color="#818183"/>
+                <SolidColorBrush Color="#000033"/>
+                <SolidColorBrush Color="DarkGoldenrod"/>
+                <SolidColorBrush Color="Coral"/>
+                <SolidColorBrush Color="Violet"/>
+                <SolidColorBrush Color="Chocolate"/>
+            </x:ArrayExtension>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+      <controls:TitleBar Grid.Row="0" ApplicationNavigation="False" UseSnapLayout="True" Title="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type controls:UIWindow}}}" Icon="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type controls:UIWindow}}}" />
+      <pieChart:PieChartLayout Grid.Row="1" Margin="12,12,12,15" x:Name="pieChartLayout1" PlottedProperty="FSize" Background="Transparent">
+            <pieChart:PieChartLayout.ColorSelector>
+                <pieChart:IndexedColourSelector Brushes="{StaticResource brushes}"/>
+            </pieChart:PieChartLayout.ColorSelector>
+        </pieChart:PieChartLayout>
+        <ProgressBar Grid.Row="1" Height="12" Name="progressBar1" VerticalAlignment="Bottom" />
+        <TextBlock Grid.Row="1" HorizontalAlignment="Center" Name="txtGettingSizes" Text="Getting size of subfolders..." Foreground="{DynamicResource BlackBrush}" VerticalAlignment="Bottom" Margin="0,0,0,15">
+        </TextBlock>
+    </Grid>
+</controls:UIWindow>

@@ -14,7 +14,7 @@
             Margin="0"
             Background="{DynamicResource Fluent.Ribbon.Brushes.ScrollButton.Default.Background}"
             BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.ScrollButton.Default.BorderBrush}"
-            BorderThickness="1">
+            BorderThickness="0">
             <Path
               x:Name="path"
               Width="Auto"
@@ -56,7 +56,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type RepeatButton}">
-          <Border Background="Transparent" />
+          <Border BorderThickness="0" Background="Transparent" CornerRadius="6,6,0,0" />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -74,7 +74,7 @@
             x:Name="border"
             Background="{DynamicResource Fluent.Ribbon.Brushes.ScrollThumb.Default.Background}"
             BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.ScrollThumb.Default.BorderBrush}"
-            BorderThickness="1" />
+            BorderThickness="0" />
           <ControlTemplate.Triggers>
             <Trigger Property="IsDragging" Value="True">
               <Setter TargetName="border" Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
@@ -100,9 +100,9 @@
           <Border
             Name="Border"
             Margin="0"
-            Background="{DynamicResource Fluent.Ribbon.Brushes.ScrollButton.Default.Background}"
+            Background="Transparent"
             BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.ScrollButton.Default.BorderBrush}"
-            BorderThickness="1">
+            BorderThickness="0" CornerRadius="6,6,0,0">
             <Path
               x:Name="path"
               Width="Auto"
@@ -118,12 +118,58 @@
                 <Condition Property="IsMouseOver" Value="True" />
                 <Condition Property="IsPressed" Value="False" />
               </MultiTrigger.Conditions>
-              <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
-              <Setter TargetName="Border" Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+              <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+              <Setter TargetName="Border" Property="Background" Value="Transparent" />
             </MultiTrigger>
             <Trigger Property="IsPressed" Value="true">
-              <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
-              <Setter TargetName="Border" Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
+              <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+              <Setter TargetName="Border" Property="Background" Value="Transparent" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+              <Setter TargetName="path" Property="Opacity" Value="0.5" />
+              <Setter TargetName="Border" Property="Background" Value="Transparent" />
+              <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="VerticalScrollBarLineButtonDown" TargetType="{x:Type RepeatButton}">
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="OverridesDefaultStyle" Value="true" />
+    <Setter Property="Focusable" Value="false" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type RepeatButton}">
+          <Border
+            Name="Border"
+            Margin="0"
+            Background="Transparent"
+            BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.ScrollButton.Default.BorderBrush}"
+            BorderThickness="0" CornerRadius="0,0,6,6">
+            <Path
+              x:Name="path"
+              Width="Auto"
+              Height="Auto"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Data="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+              Fill="{TemplateBinding Foreground}" />
+          </Border>
+          <ControlTemplate.Triggers>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsMouseOver" Value="True" />
+                <Condition Property="IsPressed" Value="False" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+              <Setter TargetName="Border" Property="Background" Value="Transparent" />
+            </MultiTrigger>
+            <Trigger Property="IsPressed" Value="true">
+              <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+              <Setter TargetName="Border" Property="Background" Value="Transparent" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
               <Setter TargetName="path" Property="Opacity" Value="0.5" />
@@ -146,16 +192,17 @@
         <ControlTemplate TargetType="{x:Type Thumb}">
           <Border
             x:Name="border"
-            Background="{DynamicResource Fluent.Ribbon.Brushes.ScrollThumb.Default.Background}"
+            Margin="1,0,1,0"
+            Background="#C6727171"
             BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.ScrollThumb.Default.BorderBrush}"
-            BorderThickness="1" />
+            BorderThickness="0" CornerRadius="5"/>
           <ControlTemplate.Triggers>
             <Trigger Property="IsDragging" Value="True">
               <Setter TargetName="border" Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
               <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter TargetName="border" Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+              <Setter TargetName="border" Property="Background" Value="#C6727171" />
               <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
             </Trigger>
           </ControlTemplate.Triggers>
@@ -165,16 +212,16 @@
   </Style>
 
   <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
-    <Grid>
+    <Grid Margin="3,0,3,0">
       <Grid.RowDefinitions>
         <RowDefinition MaxHeight="18" />
         <RowDefinition Height="0.00001*" />
         <RowDefinition MaxHeight="18" />
       </Grid.RowDefinitions>
-      <Border
+      <Border x:Name="PART_Background"
         Grid.RowSpan="3"
-        Background="{DynamicResource Fluent.Ribbon.Brushes.ScrollBar.Background}"
-        CornerRadius="0" />
+        Background="Transparent"
+        CornerRadius="6" />
       <RepeatButton
         x:Name="repeatButton"
         Grid.Row="0"
@@ -184,10 +231,11 @@
         Background="{DynamicResource WhiteBrush}"
         Command="ScrollBar.LineUpCommand"
         Content="M 0 4 L 8 4 L 4 0 Z"
-        Style="{DynamicResource VerticalScrollBarLineButton}" />
+        Style="{DynamicResource VerticalScrollBarLineButton}" Visibility="Hidden"/>
       <Track
         Name="PART_Track"
         Grid.Row="1"
+        Margin="4,0,0,0"
         IsDirectionReversed="true"
         ViewportSize="{TemplateBinding ViewportSize}">
         <Track.Resources>
@@ -221,12 +269,14 @@
         Background="{DynamicResource WhiteBrush}"
         Command="ScrollBar.LineDownCommand"
         Content="M 0 0 L 4 4 L 8 0 Z"
-        Style="{DynamicResource VerticalScrollBarLineButton}" />
+        Style="{DynamicResource VerticalScrollBarLineButtonDown}" Visibility="Hidden"/>
     </Grid>
     <ControlTemplate.Triggers>
       <Trigger Property="IsMouseOver" Value="True">
-        <Setter TargetName="repeatButton" Property="Background" Value="{x:Null}" />
-        <Setter TargetName="repeatButton1" Property="Background" Value="{x:Null}" />
+        <Setter TargetName="repeatButton" Property="Visibility" Value="Visible" />
+        <Setter TargetName="repeatButton1" Property="Visibility" Value="Visible" />
+        <Setter TargetName="PART_Background" Property="Background" Value="#4E434141" />
+        <Setter TargetName="PART_Track" Property="Margin" Value="0" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
@@ -299,6 +349,7 @@
   <Style TargetType="ScrollBar">
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+    <Setter Property="Background" Value="Transparent" />
     <Style.Triggers>
       <Trigger Property="Orientation" Value="Horizontal">
         <Setter Property="Width" Value="Auto" />
@@ -308,8 +359,17 @@
       <Trigger Property="Orientation" Value="Vertical">
         <Setter Property="Height" Value="Auto" />
         <Setter Property="Template" Value="{DynamicResource VerticalScrollBar}" />
-        <Setter Property="Width" Value="17" />
+        <Setter Property="Width" Value="12" />
       </Trigger>
+      <!--<MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Orientation" Value="Vertical" />
+          <Condition Property="IsMouseOver" Value="True" />
+        </MultiTrigger.Conditions>
+        <MultiTrigger.Setters>
+          <Setter Property="Width" Value="12" />
+        </MultiTrigger.Setters>
+      </MultiTrigger>-->
     </Style.Triggers>
   </Style>
 

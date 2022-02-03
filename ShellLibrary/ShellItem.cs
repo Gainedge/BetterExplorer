@@ -29,6 +29,7 @@ using System.Security.Cryptography;
 using System.Text;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
+using WPFUI.Win32;
 
 namespace BExplorer.Shell {
 
@@ -131,7 +132,7 @@ namespace BExplorer.Shell {
     /// <summary>
     /// Gets the underlying <see cref="IShellItem"/> COM interface.
     /// </summary>
-    internal IShellItem ComInterface { get { return m_ComInterface; } set { m_ComInterface = value; } }
+    public IShellItem ComInterface { get { return m_ComInterface; } set { m_ComInterface = value; } }
 
     /// <summary>Gets the item's parsing name.</summary>
     public string ParsingName => GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING);

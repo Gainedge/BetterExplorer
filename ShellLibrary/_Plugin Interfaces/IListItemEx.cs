@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
+using WPFUI.Win32;
 using Size = System.Drawing.Size;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
@@ -101,6 +102,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     String ParsingName { get; }
 
     Boolean IsBrowsable { get; }
+
+    Boolean IsRenamable { get; }
 
     /// <summary>Is this a folder?</summary>
     Boolean IsFolder { get; }

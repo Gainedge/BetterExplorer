@@ -36,6 +36,7 @@
   <!--  BRUSHES  -->
 
   <!--  Base brushes  -->
+  <SolidColorBrush x:Key="WindowBackground" options:Freeze="True" Color="White" />
   <SolidColorBrush
     x:Key="WhiteBrush"
     options:Freeze="True"

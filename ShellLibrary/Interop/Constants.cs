@@ -104,6 +104,7 @@ namespace BExplorer.Shell.Interop {
     public const int RBN_ENDDRAG = (RBN_FIRST - 5);
 
     const int LVN_FIRST = -100;
+    public const int LVN_ITEMCHANGING = (LVN_FIRST - 0);
     public const int LVN_ITEMCHANGED = (LVN_FIRST - 1);
     public const int LVN_DELETEITEM = (LVN_FIRST - 3);
     public const int LVN_BEGINDRAG = (LVN_FIRST - 9);
@@ -192,8 +193,7 @@ namespace BExplorer.Shell.Interop {
   public struct HDITEM {
     public Mask mask;
     public int cxy;
-    [MarshalAs(UnmanagedType.LPTStr)]
-    public string pszText;
+    public IntPtr pszText;
     public IntPtr hbm;
     public int cchTextMax;
     public Format fmt;

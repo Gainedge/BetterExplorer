@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -118,6 +119,30 @@ namespace BExplorer.Shell.Interop {
 
     [DllImport("gdi32.dll", EntryPoint = "GetObject")]
     public static extern int GetObjectBitmap(IntPtr hObject, int nCount, [Out] IntPtr lpObject);
+    [DllImport("gdi32.dll")]
+    public static extern IntPtr GetStockObject(StockObjects fnObject);
+    public enum StockObjects {
+      WHITE_BRUSH = 0,
+      LTGRAY_BRUSH = 1,
+      GRAY_BRUSH = 2,
+      DKGRAY_BRUSH = 3,
+      BLACK_BRUSH = 4,
+      NULL_BRUSH = 5,
+      HOLLOW_BRUSH = NULL_BRUSH,
+      WHITE_PEN = 6,
+      BLACK_PEN = 7,
+      NULL_PEN = 8,
+      OEM_FIXED_FONT = 10,
+      ANSI_FIXED_FONT = 11,
+      ANSI_VAR_FONT = 12,
+      SYSTEM_FONT = 13,
+      DEVICE_DEFAULT_FONT = 14,
+      DEFAULT_PALETTE = 15,
+      SYSTEM_FIXED_FONT = 16,
+      DEFAULT_GUI_FONT = 17,
+      DC_BRUSH = 18,
+      DC_PEN = 19,
+    }
 
     public static void GetBitmapDimentions(IntPtr ipd, out int width, out int height) {
       // get the info about the HBITMAP inside the IPictureDisp
@@ -253,5 +278,75 @@ namespace BExplorer.Shell.Interop {
 
     [DllImport("gdi32.dll")]
     public static extern int SetBkMode(IntPtr hdc, int iBkMode);
+
+    public static Bitmap GetBitmapFromHBitmap(IntPtr hBitmap) {
+      try {
+        Bitmap bmp = Image.FromHbitmap(hBitmap);
+        if (Image.GetPixelFormatSize(bmp.PixelFormat) < 32) {
+          return bmp;
+        }
+
+        Rectangle bmBounds = new Rectangle(0, 0, bmp.Width, bmp.Height);
+        var bmpData = bmp.LockBits(bmBounds, ImageLockMode.ReadOnly, bmp.PixelFormat);
+        if (IsAlphaBitmap(bmpData)) {
+          var alpha = GetAlphaBitmapFromBitmapData(bmpData);
+          bmp.UnlockBits(bmpData);
+          bmp.Dispose();
+          return alpha;
+        }
+
+        bmp.UnlockBits(bmpData);
+        return bmp;
+      } catch {
+        return null;
+      }
+    }
+    private static bool IsAlphaBitmap(BitmapData bmpData) {
+      for (int y = 0; y <= bmpData.Height - 1; y++) {
+        for (int x = 0; x <= bmpData.Width - 1; x++) {
+          Color pixelColor = Color.FromArgb(
+            Marshal.ReadInt32(bmpData.Scan0, (bmpData.Stride * y) + (4 * x)));
+
+          if (pixelColor.A > 0 & pixelColor.A < 255) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+    private static Bitmap GetAlphaBitmapFromBitmapData(BitmapData bmpData) {
+      using var tmp = new Bitmap(bmpData.Width, bmpData.Height, bmpData.Stride, PixelFormat.Format32bppArgb, bmpData.Scan0);
+      Bitmap clone = new Bitmap(tmp.Width, tmp.Height, tmp.PixelFormat);
+      using (Graphics gr = Graphics.FromImage(clone)) {
+        gr.DrawImage(tmp, new Rectangle(0, 0, clone.Width, clone.Height));
+      }
+      return clone;
+    }
+    [Flags]
+    public enum DCB {
+      /// <summary>The bounding rectangle is empty.</summary>
+      DCB_RESET = 0x0001,
+
+      /// <summary>
+      /// Adds the rectangle specified by the lprcBounds parameter to the bounding rectangle (using a rectangle union operation). Using
+      /// both DCB_RESET and DCB_ACCUMULATE sets the bounding rectangle to the rectangle specified by the lprcBounds parameter.
+      /// </summary>
+      DCB_ACCUMULATE = 0x0002,
+
+      /// <summary>Same as DCB_ACCUMULATE.</summary>
+      DCB_DIRTY = DCB_ACCUMULATE,
+
+      /// <summary>The bounding rectangle is not empty.</summary>
+      DCB_SET = DCB_RESET | DCB_ACCUMULATE,
+
+      /// <summary>Boundary accumulation is on.</summary>
+      DCB_ENABLE = 0x0004,
+
+      /// <summary>Boundary accumulation is off.</summary>
+      DCB_DISABLE = 0x0008,
+    }
+    [DllImport("Gdi32", SetLastError = false, ExactSpelling = true)]
+    public static extern DCB SetBoundsRect(IntPtr hdc, in User32.RECT lprect, DCB flags);
   }
 }

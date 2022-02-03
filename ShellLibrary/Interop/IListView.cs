@@ -146,7 +146,7 @@ namespace BExplorer.Shell.Interop {
     HResult GetClientRect(Boolean a, out User32.RECT b);
 
     HResult GetColumnWidth(int iSubitem, out int width);
-
+    [PreserveSig]
     HResult SetColumnWidth(int a, int b);
 
     HResult GetCallbackMask(out long a);

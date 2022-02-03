@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using WPFUI.Win32;
 
 namespace BExplorer.Shell.Interop {
 	#region Property System Enumerations

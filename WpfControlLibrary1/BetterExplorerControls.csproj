@@ -35,10 +35,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <AppDesigner Include="Properties\" />
+    <None Remove="Assets\Colored-Icons.ttf" />
+    <None Remove="Assets\Custom-Glyphs.ttf" />
+    <None Remove="Assets\recyclebin-fabric-glyph.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ShellLibrary\ShellLibrary.csproj" />
+    <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\filter16.png" />
@@ -79,6 +81,17 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Assets\Colored-Icons.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Custom-Glyphs.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\recyclebin-fabric-glyph.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.236301">
       <PrivateAssets>all</PrivateAssets>
@@ -91,5 +104,9 @@
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fluent.Ribbon\Fluent.Ribbon\Fluent.Ribbon.csproj" />
+    <ProjectReference Include="..\WPFUI\WPFUI.csproj" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
+using ShellControls.ShellListView;
+using WPFUI.Win32;
 
 namespace BetterExplorer {
 	public partial class MoreColumns : Form {

@@ -8,9 +8,11 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
+using WPFUI.Win32;
 using Brush = System.Drawing.Brush;
 using Pen = System.Drawing.Pen;
 
@@ -134,7 +136,7 @@ namespace BExplorer.Shell {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  internal struct NMLISTVIEW {
+  public struct NMLISTVIEW {
     public NMHDR hdr;
     public int iItem;
     public int iSubItem;
@@ -494,55 +496,6 @@ namespace BExplorer.Shell {
     }
     */
 
-    /// <summary>
-    /// Sets the <paramref name="row"/> and <paramref name="column"/> based on the row and column that the <paramref name="hitPoint">point</paramref> falls on
-    /// </summary>
-    /// <param name="shellView">The <see cref="ShellView"/> you want to test with</param>
-    /// <param name="hitPoint">The point on the screen you awnt to look for</param>
-    /// <param name="row">The value for row that was hit</param>
-    /// <param name="column">The value for column that was hit</param>
-    /// <returns>Was the <paramref name="shellView"/> hit at all?</returns>
-    public static bool HitTest(this ShellView shellView, Point hitPoint, out int row, out int column) {
-      // clear the output values
-      row = column = -1;
-
-      // set up some win32 api constant values
-      const int LVM_FIRST = 0x1000;
-      //const int LVM_SUBITEMHITTEST = (LVM_FIRST + 57);
-      const int LVM_HITTEST = (LVM_FIRST + 18);
-
-      const int LVHT_NOWHERE = 0x1;
-      const int LVHT_ONITEMICON = 0x2;
-      const int LVHT_ONITEMLABEL = 0x4;
-      const int LVHT_ONITEMSTATEICON = 0x8;
-      const int LVHT_EX_ONCONTENTS = 0x04000000;
-      const int LVHT_ONITEM = (LVHT_ONITEMICON | LVHT_ONITEMLABEL | LVHT_ONITEMSTATEICON | LVHT_EX_ONCONTENTS);
-
-      // set up the return value
-      bool hitLocationFound = false;
-
-      // initialize a hittest information structure
-      LVHITTESTINFO lvHitTestInfo = new LVHITTESTINFO();
-      lvHitTestInfo.pt.x = hitPoint.X;
-      lvHitTestInfo.pt.y = hitPoint.Y;
-
-      // send the hittest message to find out where the click was
-      if (User32.SendMessage(shellView.LVHandle, LVM_HITTEST, 0, ref lvHitTestInfo) != 0) {
-        bool nowhere = ((lvHitTestInfo.flags & LVHT_NOWHERE) != 0);
-        bool onItem = ((lvHitTestInfo.flags & LVHT_ONITEM) != 0);
-
-        if (onItem && !nowhere) {
-          row = lvHitTestInfo.iItem;
-          column = lvHitTestInfo.iSubItem;
-          hitLocationFound = true;
-        }
-      } else if (User32.SendMessage(shellView.LVHandle, LVM_FIRST, 0, ref lvHitTestInfo) != 0) {
-        row = 0;
-        hitLocationFound = true;
-      }
-
-      return hitLocationFound;
-    }
 
     public static System.Drawing.Point ToPoint(this IntPtr lparam) {
       return new System.Drawing.Point(lparam.ToInt32() & 0xFFFF, lparam.ToInt32() >> 16);
@@ -710,60 +663,6 @@ namespace BExplorer.Shell {
         return checkedItem?.Parent?.ParsingName == currentFolder?.ParsingName;
       }
     }
-
-    public static IOrderedEnumerable<IListItemEx> SetSortCollumn(this IEnumerable<IListItemEx> items, ShellView view, Boolean isReorder, Collumns column, SortOrder order, Boolean reverseOrder = true) {
-      if (column == null) {
-        column = view.Collumns.FirstOrDefault();
-      }
-
-      try {
-        IOrderedEnumerable<IListItemEx> result = null;
-        //var selectedItems = this.SelectedItems.ToArray();
-        if (column.ID == view.LastSortedColumnId && reverseOrder) {
-          // Reverse the current sort direction for this column.
-          view.LastSortOrder = view.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
-        } else {
-          // Set the column number that is to be sorted; default to ascending.
-          view.LastSortedColumnId = column.ID;
-          view.LastSortOrder = order;
-        }
-
-        if (isReorder) {
-          var itemsQuery = items.Where(w => view.ShowHidden || !w.IsHidden).OrderByDescending(o => o.IsFolder);
-          if (column.CollumnType != typeof(String)) {
-            if (order == SortOrder.Ascending) {
-              result = itemsQuery.ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value ?? "1");
-            } else {
-              result = itemsQuery.ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value ?? "1");
-            }
-          } else {
-            if (order == SortOrder.Ascending) {
-              result = itemsQuery.ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value?.ToString(), NaturalStringComparer.Default);
-            } else {
-              result = itemsQuery.ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value?.ToString(), NaturalStringComparer.Default);
-            }
-          }
-
-          var i = 0;
-        }
-
-
-        //var colIndexReal = view.Collumns.IndexOf(view.Collumns.FirstOrDefault(w => w.ID == view.LastSortedColumnId));
-        //if (colIndexReal > -1) {
-        //  User32.SendMessage(view.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, colIndexReal, 0);
-        //  view.SetSortIcon(colIndexReal, order);
-        //} else {
-        //  User32.SendMessage(view.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, -1, 0);
-        //}
-
-        //if (!this.IsRenameInProgress) {
-        //  this.SelectItems(selectedItems);
-        //}
-        return result;
-      } catch {
-        return null;
-      }
-    }
     public static void Clear<T>(this ConcurrentQueue<T> queue) {
       T item;
       while (queue.TryDequeue(out item)) {
@@ -859,5 +758,245 @@ namespace BExplorer.Shell {
         graphics.FillPath(brush, path);
       }
     }
+
+    public static Rectangle ToRectangle(this User32.RECT rect, Int32 smallerWith = 0) {
+      return new Rectangle(rect.Left + smallerWith, rect.Top + smallerWith, rect.Width - 2 * smallerWith, rect.Height - 2 * smallerWith);
+    }
+
+    public static Point ToPoint(this POINT ptPoint) {
+      return new Point(ptPoint.x, ptPoint.y);
+    }
+
+  }
+  public static class StringHelper {
+    /// <summary>Allocates a block of memory allocated from the unmanaged COM task allocator sufficient to hold the number of specified characters.</summary>
+    /// <param name="count">The number of characters, inclusive of the null terminator.</param>
+    /// <param name="memAllocator">The method used to allocate the memory.</param>
+    /// <param name="charSet">The character set.</param>
+    /// <returns>The address of the block of memory allocated.</returns>
+    public static IntPtr AllocChars(uint count, Func<int, IntPtr> memAllocator, CharSet charSet = CharSet.Auto) {
+      if (count == 0) return IntPtr.Zero;
+      var sz = GetCharSize(charSet);
+      var ptr = memAllocator((int)count * sz);
+      if (count > 0) {
+        if (sz == 1)
+          Marshal.WriteByte(ptr, 0);
+        else
+          Marshal.WriteInt16(ptr, 0);
+      }
+      return ptr;
+    }
+
+    /// <summary>Allocates a block of memory allocated from the unmanaged COM task allocator sufficient to hold the number of specified characters.</summary>
+    /// <param name="count">The number of characters, inclusive of the null terminator.</param>
+    /// <param name="charSet">The character set.</param>
+    /// <returns>The address of the block of memory allocated.</returns>
+    public static IntPtr AllocChars(uint count, CharSet charSet = CharSet.Auto) => AllocChars(count, Marshal.AllocCoTaskMem, charSet);
+
+    /// <summary>Copies the contents of a managed <see cref="SecureString"/> object to a block of memory allocated from the unmanaged COM task allocator.</summary>
+    /// <param name="s">The managed object to copy.</param>
+    /// <param name="charSet">The character set.</param>
+    /// <returns>The address, in unmanaged memory, where the <paramref name="s"/> parameter was copied to, or 0 if a null object was supplied.</returns>
+    public static IntPtr AllocSecureString(SecureString s, CharSet charSet = CharSet.Auto) {
+      if (s == null) return IntPtr.Zero;
+      if (GetCharSize(charSet) == 2)
+        return Marshal.SecureStringToCoTaskMemUnicode(s);
+      return Marshal.SecureStringToCoTaskMemAnsi(s);
+    }
+
+    /// <summary>Copies the contents of a managed <see cref="SecureString"/> object to a block of memory allocated from a supplied allocation method.</summary>
+    /// <param name="s">The managed object to copy.</param>
+    /// <param name="charSet">The character set.</param>
+    /// <param name="memAllocator">The method used to allocate the memory.</param>
+    /// <returns>The address, in unmanaged memory, where the <paramref name="s"/> parameter was copied to, or 0 if a null object was supplied.</returns>
+    public static IntPtr AllocSecureString(SecureString s, CharSet charSet, Func<int, IntPtr> memAllocator) => AllocSecureString(s, charSet, memAllocator, out _);
+
+    /// <summary>Copies the contents of a managed <see cref="SecureString"/> object to a block of memory allocated from a supplied allocation method.</summary>
+    /// <param name="s">The managed object to copy.</param>
+    /// <param name="charSet">The character set.</param>
+    /// <param name="memAllocator">The method used to allocate the memory.</param>
+    /// <param name="allocatedBytes">Returns the number of allocated bytes for the string.</param>
+    /// <returns>The address, in unmanaged memory, where the <paramref name="s"/> parameter was copied to, or 0 if a null object was supplied.</returns>
+    public static IntPtr AllocSecureString(SecureString s, CharSet charSet, Func<int, IntPtr> memAllocator, out int allocatedBytes) {
+      allocatedBytes = 0;
+      if (s == null) return IntPtr.Zero;
+      var chSz = GetCharSize(charSet);
+      var encoding = chSz == 2 ? System.Text.Encoding.Unicode : System.Text.Encoding.ASCII;
+      var hMem = AllocSecureString(s, charSet);
+      var str = chSz == 2 ? Marshal.PtrToStringUni(hMem) : Marshal.PtrToStringAnsi(hMem);
+      Marshal.FreeCoTaskMem(hMem);
+      if (str == null) return IntPtr.Zero;
+      var b = encoding.GetBytes(str);
+      var p = memAllocator(b.Length);
+      Marshal.Copy(b, 0, p, b.Length);
+      allocatedBytes = b.Length;
+      return p;
+    }
+
+    /// <summary>Copies the contents of a managed String to a block of memory allocated from the unmanaged COM task allocator.</summary>
+    /// <param name="s">A managed string to be copied.</param>
+    /// <param name="charSet">The character set.</param>
+    /// <returns>The allocated memory block, or 0 if <paramref name="s"/> is null.</returns>
+    public static IntPtr AllocString(string s, CharSet charSet = CharSet.Auto) => charSet == CharSet.Auto ? Marshal.StringToCoTaskMemAuto(s) : (charSet == CharSet.Unicode ? Marshal.StringToCoTaskMemUni(s) : Marshal.StringToCoTaskMemAnsi(s));
+
+    /// <summary>Copies the contents of a managed String to a block of memory allocated from a supplied allocation method.</summary>
+    /// <param name="s">A managed string to be copied.</param>
+    /// <param name="charSet">The character set.</param>
+    /// <param name="memAllocator">The method used to allocate the memory.</param>
+    /// <returns>The allocated memory block, or 0 if <paramref name="s"/> is null.</returns>
+    public static IntPtr AllocString(string s, CharSet charSet, Func<int, IntPtr> memAllocator) => AllocString(s, charSet, memAllocator, out _);
+
+    /// <summary>
+    /// Copies the contents of a managed String to a block of memory allocated from a supplied allocation method.
+    /// </summary>
+    /// <param name="s">A managed string to be copied.</param>
+    /// <param name="charSet">The character set.</param>
+    /// <param name="memAllocator">The method used to allocate the memory.</param>
+    /// <param name="allocatedBytes">Returns the number of allocated bytes for the string.</param>
+    /// <returns>The allocated memory block, or 0 if <paramref name="s" /> is null.</returns>
+    public static IntPtr AllocString(string s, CharSet charSet, Func<int, IntPtr> memAllocator, out int allocatedBytes) {
+      if (s == null) { allocatedBytes = 0; return IntPtr.Zero; }
+      var b = s.GetBytes(true, charSet);
+      var p = memAllocator(b.Length);
+      Marshal.Copy(b, 0, p, allocatedBytes = b.Length);
+      return p;
+    }
+
+    /// <summary>
+    /// Zeros out the allocated memory behind a secure string and then frees that memory.
+    /// </summary>
+    /// <param name="ptr">The address of the memory to be freed.</param>
+    /// <param name="sizeInBytes">The size in bytes of the memory pointed to by <paramref name="ptr"/>.</param>
+    /// <param name="memFreer">The memory freer.</param>
+    public static void FreeSecureString(IntPtr ptr, int sizeInBytes, Action<IntPtr> memFreer) {
+      if (IsValue(ptr)) return;
+      var b = new byte[sizeInBytes];
+      Marshal.Copy(b, 0, ptr, b.Length);
+      memFreer(ptr);
+    }
+
+    /// <summary>Frees a block of memory allocated by the unmanaged COM task memory allocator for a string.</summary>
+    /// <param name="ptr">The address of the memory to be freed.</param>
+    /// <param name="charSet">The character set of the string.</param>
+    public static void FreeString(IntPtr ptr, CharSet charSet = CharSet.Auto) {
+      if (IsValue(ptr)) return;
+      if (GetCharSize(charSet) == 2)
+        Marshal.ZeroFreeCoTaskMemUnicode(ptr);
+      else
+        Marshal.ZeroFreeCoTaskMemAnsi(ptr);
+    }
+
+    /// <summary>Gets the encoded bytes for a string including an optional null terminator.</summary>
+    /// <param name="value">The string value to convert.</param>
+    /// <param name="nullTerm">if set to <c>true</c> include a null terminator at the end of the string in the resulting byte array.</param>
+    /// <param name="charSet">The character set.</param>
+    /// <returns>A byte array including <paramref name="value"/> encoded as per <paramref name="charSet"/> and the optional null terminator.</returns>
+    public static byte[] GetBytes(this string value, bool nullTerm = true, CharSet charSet = CharSet.Auto) {
+      var chSz = GetCharSize(charSet);
+      var enc = chSz == 1 ? System.Text.Encoding.ASCII : System.Text.Encoding.Unicode;
+      var ret = new byte[enc.GetByteCount(value) + (nullTerm ? chSz : 0)];
+      enc.GetBytes(value, 0, value.Length, ret, 0);
+      if (nullTerm)
+        enc.GetBytes(new[] { '\0' }, 0, 1, ret, ret.Length - chSz);
+      return ret;
+    }
+
+    /// <summary>Gets the number of bytes required to store the string.</summary>
+    /// <param name="value">The string value.</param>
+    /// <param name="nullTerm">if set to <c>true</c> include a null terminator at the end of the string in the count if <paramref name="value"/> does not equal <c>null</c>.</param>
+    /// <param name="charSet">The character set.</param>
+    /// <returns>The number of bytes required to store <paramref name="value"/>. Returns 0 if <paramref name="value"/> is <c>null</c>.</returns>
+    public static int GetByteCount(this string value, bool nullTerm = true, CharSet charSet = CharSet.Auto) {
+      if (value == null) return 0;
+      var chSz = GetCharSize(charSet);
+      var enc = chSz == 1 ? System.Text.Encoding.ASCII : System.Text.Encoding.Unicode;
+      return enc.GetByteCount(value) + (nullTerm ? chSz : 0);
+    }
+
+    /// <summary>Gets the size of a character defined by the supplied <see cref="CharSet"/>.</summary>
+    /// <param name="charSet">The character set to size.</param>
+    /// <returns>The size of a standard character, in bytes, from <paramref name="charSet"/>.</returns>
+    public static int GetCharSize(CharSet charSet = CharSet.Auto) => charSet == CharSet.Auto ? Marshal.SystemDefaultCharSize : (charSet == CharSet.Unicode ? 2 : 1);
+
+    /// <summary>
+    /// Allocates a managed String and copies all characters up to the first null character or the end of the allocated memory pool from a string stored in unmanaged memory into it.
+    /// </summary>
+    /// <param name="ptr">The address of the first character.</param>
+    /// <param name="charSet">The character set of the string.</param>
+    /// <param name="allocatedBytes">If known, the total number of bytes allocated to the native memory in <paramref name="ptr"/>.</param>
+    /// <returns>
+    /// A managed string that holds a copy of the unmanaged string if the value of the <paramref name="ptr"/> parameter is not null;
+    /// otherwise, this method returns null.
+    /// </returns>
+    public static string GetString(IntPtr ptr, CharSet charSet = CharSet.Auto, long allocatedBytes = long.MaxValue) {
+      if (IsValue(ptr)) return null;
+      var sb = new System.Text.StringBuilder();
+      unsafe {
+        var chkLen = 0L;
+        if (GetCharSize(charSet) == 1) {
+          for (var uptr = (byte*)ptr; chkLen < allocatedBytes && *uptr != 0; chkLen++, uptr++)
+            sb.Append((char)*uptr);
+        } else {
+          for (var uptr = (ushort*)ptr; chkLen + 2 <= allocatedBytes && *uptr != 0; chkLen += 2, uptr++)
+            sb.Append((char)*uptr);
+        }
+      }
+      return sb.ToString();
+    }
+
+    /// <summary>
+    /// Allocates a managed String and copies all characters up to the first null character or at most <paramref name="length"/> characters from a string stored in unmanaged memory into it.
+    /// </summary>
+    /// <param name="ptr">The address of the first character.</param>
+    /// <param name="length">The number of characters to copy.</param>
+    /// <param name="charSet">The character set of the string.</param>
+    /// <returns>
+    /// A managed string that holds a copy of the unmanaged string if the value of the <paramref name="ptr"/> parameter is not null;
+    /// otherwise, this method returns null.
+    /// </returns>
+    public static string GetString(IntPtr ptr, int length, CharSet charSet = CharSet.Auto) => GetString(ptr, charSet, length * GetCharSize(charSet));
+
+    /// <summary>Indicates whether a specified string is <see langword="null"/>, empty, or consists only of white-space characters.</summary>
+    /// <param name="value">The string to test.</param>
+    /// <returns>
+    /// <see langword="true"/> if the <paramref name="value"/> parameter is <see langword="null"/> or <see cref="string.Empty"/>, or if
+    /// value consists exclusively of white-space characters.
+    /// </returns>
+    public static bool IsNullOrWhiteSpace(string value) => value is null || value.All(c => char.IsWhiteSpace(c));
+
+    /// <summary>Refreshes the memory block from the unmanaged COM task allocator and copies the contents of a new managed String.</summary>
+    /// <param name="ptr">The address of the first character.</param>
+    /// <param name="charLen">Receives the new character length of the allocated memory block.</param>
+    /// <param name="s">A managed string to be copied.</param>
+    /// <param name="charSet">The character set of the string.</param>
+    /// <returns><c>true</c> if the memory block was reallocated; <c>false</c> if set to null.</returns>
+    public static bool RefreshString(ref IntPtr ptr, out uint charLen, string s, CharSet charSet = CharSet.Auto) {
+      FreeString(ptr, charSet);
+      ptr = AllocString(s, charSet);
+      charLen = s == null ? 0U : (uint)s.Length + 1;
+      return s != null;
+    }
+
+    /// <summary>Writes the specified string to a pointer to allocated memory.</summary>
+    /// <param name="value">The string value.</param>
+    /// <param name="ptr">The pointer to the allocated memory.</param>
+    /// <param name="byteCnt">The resulting number of bytes written.</param>
+    /// <param name="nullTerm">if set to <c>true</c> include a null terminator at the end of the string in the count if <paramref name="value"/> does not equal <c>null</c>.</param>
+    /// <param name="charSet">The character set of the string.</param>
+    /// <param name="allocatedBytes">If known, the total number of bytes allocated to the native memory in <paramref name="ptr"/>.</param>
+    public static void Write(string value, IntPtr ptr, out int byteCnt, bool nullTerm = true, CharSet charSet = CharSet.Auto, long allocatedBytes = long.MaxValue) {
+      if (value is null) {
+        byteCnt = 0;
+        return;
+      }
+      if (ptr == IntPtr.Zero) throw new ArgumentNullException(nameof(ptr));
+      var bytes = GetBytes(value, nullTerm, charSet);
+      if (bytes.Length > allocatedBytes)
+        throw new ArgumentOutOfRangeException(nameof(allocatedBytes));
+      byteCnt = bytes.Length;
+      Marshal.Copy(bytes, 0, ptr, byteCnt);
+    }
+
+    private static bool IsValue(IntPtr ptr) => ptr.ToInt64() >> 16 == 0;
   }
 }

@@ -107,10 +107,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External References\NAppUpdate.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External References\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="TAFactory.IconPack, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External References\TAFactory.IconPack.dll</HintPath>
@@ -118,11 +114,6 @@
     <Reference Include="WPFLocalizeExtension">
       <HintPath>..\..\External References\WPFLocalizeExtension.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="HelperClasses\ClipBoardMonitor.cs">
-      <SubType>Component</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="app.manifest">
@@ -152,6 +143,7 @@
     <ProjectReference Include="..\..\Rating control\CustomControls\StarRatingControl.csproj" />
     <ProjectReference Include="..\..\Settings\Settings.csproj" />
     <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj" />
+    <ProjectReference Include="..\..\ShellControls\ShellControls.csproj" />
     <ProjectReference Include="..\..\ShellLibrary\ShellLibrary.csproj" />
     <ProjectReference Include="..\..\TabControl\Wpf.TabControl.csproj" />
     <ProjectReference Include="..\..\TaskDialog\TaskDialog.csproj" />
@@ -159,9 +151,13 @@
     <ProjectReference Include="..\..\UsbEject\UsbEject.csproj" />
     <ProjectReference Include="..\..\WpfControlLibrary1\BetterExplorerControls.csproj" />
     <ProjectReference Include="..\..\WpfDocumentPreviewer\WpfDocumentPreviewer.csproj" />
+    <ProjectReference Include="..\..\WPFUI\WPFUI.csproj" />
     <ProjectReference Include="..\..\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Assets\Images\noise.png" />
+    <Resource Include="Assets\Images\noiseBlack.png" />
+    <Resource Include="Assets\Images\noiseWhite.png" />
     <Resource Include="Explorer.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -625,6 +621,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Api\" />
+    <Folder Include="Controls\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="FolderItem.cs" />
@@ -652,6 +649,9 @@
     <Compile Remove="PictureViewerPopup.xaml.cs" />
     <Compile Remove="Settings.cs" />
     <EmbeddedResource Remove="UpdateWizzard.resx" />
+    <None Remove="Assets\Images\noise.png" />
+    <None Remove="Assets\Images\noiseBlack.png" />
+    <None Remove="Assets\Images\noiseWhite.png" />
     <Page Remove="Networks\AccountAuthWindow.xaml" />
     <Page Remove="Networks\AddAccountEntry.xaml" />
     <Page Remove="Networks\AddServer.xaml" />
@@ -665,6 +665,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.0.2" />
+    <PackageReference Include="NLog" Version="4.7.13" />
     <PackageReference Include="SingleInstanceCore" Version="2.1.0" />
   </ItemGroup>
   <ProjectExtensions>

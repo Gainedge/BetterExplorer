@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using BExplorer.Shell;
 using Microsoft.Win32;
 
@@ -42,10 +43,10 @@ namespace BetterExplorer {
     /// <param name="onClick">Test</param>
     /// <returns></returns>	
     [System.Diagnostics.DebuggerStepThrough()]
-    public static Fluent.MenuItem Build_MenuItem(Object header = null, Object tag = null, Object icon = null, string name = null, object ToolTip = null,
+    public static MenuItem Build_MenuItem(Object header = null, Object tag = null, Object icon = null, string name = null, object ToolTip = null,
       bool focusable = true, bool checkable = false, bool isChecked = false, string GroupName = null, System.Windows.RoutedEventHandler onClick = null) {
 
-      var Item = new Fluent.MenuItem() {
+      var Item = new MenuItem() {
         Name = name,
         Header = header,
         Tag = tag,
@@ -53,7 +54,7 @@ namespace BetterExplorer {
         IsCheckable = checkable,
         IsChecked = isChecked,
         Icon = icon,
-        GroupName = GroupName,
+        //GroupName = GroupName,
         ToolTip = ToolTip
       };
 

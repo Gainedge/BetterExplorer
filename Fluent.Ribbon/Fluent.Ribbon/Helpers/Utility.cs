@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Fluent.Helpers {
-  internal static partial class Utility {
+  public static partial class Utility {
     // See: http://stackoverflow.com/questions/7913325/win-api-in-c-get-hi-and-low-word-from-intptr/7913393#7913393
     public static System.Windows.Point GetPoint(IntPtr ptr) {
       var xy = unchecked(Environment.Is64BitProcess ? (uint)ptr.ToInt64() : (uint)ptr.ToInt32());

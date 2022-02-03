@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
+using WPFUI.Win32;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
   
@@ -129,6 +130,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     public BitmapSource BitmapSource { get; }
     public String ParsingName { get; }
     public Boolean IsBrowsable { get; }
+    public bool IsRenamable { get; }
     public Boolean IsFolder { get; }
     public Boolean HasSubFolders { get; }
     public Boolean IsHidden { get; }

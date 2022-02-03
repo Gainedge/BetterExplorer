@@ -1,0 +1,337 @@
+﻿<UserControl x:Class="ShellControls.ExplorerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wpfuicommon="clr-namespace:WPFUI.Common;assembly=WPFUI"
+             xmlns:beHelper="clr-namespace:BEHelper;assembly=BEHelper"
+             xmlns:shellTreeView="clr-namespace:ShellControls.ShellTreeView"
+             xmlns:betterExplorerControls="clr-namespace:BetterExplorerControls;assembly=BetterExplorerControls"
+             xmlns:shellListView="clr-namespace:ShellControls.ShellListView"
+             xmlns:controls="clr-namespace:WPFUI.Controls;assembly=WPFUI"
+             xmlns:shellControls="clr-namespace:ShellControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="ExplorerControl_OnLoaded" Unloaded="ExplorerControl_OnUnloaded">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="115"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource ControlElevationBorderBrush}">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="65"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition/>
+          <ColumnDefinition Width="245"/>
+          <ColumnDefinition Width="Auto" MinWidth="55"/>
+        </Grid.ColumnDefinitions>
+        <Menu BorderThickness="0" VerticalAlignment="Center" Height="47">
+          <MenuItem x:Name="btnBack" Icon="{x:Static wpfuicommon:Icon.ArrowLeft20}" Click="btnBack_Click"></MenuItem>
+          <MenuItem x:Name="btnForward"  Icon="{x:Static wpfuicommon:Icon.ArrowRight20}" Click="btnForward_Click"></MenuItem>
+          <MenuItem x:Name="btnUp" Icon="{x:Static wpfuicommon:Icon.ArrowUp20}" Click="btnUp_Click"></MenuItem>
+        </Menu>
+        <ComboBox Grid.Column="1" Margin="10,0,0,0" IsEditable="True" Height="31"/>
+        <controls:SearchBox x:Name="txtSearch" Grid.Column="2" Margin="11,0,1,0" VerticalAlignment="Center" Height="33" SearchExecuted="TxtSearch_OnSearchExecuted"/>
+        <betterExplorerControls:FontIconButton Grid.Column="3" Glyph="Settings20" Margin="9,8,16,7"/>
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Margin="8,5,0,5">
+          <StackPanel.Resources>
+            <Style TargetType="{x:Type betterExplorerControls:FontIconButton}">
+              <Setter Property="Margin" Value="0,9,7,9"/>
+              <!--<Setter Property="Height" Value="30"/>-->
+            </Style>
+            <Style TargetType="{x:Type shellControls:ToolbarGroup}">
+              <Setter Property="Margin" Value="5,0,0,0"/>
+            </Style>
+          </StackPanel.Resources>
+          <shellControls:ToolbarGroup Margin="6,0,0,0">
+            <StackPanel Orientation="Horizontal">
+              <betterExplorerControls:FontIconButton BaseIconGlyph="&#xF037;" OverlayIconGlyph="&#xF038;" Header="New" Margin="-6,7,7,7">
+                <betterExplorerControls:FontIconButton.Flyout>
+                  <Grid Height="200" Width="200">
+                    <Button>Test</Button>
+                  </Grid>
+                </betterExplorerControls:FontIconButton.Flyout>
+              </betterExplorerControls:FontIconButton>
+            </StackPanel>
+          </shellControls:ToolbarGroup>
+
+          <shellControls:ToolbarGroup HaveSeparator="True">
+            <StackPanel Orientation="Horizontal">
+              <betterExplorerControls:FontIconButton x:Name="btnCut" BaseIconGlyph="&#xF03D;" OverlayIconGlyph="&#xF03E;" IsEnabled="False" Click="BtnCut_OnClick" />
+              <betterExplorerControls:FontIconButton x:Name="btnCopy" BaseIconGlyph="&#xF021;" OverlayIconGlyph="&#xF022;" IsEnabled="False" Click="BtnCopy_OnClick"/>
+              <betterExplorerControls:FontIconButton x:Name="btnPaste" BaseIconGlyph="&#xF023;" OverlayIconGlyph="&#xF024;" IsEnabled="False" Click="BtnPaste_OnClick"/>
+              <betterExplorerControls:FontIconButton x:Name="btnRename" BaseIconGlyph="&#xF027;" OverlayIconGlyph="&#xF028;" IsEnabled="False" Click="BtnRename_OnClick"/>
+              <betterExplorerControls:FontIconButton x:Name="btnShare" BaseIconGlyph="&#xF025;" OverlayIconGlyph="&#xF026;" IsEnabled="False" Click="BtnShare_OnClick"/>
+              <betterExplorerControls:FontIconButton x:Name="btnDelete" BaseIconGlyph="&#xF035;" OverlayIconGlyph="&#xF036;" IsEnabled="False" Click="BtnDelete_OnClick"/>
+            </StackPanel>
+          </shellControls:ToolbarGroup>
+          <shellControls:ToolbarGroup HaveSeparator="False" GroupColor="#BBD6B026" x:Name="ctgFolderTools" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal">
+              <betterExplorerControls:FontIconButton x:Name="btnChangeFolderIcon" Glyph="FolderPerson20" Click="BtnChangeFolderIcon_OnClick" Visibility="Collapsed"/>
+              <betterExplorerControls:FontIconButton x:Name="btnClearForlderIcon" Glyph="FolderProhibited20" Click="BtnClearForlderIcon_OnClick" Visibility="Collapsed"/>
+              <betterExplorerControls:FontIconButton x:Name="btnUsedSpace" Glyph="Glance20" Click="BtnUsedSpace_OnClick">
+                <betterExplorerControls:FontIconButton.ToolTip>
+                  <betterExplorerControls:AcrylicTooltip>
+                    Show used space
+                  </betterExplorerControls:AcrylicTooltip>
+                </betterExplorerControls:FontIconButton.ToolTip>
+              </betterExplorerControls:FontIconButton>
+            </StackPanel>
+          </shellControls:ToolbarGroup>
+          <shellControls:ToolbarGroup HaveSeparator="False" GroupColor="#BBE53013" x:Name="ctgImageTools" Visibility="Collapsed" >
+            <StackPanel Orientation="Horizontal">
+              <betterExplorerControls:FontIconButton Glyph="Image28" Header="Image Tools">
+                <betterExplorerControls:FontIconButton.Flyout>
+                  <Grid Margin="8,0,2,0">
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="Auto"/>
+                      <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                      <betterExplorerControls:FontIconButton x:Name="btnRotateRight" Glyph="ArrowRotateClockwise20" Click="RotateImages_Click"></betterExplorerControls:FontIconButton>
+                      <betterExplorerControls:FontIconButton x:Name="btnRotateLeft" Glyph="ArrowRotateCounterclockwise20" Click="RotateImages_Click"></betterExplorerControls:FontIconButton>
+                      <betterExplorerControls:FontIconButton x:Name="btnFlipY" Glyph="FlipHorizontal20" Click="RotateImages_Click"></betterExplorerControls:FontIconButton>
+                      <betterExplorerControls:FontIconButton x:Name="btnFlipX" Glyph="FlipVertical20" Click="RotateImages_Click"></betterExplorerControls:FontIconButton>
+                      <betterExplorerControls:FontIconButton Glyph="ImageArrowCounterclockwise24">
+                        <betterExplorerControls:FontIconButton.Flyout>
+                          <StackPanel Orientation="Vertical" Margin="0,6,0,6">
+                            <StackPanel.Resources>
+                              <Style TargetType="{x:Type betterExplorerControls:FontIconButton}">
+                                <Setter Property="Margin" Value="8,2,7,2"/>
+                              </Style>
+                            </StackPanel.Resources>
+                            <betterExplorerControls:FontIconButton Header="JPG"/>
+                            <betterExplorerControls:FontIconButton Header="PNG"/>
+                            <betterExplorerControls:FontIconButton Header="GIF"/>
+                            <betterExplorerControls:FontIconButton Header="BMP"/>
+                            <betterExplorerControls:FontIconButton Header="WMF"/>
+                          </StackPanel>
+                        </betterExplorerControls:FontIconButton.Flyout>
+                      </betterExplorerControls:FontIconButton>
+                      <betterExplorerControls:FontIconButton Glyph="Wallpaper24">
+                        <betterExplorerControls:FontIconButton.Flyout>
+                          <StackPanel Orientation="Vertical" Margin="0,6,0,6">
+                            <StackPanel.Resources>
+                              <Style TargetType="{x:Type betterExplorerControls:FontIconButton}">
+                                <Setter Property="Margin" Value="8,2,7,2"/>
+                              </Style>
+                            </StackPanel.Resources>
+                            <betterExplorerControls:FontIconButton Header="Fill"/>
+                            <betterExplorerControls:FontIconButton Header="Fit"/>
+                            <betterExplorerControls:FontIconButton Header="Stretch"/>
+                            <betterExplorerControls:FontIconButton Header="Center"/>
+                            <betterExplorerControls:FontIconButton Header="Tile"/>
+                          </StackPanel>
+                        </betterExplorerControls:FontIconButton.Flyout>
+                      </betterExplorerControls:FontIconButton>
+                    </StackPanel>
+                    <Grid Grid.Row="1" Margin="6,5,6,8">
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                      </Grid.RowDefinitions>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                      </Grid.ColumnDefinitions>
+                      <TextBlock
+                        x:Name="imgWidth"
+                        VerticalAlignment="Center"
+                        Text="{DynamicResource lblWidthCP}" />
+                      <TextBlock
+                        x:Name="imgHeight"
+                        Grid.Row="1"
+                        VerticalAlignment="Center"
+                        Text="{DynamicResource lblHeightCP}" />
+                      <TextBox
+                        x:Name="txtImgdWidth"
+                        Grid.Column="1"
+                        Margin="6,5,0,5"
+                        Focusable="True"
+                        IsReadOnly="True"
+                        IsReadOnlyCaretVisible="True" />
+                      <TextBox
+                        x:Name="txtImgdHeight"
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Margin="6,5,0,5"
+                        Focusable="True"
+                        IsReadOnly="True"
+                        IsReadOnlyCaretVisible="True" />
+                      <betterExplorerControls:FontIconButton Grid.Column="2" Grid.RowSpan="2" Glyph="ImageEdit24" Margin="6,5,0,5" Width="50"></betterExplorerControls:FontIconButton>
+                    </Grid>
+                  </Grid>
+                </betterExplorerControls:FontIconButton.Flyout>
+              </betterExplorerControls:FontIconButton>
+            </StackPanel>
+          </shellControls:ToolbarGroup>
+        </StackPanel>
+
+        <shellControls:ToolbarGroup Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,8,0">
+          <StackPanel Orientation="Horizontal"  Width="Auto" HorizontalAlignment="Right" Margin="0,4,0,4">
+            <StackPanel.Resources>
+              <Style TargetType="{x:Type betterExplorerControls:FontIconButton}">
+                <Setter Property="Margin" Value="0,9,7,9"/>
+              </Style>
+            </StackPanel.Resources>
+            <betterExplorerControls:FontIconButton x:Name="btnSelection" BaseIconGlyph="&#xF02B;" OverlayIconGlyph="&#xF02C;" Click="BtnSelection_OnClick" />
+            <betterExplorerControls:FontIconButton x:Name="btnSortGroup" BaseIconGlyph="&#xF029;" OverlayIconGlyph="&#xF02A;" Click="btnSortGroup_Click"/>
+            <betterExplorerControls:FontIconButton Glyph="Grid20">
+              <betterExplorerControls:FontIconButton.Flyout>
+                <Grid>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                  </Grid.RowDefinitions>
+                  <TextBlock Text="Layout" FontWeight="Bold" Margin="15,15,15,15"/>
+                  <Grid Grid.Row="1" Margin="8,0,0,0">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="180"/>
+                      <ColumnDefinition Width="10"/>
+                      <ColumnDefinition Width="180"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="Auto"/>
+                      <RowDefinition Height="Auto"/>
+                      <RowDefinition Height="Auto"/>
+                      <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Margin="15,0,0,0">
+                      <betterExplorerControls:FontIconButton Glyph="TextColumnOneWide20" Click="btnViewDetails_Click" Margin="0,4,0,4" IsCheckButton="True" x:Name="btnViewDetails"/>
+                      <TextBlock Text="Details"  Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="15,0,0,0" Grid.Row="1">
+                      <betterExplorerControls:FontIconButton Glyph="AppsListDetail24" Click="btnViewTiles_Click" Margin="0,4,0,4" IsCheckButton="True" x:Name="btnViewTiles"/>
+                      <TextBlock Text="Tiles"  Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="15,0,0,0" Grid.Row="2">
+                      <betterExplorerControls:FontIconButton Glyph="DockRow24" Click="btnViewSmallIcons_Click" Margin="0,4,0,4" IsCheckButton="True" x:Name="btnViewSmall"/>
+                      <TextBlock Text="Small Icons"  Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="15,0,0,0" Grid.Row="3">
+                      <betterExplorerControls:FontIconButton Glyph="AppsList20" Click="btnViewContents_Click" Margin="0,4,0,4" IsCheckButton="True" x:Name="btnViewContents"/>
+                      <TextBlock Text="Contents"  Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Border Grid.Column="1" Grid.RowSpan="4" Margin="0,8,0,8" BorderThickness="1" Width="2" BorderBrush="{DynamicResource ControlElevationBorderBrush}" HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="2" Margin="5,0,18,0">
+                      <betterExplorerControls:FontIconButton Glyph="Grid20" Click="btnViewMediumIcons_Click" Margin="0,4,0,4" IsCheckButton="True" x:Name="btnViewMedium"/>
+                      <TextBlock Text="Medium Icons"  Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1" Margin="5,0,18,0">
+                      <betterExplorerControls:FontIconButton Glyph="Tab20" Click="btnViewLargeIcons_Click" Margin="0,4,0,4" IsCheckButton="True" x:Name="btnViewLarge"/>
+                      <TextBlock Text="Large Icons"  Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="2" Margin="5,0,18,0">
+                      <betterExplorerControls:FontIconButton Glyph="Tv20" Click="btnViewExtraLargeIcons_Click" Margin="0,4,0,4" IsCheckButton="True" x:Name="btnViewExLarge"/>
+                      <TextBlock Text="Extra Large Icons"  Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                  </Grid>
+                  <Border Grid.Row="2" Margin="16,0,16,0" BorderThickness="1" Height="2" BorderBrush="{DynamicResource ControlElevationBorderBrush}" VerticalAlignment="Bottom"/>
+                  <Grid Grid.Row="3" Margin="18,16,16,18">
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="40"/>
+                      <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto"/>
+                      <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Show hidden items" VerticalAlignment="Center"/>
+                    <ToggleButton x:Name="tbHiddenFiles" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Click="tbHiddenItems_Click" />
+                    <TextBlock Grid.Row="1" Text="Show file extensions" VerticalAlignment="Center"/>
+                    <ToggleButton x:Name="tbFileExtensions" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Click="tbFileExtensions_Click"/>
+                  </Grid>
+                </Grid>
+              </betterExplorerControls:FontIconButton.Flyout>
+            </betterExplorerControls:FontIconButton>
+          </StackPanel>
+        </shellControls:ToolbarGroup>
+      </Grid>
+    </Border>
+    <Grid Grid.Row="1" Grid.Column="0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <Grid x:Name="pnlShellBrowser" Visibility="Hidden" Grid.Column="0">
+        <Grid.Resources>
+          <Style TargetType="{x:Type GridSplitter}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1,0,1,0"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}"/>
+            <!--<Setter Property="PreviewStyle" Value="{StaticResource GridSplitterPreviewStyle}"/>-->
+            <Style.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ControlElevationBorderBrush}"/>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="200" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <!--<shell:ShellTreeView x:Name="stvTreeView"></shell:ShellTreeView>-->
+        <Grid Grid.Column="0" Margin="0,0,0,8">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <beHelper:NoFlickerWindowsFormsHost x:Name="ShellTreeViewHost" Margin="4,0,0,0">
+            <beHelper:NoFlickerWindowsFormsHost.Background>
+              <SolidColorBrush Color="Transparent" />
+            </beHelper:NoFlickerWindowsFormsHost.Background>
+          </beHelper:NoFlickerWindowsFormsHost>
+          <ScrollBar x:Name="sbVerticalTree" Grid.Column="1" Padding="0" Margin="0"/>
+        </Grid>
+        <!--<Grid>
+          <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <shellTreeView:ShellTreeView Grid.Column="0" x:Name="_ShellTreeView" Background="Transparent"></shellTreeView:ShellTreeView>
+          </ScrollViewer>
+        </Grid>-->
+        <GridSplitter
+                x:Name="TreeSplitter"
+                Grid.Column="1"
+                Width="4"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Stretch"/>
+        <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <ListView Grid.ColumnSpan="2" Background="Transparent" BorderThickness="0" Margin="-4,0,0,0">
+            <ListView.View>
+              <GridView x:Name="lvHeader">
+              </GridView>
+            </ListView.View>
+          </ListView>
+          <beHelper:NoFlickerWindowsFormsHost x:Name="ShellViewHost" Margin="0,0,0,0" Grid.Row="1">
+          </beHelper:NoFlickerWindowsFormsHost>
+          <ScrollBar x:Name="sbVertical" Grid.Column="1" Grid.Row="1" Visibility="Collapsed" />
+          <StatusBar Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Padding="6" BorderThickness="0,1,0,0">
+            <StatusBarItem>
+              <TextBlock x:Name="txtSelection" Text=""  />
+            </StatusBarItem>
+          </StatusBar>
+        </Grid>
+      </Grid>
+
+    </Grid>
+  </Grid>
+</UserControl>

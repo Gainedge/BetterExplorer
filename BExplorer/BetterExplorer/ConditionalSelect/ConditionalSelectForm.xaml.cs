@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using BExplorer.Shell;
 using Fluent;
+using ShellControls.ShellListView;
 
 namespace BetterExplorer {
 

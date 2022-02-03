@@ -14,7 +14,6 @@ using System.Windows.Controls;
 using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
-using MenuItem = Fluent.MenuItem;
 using TabControl = Wpf.Controls.TabControl;
 
 namespace BetterExplorer {
@@ -232,5 +231,8 @@ namespace BetterExplorer {
       }
     }
 
+    private void btnShowMica(object sender, RoutedEventArgs e) {
+      
+    }
   }
 }

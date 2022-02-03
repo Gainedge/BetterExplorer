@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="ShellControls.PieChart.PieChart.Legend"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local ="clr-namespace:BetterExplorer.PieChart"
+    xmlns:pieChart="clr-namespace:ShellControls.PieChart.PieChart"
+    SizeChanged="UserControl_SizeChanged">
+
+  <UserControl.Resources>
+    <pieChart:LegendConverter x:Key="legendConverter" />
+    <pieChart:ColourConverter x:Key="colourConverter" />
+    <local:FileSizeConverter x:Key="fsConverter"/>
+    <Style TargetType="ListBoxItem">
+      <!-- override the default template to remove the default styling on the IsSelected property -->
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type ListBoxItem}">
+            <Border x:Name="border" BorderBrush="Transparent" BorderThickness="0" CornerRadius="4">
+              <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsSelected" Value="true">
+                <Setter Property="Background" TargetName="border">
+                  <Setter.Value>
+                    <SolidColorBrush Color="{DynamicResource ControlFillColorSecondary}"/>
+                  </Setter.Value>
+                </Setter>
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" TargetName="border">
+                  <Setter.Value>
+                    <SolidColorBrush Color="{DynamicResource ControlFillColorTertiary}"/>
+                  </Setter.Value>
+                </Setter>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </UserControl.Resources>
+
+  <Grid Margin="0,0,0,0">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <TextBlock TextAlignment="Center" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Name="Head" Margin="0,0,0,15" Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+      <ListBox Grid.Row="1" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch"  BorderThickness="0" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding}" Margin="0,0,0,-15" Name="legend" SelectionChanged="legend_SelectionChanged">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Border HorizontalAlignment="Stretch" Margin="3" CornerRadius="4">
+              <Border.Background>
+                <SolidColorBrush Color="Transparent"/>
+              </Border.Background>
+              <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="20"/>
+                  <ColumnDefinition Width="120"/>
+                  <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <!-- the colour key -->
+                <Border Grid.Column="0" Width="6" Tag="{Binding}" CornerRadius="3" Margin="0,2,0,2"
+                                       Background="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource colourConverter}}"/>
+
+                <!-- the name of this item -->
+                <TextBlock Grid.Column="1" Margin="3" Text="{Binding Path=FolderSizeLoc}" Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+
+                <!-- the value of the item's property which this pie chart represents -->
+                <!--<TextBlock Grid.Column="2" Margin="3" Tag="{Binding}"
+                                   Text="{Binding RelativeSource={RelativeSource Self},Converter={StaticResource legendConverter}}"/>-->
+                <TextBlock Grid.Column="2" Margin="3" Tag="{Binding}" Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                   Text="{Binding Path=FSize,Converter={StaticResource fsConverter}}">
+
+                </TextBlock>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+  </Grid>
+</UserControl>

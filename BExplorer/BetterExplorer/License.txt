@@ -2,7 +2,7 @@ Addition to the License for our needs:
 Custom rules (this are custom rules; they apply prior to the CDDL):
 
 Definition of "us"; "our": The Better Explorer Team
-Definition of "official page": http://better-explorer.com/ with any sub-directories like http://better-explorer.com/downloads
+Definition of "official page": https://gainedge.org/better-explorer/ with any sub-directories like https://gainedge.org/better-explorer/downloads
 Definition of "Downloaders": a piece of software d that downloads the main setup executable or the better explorer files in binary or source form.
 Definition of "Better Explorer": The Better Explorer  Project; including binaries (compiled code) and sources
 Definition of "Download Providers": A Site that distributes Better Explorer in source, binary or setup form; A site that offers software for paid or free download

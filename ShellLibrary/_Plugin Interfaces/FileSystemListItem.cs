@@ -12,6 +12,7 @@ using Size = System.Drawing.Size;
 using System.Text;
 using System.Linq;
 using System.Windows.Interop;
+using WPFUI.Win32;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
   using System.Drawing;
@@ -190,6 +191,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     /// Returns true if folder can be browsed
     /// </summary>
     public Boolean IsBrowsable => this.COM_Attribute_Check(SFGAO.BROWSABLE);
+
+    public Boolean IsRenamable => this.COM_Attribute_Check(SFGAO.CANRENAME);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private Boolean COM_Attribute_Check(SFGAO Check) {

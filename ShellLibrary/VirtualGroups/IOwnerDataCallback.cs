@@ -18,7 +18,7 @@ namespace BExplorer.Shell
 	[ComImport(),
 	 InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
 	 Guid("44C09D56-8D3B-419D-A462-7B956B105B47")]
-	internal interface IOwnerDataCallback
+	public interface IOwnerDataCallback
 	{
 		/// <summary>
 		/// Not sure what this does

@@ -715,14 +715,14 @@ namespace Odyssey.Controls {
         var root = newValue as BreadcrumbItem;
 
         /*
-				if (root == null)
-				{
-						root = BreadcrumbItem.CreateItem(newValue);
-						root.IsRoot = true;
-				}
-				else
-						root.IsRoot = true;
-				*/
+        if (root == null)
+        {
+            root = BreadcrumbItem.CreateItem(newValue);
+            root.IsRoot = true;
+        }
+        else
+            root.IsRoot = true;
+        */
 
         if (root == null) root = BreadcrumbItem.CreateItem(newValue);
         root.IsRoot = true;

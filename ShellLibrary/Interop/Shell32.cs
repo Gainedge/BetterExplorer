@@ -873,10 +873,10 @@ namespace BExplorer.Shell.Interop {
     public static extern HResult SHGetSpecialFolderLocation(IntPtr hwndOwner, CSIDL nFolder, out IntPtr ppidl);
 
 
-    /*
+
     [DllImport("shell32.dll", SetLastError = true)]
     public static extern int SHMultiFileProperties(System.Runtime.InteropServices.ComTypes.IDataObject pdtobj, int flags);
-    */
+
 
     /*
     [DllImport("shell32.dll", CharSet = CharSet.Auto)]
@@ -1615,6 +1615,127 @@ namespace BExplorer.Shell.Interop {
 
     [DllImport("user32.dll")]
     public static extern bool FlashWindow(IntPtr hwnd, uint bInvert);
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CMINVOKECOMMANDINFOEX {
+      /// <summary>
+      /// The size of this structure, in bytes. This member should be filled in by callers of IContextMenu::InvokeCommand and tested by
+      /// the implementations to know that the structure is a CMINVOKECOMMANDINFOEX structure rather than CMINVOKECOMMANDINFO.
+      /// </summary>
+      public uint cbSize;
+
+      /// <summary>
+      /// Zero, or one or more of the following flags are set to indicate desired behavior and indicate that other fields in the
+      /// structure are to be used.
+      /// </summary>
+      public CMIC fMask;
+
+      /// <summary>
+      /// A handle to the window that is the owner of the shortcut menu. An extension can also use this handle as the owner of any
+      /// message boxes or dialog boxes it displays. Callers must specify a legitimate HWND that can be used as the owner window for
+      /// any UI that may be displayed. Failing to specify an HWND when calling from a UI thread (one with windows already created)
+      /// will result in reentrancy and possible bugs in the implementation of a IContextMenu::InvokeCommand call.
+      /// </summary>
+      public IntPtr hwnd;
+
+      /// <summary>
+      /// The address of a null-terminated string that specifies the language-independent name of the command to carry out. This member
+      /// is typically a string when a command is being activated by an application.
+      /// <list type="table">
+      /// <listheader>
+      /// <term>Constant</term>
+      /// <term>Command string</term>
+      /// </listheader>
+      /// <item>
+      /// <description>CMDSTR_RUNAS</description>
+      /// <description>"RunAs"</description>
+      /// </item>
+      /// <item>
+      /// <description>CMDSTR_PRINT</description>
+      /// <description>"Print"</description>
+      /// </item>
+      /// <item>
+      /// <description>CMDSTR_PREVIEW</description>
+      /// <description>"Preview"</description>
+      /// </item>
+      /// <item>
+      /// <description>CMDSTR_OPEN</description>
+      /// <description>"Open"</description>
+      /// </item>
+      /// </list>
+      /// <para>
+      /// This is not a fixed set; new canonical verbs can be invented by context menu handlers and applications can invoke them.
+      /// </para>
+      /// <para>
+      /// If a canonical verb exists and a menu handler does not implement the canonical verb, it must return a failure code to enable
+      /// the next handler to be able to handle this verb. Failing to do this will break functionality in the system including ShellExecute.
+      /// </para>
+      /// <para>
+      /// Alternatively, rather than a pointer, this parameter can be MAKEINTRESOURCE(offset) where offset is the menu-identifier
+      /// offset of the command to carry out. Implementations can use the IS_INTRESOURCE macro to detect that this alternative is being
+      /// employed. The Shell uses this alternative when the user chooses a menu command.
+      /// </para>
+      /// </summary>
+      public IntPtr lpVerb;
+
+      /// <summary>Optional parameters. This member is always NULL for menu items inserted by a Shell extension.</summary>
+      [MarshalAs(UnmanagedType.LPStr)]
+      public string lpParameters;
+
+      /// <summary>An optional working directory name. This member is always NULL for menu items inserted by a Shell extension.</summary>
+      [MarshalAs(UnmanagedType.LPStr)]
+      public string lpDirectory;
+
+      /// <summary>A set of SW_ values to pass to the ShowWindow function if the command displays a window or starts an application.</summary>
+      public User32.ShowWindowCommand nShow;
+
+      /// <summary>
+      /// An optional keyboard shortcut to assign to any application activated by the command. If the fMask member does not specify
+      /// CMIC_MASK_HOTKEY, this member is ignored.
+      /// </summary>
+      public uint dwHotKey;
+
+      /// <summary>
+      /// An icon to use for any application activated by the command. If the fMask member does not specify CMIC_MASK_ICON, this member
+      /// is ignored.
+      /// </summary>
+      public IntPtr hIcon;
+
+      /// <summary>An ASCII title.</summary>
+      [MarshalAs(UnmanagedType.LPStr)]
+      public string lpTitle;
+
+      /// <summary>A Unicode verb, for those commands that can use it.</summary>
+      public IntPtr lpVerbW;
+
+      /// <summary>A Unicode parameters, for those commands that can use it.</summary>
+      [MarshalAs(UnmanagedType.LPWStr)]
+      public string lpParametersW;
+
+      /// <summary>A Unicode directory, for those commands that can use it.</summary>
+      [MarshalAs(UnmanagedType.LPWStr)]
+      public string lpDirectoryW;
+
+      /// <summary>A Unicode title.</summary>
+      [MarshalAs(UnmanagedType.LPWStr)]
+      public string lpTitleW;
+
+      /// <summary>
+      /// The point where the command is invoked. If the fMask member does not specify CMIC_MASK_PTINVOKE, this member is ignored. This
+      /// member is not valid prior to Internet Explorer 4.0.
+      /// </summary>
+      public System.Drawing.Point ptInvoke;
+
+      /// <summary>
+      /// Initializes a new instance of the <see cref="CMINVOKECOMMANDINFOEX"/> struct with a menu-identifier offset of the command to
+      /// carry out.
+      /// </summary>
+      /// <param name="commandId">The menu-identifier offset of the command to carry out.</param>
+      public CMINVOKECOMMANDINFOEX(int commandId) : this() {
+        cbSize = (uint)Marshal.SizeOf(this);
+        //lpVerb = commandId;
+      }
+    }
   }
 
 

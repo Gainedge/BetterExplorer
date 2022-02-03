@@ -1,10 +1,16 @@
 ﻿// ReSharper disable once CheckNamespace
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Shell;
+using ControlzEx.Behaviors;
+using ControlzEx.Standard;
+using Microsoft.Xaml.Behaviors;
 
 namespace Fluent {
   using System;
@@ -211,8 +217,8 @@ namespace Fluent {
     static RibbonWindow() {
       DefaultStyleKeyProperty.OverrideMetadata(typeof(RibbonWindow), new FrameworkPropertyMetadata(typeof(RibbonWindow)));
 
-      BorderThicknessProperty.OverrideMetadata(typeof(RibbonWindow), new FrameworkPropertyMetadata(new Thickness(1)));
-      WindowStyleProperty.OverrideMetadata(typeof(RibbonWindow), new FrameworkPropertyMetadata(WindowStyle.None));
+      BorderThicknessProperty.OverrideMetadata(typeof(RibbonWindow), new FrameworkPropertyMetadata(new Thickness(0)));
+      WindowStyleProperty.OverrideMetadata(typeof(RibbonWindow), new FrameworkPropertyMetadata(WindowStyle.SingleBorderWindow));
     }
     [StructLayout(LayoutKind.Sequential)]
     public struct MARGINS {
@@ -229,19 +235,6 @@ namespace Fluent {
     public RibbonWindow() {
       this.SizeChanged += this.OnSizeChanged;
       this.Loaded += this.OnLoaded;
-      this.InitializeWindowChromeBehavior();
-      //this.GlassFrameThickness = new Thickness(0, 1, 0, 0);
-
-
-
-    }
-
-    private void InitializeWindowChromeBehavior() {
-      //var behavior = new WindowChromeBehavior();
-      //BindingOperations.SetBinding(behavior, WindowChromeBehavior.ResizeBorderThicknessProperty, new Binding { Path = new PropertyPath(ResizeBorderThicknessProperty), Source = this });
-      //BindingOperations.SetBinding(behavior, WindowChromeBehavior.IgnoreTaskbarOnMaximizeProperty, new Binding { Path = new PropertyPath(IgnoreTaskbarOnMaximizeProperty), Source = this });
-
-      //Interaction.GetBehaviors(this).Add(behavior);
     }
     #endregion
 
@@ -253,10 +246,16 @@ namespace Fluent {
 
     // Size change to collapse ribbon
     private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
-      this.MaintainIsCollapsed();
+      //this.MaintainIsCollapsed();
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e) {
+      //RECT rcClient;
+      //GetWindowRect(this.Hwnd, out rcClient);
+      //SetWindowPos(this.Hwnd, IntPtr.Zero, rcClient.left, rcClient.top, rcClient.Width, rcClient.Height, 0x0020);
+
+      this.Background = Brushes.Transparent; //new SolidColorBrush(Color.FromArgb(177, 59, 53, 53));
+
       if (this.SizeToContent == SizeToContent.Manual) {
         return;
       }
@@ -271,6 +270,8 @@ namespace Fluent {
     [DllImport("user32.dll")]
     public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, int flags);
 
+    public IntPtr Hwnd { get; set; }
+
     /// <summary>
     /// used to overwrite WndProc
     /// </summary>
@@ -278,28 +279,64 @@ namespace Fluent {
     protected override void OnSourceInitialized(EventArgs e) {
       base.OnSourceInitialized(e);
       var hWndSource = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
-      hWndSource.CompositionTarget.BackgroundColor = Colors.Black;
+      hWndSource.CompositionTarget.BackgroundColor = Colors.Transparent;
+      this.Hwnd = hWndSource.Handle;
+      //var nonClientArea = new MARGINS();
+      //nonClientArea.topHeight = 214;
+      //DwmExtendFrameIntoClientArea(hWndSource.Handle, ref nonClientArea);
 
-      var nonClientArea = new MARGINS();
-      nonClientArea.topHeight = 1;
-      DwmExtendFrameIntoClientArea(hWndSource.Handle, ref nonClientArea);
-
-      hWndSource.AddHook(WndProcHooked);
-      RECT rcClient;
-      GetWindowRect(hWndSource.Handle, out rcClient);
-      // FRAMECHANGED | NOMOVE | NOSIZE
+      //RECT rcClient;
+      //GetWindowRect(hWndSource.Handle, out rcClient);
+      //////FRAMECHANGED | NOMOVE | NOSIZE
       //if (this.WindowState != WindowState.Maximized) {
-      SetWindowPos(hWndSource.Handle, IntPtr.Zero, rcClient.left, rcClient.top, rcClient.Width, rcClient.Height, 0x0020);
+      //  SetWindowPos(hWndSource.Handle, IntPtr.Zero, rcClient.left, rcClient.top, rcClient.Width, rcClient.Height, 0x0020);
       //}
-      //var source = PresentationSource.FromVisual(this) as HwndSource;
-      ////_ModifyStyle(source.Handle, WS.VISIBLE, 0);
-      //source.AddHook(WndProcHooked);
-      //var margins = new MARGINS();
-      //margins.topHeight = 1;
-      //DwmExtendFrameIntoClientArea(source.Handle, ref margins);
-      //var compositor = new WindowAccentCompositor(this);
-      //compositor.Color = Color.FromArgb(96, 63, 62, 62);
-      //compositor.IsEnabled = true;
+      var newChrome = new WindowChrome();
+      newChrome.GlassFrameThickness = new Thickness(0, 214, 0, 0);
+      newChrome.ResizeBorderThickness = new Thickness(4);
+      newChrome.CornerRadius = new CornerRadius(4);
+      newChrome.UseAeroCaptionButtons = true;
+      //newChrome.NonClientFrameEdges = NonClientFrameEdges.Bottom | NonClientFrameEdges.Left | NonClientFrameEdges.Right;
+      WindowChrome.SetWindowChrome(this, newChrome);
+      this.UpdateStyleAttributes(hWndSource);
+      this._ModifyStyle(hWndSource.Handle, ControlzEx.Standard.WS.SYSMENU, 0);
+      hWndSource.AddHook(WndProcHooked);
+    }
+
+    [DllImport("dwmapi.dll")]
+    public static extern int DwmSetWindowAttribute(IntPtr hwnd, DwmWindowAttribute dwAttribute, ref int pvAttribute, int cbAttribute);
+
+    [Flags]
+    public enum DwmWindowAttribute : uint {
+      DWMWA_USE_IMMERSIVE_DARK_MODE = 20,
+      DWMWA_MICA_EFFECT = 1029,
+      DWMWA_WINDOW_CORNER_PREFERENCE = 33,
+      DWMWA_SYSTEMBACKDROP_TYPE = 38
+    }
+
+    public enum DWM_WINDOW_CORNER_PREFERENCE {
+      DWMWCP_DEFAULT = 0,
+      DWMWCP_DONOTROUND = 1,
+      DWMWCP_ROUND = 2,
+      DWMWCP_ROUNDSMALL = 3
+    }
+    public void UpdateStyleAttributes(HwndSource hwnd) {
+      // You can avoid using ModernWpf here and just rely on Win32 APIs or registry parsing if you want to.
+      var darkThemeEnabled = true;//ModernWpf.ThemeManager.Current.ActualApplicationTheme == ModernWpf.ApplicationTheme.Dark;
+
+      int trueValue = 0x01;
+      int falseValue = 0x00;
+
+      // Set dark mode before applying the material, otherwise you'll get an ugly flash when displaying the window.
+      if (darkThemeEnabled) {
+        var res = DwmSetWindowAttribute(hwnd.Handle, DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE, ref trueValue,
+          Marshal.SizeOf(typeof(int)));
+      } else
+        DwmSetWindowAttribute(hwnd.Handle, DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE, ref falseValue, Marshal.SizeOf(typeof(int)));
+
+      //var res1 = DwmSetWindowAttribute(hwnd.Handle, DwmWindowAttribute.DWMWA_MICA_EFFECT, ref trueValue, Marshal.SizeOf(typeof(int)));
+      var flag = 2;
+      var res1 = DwmSetWindowAttribute(hwnd.Handle, DwmWindowAttribute.DWMWA_SYSTEMBACKDROP_TYPE, ref flag, Marshal.SizeOf(typeof(int)));
     }
     public enum HT {
       ERROR = -2,
@@ -489,14 +526,15 @@ namespace Fluent {
 
     [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr", SetLastError = true)]
     private static extern int GetWindowLongPtr64(IntPtr hWnd, int nIndex);
-    private bool _ModifyStyle(IntPtr handle, WS removeStyle, WS addStyle) {
-      var dwStyle = GetWindowLongPtr64(handle, -16);
-      var dwNewStyle = ((WS)dwStyle & ~removeStyle) | addStyle;
-      if ((WS)dwStyle == dwNewStyle) {
+
+    private bool _ModifyStyle(IntPtr handle, ControlzEx.Standard.WS removeStyle, ControlzEx.Standard.WS addStyle) {
+      var dwStyle = NativeMethods.GetWindowStyle(handle);
+      var dwNewStyle = (dwStyle & ~removeStyle) | addStyle;
+      if (dwStyle == dwNewStyle) {
         return false;
       }
 
-      SetWindowLongPtr(handle, -16, (IntPtr)dwNewStyle);
+      NativeMethods.SetWindowStyle(handle, dwNewStyle);
       return true;
     }
 
@@ -504,20 +542,7 @@ namespace Fluent {
     [DllImport("dwmapi.dll")]
     static extern bool DwmDefWindowProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref IntPtr plResult);
     private IntPtr WndProcHooked(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {
-      //if (msg == 0x0046) {
-      //  handled = this.WindowState == WindowState.Maximized;
-      //  return (IntPtr)1;
-      //}
       var result = IntPtr.Zero;
-      //var defDwm = DwmDefWindowProc(hwnd, msg, wParam, lParam, ref result);
-      //if (msg == 0x0006) {
-      //  MARGINS margins = new MARGINS();
-      //  margins.topHeight = 1;
-
-      //  var hr = DwmExtendFrameIntoClientArea(hwnd, ref margins);
-      //  handled = true;
-      //  return IntPtr.Zero;
-      //}
       var cp = this.GetPart<UIElement>(PART_WindowCommands) as ContentPresenter;
       var ct = cp.Content as WindowCommands;
       var max = ct.Template.FindName("PART_Max", ct) as System.Windows.Controls.Button;
@@ -534,14 +559,14 @@ namespace Fluent {
       AutomationPeer theBtnMinPeer = UIElementAutomationPeer.CreatePeerForElement(minBtn);
       Rect rectMin = theBtnMinPeer.GetBoundingRectangle();
 
-      if (msg == 0x0084 && result == IntPtr.Zero) {
-
+      if (msg == 0x0084) {
 
         if (rectRestore.Contains(mp.X, mp.Y) || rectMax.Contains(mp.X, mp.Y)) {
           max.Background = (Brush)Application.Current.Resources["Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.MouseOver.Background"];
           restore.Background = (Brush)Application.Current.Resources["Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.MouseOver.Background"];
           closeBtn.Background = (Brush)Application.Current.Resources["Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Background"];
           minBtn.Background = (Brush)Application.Current.Resources["Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Background"];
+          this._ModifyStyle(hwnd, ControlzEx.Standard.WS.CAPTION, 0);
           handled = true;
           return (IntPtr)9;
         } else if (rectClose.Contains(mp.X, mp.Y)) {
@@ -569,36 +594,40 @@ namespace Fluent {
         var windowPosition = this._GetWindowRect(hwnd);
 
         var ht = IntPtr.Zero;
-        if (this.IsResizable) {
+        if (this.IsResizable && this.WindowState == WindowState.Normal) {
           var mousePosWindow = mousePosScreen;
           mousePosWindow.Offset(-windowPosition.X, -windowPosition.Y);
           mousePosWindow = DpiHelper.DevicePixelsToLogical(mousePosWindow, dpi.DpiScaleX, dpi.DpiScaleY);
-          ht = (IntPtr) this._HitTestNca(DpiHelper.DeviceRectToLogical(windowPosition, dpi.DpiScaleX, dpi.DpiScaleY),
+          ht = (IntPtr)this._HitTestNca(DpiHelper.DeviceRectToLogical(windowPosition, dpi.DpiScaleX, dpi.DpiScaleY),
             DpiHelper.DevicePixelsToLogical(mousePosScreen, dpi.DpiScaleX, dpi.DpiScaleY));
           handled = true;
         }
         return ht;
       }
 
-      if (msg == 0x0086) {
-        var lRet = DefWindowProc(hwnd, 0x0086, wParam, new IntPtr(-1));
-        // We don't have any non client area, so we can just discard this message by handling it 
-        handled = true;
-        return lRet;
-      }
+      //if (msg == 0x0086) {
+      //  var lRet = DefWindowProc(hwnd, 0x0086, wParam, new IntPtr(-1));
+      //  // We don't have any non client area, so we can just discard this message by handling it
+      //  RECT rcClient;
+      //  GetWindowRect(hwnd, out rcClient);
+      //  SetWindowPos(hwnd, IntPtr.Zero, rcClient.left, rcClient.top, rcClient.Width, rcClient.Height, 0x0020);
+      //  handled = true;
+      //  return lRet;
+      //}
 
-      if (msg == 0x0085) {
-        // We don't have any non client area, so we can just discard this message by handling it 
-        handled = true;
-        return new IntPtr(1);
-      }
+      //if (msg == 0x0231) {
+      //  this._ModifyStyle(hwnd, ControlzEx.Standard.WS.CAPTION, 0);
+      //  handled = false;
+      //  return IntPtr.Zero;
+      //}
+
+      //if (msg == 0x0232) {
+      //  this._ModifyStyle(hwnd, 0, ControlzEx.Standard.WS.CAPTION);
+      //  handled = false;
+      //  return IntPtr.Zero;
+      //}
 
       if (msg == 0x0083) {
-        //if (wParam == new IntPtr(1)) {
-        //  //this._ModifyStyle(hwnd, 0, WS.VISIBLE);
-        //  handled = true;
-        //  return IntPtr.Zero;
-        //}
         handled = true;
 
         if (wParam != IntPtr.Zero && this.WindowState != WindowState.Maximized) {
@@ -617,6 +646,7 @@ namespace Fluent {
             this._IsFirstTimeMaximize = false;
           }
         }
+        return IntPtr.Zero;
       }
 
       if (msg == 0x00A1 && (wParam == (IntPtr)9 || wParam == new IntPtr(20) || wParam == new IntPtr(8))) {
@@ -631,11 +661,54 @@ namespace Fluent {
         }
       }
 
+      //if (msg == 0x0112) {
+      //  if (wParam != (IntPtr)0xF000 && wParam != (IntPtr)0xF010) {
+      //    this._ModifyStyle(hwnd, 0, ControlzEx.Standard.WS.CAPTION);
+      //  }
+      //}
 
-      if (msg == 0x0024) {
-        WmGetMinMaxInfo(hwnd, lParam, (int)MinWidth, (int)MinHeight);
-        //handled = true;
-      }
+      //if (msg == 0x0024) {
+      //  //this.WmGetMinMaxInfo(hwnd, lParam, (int)MinWidth, (int)MinHeight, true);
+      //  //this.WmGetMinMaxInfo(hwnd, lParam, (int)MinWidth, (int)MinHeight, false);
+      //  HwndSource source = HwndSource.FromHwnd(hwnd);
+      //  Matrix matrix = source.CompositionTarget.TransformFromDevice;
+      //  MINMAXINFO mmi = (MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(MINMAXINFO));
+      //  // Adjust the maximized size and position to fit the work area of the correct monitor
+      //  IntPtr monitor = NativeMethods.MonitorFromWindow(hwnd, MonitorOptions.MONITOR_DEFAULTTONEAREST);
+
+      //  if (monitor != IntPtr.Zero) {
+      //    var monitorInfo = NativeMethods.GetMonitorInfo(monitor);
+      //    var rcWorkArea = monitorInfo.rcWork;
+      //    var rcMonitorArea = monitorInfo.rcMonitor;
+      //    Point dpiIndependentSize =
+      //      matrix.Transform(new Point(
+      //        monitorInfo.rcWork.Right - monitorInfo.rcWork.Left,
+      //        monitorInfo.rcWork.Bottom - monitorInfo.rcWork.Top
+      //      ));
+
+      //    //Convert minimum size
+      //    Point dpiIndenpendentTrackingSize = matrix.Transform(new Point(
+      //      this.MinWidth,
+      //      this.MinHeight
+      //    ));
+
+      //    //Set the maximized size of the window
+      //    mmi.ptMaxSize.x = (int)dpiIndependentSize.X;
+      //    mmi.ptMaxSize.y = (int)dpiIndependentSize.Y;
+
+      //    //Set the position of the maximized window
+      //    mmi.ptMaxPosition.x = 0;
+      //    mmi.ptMaxPosition.y = 0;
+
+      //    //Set the minimum tracking size
+      //    mmi.ptMinTrackSize.x = (int)dpiIndenpendentTrackingSize.X;
+      //    mmi.ptMinTrackSize.y = (int)dpiIndenpendentTrackingSize.Y;
+      //  }
+
+      //  Marshal.StructureToPtr(mmi, lParam, true);
+      //  handled = true;
+      //  return IntPtr.Zero;
+      //}
 
       if (msg == 0x00A2) {
         if (wParam == (IntPtr)9) {
@@ -657,7 +730,8 @@ namespace Fluent {
       }
       return IntPtr.Zero;
     }
-
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
     private void MaintainIsCollapsed() {
       if (this.IsAutomaticCollapseEnabled == false) {
         return;
@@ -704,8 +778,30 @@ namespace Fluent {
           && this.SizeToContent != SizeToContent.Manual) {
         this.SizeToContent = SizeToContent.Manual;
       }
+      RECT rcClient;
+      //GetWindowRect(this.Hwnd, out rcClient);
+      //SetWindowPos(this.Hwnd, IntPtr.Zero, rcClient.left, rcClient.top, rcClient.Width, rcClient.Height, 0x0020);
+      if (this.WindowState == WindowState.Maximized) {
+        //this._ModifyStyle(this.Hwnd, ControlzEx.Standard.WS.CAPTION, 0);
+      }
 
-      this.RunInDispatcherAsync(() => this.TitleBar?.ForceMeasureAndArrange(), DispatcherPriority.Background);
+      //var v = (FrameworkElement)this.Template.FindName("Adorner", this);
+      ////v.ForceMeasureAndArrange();
+      //if (this.WindowState == WindowState.Normal) {
+      //  v.Margin = new Thickness(0);
+      //} else if (this.WindowState != WindowState.Minimized) {
+      //  v.Margin = new Thickness(5);
+      //}
+      this.RunInDispatcherAsync(() => {
+        this.TitleBar?.ForceMeasureAndArrange();
+        var v = (FrameworkElement)this.Template.FindName("Adorner", this);
+        v.ForceMeasureAndArrange();
+        if (this.WindowState == WindowState.Normal) {
+          //v.Margin = new Thickness(0);
+        } else if (this.WindowState != WindowState.Minimized) {
+          //v.Margin = new Thickness(5);
+        }
+      }, DispatcherPriority.ApplicationIdle);
     }
 
     private void HandleIconMouseDown(object sender, MouseButtonEventArgs e) {
@@ -753,7 +849,7 @@ namespace Fluent {
     [DllImport("user32")]
     internal static extern IntPtr MonitorFromWindow(IntPtr handle, int flags);
 
-    public static void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam, int minWidth, int minHeight) {
+    public void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam, int minWidth, int minHeight, Boolean usePad) {
       IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
       if (monitor != IntPtr.Zero) {
         MINMAXINFO mmi = (MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(MINMAXINFO));
@@ -764,14 +860,15 @@ namespace Fluent {
         RECT rcMonitorArea = monitorInfo.rcMonitor;
         mmi.ptMaxPosition.x = Math.Abs(rcWorkArea.left - rcMonitorArea.left);
         mmi.ptMaxPosition.y = Math.Abs(rcWorkArea.top - rcMonitorArea.top);
-        //if (mmi.ptMaxPosition.y == 0)
-        //  mmi.ptMaxPosition.y = 1;
+        if (mmi.ptMaxPosition.y == 0 && usePad)
+          mmi.ptMaxPosition.y = 1;
         mmi.ptMaxSize.x = Math.Abs(rcWorkArea.right - rcWorkArea.left);
         mmi.ptMaxSize.y = Math.Abs(rcWorkArea.bottom - rcWorkArea.top);
         mmi.ptMaxTrackSize.x = mmi.ptMaxSize.x;
         mmi.ptMaxTrackSize.y = mmi.ptMaxSize.y;
         Marshal.StructureToPtr(mmi, lParam, true);
       }
+
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 4)]

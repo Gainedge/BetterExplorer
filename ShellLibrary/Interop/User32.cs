@@ -17,12 +17,14 @@
 // Boston, MA 2110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using ShellLibrary.Interop;
 using Point = System.Drawing.Point;
 
 namespace BExplorer.Shell.Interop {
@@ -95,8 +97,7 @@ public struct LVITEM {
     public IntPtr hbmpChecked;
     public IntPtr hbmpUnchecked;
     public IntPtr dwItemData;
-    [MarshalAs(UnmanagedType.LPTStr)]
-    public string dwTypeData;
+    public StrPtrAuto dwTypeData;
     public uint cch;
     public IntPtr hbmpItem;
     public static uint SizeOf => (uint)Marshal.SizeOf(typeof(MENUITEMINFO));
@@ -220,7 +221,8 @@ public enum MK {
     TVM_SETHOT = 0x1100 + 58,
     LVM_SETSELECTEDCOLUMN = (FIRST + 140),
     LVM_GETGROUPINFO = (FIRST + 149),
-    LVM_GETGROUPSTATE = (FIRST + 92)
+    LVM_GETGROUPSTATE = (FIRST + 92),
+    LVM_SCROLL = (FIRST + 20)
 
   }
 
@@ -331,7 +333,7 @@ public enum MK {
   [Serializable, StructLayout(LayoutKind.Sequential)]
   public struct SCROLLINFO {
     public uint cbSize;
-    public uint fMask;
+    public ScrollInfoMask fMask;
     public int nMin;
     public int nMax;
     public uint nPage;
@@ -346,6 +348,7 @@ public enum MK {
     SB_BOTH = 0x3
   }
 
+  [Flags]
   public enum ScrollInfoMask : uint {
     SIF_RANGE = 0x1,
     SIF_PAGE = 0x2,
@@ -836,6 +839,9 @@ public static extern UInt32 PrivateExtractIcons(String lpszFile, int nIconIndex,
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     public static extern int GetWindowLong(IntPtr hwnd, int index);
 
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
+
     public struct WINDOWPOS {
       public IntPtr hwnd;
       public IntPtr hwndInsertAfter;
@@ -923,10 +929,10 @@ public static extern UInt32 PrivateExtractIcons(String lpszFile, int nIconIndex,
     [DllImport("user32.dll", SetLastError = true)]
     public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
-    
+
     [DllImport("user32.dll")]
     public static extern bool RedrawWindow(IntPtr hWnd, ref RECT lprcUpdate, IntPtr hrgnUpdate, uint flags);
-    
+
 
     [DllImport("user32.dll")]
     public static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);
@@ -2970,5 +2976,206 @@ public static extern bool UpdateWindow(IntPtr hWnd);
 
     [DllImport("user32.dll", SetLastError = true)]
     public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+    [DllImport("user32.dll")]
+    public static extern IntPtr SetCapture(IntPtr hWnd);
+    [DllImport("user32.dll")]
+    public static extern bool ReleaseCapture();
+
+    [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    public static extern IntPtr FindWindowEx(IntPtr hWndParent, IntPtr hWndChildAfter, string lpszClass, string lpszWindow);
+
+    public static IEnumerable<IntPtr> GetDesktopWindows() {
+      IntPtr prevHwnd = IntPtr.Zero;
+      var windowsList = new List<IntPtr>();
+      while (true) {
+        prevHwnd = User32.FindWindowEx(IntPtr.Zero, prevHwnd, null, null);
+        if (prevHwnd == null || prevHwnd == IntPtr.Zero) {
+          break;
+        }
+        windowsList.Add(prevHwnd);
+      }
+      return windowsList;
+    }
+    public enum ShowWindowCommand {
+      /// <summary>Hides the window and activates another window.</summary>
+      SW_HIDE = 0,
+      /// <summary>
+      /// Activates and displays a window. If the window is minimized or maximized, Windows restores it to its original size and position.
+      /// An application should specify this flag when displaying the window for the first time.
+      /// </summary>
+      SW_NORMAL = 1,
+      /// <summary>
+      /// Activates and displays a window. If the window is minimized or maximized, Windows restores it to its original size and position.
+      /// An application should specify this flag when displaying the window for the first time.
+      /// </summary>
+      SW_SHOWNORMAL = 1,
+      /// <summary>Activates the window and displays it as a minimized window.</summary>
+      SW_SHOWMINIMIZED = 2,
+      /// <summary>Maximizes the specified window.</summary>
+      SW_MAXIMIZE = 3,
+      /// <summary>Activates the window and displays it as a maximized window.</summary>
+      SW_SHOWMAXIMIZED = 3,
+      /// <summary>Displays a window in its most recent size and position. The active window remains active.</summary>
+      SW_SHOWNOACTIVATE = 4,
+      /// <summary>Activates the window and displays it in its current size and position.</summary>
+      SW_SHOW = 5,
+      /// <summary>Minimizes the specified window and activates the next top-level window in the z-order.</summary>
+      SW_MINIMIZE = 6,
+      /// <summary>Displays the window as a minimized window. The active window remains active.</summary>
+      SW_SHOWMINNOACTIVE = 7,
+      /// <summary>Displays the window in its current state. The active window remains active.</summary>
+      SW_SHOWNA = 8,
+      /// <summary>
+      /// Activates and displays the window. If the window is minimized or maximized, Windows restores it to its original size and
+      /// position. An application should specify this flag when restoring a minimized window.
+      /// </summary>
+      SW_RESTORE = 9,
+      /// <summary>
+      /// Sets the show state based on the SW_ flag specified in the STARTUPINFO structure passed to the CreateProcess function by the
+      /// program that started the application. An application should call ShowWindow with this flag to set the initial show state of its
+      /// main window.
+      /// </summary>
+      SW_SHOWDEFAULT = 10, // 0x0000000A
+      /// <summary>
+      /// Minimizes a window, even if the thread that owns the window is not responding. This flag should only be used when minimizing
+      /// windows from a different thread.
+      /// </summary>
+      SW_FORCEMINIMIZE = 11, // 0x0000000B
+    }
+
+    public static bool IS_INTRESOURCE(IntPtr ptr) => unchecked((ulong)ptr.ToInt64()) >> 16 == 0;
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct ResourceId : IEquatable<string>, IEquatable<IntPtr>, IEquatable<int>, IEquatable<ResourceId>, IHandle {
+      private IntPtr ptr;
+
+      /// <summary>Gets or sets an integer identifier.</summary>
+      /// <value>The identifier.</value>
+      public int id {
+        get => IS_INTRESOURCE(ptr) ? ptr.ToInt32() : 0;
+        set {
+          if (value > ushort.MaxValue || value <= 0) throw new ArgumentOutOfRangeException(nameof(id));
+          ptr = (IntPtr)value;
+        }
+      }
+
+      /// <summary>Determines whether this value is an integer identifier for a resource.</summary>
+      /// <returns>If the value is a resource identifier, the return value is <see langword="true"/>. Otherwise, the return value is <see langword="false"/>.</returns>
+      public bool IsIntResource => IS_INTRESOURCE(ptr);
+
+      /// <summary>Represent a NULL value.</summary>
+      public static readonly ResourceId NULL = new ResourceId();
+
+      /// <summary>Performs an implicit conversion from <see cref="SafeResourceId"/> to <see cref="System.Int32"/>.</summary>
+      /// <param name="r">The r.</param>
+      /// <returns>The result of the conversion.</returns>
+      public static implicit operator int(ResourceId r) => r.id;
+
+      /// <summary>Performs an implicit conversion from <see cref="ResourceId"/> to <see cref="IntPtr"/>.</summary>
+      /// <param name="r">The r.</param>
+      /// <returns>The result of the conversion.</returns>
+      public static implicit operator IntPtr(ResourceId r) => r.ptr;
+
+      /// <summary>Performs an implicit conversion from <see cref="int"/> to <see cref="ResourceId"/>.</summary>
+      /// <param name="resId">The resource identifier.</param>
+      /// <returns>The result of the conversion.</returns>
+      public static implicit operator ResourceId(int resId) => new ResourceId { id = resId };
+
+      /// <summary>Performs an implicit conversion from <see cref="ResourceType"/> to <see cref="ResourceId"/>.</summary>
+      /// <param name="resType">Type of the resource.</param>
+      /// <returns>The result of the conversion.</returns>
+      public static implicit operator ResourceId(Shell32.ResourceType resType) => new ResourceId { id = (int)resType };
+
+      /// <summary>Performs an implicit conversion from <see cref="IntPtr"/> to <see cref="ResourceId"/>.</summary>
+      /// <param name="p">The PTR.</param>
+      /// <returns>The result of the conversion.</returns>
+      public static implicit operator ResourceId(IntPtr p) => new ResourceId { ptr = p };
+
+      /// <summary>Performs an implicit conversion from <see cref="ResourceId"/> to <see cref="string"/>.</summary>
+      /// <param name="r">The r.</param>
+      /// <returns>The result of the conversion.</returns>
+      public static explicit operator string(ResourceId r) => r.ToString();
+
+      /// <summary>Determines whether the specified <see cref="System.Object"/>, is equal to this instance.</summary>
+      /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+      /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.</returns>
+      public override bool Equals(object obj) {
+        switch (obj) {
+          case null:
+            return false;
+
+          case string s:
+            return Equals(s);
+
+          case int i:
+            return Equals(i);
+
+          case IntPtr p:
+            return Equals(p);
+
+          case ResourceId r:
+            return Equals(r);
+
+          case IHandle h:
+            return Equals(h.DangerousGetHandle());
+
+          default:
+            if (!obj.GetType().IsPrimitive) return false;
+            try { return Equals(Convert.ToInt32(obj)); } catch { return false; }
+        }
+      }
+
+      /// <summary>Returns a hash code for this instance.</summary>
+      /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+      public override int GetHashCode() => ptr.GetHashCode();
+
+      /// <summary>Returns a <see cref="string"/> that represents this instance.</summary>
+      /// <returns>A <see cref="string"/> that represents this instance.</returns>
+      public override string ToString() => IS_INTRESOURCE(ptr) ? $"#{ptr.ToInt32()}" : Marshal.PtrToStringAuto(ptr);
+
+      /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      /// <param name="other">An object to compare with this object.</param>
+      /// <returns>true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.</returns>
+      public bool Equals(int other) => ptr.ToInt32().Equals(other);
+
+      /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      /// <param name="other">An object to compare with this object.</param>
+      /// <returns>true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.</returns>
+      /// <exception cref="NotImplementedException"></exception>
+      public bool Equals(string other) => string.Equals(ToString(), other);
+
+      /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      /// <param name="other">An object to compare with this object.</param>
+      /// <returns>true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.</returns>
+      public bool Equals(IntPtr other) => ptr.Equals(other);
+
+      /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      /// <param name="other">An object to compare with this object.</param>
+      /// <returns>true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.</returns>
+      /// <exception cref="NotImplementedException"></exception>
+      public bool Equals(ResourceId other) => string.Equals(other.ToString(), ToString());
+
+      /// <inheritdoc/>
+      public IntPtr DangerousGetHandle() => ptr;
+    }
+    [DllImport("user32")]
+    public static extern bool AnimateWindow(IntPtr hwnd, int time, AnimateWindowFlags flags);
+
+    [Flags]
+    public enum AnimateWindowFlags
+    {
+      AW_HOR_POSITIVE = 0x00000001,
+      AW_HOR_NEGATIVE = 0x00000002,
+      AW_VER_POSITIVE = 0x00000004,
+      AW_VER_NEGATIVE = 0x00000008,
+      AW_CENTER       = 0x00000010,
+      AW_HIDE     = 0x00010000,
+      AW_ACTIVATE     = 0x00020000,
+      AW_SLIDE    = 0x00040000,
+      AW_BLEND    = 0x00080000
+    }
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr GetDC(IntPtr hWnd);
   }
 }

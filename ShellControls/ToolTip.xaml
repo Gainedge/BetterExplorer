@@ -1,0 +1,68 @@
+﻿<betterExplorerControls:AcrylicTooltip 
+  x:Class="ShellControls.ToolTip" 
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+  xmlns:Stars="clr-namespace:CustomControls;assembly=StarRatingControl"
+  xmlns:shell="clr-namespace:BExplorer.Shell;assembly=ShellLibrary"
+  xmlns:betterExplorerControls="clr-namespace:BetterExplorerControls;assembly=BetterExplorerControls"
+  mc:Ignorable="d" 
+  Focusable="True" 
+  IsHitTestVisible="False" 
+  IsTabStop="False" 
+  Background="{x:Null}" 
+  ScrollViewer.VerticalScrollBarVisibility="Disabled">
+  <betterExplorerControls:AcrylicTooltip.Resources>
+    <shell:TooltipDataTemplateSelector x:Key="TooltipDataTemplateSelector" x:Name="TooltipDataTemplateSelector"></shell:TooltipDataTemplateSelector>
+    <DataTemplate x:Key="FSTooltip" x:Name="FSTooltip">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="64"></ColumnDefinition>
+          <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Image x:Name="imgIcon" Grid.Column="0" Width="64" Height="64" Stretch="None" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Image}"></Image>
+        <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Contents}" Margin="10,2,2,2" TextAlignment="Left" TextWrapping="NoWrap"/>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="FSImageTooltip" x:Name="FSImageTooltip">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="100"></ColumnDefinition>
+          <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="25"></RowDefinition>
+          <RowDefinition Height="25"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Image Grid.Row="0" Margin="2,2,2,0" Grid.ColumnSpan="2" Stretch="None" x:Name="imgIconImage" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Image}"></Image>
+        <Stars:Rating Grid.Row="1" Grid.Column="0" Height="18" Width="100" RatingItemLimit="5"  HorizontalAlignment="Left" Margin="5,5,0,0"
+                  RatingItemMouseDownColor="Transparent"  
+                  RatingValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Rating}">
+          <Stars:Rating.RatingItemBackground>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+              <GradientStop Color="White" Offset="0.0"/>
+              <GradientStop Color="#E7E4E4" Offset="1"/>
+            </LinearGradientBrush>
+          </Stars:Rating.RatingItemBackground>
+          <Stars:Rating.RatingItemHighlightColor>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+              <GradientStop Color="Yellow" Offset="0.0"/>
+              <GradientStop Color="Orange" Offset="1"/>
+            </LinearGradientBrush>
+          </Stars:Rating.RatingItemHighlightColor>
+        </Stars:Rating>
+        <Border Grid.Row="1"  Grid.Column="1" BorderBrush="{x:Null}" Height="16" Margin="5,7,5,2" VerticalAlignment="Center">
+          <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Height="16" FontWeight="Bold" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.FileName}" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.FileNameWidth}"></TextBlock>
+        </Border>
+        <Border Grid.Row="2"  Grid.Column="0" Grid.ColumnSpan="2" Margin="5,2,0,5" BorderBrush="{x:Null}" Height="23" VerticalAlignment="Center">
+          <TextBlock VerticalAlignment="Center"  Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Dimentions}"></TextBlock>
+        </Border>
+      </Grid>
+    </DataTemplate>
+  </betterExplorerControls:AcrylicTooltip.Resources>
+  <Grid>
+    <ContentControl x:Name="pnlContents" Content="{Binding CurrentItem}" ContentTemplateSelector="{StaticResource TooltipDataTemplateSelector}" Foreground="{DynamicResource TextFillColorTertiaryBrush}"></ContentControl>
+  </Grid>
+</betterExplorerControls:AcrylicTooltip>

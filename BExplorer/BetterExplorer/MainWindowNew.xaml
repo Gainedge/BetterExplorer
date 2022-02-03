@@ -1,0 +1,25 @@
+﻿<wpfui:UIWindow x:Class="BetterExplorer.MainWindowNew"
+          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:local="clr-namespace:BetterExplorer"
+          xmlns:wpfui="clr-namespace:WPFUI.Controls;assembly=WPFUI"
+          xmlns:wpfuicommon="clr-namespace:WPFUI.Common;assembly=WPFUI"
+          xmlns:beHelper="clr-namespace:BEHelper;assembly=BEHelper"
+          mc:Ignorable="d"
+          Title="MainWindow2" Height="450" Width="800" Loaded="MainWindowNew_OnLoaded" GlassMargin="-1">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <wpfui:TabControl Grid.Row="0" Grid.RowSpan="2" x:Name="tcMain" AllowDrop="True" Drop="tabcontrol_Drop" TabItem.PreviewMouseMove="TcMain_OnMouseMove" NewTab="TcMain_OnNewTab" IsSynchronizedWithCurrentItem="True">
+      <!--<TabItem Header="Main">
+        <local:ExplorerControl/>
+      </TabItem>-->
+    </wpfui:TabControl>
+    <!--<wpfui:TitleBar Grid.Row="0" ApplicationNavigation="True" UseSnapLayout="True"/>-->
+  </Grid>
+</wpfui:UIWindow>

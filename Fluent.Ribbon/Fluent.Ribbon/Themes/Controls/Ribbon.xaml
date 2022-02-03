@@ -16,7 +16,7 @@
       <Style BasedOn="{StaticResource FluentRibbonDefaultContextMenuStyle}" TargetType="{x:Type ContextMenu}" />
     </ControlTemplate.Resources>
 
-    <Border Background="{TemplateBinding Background}">
+    <Border Background="Transparent">
       <Grid
         x:Name="PART_LayoutRoot"
         Width="Auto"

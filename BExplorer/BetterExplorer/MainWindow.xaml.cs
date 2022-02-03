@@ -7,6 +7,11 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using ShellControls.ShellContextMenu;
+using ShellControls.ShellListView;
+using ShellControls.ShellTreeView;
+using WPFUI.Win32;
+
 namespace BetterExplorer {
   using BEHelper;
   using BetterExplorer.UsbEject;
@@ -53,7 +58,7 @@ namespace BetterExplorer {
   using Clipboards = System.Windows.Forms.Clipboard;
   using ContextMenu = Fluent.ContextMenu;
   using Image = System.Windows.Controls.Image;
-  using MenuItem = Fluent.MenuItem;
+  using MenuItem = System.Windows.Controls.MenuItem;
   using WIN = System.Windows;
 
   /// <summary>
@@ -82,10 +87,10 @@ namespace BetterExplorer {
     private bool _IsCalledFromLoading, isOnLoad;
     private MenuItem misa, misd, misag, misdg;
     private ShellView _ShellListView = new ShellView();
-    private ShellTreeViewEx _ShellTreeView = new ShellTreeViewEx();
+    private ShellTreeViewEx _ShellTreeView = new ShellTreeViewEx(null);
     private bool IsNeedEnsureVisible;
     private ClipboardMonitor cbm = new ClipboardMonitor();
-    private ContextMenu _CMHistory = new ContextMenu();
+    private AcrylicContextMenu _CMHistory = new AcrylicContextMenu();
     private WIN.Shell.JumpList AppJL = new WIN.Shell.JumpList();
     //private List<string> Archives = new List<string>(new[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
     private List<string> Images = new List<string>(new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
@@ -322,13 +327,13 @@ namespace BetterExplorer {
     #endregion
 
     void misd_Click(object sender, RoutedEventArgs e) {
-      foreach (var item in this.btnSort.Items.OfType<MenuItem>().Where(item => item.IsChecked && item != (sender as MenuItem))) {
+      foreach (var item in this.btnSort.Items.OfType<System.Windows.Controls.MenuItem>().Where(item => item.IsChecked && item != (sender as MenuItem))) {
         this._ShellListView.SetSortCollumn(true, (Collumns)item.Tag, WIN.Forms.SortOrder.Descending);
       }
     }
 
     void misa_Click(object sender, RoutedEventArgs e) {
-      foreach (var item in this.btnSort.Items.OfType<MenuItem>().Where(item => item.IsChecked && item != (sender as MenuItem))) {
+      foreach (var item in this.btnSort.Items.OfType<System.Windows.Controls.MenuItem>().Where(item => item.IsChecked && item != (sender as MenuItem))) {
         this._ShellListView.SetSortCollumn(true, (Collumns)item.Tag, WIN.Forms.SortOrder.Ascending);
       }
     }
@@ -339,7 +344,7 @@ namespace BetterExplorer {
     }
 
     void mic_Click(object sender, RoutedEventArgs e) {
-      var mi = (sender as MenuItem);
+      var mi = (sender as System.Windows.Controls.MenuItem);
       Collumns col = (Collumns)mi.Tag;
       this._ShellListView.SetColInView(col, !mi.IsChecked);
       //if (mi.IsChecked) {
@@ -2148,23 +2153,29 @@ namespace BetterExplorer {
     }
 
     private void downArrow_Click(object sender, RoutedEventArgs e) {
-      this._CMHistory.Items.Clear();
-      if (this.tcMain.SelectedItem == null)
-        return;
-      var nl = ((Wpf.Controls.TabItem)this.tcMain.SelectedItem).log;
-      var i = 0;
-      foreach (var item in nl.HistoryItemsList) {
-        if (item != null) {
-          var itemCopy = item.Clone();
-          this._CMHistory.Items.Add(Utilities.Build_MenuItem(itemCopy.DisplayName, itemCopy, itemCopy.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default),
-                                                                                                           checkable: true, isChecked: i == nl.CurrentLocPos, GroupName: "G1", onClick: this.miItems_Click));
-        }
-        i++;
-      }
+      //this._CMHistory.Items.Clear();
+      //if (this.tcMain.SelectedItem == null)
+      //  return;
+      //var nl = ((Wpf.Controls.TabItem)this.tcMain.SelectedItem).log;
+      //var i = 0;
+      //foreach (var item in nl.HistoryItemsList) {
+      //  if (item != null) {
+      //    var itemCopy = item.Clone();
+      //    this._CMHistory.Items.Add(Utilities.Build_MenuItem(itemCopy.DisplayName, itemCopy, itemCopy.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default),
+      //                                                                                                     checkable: true, isChecked: i == nl.CurrentLocPos, GroupName: "G1", onClick: this.miItems_Click));
+      //  }
+      //  i++;
+      //}
 
-      this._CMHistory.Placement = PlacementMode.Bottom;
-      this._CMHistory.PlacementTarget = this.navBarGrid;
-      this._CMHistory.IsOpen = true;
+      //this._CMHistory.Placement = PlacementMode.Bottom;
+      //this._CMHistory.PlacementTarget = this.navBarGrid;
+      //this._CMHistory.IsOpen = true;
+      this._CMHistory = new AcrylicContextMenu();
+      this._CMHistory.WindowStartupLocation = WindowStartupLocation.Manual;
+      var mp = GetMousePosition();
+      this._CMHistory.Top = mp.Y;
+      this._CMHistory.Left = mp.X;
+      this._CMHistory.Show();
     }
 
     void miItems_Click(object sender, RoutedEventArgs e) {
@@ -2173,7 +2184,7 @@ namespace BetterExplorer {
         this.tcMain.isGoingBackOrForward = true;
         NavigationLog nl = (this.tcMain.Items[this.tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
         (sender as MenuItem).IsChecked = true;
-        nl.CurrentLocPos = this._CMHistory.Items.IndexOf(sender);
+        //nl.CurrentLocPos = this._CMHistory.Items.IndexOf(sender);
         this.NavigationController(item);
       }
     }
@@ -3829,7 +3840,7 @@ namespace BetterExplorer {
       this.Focus();         // important
     }
 
-    void ShellListView_ViewStyleChanged(object sender, BExplorer.Shell.ViewChangedEventArgs e) {
+    void ShellListView_ViewStyleChanged(object sender, ViewChangedEventArgs e) {
       this.Dispatcher.BeginInvoke(DispatcherPriority.Background,
           (ThreadStart)(() => {
             this._IsShouldRiseViewChanged = false;

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace BExplorer.Shell.Interop {
@@ -116,7 +118,7 @@ namespace BExplorer.Shell.Interop {
   }
 
   [Flags]
-  public enum TRANSFER_SOURCE_FLAGS: uint {
+  public enum TRANSFER_SOURCE_FLAGS : uint {
     TSF_NORMAL = 0,
     TSF_FAIL_EXIST = 0,
     TSF_RENAME_EXIST = 0x1,
@@ -310,12 +312,6 @@ namespace BExplorer.Shell.Interop {
 
     public int yOffsetPercent;
   };
-
-
-  public struct PROPERTYKEY {
-    public Guid fmtid;
-    public int pid;
-  }
 
   /*
   [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -887,10 +883,70 @@ namespace BExplorer.Shell.Interop {
   [StructLayout(LayoutKind.Sequential)]
   public struct LVHITTESTINFO {
     public POINT pt;
-    public uint flags;
+    public ListViewHitTestFlag flags;
     public int iItem;
     public int iSubItem;
     public int iGroup;
+  }
+
+  [Flags]
+  public enum ListViewHitTestFlag : uint {
+    /// <summary>The position is inside the list-view control's client window, but it is not over a list item.</summary>
+    LVHT_NOWHERE = 0X00000001,
+
+    /// <summary>The position is over a list-view item's icon.</summary>
+    LVHT_ONITEMICON = 0X00000002,
+
+    /// <summary>The position is over a list-view item's text.</summary>
+    LVHT_ONITEMLABEL = 0X00000004,
+
+    /// <summary>The position is over the state image of a list-view item.</summary>
+    LVHT_ONITEMSTATEICON = 0X00000008,
+
+    /// <summary>The position is over a list-view item.</summary>
+    LVHT_ONITEM = LVHT_ONITEMICON | LVHT_ONITEMLABEL | LVHT_ONITEMSTATEICON,
+
+    /// <summary>The position is above the control's client area.</summary>
+    LVHT_ABOVE = 0X00000008,
+
+    /// <summary>The position is below the control's client area.</summary>
+    LVHT_BELOW = 0X00000010,
+
+    /// <summary>The position is to the right of the list-view control's client area.</summary>
+    LVHT_TORIGHT = 0X00000020,
+
+    /// <summary>The position is to the left of the list-view control's client area.</summary>
+    LVHT_TOLEFT = 0X00000040,
+
+    /// <summary>Windows Vista. The point is within the group header.</summary>
+    LVHT_EX_GROUP_HEADER = 0X10000000,
+
+    /// <summary>Windows Vista. The point is within the group footer.</summary>
+    LVHT_EX_GROUP_FOOTER = 0X20000000,
+
+    /// <summary>Windows Vista. The point is within the collapse/expand button of the group.</summary>
+    LVHT_EX_GROUP_COLLAPSE = 0X40000000,
+
+    /// <summary>Windows Vista. The point is within the area of the group where items are displayed.</summary>
+    LVHT_EX_GROUP_BACKGROUND = 0X80000000,
+
+    /// <summary>Windows Vista. The point is within the state icon of the group.</summary>
+    LVHT_EX_GROUP_STATEICON = 0X01000000,
+
+    /// <summary>Windows Vista. The point is within the subset link of the group.</summary>
+    LVHT_EX_GROUP_SUBSETLINK = 0X02000000,
+
+    /// <summary>
+    /// Windows Vista. LVHT_EX_GROUP_BACKGROUND | LVHT_EX_GROUP_COLLAPSE | LVHT_EX_GROUP_FOOTER | LVHT_EX_GROUP_HEADER |
+    /// LVHT_EX_GROUP_STATEICON | LVHT_EX_GROUP_SUBSETLINK.
+    /// </summary>
+    LVHT_EX_GROUP = LVHT_EX_GROUP_BACKGROUND | LVHT_EX_GROUP_COLLAPSE | LVHT_EX_GROUP_FOOTER | LVHT_EX_GROUP_HEADER | LVHT_EX_GROUP_STATEICON | LVHT_EX_GROUP_SUBSETLINK,
+
+    /// <summary>Windows Vista. The point is within the icon or text content of the item and not on the background.</summary>
+    LVHT_EX_ONCONTENTS = 0X04000000,
+
+    /// <summary>Windows Vista. The point is within the footer of the list-view control.</summary>
+    LVHT_EX_FOOTER = 0X08000000,
   }
 
   [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -949,5 +1005,111 @@ namespace BExplorer.Shell.Interop {
   //  TSF_MOVE_AS_COPY_DELETE = 0x400, 
   //  TSF_SUSPEND_SHELLEVENTS = 0x800
   //}
+  [StructLayout(LayoutKind.Sequential), DebuggerDisplay("{ptr}, {ToString()}")]
+  public struct StrPtrAuto : IEquatable<string>, IEquatable<StrPtrAuto>, IEquatable<IntPtr> {
+    private IntPtr ptr;
+
+    /// <summary>Initializes a new instance of the <see cref="StrPtrAuto"/> struct.</summary>
+    /// <param name="s">The string value.</param>
+    public StrPtrAuto(string s) => ptr = StringHelper.AllocString(s);
+
+    /// <summary>Initializes a new instance of the <see cref="StrPtrAuto"/> struct.</summary>
+    /// <param name="charLen">Number of characters to reserve in memory.</param>
+    public StrPtrAuto(uint charLen) => ptr = StringHelper.AllocChars(charLen);
+
+    /// <summary>Gets a value indicating whether this instance is equivalent to null pointer or void*.</summary>
+    /// <value><c>true</c> if this instance is null; otherwise, <c>false</c>.</value>
+    public bool IsNull => ptr == IntPtr.Zero;
+
+    /// <summary>Assigns a string pointer value to the pointer.</summary>
+    /// <param name="stringPtr">The string pointer value.</param>
+    public void Assign(IntPtr stringPtr) { Free(); ptr = stringPtr; }
+
+    /// <summary>Assigns a new string value to the pointer.</summary>
+    /// <param name="s">The string value.</param>
+    public void Assign(string s) => StringHelper.RefreshString(ref ptr, out var _, s);
+
+    /// <summary>Assigns a new string value to the pointer.</summary>
+    /// <param name="s">The string value.</param>
+    /// <param name="charsAllocated">The character count allocated.</param>
+    /// <returns><c>true</c> if new memory was allocated for the string; <c>false</c> if otherwise.</returns>
+    public bool Assign(string s, out uint charsAllocated) => StringHelper.RefreshString(ref ptr, out charsAllocated, s);
+
+    /// <summary>Assigns an integer to the pointer for uses such as LPSTR_TEXTCALLBACK.</summary>
+    /// <param name="value">The value to assign.</param>
+    public void AssignConstant(int value) { Free(); ptr = (IntPtr)value; }
+
+    /// <summary>Frees the unmanaged string memory.</summary>
+    public void Free() { StringHelper.FreeString(ptr); ptr = IntPtr.Zero; }
+
+    public void FreeCotask() { Marshal.FreeCoTaskMem(ptr); ptr = IntPtr.Zero; }
+
+    /// <summary>Indicates whether the specified string is <see langword="null"/> or an empty string ("").</summary>
+    /// <returns>
+    /// <see langword="true"/> if the value parameter is <see langword="null"/> or an empty string (""); otherwise, <see langword="false"/>.
+    /// </returns>
+    public bool IsNullOrEmpty => ptr == IntPtr.Zero || StringHelper.GetString(ptr, CharSet.Auto, 1) == string.Empty;
+
+    /// <summary>Performs an implicit conversion from <see cref="StrPtrAuto"/> to <see cref="string"/>.</summary>
+    /// <param name="p">The <see cref="StrPtrAuto"/> instance.</param>
+    /// <returns>The result of the conversion.</returns>
+    public static implicit operator string(StrPtrAuto p) => p.IsNull ? null : p.ToString();
+
+    /// <summary>Performs an explicit conversion from <see cref="StrPtrAuto"/> to <see cref="System.IntPtr"/>.</summary>
+    /// <param name="p">The <see cref="StrPtrAuto"/> instance.</param>
+    /// <returns>The result of the conversion.</returns>
+    public static explicit operator IntPtr(StrPtrAuto p) => p.ptr;
+
+    /// <summary>Performs an implicit conversion from <see cref="IntPtr"/> to <see cref="StrPtrAuto"/>.</summary>
+    /// <param name="p">The pointer.</param>
+    /// <returns>The result of the conversion.</returns>
+    public static implicit operator StrPtrAuto(IntPtr p) => new() { ptr = p };
+
+    /// <summary>Determines whether the specified <see cref="IntPtr"/>, is equal to this instance.</summary>
+    /// <param name="other">The <see cref="IntPtr"/> to compare with this instance.</param>
+    /// <returns><c>true</c> if the specified <see cref="IntPtr"/> is equal to this instance; otherwise, <c>false</c>.</returns>
+    public bool Equals(IntPtr other) => EqualityComparer<IntPtr>.Default.Equals(ptr, other);
+
+    /// <summary>Determines whether the specified <see cref="IntPtr"/>, is equal to this instance.</summary>
+    /// <param name="other">The <see cref="IntPtr"/> to compare with this instance.</param>
+    /// <returns><c>true</c> if the specified <see cref="IntPtr"/> is equal to this instance; otherwise, <c>false</c>.</returns>
+    public bool Equals(string other) => EqualityComparer<string>.Default.Equals(this, other);
+
+    /// <summary>Determines whether the specified <see cref="StrPtrAuto"/>, is equal to this instance.</summary>
+    /// <param name="other">The <see cref="StrPtrAuto"/> to compare with this instance.</param>
+    /// <returns><c>true</c> if the specified <see cref="StrPtrAuto"/> is equal to this instance; otherwise, <c>false</c>.</returns>
+    public bool Equals(StrPtrAuto other) => Equals(other.ptr);
+
+    /// <summary>Determines whether the specified <see cref="object"/>, is equal to this instance.</summary>
+    /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
+    /// <returns><c>true</c> if the specified <see cref="object"/> is equal to this instance; otherwise, <c>false</c>.</returns>
+    public override bool Equals(object obj) => obj switch {
+      null => IsNull,
+      string s => Equals(s),
+      StrPtrAuto p => Equals(p),
+      IntPtr p => Equals(p),
+      _ => base.Equals(obj),
+    };
+
+    /// <summary>Returns a hash code for this instance.</summary>
+    /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+    public override int GetHashCode() => ptr.GetHashCode();
+
+    /// <summary>Returns a <see cref="string"/> that represents this instance.</summary>
+    /// <returns>A <see cref="string"/> that represents this instance.</returns>
+    public override string ToString() => StringHelper.GetString(ptr) ?? "null";
+
+    /// <summary>Determines whether two specified instances of <see cref="StrPtrAuto"/> are equal.</summary>
+    /// <param name="left">The first pointer or handle to compare.</param>
+    /// <param name="right">The second pointer or handle to compare.</param>
+    /// <returns><see langword="true"/> if <paramref name="left"/> equals <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool operator ==(StrPtrAuto left, StrPtrAuto right) => left.Equals(right);
+
+    /// <summary>Determines whether two specified instances of <see cref="StrPtrAuto"/> are not equal.</summary>
+    /// <param name="left">The first pointer or handle to compare.</param>
+    /// <param name="right">The second pointer or handle to compare.</param>
+    /// <returns><see langword="true"/> if <paramref name="left"/> does not equal <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool operator !=(StrPtrAuto left, StrPtrAuto right) => !left.Equals(right);
+  }
 
 }

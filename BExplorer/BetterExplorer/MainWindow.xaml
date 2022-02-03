@@ -36,6 +36,7 @@
   SizeChanged="RibbonWindow_SizeChanged"
   StateChanged="RibbonWindow_StateChanged"
   TextOptions.TextFormattingMode="Display"
+  Background="{DynamicResource WindowBackground}"
   mc:Ignorable="d">
 
   <Ribbon:RibbonWindow.Resources>
@@ -1243,7 +1244,7 @@
                       Foreground="#FFFF6E00">
                       <TextBlock
                         x:Name="TranslationURL"
-                        Text="http://better-explorer.com/help-with-translating/"
+                        Text="https://gainedge.org/better-explorer/help-with-translating/"
                         TextDecorations="Underline" />
                     </Button>
                     <TextBlock Margin="0,10,0,5" Text="{DynamicResource txtTranslationCredits}" />
@@ -1798,6 +1799,9 @@
               </TabControl>
             </Ribbon:BackstageTabItem>
             <Ribbon:Button Header="Show Notif Test" Click="ButtonBase_OnClick">
+
+            </Ribbon:Button>
+            <Ribbon:Button Header="Open Mica Window" Click="btnShowMica">
 
             </Ribbon:Button>
             <Ribbon:Button
@@ -3810,7 +3814,7 @@
       ToolTip="{DynamicResource txtLevelUp}">
       <Button.Template>
         <ControlTemplate TargetType="{x:Type Button}">
-          <Grid Background="{DynamicResource WhiteBrush}">
+          <Grid Background="Transparent">
             <Path
               x:Name="btnUpPath"
               Width="25"
@@ -3866,7 +3870,7 @@
         ToolTip="{DynamicResource txtBack}">
         <Button.Template>
           <ControlTemplate TargetType="{x:Type Button}">
-            <Grid Background="{DynamicResource WhiteBrush}">
+            <Grid Background="Transparent">
               <Path
                 x:Name="btnBackPathCircle"
                 Width="25"
@@ -3926,7 +3930,7 @@
         ToolTip="{DynamicResource txtForward}">
         <Button.Template>
           <ControlTemplate TargetType="{x:Type Button}">
-            <Grid Background="{DynamicResource WhiteBrush}">
+            <Grid Background="Transparent">
               <Path
                 x:Name="btnFFPath"
                 Width="25"
@@ -3970,7 +3974,7 @@
         Click="downArrow_Click">
         <Button.Template>
           <ControlTemplate TargetType="{x:Type Button}">
-            <Grid Background="{DynamicResource WhiteBrush}">
+            <Grid Background="Transparent">
               <Path
                 x:Name="btnHistorymnu"
                 Width="7"
@@ -4147,80 +4151,80 @@
       TabItemMaxWidth="300"
       TabItemMinHeight="20"
       TabItemMinWidth="100" />
-    <Grid
-      Grid.Row="4"
-      Grid.ColumnSpan="2"
-      Background="{DynamicResource WhiteBrush}"
-      Margin="0">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition />
-        <ColumnDefinition x:Name="clPreviewSplitter" Width="2" />
-        <ColumnDefinition x:Name="clPreview" Width="0" />
-      </Grid.ColumnDefinitions>
-      <Grid.RowDefinitions>
-        <RowDefinition x:Name="rPreviewPane" Height="0" />
-        <RowDefinition x:Name="rPreviewPaneSplitter" Height="1" />
-        <RowDefinition />
-      </Grid.RowDefinitions>
+    <Border Grid.Row="4" Grid.ColumnSpan="2" Margin="0" BorderBrush="#3A3A3A" BorderThickness="0,1,0,0">
+      <Grid
+        Background="{DynamicResource WhiteBrush}"
+        Margin="0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition x:Name="clPreviewSplitter" Width="2" />
+          <ColumnDefinition x:Name="clPreview" Width="0" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition x:Name="rPreviewPane" Height="0" />
+          <RowDefinition x:Name="rPreviewPaneSplitter" Height="1" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
 
-      <GridSplitter
+        <GridSplitter
         Grid.Row="1"
         Grid.ColumnSpan="3"
         Height="1"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Center"
         Background="LightBlue" />
-      <Grid
+        <Grid
         x:Name="TreeGrid"
         Margin="2,0,2,0"
         Grid.Row="2"
         Grid.Column="0"
         Background="{DynamicResource WhiteBrush}">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="200" />
-          <ColumnDefinition Width="2" />
-          <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <!--<shell:ShellTreeView x:Name="stvTreeView"></shell:ShellTreeView>-->
-        <Helper:NoFlickerWindowsFormsHost
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <!--<shell:ShellTreeView x:Name="stvTreeView"></shell:ShellTreeView>-->
+          <Helper:NoFlickerWindowsFormsHost
           x:Name="ShellTreeViewHost"
           Background="{DynamicResource WhiteBrush}" />
-        <GridSplitter
+          <GridSplitter
           x:Name="TreeSplitter"
           Grid.Column="1"
           Width="2"
           HorizontalAlignment="Center"
           VerticalAlignment="Stretch"
           Background="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabControl.Content.Background}" />
-        <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="0"/>
-          </Grid.ColumnDefinitions>
-          <Helper:NoFlickerWindowsFormsHost
+          <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="0"/>
+            </Grid.ColumnDefinitions>
+            <Helper:NoFlickerWindowsFormsHost
             x:Name="ShellViewHost"
             Background="{DynamicResource WhiteBrush}" />
-          <!--<ScrollBar x:Name="sbLVVertical" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Minimum="0" Maximum="100" SmallChange="0.5" LargeChange="1" Scroll="ScrollBar_OnScroll"></ScrollBar>-->
+            <!--<ScrollBar x:Name="sbLVVertical" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Minimum="0" Maximum="100" SmallChange="0.5" LargeChange="1" Scroll="ScrollBar_OnScroll"></ScrollBar>-->
+          </Grid>
         </Grid>
-      </Grid>
-      <GridSplitter
+        <GridSplitter
         Grid.Row="2"
         Grid.Column="1"
         Width="1"
         HorizontalAlignment="Center"
         VerticalAlignment="Stretch"
         Background="LightBlue" />
-      <Previewer:PreviewerControl
+        <Previewer:PreviewerControl
         x:Name="Previewer"
         Grid.Row="2"
         Grid.Column="2"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch">
-        <Previewer:PreviewerControl.Background>
-          <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowBrush}}" />
-        </Previewer:PreviewerControl.Background>
-      </Previewer:PreviewerControl>
-    </Grid>
+          <Previewer:PreviewerControl.Background>
+            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowBrush}}" />
+          </Previewer:PreviewerControl.Background>
+        </Previewer:PreviewerControl>
+      </Grid>
+    </Border>
     <GridSplitter
       Grid.Row="5"
       Grid.ColumnSpan="2"

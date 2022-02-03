@@ -326,17 +326,17 @@ namespace BExplorer.Shell.Interop
         {
             [DllImport("Shell32", CharSet = CharSet.Auto)]
             internal extern static int ExtractIconEx(
-				[MarshalAs(UnmanagedType.LPTStr)]
-			string lpszFile,
+        [MarshalAs(UnmanagedType.LPTStr)]
+      string lpszFile,
                  int nIconIndex,
                  IntPtr[] phIconLarge,
                  IntPtr[] phIconSmall,
                  int nIcons);
 
             /*
-			[DllImport("user32")]
-			internal static extern int DestroyIcon(IntPtr hIcon);
-			*/
+      [DllImport("user32")]
+      internal static extern int DestroyIcon(IntPtr hIcon);
+      */
         }
         #endregion
 
@@ -531,13 +531,13 @@ namespace BExplorer.Shell.Interop
                 IntPtr[] hIconEx = new IntPtr[1] { IntPtr.Zero };
                 int iconCount = UnManagedMethods.ExtractIconEx(iconFile, iconIndex, large ? hIconEx : null, null, 1);
                 /*
-				if (large) {
-					iconCount = UnManagedMethods.ExtractIconEx(iconFile, iconIndex, hIconEx, null, 1);
-				}
-				else {
-					iconCount = UnManagedMethods.ExtractIconEx(iconFile, iconIndex, null, hIconEx, 1);
-				}
-				*/
+        if (large) {
+          iconCount = UnManagedMethods.ExtractIconEx(iconFile, iconIndex, hIconEx, null, 1);
+        }
+        else {
+          iconCount = UnManagedMethods.ExtractIconEx(iconFile, iconIndex, null, hIconEx, 1);
+        }
+        */
                 // If success then return as a GDI+ object
                 Icon icon = null;
                 if (hIconEx[0] != IntPtr.Zero)

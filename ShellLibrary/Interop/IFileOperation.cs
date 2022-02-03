@@ -9,7 +9,7 @@ namespace BExplorer.Shell.Interop {
 	[ComImport]
 	[Guid("947aab5f-0a5c-4c13-b4d6-4bf7836fc9f8")]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IFileOperation {
+	public interface IFileOperation {
 		HResult Advise(IFileOperationProgressSink pfops, out uint pdwCookie);
 		void Unadvise(uint dwCookie);
 

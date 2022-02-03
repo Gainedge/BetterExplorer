@@ -4,6 +4,7 @@ using BExplorer.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using WPFUI.Win32;
 
 namespace BExplorer.Shell
 {

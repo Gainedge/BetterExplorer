@@ -1,0 +1,356 @@
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:ribbon="urn:fluent-ribbon"
+  xmlns:shellContextMenu="clr-namespace:ShellControls.ShellContextMenu"
+  xmlns:betterExplorerControls="clr-namespace:BetterExplorerControls;assembly=BetterExplorerControls"
+  xmlns:shellControls="clr-namespace:ShellControls"
+  xmlns:wpfui="clr-namespace:WPFUI.Controls;assembly=WPFUI"
+  xmlns:shellListView="clr-namespace:ShellControls.ShellListView"
+  xmlns:converters="clr-namespace:WPFUI.Converters;assembly=WPFUI">
+
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/ShellControls;Component/Themes/AcrylicContextMenu.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <shellContextMenu:Base64ImageConverter x:Key="Base64ImageConverter"/>
+  <converters:IconToStringConverter x:Key="IconToStringConverter" />
+
+  <Style TargetType="ListBoxItem">
+    <!-- override the default template to remove the default styling on the IsSelected property -->
+    <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+          <Border x:Name="border" BorderBrush="Transparent" BorderThickness="1">
+            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="true">
+              <Setter Property="BorderBrush" TargetName="border">
+                <Setter.Value>
+                  <SolidColorBrush Color="Black"/>
+                </Setter.Value>
+              </Setter>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type shellContextMenu:BaseCommandsPanel}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type shellContextMenu:BaseCommandsPanel}">
+          <Grid Background="Transparent">
+            <StackPanel Orientation="Horizontal" Margin="6,5,6,5" VerticalAlignment="Center">
+              <betterExplorerControls:FontIconButton x:Name="PART_ButtonCut" Margin="0,0,5,0" BaseIconGlyph="&#xF03D;" OverlayIconGlyph="&#xF03E;"/>
+              <betterExplorerControls:FontIconButton x:Name="PART_ButtonCopy" Margin="0,0,5,0" BaseIconGlyph="&#xF021;" OverlayIconGlyph="&#xF022;"/>
+              <betterExplorerControls:FontIconButton x:Name="PART_ButtonPaste" Margin="0,0,5,0" BaseIconGlyph="&#xF023;" OverlayIconGlyph="&#xF024;"/>
+              <betterExplorerControls:FontIconButton x:Name="PART_ButtonRename" Margin="0,0,5,0" BaseIconGlyph="&#xF027;" OverlayIconGlyph="&#xF028;"/>
+              <betterExplorerControls:FontIconButton x:Name="PART_ButtonShare" Margin="0,0,5,0" BaseIconGlyph="&#xF025;" OverlayIconGlyph="&#xF026;"/>
+              <betterExplorerControls:FontIconButton x:Name="PART_ButtonDelete" Margin="0,0,5,0" BaseIconGlyph="&#xF035;" OverlayIconGlyph="&#xF036;"/>
+              <betterExplorerControls:FontIconButton x:Name="PART_ButtonProperties" BaseIconGlyph="&#xF031;" OverlayIconGlyph="&#xF032;"/>
+            </StackPanel>
+          </Grid>
+
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style TargetType="{x:Type shellContextMenu:Win32ContextMenuItem}">
+    <Setter Property="UseLayoutRounding" Value="True"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type shellContextMenu:Win32ContextMenuItem}">
+          <Grid Background="Transparent">
+            <Border x:Name="PART_Border" CornerRadius="4">
+              <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="{Binding Path=IconSpace, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type shellContextMenu:AcrylicShellContextMenu}}}"/>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="PART_IconBase" Width="16" Height="16" Source="{Binding IconBase64, Converter={StaticResource Base64ImageConverter}}" HorizontalAlignment="Right" RenderOptions.BitmapScalingMode="Fant" RenderOptions.EdgeMode="Aliased" Stretch="None" Visibility="Collapsed"/>
+                <TextBlock x:Name="PART_Glyph" Margin="0" VerticalAlignment="Center" FontFamily="{DynamicResource FluentSystemIcons}" FontSize="20" Text="{TemplateBinding Glyph, Converter={StaticResource IconToStringConverter}}" Visibility="Visible"/>
+                <Border VerticalAlignment="Center" Width="6" Height="6" x:Name="PART_Checked" CornerRadius="3" Visibility="Collapsed" Margin="0,1.5,0,0">
+                  <Border.Background>
+                    <SolidColorBrush Color="{DynamicResource TextFillColorSecondary}"/>
+                  </Border.Background>
+                </Border>
+                <TextBlock x:Name="PART_Label" Grid.Column="1" Foreground="WhiteSmoke" Text="{Binding Label}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="12,0,5,0" FontSize="14"/>
+                <Path x:Name="PART_SubmenuArrow" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0" Fill="WhiteSmoke" Data="M 4 14 L 5 14 L 12 8 L 6 2 L 5 2 L 11 8 Z" Visibility="Collapsed"/>
+              </Grid>
+            </Border>
+            <Border x:Name="PART_Separator" BorderThickness="0,1,0,0" Height="1" BorderBrush="#46808080"  HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="Collapsed"/>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Glyph" Value="Empty">
+              <Setter TargetName="PART_IconBase" Property="Visibility" Value="Visible" />
+              <Setter TargetName="PART_Glyph" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+              <Setter TargetName="PART_IconBase" Property="Visibility" Value="Collapsed" />
+              <Setter TargetName="PART_Checked" Property="Visibility" Value="Visible" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="PART_Border" Property="Background" Value="#695D5B5B" />
+            </Trigger>
+            <Trigger Property="IsChildMenuOpened" Value="True">
+              <Setter TargetName="PART_Border" Property="Background" Value="#695D5B5B" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="PART_Border" Property="Background" Value="#694E4C4C" />
+            </Trigger>
+            <DataTrigger Binding="{Binding IsSubMenu}" Value="True">
+              <Setter TargetName="PART_SubmenuArrow" Property="Visibility" Value="Visible" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsSeparator}" Value="True">
+              <Setter TargetName="PART_Border" Property="Visibility" Value="Collapsed" />
+              <Setter TargetName="PART_Separator" Property="Visibility" Value="Visible" />
+            </DataTrigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style TargetType="{x:Type shellControls:ShellTabItem}">
+    <Setter Property="Background">
+      <Setter.Value>
+        <SolidColorBrush Opacity="0.0" Color="{DynamicResource ControlFillColorDefault}" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="AllowDrop" Value="True" />
+    <!--<Setter Property="OverridesDefaultStyle" Value="True" />-->
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type shellControls:ShellTabItem}">
+          <Grid x:Name="Root" Margin="3,0,3,0">
+            <Border
+                            x:Name="Border"
+                            MinWidth="180"
+                            MinHeight="36"
+                            Margin="0"
+                            Padding="6"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="4" WindowChrome.IsHitTestVisibleInChrome="True">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto"/>
+                  <ColumnDefinition Width="8"/>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="8"/>
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="{TemplateBinding Icon}" Width="24" Height="24" Margin="6,0,0,0" />
+                <ContentPresenter
+                              Grid.Column="2"
+                              x:Name="ContentSite"
+                              Margin="0"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center"
+                              ContentSource="Header"
+                              RecognizesAccessKey="True" />
+                <wpfui:Button Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Icon="Dismiss12" x:Name="PART_TabCloseButton">
+                  <wpfui:Button.Template>
+                    <ControlTemplate TargetType="{x:Type wpfui:Button}">
+                      <Border
+                        x:Name="Border"
+                        Padding="6"
+                        Background="Transparent"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="0"
+                        CornerRadius="4">
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                          </Grid.ColumnDefinitions>
+                          <wpfui:Icon
+                                x:Name="ButtonIcon"
+                                Grid.Column="0"
+                                Margin="0"
+                                Filled="{TemplateBinding IconFilled}"
+                                FontSize="{TemplateBinding FontSize}"
+                                FontWeight="{TemplateBinding FontWeight}"
+                                Foreground="{TemplateBinding Foreground}"
+                                Glyph="{TemplateBinding Icon}" />
+                          <ContentPresenter
+                                x:Name="Presenter"
+                                Margin="0"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Grid>
+                      </Border>
+                      <ControlTemplate.Triggers>
+                        <Trigger Property="Icon" Value="Empty">
+                          <Setter TargetName="ButtonIcon" Property="Margin" Value="0" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                          <Setter TargetName="Border" Property="Opacity" Value="0.8" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                          <Setter TargetName="Border" Property="Background">
+                            <Setter.Value>
+                              <SolidColorBrush Color="{DynamicResource ControlFillColorDefault}" />
+                            </Setter.Value>
+                          </Setter>
+                          <Setter TargetName="Border" Property="BorderBrush" Value="{Binding HoverBorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                      </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                  </wpfui:Button.Template>
+                </wpfui:Button>
+              </Grid>
+
+            </Border>
+
+            <!--<VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="SelectionStates">
+                <VisualState x:Name="Unselected" />
+                <VisualState x:Name="Selected">
+                  <Storyboard>
+                    <DoubleAnimation
+                                            Storyboard.TargetName="Border"
+                                            Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Opacity)"
+                                            From="0.0"
+                                            To="1.0"
+                                            Duration="0:0:.16" />
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="MouseOver" />
+                <VisualState x:Name="Disabled">
+                  <Storyboard>
+                    <DoubleAnimation
+                                            Storyboard.TargetName="Border"
+                                            Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Opacity)"
+                                            From="0.0"
+                                            To="0.5"
+                                            Duration="0:0:.16" />
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>-->
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Property="Panel.ZIndex" Value="100" />
+              <Trigger.EnterActions>
+                <BeginStoryboard x:Name="sbIsSelected">
+                  <Storyboard>
+                    <DoubleAnimation
+                      Storyboard.TargetName="Border"
+                      Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Opacity)"
+                      From="0.0"
+                      To="1.0"
+                      Duration="0:0:.16" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <RemoveStoryboard BeginStoryboardName="sbIsSelected"/>
+              </Trigger.ExitActions>
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsSelected" Value="False" />
+                <Condition Property="IsMouseOver" Value="True" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="Border" Property="Background">
+                  <Setter.Value>
+                    <SolidColorBrush Opacity="0.0" Color="{DynamicResource ControlFillColorTertiary}" />
+                  </Setter.Value>
+                </Setter>
+              </MultiTrigger.Setters>
+              <MultiTrigger.EnterActions>
+                <BeginStoryboard x:Name="sbNotIsSelectedHover">
+                  <Storyboard>
+                    <DoubleAnimation
+                      Storyboard.TargetName="Border"
+                      Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Opacity)"
+                      From="0.0"
+                      To="1.0"
+                      Duration="0:0:.16" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </MultiTrigger.EnterActions>
+              <MultiTrigger.ExitActions>
+                <RemoveStoryboard BeginStoryboardName="sbNotIsSelectedHover"/>
+              </MultiTrigger.ExitActions>
+            </MultiTrigger>
+            <!--<MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsSelected" Value="False" />
+                <Condition Property="IsMouseOver" Value="False" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation
+                      Storyboard.TargetName="Border"
+                      Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Opacity)"
+                      From="1.0"
+                      To="0.0"
+                      Duration="0:0:.16" />
+                    </Storyboard>
+                </BeginStoryboard>
+              </MultiTrigger.EnterActions>
+            </MultiTrigger>-->
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style TargetType="{x:Type shellControls:ToolbarGroup}">
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type shellControls:ToolbarGroup}">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Separator x:Name="PART_Separator" Margin="0,5,0,5" />
+            <Border Grid.Column="1" BorderThickness="0,0,0,0" BorderBrush="{DynamicResource ControlElevationBorderBrush}" CornerRadius="4" Padding="0">
+              <Grid Margin="0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Grid.ColumnSpan="2" CornerRadius="0.5" Height="1" Background="{TemplateBinding GroupColor}" Opacity="1" Margin="15,30,12,0" Visibility="Collapsed"/>
+                <Border x:Name="PART_ColorIdentifier" Grid.Column="0" CornerRadius="2" Width="4" Margin="10,14,0,14"  Background="{TemplateBinding GroupColor}"/>
+                <ContentPresenter Grid.Column="1" Content="{TemplateBinding Content}" Margin="5,0,0,0"/>
+              </Grid>
+            </Border>
+            <!--<Border x:Name="PART_ColorIdentifier" Grid.Column="1" Grid.Row="1" CornerRadius="1" Height="2" Margin="0,-18,0,0"  Background="{TemplateBinding GroupColor}"/>-->
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="GroupColor" Value="Transparent">
+              <Setter TargetName="PART_ColorIdentifier" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="HaveSeparator" Value="False">
+              <Setter TargetName="PART_Separator" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="ShellControls.PieChart.PieChart.PieChartLayout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:BetterExplorer.PieChart" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pieChart="clr-namespace:ShellControls.PieChart.PieChart"
+    d:DesignHeight="356" d:DesignWidth="583" SizeChanged="UserControl_SizeChanged" Background="{DynamicResource Fluent.Ribbon.Brushes.Ribbon.Background}" MinWidth="340" MinHeight="340">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition x:Name="clPie" Width="*"/>
+      <ColumnDefinition Width="250"/>
+    </Grid.ColumnDefinitions>
+    <pieChart:PiePlotter HoleSize="0.3" x:Name="Pie" Grid.Column="0" Margin="0,50,0,-50" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+    <pieChart:Legend Grid.Column="1" x:Name="legend1" HorizontalAlignment="Right" Width="250" VerticalAlignment="Stretch" />
+  </Grid>
+</UserControl>

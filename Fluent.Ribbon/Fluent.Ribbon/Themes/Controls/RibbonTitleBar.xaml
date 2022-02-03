@@ -22,8 +22,8 @@
   </Style>
 
   <ControlTemplate x:Key="RibbonTitleBarControlTemplate" TargetType="{x:Type Fluent:RibbonTitleBar}">
-    <Grid>
-      <ContentPresenter x:Name="PART_QuickAccessToolbarHolder" ContentSource="QuickAccessToolBar" IsHitTestVisible="True" Margin="5,3,0,0" />
+    <Grid VerticalAlignment="Stretch">
+      <ContentPresenter x:Name="PART_QuickAccessToolbarHolder" ContentSource="QuickAccessToolBar" IsHitTestVisible="True" VerticalAlignment="Center" Margin="5,6,0,0"/>
 
       <ContentPresenter
         x:Name="PART_HeaderHolder"
@@ -36,6 +36,9 @@
       <Fluent:RibbonContextualGroupsContainer x:Name="PART_ItemsContainer" IsItemsHost="True" />
     </Grid>
     <ControlTemplate.Triggers>
+      <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"  Value="Maximized">
+        <Setter TargetName="PART_QuickAccessToolbarHolder" Property="Margin" Value="5,2,0,0"></Setter>
+      </DataTrigger>
       <Trigger Property="IsCollapsed" Value="True">
         <Setter TargetName="PART_QuickAccessToolbarHolder" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="PART_ItemsContainer" Property="Visibility" Value="Collapsed" />

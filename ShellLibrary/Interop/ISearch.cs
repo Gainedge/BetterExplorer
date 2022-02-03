@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using WPFUI.Win32;
 
 namespace BExplorer.Shell.Interop {
 	/// <summary>

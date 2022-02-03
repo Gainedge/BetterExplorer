@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace Fluent.Helpers {
-  internal static class DpiHelper {
+  public static class DpiHelper {
     [ThreadStatic]
     private static Matrix transformToDevice;
     [ThreadStatic]

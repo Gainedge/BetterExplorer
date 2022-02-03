@@ -76,7 +76,7 @@
 
   <Style x:Key="RibbonTabControlStyle" TargetType="{x:Type Fluent:RibbonTabControl}">
     <Setter Property="VerticalAlignment" Value="Top" />
-    <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabControl.Background}" />
+    <Setter Property="Background" Value="Transparent" />
     <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabControl.Foreground}" />
     <Setter Property="Focusable" Value="False" />
     <Setter Property="Template" Value="{DynamicResource RibbonTabControlControlTemplate}" />
@@ -90,7 +90,7 @@
             <ControlTemplate TargetType="{x:Type ScrollViewer}">
               <Grid
                 x:Name="Grid"
-                Background="{TemplateBinding Background}"
+                Background="Transparent"
                 IsHitTestVisible="True">
                 <ScrollContentPresenter
                   x:Name="PART_ScrollContentPresenter"

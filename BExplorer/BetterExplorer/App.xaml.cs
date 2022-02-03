@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -37,7 +38,7 @@ namespace BetterExplorer {
   /// <summary>
   /// Interaction logic for App
   /// </summary>
-  public partial class App: ISingleInstance {
+  public partial class App : ISingleInstance {
     /// <summary>
     /// Gets or sets a value indicating whether app starting in minimized state
     /// </summary>
@@ -143,12 +144,11 @@ namespace BetterExplorer {
     protected override void OnStartup(StartupEventArgs e) {
 
       var dllPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-      if (IntPtr.Size == 8)
-      {
+      if (IntPtr.Size == 8) {
         dllPath = Path.Combine(dllPath, "X64");
       } else {
         // X32
-        dllPath = Path.Combine(dllPath, "X86"); 
+        dllPath = Path.Combine(dllPath, "X86");
       }
       Kernel32.SetDllDirectory(dllPath);
 
@@ -181,9 +181,21 @@ namespace BetterExplorer {
 
       Boolean dmi = true;
       System.Windows.Forms.Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-      Current.DispatcherUnhandledException += this.Current_DispatcherUnhandledException;
-      AppDomain.CurrentDomain.UnhandledException += this.CurrentDomain_UnhandledException;
-      System.Windows.Forms.Application.ThreadException += this.Application_ThreadException;
+      Current.DispatcherUnhandledException += (sender, args) => {
+        args.Handled = true;
+        this.LogUnhandledException(args.Exception);
+      };
+      AppDomain.CurrentDomain.UnhandledException += (sender, args) => {
+        this.LogUnhandledException(args.ExceptionObject as Exception);
+      };
+      System.Windows.Forms.Application.ThreadException += (sender, args) => {
+        this.LogUnhandledException(args.Exception);
+      };
+
+      TaskScheduler.UnobservedTaskException += (s, e) => {
+        this.LogUnhandledException(e.Exception);
+        e.SetObserved();
+      };
 
       if (!File.Exists(Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite"))) {
         var beAppDataPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer");
@@ -208,7 +220,7 @@ namespace BetterExplorer {
       } catch (Exception ex) {
         // MessageBox.Show(String.Format("An error occurred while trying to load the theme data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "RibbonTheme Error - " + ex.ToString());
         MessageBox.Show(
-          $"An error occurred while trying to load the theme data from the Registry. \n\r \n\rRibbonTheme Error - {ex}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/",
+          $"An error occurred while trying to load the theme data from the Registry. \n\r \n\rRibbonTheme Error - {ex}\n\r \n\rPlease let us know of this issue at https://bugs.gainedge.org",
           ex.Message);
       }
 
@@ -237,10 +249,14 @@ namespace BetterExplorer {
         this.SelectCulture(Settings.BESettings.Locale);
       } catch {
         // MessageBox.Show(String.Format("A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {0}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.", Locale));
-        MessageBox.Show($"A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {Settings.BESettings.Locale}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.");
+        MessageBox.Show($"A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {Settings.BESettings.Locale}\r\n \r\nPlease report this issue at https://bugs.gainedge.org.");
 
         this.Shutdown();
       }
+
+      var mainWin = new MainWindowNew();
+      Application.Current.MainWindow = mainWin;
+      mainWin.Show();
     }
     public void RunAutomaticUpdateChecker() {
       Thread.Sleep(5000);
@@ -255,37 +271,9 @@ namespace BetterExplorer {
     }
 
     #region UnhandledException
-    /// <summary>
-    /// Handle all exceptions from current domain
-    /// </summary>
-    /// <param name="sender">Who send the exception</param>
-    /// <param name="e">the args</param>
-    private void CurrentDomain_UnhandledException(Object sender, UnhandledExceptionEventArgs e) {
-      var lastException = (Exception)e.ExceptionObject;
-      var logger = NLog.LogManager.GetCurrentClassLogger();
-      logger.Fatal(lastException);
-    }
-
-    /// <summary>
-    /// Handle all exceptions from current dispatcher
-    /// </summary>
-    /// <param name="sender">Who send the exception</param>
-    /// <param name="e">the args</param>
-    private void Current_DispatcherUnhandledException(Object sender, DispatcherUnhandledExceptionEventArgs e) {
-      var lastException = e.Exception;
-      var logger = NLog.LogManager.GetCurrentClassLogger();
-      logger.Fatal(lastException);
-
-      e.Handled = true;
-    }
-
-    /// <summary>
-    /// Handle all exceptions from current thread
-    /// </summary>
-    /// <param name="sender">Who send the exception</param>
-    /// <param name="e">the args</param>
-    private void Application_ThreadException(Object sender, ThreadExceptionEventArgs e) {
-      var lastException = e.Exception;
+    
+    private void LogUnhandledException(Exception ex) {
+      var lastException = ex;
       var logger = NLog.LogManager.GetCurrentClassLogger();
       logger.Fatal(lastException);
     }
@@ -298,6 +286,7 @@ namespace BetterExplorer {
     /// <param name="win">The main window</param>
     /// <param name="sho">The shell object used for tab creation</param>
     private void CreateInitialTab(MainWindow win, IListItemEx sho) {
+      return;
       var bmpSource = sho.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
       var newt = new Wpf.Controls.TabItem(sho) {
         Header = sho.DisplayName,
@@ -407,7 +396,7 @@ namespace BetterExplorer {
       var startUpLocation = Settings.BESettings.StartupLocation;
 
       Action<Boolean> d = x => {
-        var win = this.MainWindow as MainWindow;
+        var win = this.MainWindow as MainWindowNew;
         var windowsActivate = new CombinedWindowActivator();
         if (!x || win == null) {
           return;
@@ -423,7 +412,7 @@ namespace BetterExplorer {
           windowsActivate.ActivateForm(win, null, IntPtr.Zero);
         } else {
           if (args[1] == "/nw") {
-            new MainWindow() { IsMultipleWindowsOpened = true }.Show();
+            //new MainWindowNew() { IsMultipleWindowsOpened = true }.Show();
           } else {
             IListItemEx sho;
             if (args[1] == "t") {
@@ -435,22 +424,22 @@ namespace BetterExplorer {
               sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, args[1].ToShellParsingName());
             }
 
-            if (!IsStartMinimized || win.tcMain.Items.Count == 0) {
-              this.CreateInitialTab(win, sho);
-            } else if (Settings.BESettings.IsRestoreTabs) {
-              win.tcMain.Items.Clear();
-              this.CreateInitialTab(win, sho);
-            } else if (args.Length > 1 && args[1] != null) {
-              if (args[1] == "t") {
-                this.CreateInitialTab(win, sho);
-              } else {
-                var cmd = args[1];
-                sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd.ToShellParsingName());
-                this.CreateInitialTab(win, sho);
-              }
-            } else {
-              this.CreateInitialTab(win, sho);
-            }
+            //if (!IsStartMinimized || win.tcMain.Items.Count == 0) {
+            //  this.CreateInitialTab(win, sho);
+            //} else if (Settings.BESettings.IsRestoreTabs) {
+            //  win.tcMain.Items.Clear();
+            //  this.CreateInitialTab(win, sho);
+            //} else if (args.Length > 1 && args[1] != null) {
+            //  if (args[1] == "t") {
+            //    this.CreateInitialTab(win, sho);
+            //  } else {
+            //    var cmd = args[1];
+            //    sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd.ToShellParsingName());
+            //    this.CreateInitialTab(win, sho);
+            //  }
+            //} else {
+            //  this.CreateInitialTab(win, sho);
+            //}
           }
 
           windowsActivate.ActivateForm(win, null, IntPtr.Zero);

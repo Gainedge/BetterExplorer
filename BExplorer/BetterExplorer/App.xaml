@@ -1,14 +1,16 @@
 ﻿<Application
   x:Class="BetterExplorer.App"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  StartupUri="MainWindow.xaml">
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
+        <!--<ResourceDictionary Source="/BetterExplorer;component/Window/MicaWindow.xaml" />-->
         <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml" />
         <!--<ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Colors/BaseDark.xaml" />-->
         <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Accents/Amber.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WPFUI;component/Styles/Theme/Dark.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WPFUI;component/Styles/WPFUI.xaml" />
         <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.bg-BG.xaml" />
         <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.it-IT.xaml" />
         <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.es-ES.xaml" />
