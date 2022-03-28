@@ -179,7 +179,7 @@ namespace BExplorer.Shell {
     /// <param name="source">The item being moved</param>
     /// <param name="destination">The location to be moved to</param>
     /// <param name="newName">The new name of the file</param>
-    public void MoveItem(IShellItem source, IListItemEx destination, string newName) {
+    public void MoveItem(IShellItem source, IListItemEx destination, String? newName) {
       this.ThrowIfDisposed();
       this._FileOperation.MoveItem(source, destination.ComInterface, newName, null);
     }

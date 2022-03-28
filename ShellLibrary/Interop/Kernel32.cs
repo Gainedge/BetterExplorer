@@ -95,6 +95,9 @@ namespace BExplorer.Shell.Interop {
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool FreeLibrary(IntPtr hModule);
+
+    [DllImport("kernel32.dll")]
+    public static extern int GetUserDefaultLCID();
     /*
     public enum FINDEX_INFO_LEVELS {
       FindExInfoStandard = 0,

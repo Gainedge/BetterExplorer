@@ -10,6 +10,7 @@
              xmlns:shellListView="clr-namespace:ShellControls.ShellListView"
              xmlns:controls="clr-namespace:WPFUI.Controls;assembly=WPFUI"
              xmlns:shellControls="clr-namespace:ShellControls"
+             xmlns:breadcrumbBar="clr-namespace:ShellControls.BreadcrumbBar"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Loaded="ExplorerControl_OnLoaded" Unloaded="ExplorerControl_OnUnloaded">
   <Grid>
@@ -34,7 +35,7 @@
           <MenuItem x:Name="btnForward"  Icon="{x:Static wpfuicommon:Icon.ArrowRight20}" Click="btnForward_Click"></MenuItem>
           <MenuItem x:Name="btnUp" Icon="{x:Static wpfuicommon:Icon.ArrowUp20}" Click="btnUp_Click"></MenuItem>
         </Menu>
-        <ComboBox Grid.Column="1" Margin="10,0,0,0" IsEditable="True" Height="31"/>
+        <breadcrumbBar:BreadcrumbBar Grid.Column="1" x:Name="bcMain"  Margin="10,8,5,8" OnNavigate="OnBreadcrumbbarNavigate"/>
         <controls:SearchBox x:Name="txtSearch" Grid.Column="2" Margin="11,0,1,0" VerticalAlignment="Center" Height="33" SearchExecuted="TxtSearch_OnSearchExecuted"/>
         <betterExplorerControls:FontIconButton Grid.Column="3" Glyph="Settings20" Margin="9,8,16,7"/>
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Margin="8,5,0,5">
@@ -170,6 +171,9 @@
                 </betterExplorerControls:FontIconButton.Flyout>
               </betterExplorerControls:FontIconButton>
             </StackPanel>
+          </shellControls:ToolbarGroup>
+          <shellControls:ToolbarGroup Visibility="Collapsed">
+            <betterExplorerControls:FontIconButton x:Name="btnTest" BaseIconGlyph="&#xF035;" OverlayIconGlyph="&#xF036;" IsEnabled="True" Click="BtnTest_OnClick"/>
           </shellControls:ToolbarGroup>
         </StackPanel>
 

@@ -198,4 +198,41 @@
       </Setter.Value>
     </Setter>
   </Style>-->
+  <Style TargetType="{x:Type local:AcrylicContextMenu}">
+    <Setter Property="SnapsToDevicePixels"
+            Value="True" />
+    <Setter Property="Grid.IsSharedSizeScope"
+            Value="true" />
+    <Setter Property="Focusable"
+            Value="True" />
+    <Setter Property="MaxHeight" Value="485"></Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:AcrylicContextMenu}">
+          <ScrollViewer Padding="0">
+          <Border x:Name="Border" Margin="8,8,0,8"
+                  Background="#02000000"
+                  BorderThickness="0">
+            <Border.BorderBrush>
+              <SolidColorBrush Color="Black" />
+            </Border.BorderBrush>
+            <StackPanel IsItemsHost="True" Margin="0,0,0,0"
+                        KeyboardNavigation.DirectionalNavigation="Cycle" />
+          </Border>
+          </ScrollViewer>
+          <ControlTemplate.Triggers>
+            <Trigger Property="HasDropShadow"
+                     Value="true">
+              <Setter TargetName="Border"
+                      Property="Padding"
+                      Value="0,3,0,3" />
+              <Setter TargetName="Border"
+                      Property="CornerRadius"
+                      Value="4" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>

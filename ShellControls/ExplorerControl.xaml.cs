@@ -7,12 +7,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using BetterExplorer;
+using BetterExplorerControls;
 using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
@@ -41,7 +43,7 @@ namespace ShellControls {
     private static readonly List<string> Subtitles = new List<string>(new[] { ".sub", ".srt" });
     public event EventHandler OnBackClick;
     public event EventHandler OnForwardClick;
-    public event EventHandler<NavigatedEventArgs> OnUpdateTabInfo;
+    public event EventHandler<TabUpdateEventArgs> OnUpdateTabInfo;
     public NavigationLog Log { get; set; }
     private ClipboardMonitor cbm = new ClipboardMonitor();
     public Boolean AllowNavigation { get; set; }
@@ -67,7 +69,12 @@ namespace ShellControls {
       this.ShellViewEx.OnLVScroll += ShellViewExOnOnLVScroll;
       this.ShellViewEx.SelectionChanged += ShellViewExOnSelectionChanged;
       this.ShellViewEx.ViewStyleChanged += ShellViewExOnViewStyleChanged;
+      this.ShellViewEx.EndItemLabelEdit += ShellViewExOnEndItemLabelEdit;
 
+    }
+
+    private void ShellViewExOnEndItemLabelEdit(Object? sender, Boolean e) {
+      
     }
 
 
@@ -211,38 +218,53 @@ namespace ShellControls {
           this.btnClearForlderIcon.Visibility = Visibility.Collapsed;
         }
       }));
+      this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => {
+        if (this.bcMain.RootItem.Items.OfType<IListItemEx>().Last().IsSearchFolder) {
+          this.bcMain.RootItem.Items.RemoveAt(this.bcMain.RootItem.Items.Count - 1);
+        }
+
+
+        var pidl = e.Folder.PIDL.ToString();
+        this.bcMain.SetPathWithoutNavigate(pidl);
+
+        if (this._IsLogNavigation) {
+          this._IsLogNavigation = false;
+        } else {
+          this.Log.AddHistoryEntry(e.Folder);
+        }
+        this.btnBack.IsEnabled = this.Log.CanNavigateBackwards;
+        this.btnForward.IsEnabled = this.Log.CanNavigateForwards;
+        this.btnUp.IsEnabled = this.ShellViewEx.CanNavigateParent;
+      }));
+      this.OnUpdateTabInfo?.Invoke(this, new TabUpdateEventArgs(e.Folder, true));
     }
 
     private void ShellViewExOnNavigated(object? sender, NavigatedEventArgs e) {
+      this.OnUpdateTabInfo?.Invoke(this, new TabUpdateEventArgs(e.Folder, false));
       this.Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
         this.SetSelectedState();
-      if (this._IsLogNavigation) {
-        this._IsLogNavigation = false;
-      } else {
-        this.Log.AddHistoryEntry(e.Folder);
-      }
+        
 
-      Window.GetWindow(this)!.Title = e.Folder.DisplayName;
+        Window.GetWindow(this)!.Title = e.Folder.DisplayName;
 
-      //if (this.ShellViewEx.CurrentFolder.IsFileSystem) {
-      //  this.ctgFolderTools.Visibility = Visibility.Visible;
-      //} else {
-      //  this.ctgFolderTools.Visibility = Visibility.Collapsed;
-      //}
-      //if (this.ShellViewEx.GetFirstSelectedItem()?.IsFolder == true) {
-      //  this.btnChangeFolderIcon.Visibility = Visibility.Visible;
-      //  this.btnClearForlderIcon.Visibility = Visibility.Visible;
-      //} else {
-      //  this.btnChangeFolderIcon.Visibility = Visibility.Collapsed;
-      //  this.btnClearForlderIcon.Visibility = Visibility.Collapsed;
-      //}
-      this.btnBack.IsEnabled = this.Log.CanNavigateBackwards;
-      this.btnForward.IsEnabled = this.Log.CanNavigateForwards;
-      this.btnUp.IsEnabled = this.ShellViewEx.CanNavigateParent;
-      this.OnUpdateTabInfo?.Invoke(this, e);
-    }));
-  }
-
+        //if (this.ShellViewEx.CurrentFolder.IsFileSystem) {
+        //  this.ctgFolderTools.Visibility = Visibility.Visible;
+        //} else {
+        //  this.ctgFolderTools.Visibility = Visibility.Collapsed;
+        //}
+        //if (this.ShellViewEx.GetFirstSelectedItem()?.IsFolder == true) {
+        //  this.btnChangeFolderIcon.Visibility = Visibility.Visible;
+        //  this.btnClearForlderIcon.Visibility = Visibility.Visible;
+        //} else {
+        //  this.btnChangeFolderIcon.Visibility = Visibility.Collapsed;
+        //  this.btnClearForlderIcon.Visibility = Visibility.Collapsed;
+        //}
+      }));
+    }
+    private void OnBreadcrumbbarNavigate(IListItemEx destination) {
+      //this.IsNeedEnsureVisible = true;
+      this.ShellViewEx.Navigate_Full(destination, true, true);
+    }
     private void ExplorerControl_OnLoaded(object sender, RoutedEventArgs e) {
       Application.Current.MainWindow.Title = this.ShellViewEx.CurrentFolder?.DisplayName ?? "Better Explorer";
       this.LoadColorCodesFromFile();
@@ -262,7 +284,7 @@ namespace ShellControls {
 
       if (!this._IsLoaded) {
         this._IsLoaded = true;
-        this.OnUpdateTabInfo?.Invoke(this, new NavigatedEventArgs(this._Folder, null));
+        this.OnUpdateTabInfo?.Invoke(this, new TabUpdateEventArgs(this._Folder, false));
         BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref statef, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS | BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, false);
         this.tbHiddenFiles.IsChecked = statef.fShowAllObjects == 1;
         this.ShellViewEx.ShowHidden = this.tbHiddenFiles.IsChecked.Value;
@@ -578,6 +600,16 @@ namespace ShellControls {
         }
         cvt.Dispose();
       }
+    }
+
+    private void BtnTest_OnClick(Object sender, RoutedEventArgs e) {
+      var acrilicCm = new AcrylicContextMenu();
+      acrilicCm.Placement = PlacementMode.Bottom;
+      acrilicCm.PlacementTarget = this.btnTest;
+      var mi = new MenuItem();
+      mi.Header = "TestMenu";
+      acrilicCm.Items.Add(mi);
+      acrilicCm.IsOpen = true;
     }
   }
 }

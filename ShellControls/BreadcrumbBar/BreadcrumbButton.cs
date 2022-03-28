@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Controls.Primitives;
-using System.Diagnostics;
-using BExplorer.Shell;
-using System.Runtime.InteropServices;
 using System.Windows.Threading;
-using System.Threading;
-using BetterExplorerControls;
+using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
+using BExplorer.Shell.Interop;
+using ShellControls.ShellContextMenu;
 
 //###################################################################################
 // Odyssey.Controls
@@ -35,7 +27,7 @@ using BExplorer.Shell._Plugin_Interfaces;
 // ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
 //###################################################################################
 
-namespace Odyssey.Controls {
+namespace ShellControls.BreadcrumbBar {
   /// <summary>
   /// A breadcrumb button is part of a BreadcrumbItem and contains  a header and a dropdown button.
   /// </summary>
@@ -74,27 +66,27 @@ namespace Odyssey.Controls {
 
     public BreadcrumbButton()
         : base() {
-      CommandBindings.Add(new CommandBinding(SelectCommand, SelectCommandExecuted));
-      CommandBindings.Add(new CommandBinding(OpenOverflowCommand, OpenOverflowCommandExecuted, OpenOverflowCommandCanExecute));
+      this.CommandBindings.Add(new CommandBinding(SelectCommand, this.SelectCommandExecuted));
+      this.CommandBindings.Add(new CommandBinding(OpenOverflowCommand, this.OpenOverflowCommandExecuted, this.OpenOverflowCommandCanExecute));
 
-      InputBindings.Add(new KeyBinding(BreadcrumbButton.SelectCommand, new KeyGesture(Key.Enter)));
-      InputBindings.Add(new KeyBinding(BreadcrumbButton.SelectCommand, new KeyGesture(Key.Space)));
-      InputBindings.Add(new KeyBinding(BreadcrumbButton.OpenOverflowCommand, new KeyGesture(Key.Down)));
-      InputBindings.Add(new KeyBinding(BreadcrumbButton.OpenOverflowCommand, new KeyGesture(Key.Up)));
+      this.InputBindings.Add(new KeyBinding(BreadcrumbButton.SelectCommand, new KeyGesture(Key.Enter)));
+      this.InputBindings.Add(new KeyBinding(BreadcrumbButton.SelectCommand, new KeyGesture(Key.Space)));
+      this.InputBindings.Add(new KeyBinding(BreadcrumbButton.OpenOverflowCommand, new KeyGesture(Key.Down)));
+      this.InputBindings.Add(new KeyBinding(BreadcrumbButton.OpenOverflowCommand, new KeyGesture(Key.Up)));
     }
 
 
     private bool isPressed = false;
 
     protected override void OnMouseLeave(MouseEventArgs e) {
-      IsPressed = false;
+      this.IsPressed = false;
     }
 
 
 
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e) {
       e.Handled = true;
-      IsPressed = isPressed = true;
+      this.IsPressed = this.isPressed = true;
       base.OnMouseLeftButtonDown(e);
     }
 
@@ -128,35 +120,34 @@ namespace Odyssey.Controls {
     protected override void OnMouseUp(MouseButtonEventArgs e) {
       e.Handled = true;
       if (e.ChangedButton == MouseButton.Right) {
-        var data = this.DataContext as ShellItem;
-        if (data != null) {
+        if (this.DataContext is IListItemEx data) {
           Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
           Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
           //ShellContextMenu cm = new ShellContextMenu(new[] { data });
           //cm.ShowContextMenu(new System.Drawing.Point((int)realCoordinates.X, (int)realCoordinates.Y + (int)this.ActualHeight), 1);
         }
       }
-      if (isPressed) {
+      if (this.isPressed) {
         RoutedEventArgs args = new RoutedEventArgs(BreadcrumbButton.ClickEvent);
-        RaiseEvent(args);
+        this.RaiseEvent(args);
         selectCommand.Execute(null, this);
       }
-      IsPressed = isPressed = false;
+      this.IsPressed = this.isPressed = false;
       base.OnMouseUp(e);
     }
 
     private void SelectCommandExecuted(object sender, ExecutedRoutedEventArgs e) {
-      SelectedItem = null;
+      this.SelectedItem = null;
       RoutedEventArgs args = new RoutedEventArgs(Button.ClickEvent);
-      RaiseEvent(args);
+      this.RaiseEvent(args);
     }
 
     private void OpenOverflowCommandExecuted(object sender, ExecutedRoutedEventArgs e) {
-      IsDropDownPressed = true;
+      this.IsDropDownPressed = true;
     }
 
     private void OpenOverflowCommandCanExecute(object sender, CanExecuteRoutedEventArgs e) {
-      e.CanExecute = Items.Count > 0;
+      e.CanExecute = this.Items.Count > 0;
     }
 
     public static RoutedUICommand OpenOverflowCommand {
@@ -172,26 +163,24 @@ namespace Odyssey.Controls {
 
 
     public override void OnApplyTemplate() {
-      dropDownBtn = this.GetTemplateChild(partDropDown) as Control;
-      contextMenu = this.GetTemplateChild(partMenu) as AcrylicContextMenu;
-      if (contextMenu != null) {
-        contextMenu.Opened += new RoutedEventHandler(contextMenu_Opened);
+      this.dropDownBtn = this.GetTemplateChild(partDropDown) as Control;
+      this.contextMenu = this.GetTemplateChild(partMenu) as ContextMenu;
+      if (this.contextMenu != null) {
+        this.contextMenu.Opened += new RoutedEventHandler(this.contextMenu_Opened);
       }
-      if (dropDownBtn != null) {
-        dropDownBtn.MouseDown += new MouseButtonEventHandler(dropDownBtn_MouseDown);
+      if (this.dropDownBtn != null) {
+        this.dropDownBtn.MouseDown += new MouseButtonEventHandler(this.dropDownBtn_MouseDown);
       }
 
       base.OnApplyTemplate();
-      contextMenu.Placement = PlacementMode.Bottom;
-      contextMenu.PlacementTarget = dropDownBtn;
-      contextMenu.VerticalOffset = dropDownBtn.ActualHeight + 35;
-      Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+      this.Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
         var data = this.DataContext as IListItemEx;
         if (data == null || data.DisplayName == "Search.search-ms")
           return;
         if (data != null && data.ParsingName != KnownFolders.Computer.ParsingName && data.ParsingName != KnownFolders.Desktop.ParsingName) {
           if (data.IsSearchFolder)
             return;
+          //data = new ShellItem(data.CachedParsingName.ToShellParsingName());
           var aditionalItems = new List<IListItemEx>();
           //ShellItem.IsCareForMessageHandle = false;
           foreach (var item in data) {
@@ -209,7 +198,7 @@ namespace Odyssey.Controls {
 
     void dropDownBtn_MouseDown(object sender, MouseButtonEventArgs e) {
       e.Handled = true;
-      IsDropDownPressed ^= true;
+      this.IsDropDownPressed ^= true;
     }
 
 
@@ -217,63 +206,72 @@ namespace Odyssey.Controls {
     /// Gets or sets the Image of the BreadcrumbButton.
     /// </summary>
     public ImageSource Image {
-      get { return (ImageSource)GetValue(ImageProperty); }
-      set { SetValue(ImageProperty, value); }
+      get { return (ImageSource)this.GetValue(ImageProperty); }
+      set { this.SetValue(ImageProperty, value); }
     }
 
 
     void contextMenu_Opened(object sender, RoutedEventArgs e) {
-      contextMenu.Items.Clear();
-      //contextMenu.ItemTemplate = ItemTemplate;
-      //contextMenu.ItemTemplateSelector = ItemTemplateSelector;
-      foreach (object item in Items) {
+      this.contextMenu.Items.Clear();
+      //this.contextMenu.ItemTemplate = this.ItemTemplate;
+      //this.contextMenu.ItemTemplateSelector = this.ItemTemplateSelector;
+      foreach (object item in this.Items) {
         if (!(item is MenuItem) && !(item is Separator)) {
+          var itemEx = item as IListItemEx;
           MenuItem menuItem = new MenuItem();
           menuItem.DataContext = item;
-          BreadcrumbItem bi = item as BreadcrumbItem;
-          if (bi == null) {
-            BreadcrumbItem parent = TemplatedParent as BreadcrumbItem;
-            if (parent != null)
-              bi = parent.ContainerFromItem(item);
-          }
-          if (bi != null)
-            menuItem.Header = bi.TraceValue.Replace("_", "__");
+          menuItem.Header = itemEx.DisplayName;
+          //BreadcrumbItem bi = item as BreadcrumbItem;
+          //if (bi == null) {
+          //  BreadcrumbItem parent = this.TemplatedParent as BreadcrumbItem;
+          //  if (parent != null)
+          //    bi = parent.ContainerFromItem(item);
+          //}
+          //if (bi != null)
+          //  menuItem.Header = bi.TraceValue.Replace("_", "__");
 
-          Image image = new Image();
-          image.Source = bi != null ? bi.Image : null;
-          image.SnapsToDevicePixels = true;
-          image.Stretch = Stretch.Fill;
-          image.VerticalAlignment = VerticalAlignment.Center;
-          image.HorizontalAlignment = HorizontalAlignment.Center;
-          image.Width = 16;
-          image.Height = 16;
+          //Image image = new Image();
+          //image.Source = bi != null ? bi.Image : null;
+          //image.SnapsToDevicePixels = true;
+          //image.Stretch = Stretch.Fill;
+          //image.VerticalAlignment = VerticalAlignment.Center;
+          //image.HorizontalAlignment = HorizontalAlignment.Center;
+          //image.Width = 16;
+          //image.Height = 16;
 
-          menuItem.Icon = image;
+          menuItem.Icon = itemEx.ThumbnailSource(18, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 
-          menuItem.Click += new RoutedEventHandler(item_Click);
-          var data = bi.Data;
-          if (item != null && (item.Equals(SelectedItem) || data == (ShellItem)SelectedItem))
-            menuItem.FontWeight = FontWeights.Bold;
-          //menuItem.ItemTemplate = ItemTemplate;
-          //menuItem.ItemTemplateSelector = ItemTemplateSelector;
-          contextMenu.Items.Add(menuItem);
+          menuItem.Click += new RoutedEventHandler(this.item_Click);
+          //var data = bi.Data;
+          //if (item != null && (item.Equals(this.SelectedItem) || data == (IListItemEx)this.SelectedItem))
+          //  menuItem.FontWeight = FontWeights.Bold;
+          //menuItem.ItemTemplate = this.ItemTemplate;
+          //menuItem.ItemTemplateSelector = this.ItemTemplateSelector;
+          this.contextMenu.Items.Add(menuItem);
         } else {
-          contextMenu.Items.Add(item);
+          this.contextMenu.Items.Add(item);
         }
+        //var mi = new Win32ContextMenuItem(null);
+        //mi.Label = item.DisplayName;
+        //this.contextMenu.Items.Add(mi);
       }
+      this.contextMenu.Placement = PlacementMode.Relative;
+      this.contextMenu.PlacementTarget = this.dropDownBtn;
+      this.contextMenu.VerticalOffset = this.dropDownBtn.ActualHeight + 10;
     }
 
     void item_Click(object sender, RoutedEventArgs e) {
+      this.contextMenu.IsOpen = false;
       MenuItem item = e.Source as MenuItem;
       object dataItem = item.DataContext;
       //RemoveSelectedItem(dataItem);
       //SelectedItem = dataItem;
-      FrameworkElement parent = TemplatedParent as FrameworkElement;
+      FrameworkElement parent = this.TemplatedParent as FrameworkElement;
       while (parent != null && !(parent is BreadcrumbBar))
         parent = VisualTreeHelper.GetParent(parent) as FrameworkElement;
       BreadcrumbBar bar = parent as BreadcrumbBar;
       if (bar != null) {
-        bar.Path = (dataItem as ShellItem).ParsingName;
+        bar.Path = (dataItem as IListItemEx).ParsingName;
       }
     }
     /*
@@ -295,8 +293,8 @@ namespace Odyssey.Controls {
     /// Gets or sets the selectedItem.
     /// </summary>	
     public object SelectedItem {
-      private get { return GetValue(SelectedItemProperty); }
-      set { SetValue(SelectedItemProperty, value); }
+      private get { return this.GetValue(SelectedItemProperty); }
+      set { this.SetValue(SelectedItemProperty, value); }
     }
 
     private static void SelectedItemChangedEvent(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -311,14 +309,14 @@ namespace Odyssey.Controls {
     /// Focus this BreadcrumbButton if the focus is currently within the BreadcrumbBar where this BreadcrumbButton is embedded:
     /// </summary>
     protected override void OnMouseEnter(MouseEventArgs e) {
-      isPressed = e.LeftButton == MouseButtonState.Pressed;
-      FrameworkElement parent = TemplatedParent as FrameworkElement;
+      this.isPressed = e.LeftButton == MouseButtonState.Pressed;
+      FrameworkElement parent = this.TemplatedParent as FrameworkElement;
       while (parent != null && !(parent is BreadcrumbBar))
         parent = VisualTreeHelper.GetParent(parent) as FrameworkElement;
       BreadcrumbBar bar = parent as BreadcrumbBar;
       if (bar != null && bar.IsKeyboardFocusWithin)
-        Focus();
-      IsPressed = isPressed;
+        this.Focus();
+      this.IsPressed = this.isPressed;
       base.OnMouseEnter(e);
     }
 
@@ -357,8 +355,8 @@ namespace Odyssey.Controls {
     /// Gets or sets the ButtonMode for the BreadcrumbButton.
     /// </summary>
     public ButtonMode Mode {
-      get { return (ButtonMode)GetValue(ModeProperty); }
-      set { SetValue(ModeProperty, value); }
+      get { return (ButtonMode)this.GetValue(ModeProperty); }
+      set { this.SetValue(ModeProperty, value); }
     }
 
     // Using a DependencyProperty as the backing store for Mode.  This enables animation, styling, binding, etc...
@@ -370,16 +368,16 @@ namespace Odyssey.Controls {
     /// Occurs when the Button is clicked.
     /// </summary>
     public event RoutedEventHandler Click {
-      add { AddHandler(BreadcrumbButton.ClickEvent, value); }
-      remove { RemoveHandler(BreadcrumbButton.ClickEvent, value); }
+      add { this.AddHandler(BreadcrumbButton.ClickEvent, value); }
+      remove { this.RemoveHandler(BreadcrumbButton.ClickEvent, value); }
     }
 
     /// <summary>
     /// Occurs when the SelectedItem is changed.
     /// </summary>
     public event RoutedEventHandler Select {
-      add { AddHandler(BreadcrumbButton.SelectedItemChanged, value); }
-      remove { RemoveHandler(BreadcrumbButton.SelectedItemChanged, value); }
+      add { this.AddHandler(BreadcrumbButton.SelectedItemChanged, value); }
+      remove { this.RemoveHandler(BreadcrumbButton.SelectedItemChanged, value); }
     }
 
 
@@ -387,8 +385,8 @@ namespace Odyssey.Controls {
     /// Gets or sets whether the button is pressed.
     /// </summary>
     public bool IsPressed {
-      get { return (bool)GetValue(IsPressedProperty); }
-      set { SetValue(IsPressedProperty, value); }
+      get { return (bool)this.GetValue(IsPressedProperty); }
+      set { this.SetValue(IsPressedProperty, value); }
     }
 
     /// <summary>
@@ -402,8 +400,8 @@ namespace Odyssey.Controls {
     /// Gets or sets whether the drop down button is pressed.
     /// </summary>
     public bool IsDropDownPressed {
-      get { return (bool)GetValue(IsDropDownPressedProperty); }
-      set { SetValue(IsDropDownPressedProperty, value); }
+      get { return (bool)this.GetValue(IsDropDownPressedProperty); }
+      set { this.SetValue(IsDropDownPressedProperty, value); }
     }
 
     /// <summary>
@@ -417,8 +415,8 @@ namespace Odyssey.Controls {
     /// Gets or sets the DataTemplate for the drop down items.
     /// </summary>
     public DataTemplate DropDownContentTemplate {
-      get { return (DataTemplate)GetValue(DropDownContentTemplateProperty); }
-      set { SetValue(DropDownContentTemplateProperty, value); }
+      get { return (DataTemplate)this.GetValue(DropDownContentTemplateProperty); }
+      set { this.SetValue(DropDownContentTemplateProperty, value); }
     }
 
     // Using a DependencyProperty as the backing store for DropDownContentTemplate.  This enables animation, styling, binding, etc...
@@ -431,8 +429,8 @@ namespace Odyssey.Controls {
     /// Gets or sets whether the drop down button is visible.
     /// </summary>
     public bool IsDropDownVisible {
-      get { return (bool)GetValue(IsDropDownVisibleProperty); }
-      set { SetValue(IsDropDownVisibleProperty, value); }
+      get { return (bool)this.GetValue(IsDropDownVisibleProperty); }
+      set { this.SetValue(IsDropDownVisibleProperty, value); }
     }
 
     /// <summary>
@@ -447,8 +445,8 @@ namespace Odyssey.Controls {
     /// Gets or sets whether the button is visible.
     /// </summary>
     public bool IsButtonVisible {
-      get { return (bool)GetValue(IsButtonVisibleProperty); }
-      set { SetValue(IsButtonVisibleProperty, value); }
+      get { return (bool)this.GetValue(IsButtonVisibleProperty); }
+      set { this.SetValue(IsButtonVisibleProperty, value); }
     }
 
     /// <summary>
@@ -462,8 +460,8 @@ namespace Odyssey.Controls {
     /// Gets or sets whether the Image is visible
     /// </summary>
     public bool IsImageVisible {
-      get { return (bool)GetValue(IsImageVisibleProperty); }
-      set { SetValue(IsImageVisibleProperty, value); }
+      get { return (bool)this.GetValue(IsImageVisibleProperty); }
+      set { this.SetValue(IsImageVisibleProperty, value); }
     }
 
     /// <summary>
@@ -479,8 +477,8 @@ namespace Odyssey.Controls {
     /// Gets or sets whether to use visual background style on MouseOver and/or MouseDown.
     /// </summary>
     public bool EnableVisualButtonStyle {
-      get { return (bool)GetValue(EnableVisualButtonStyleProperty); }
-      set { SetValue(EnableVisualButtonStyleProperty, value); }
+      get { return (bool)this.GetValue(EnableVisualButtonStyleProperty); }
+      set { this.SetValue(EnableVisualButtonStyleProperty, value); }
     }
 
     /// <summary>

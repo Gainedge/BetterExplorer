@@ -151,18 +151,22 @@ namespace ShellControls.ShellContextMenu {
       if (this.IsSeparator) {
         return;
       }
-      this._ParentCollection.Where(w => w != this).ToList()
-        .ForEach(e => {
-          if (e.SubMenuPopup != null) {
-            e.SubMenuPopup.IsOpen = false;
-            e.IsChildMenuOpened = false;
-            e.SubMenuPopup = null;
-          }
 
-          if (e.IsOpenTimer.IsEnabled) {
-            e.IsOpenTimer.Stop();
-          }
-        });
+      if (this._ParentCollection != null) {
+        this._ParentCollection.Where(w => w != this).ToList()
+          .ForEach(e => {
+            if (e.SubMenuPopup != null) {
+              e.SubMenuPopup.IsOpen = false;
+              e.IsChildMenuOpened = false;
+              e.SubMenuPopup = null;
+            }
+
+            if (e.IsOpenTimer.IsEnabled) {
+              e.IsOpenTimer.Stop();
+            }
+          });
+      }
+
       if (this.IsSubMenu) {
         this.IsOpenTimer.Start();
       }

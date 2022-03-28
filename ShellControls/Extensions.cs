@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using ShellControls.ShellListView;
@@ -117,6 +117,45 @@ namespace ShellControls {
     public static string RemoveExtensionsFromFile(this string file, string ext) {
       return file.EndsWith(ext) ? file.Remove(file.LastIndexOf(ext, StringComparison.Ordinal), ext.Length) : file;
     }
-    
+
+    public static String ToPrettyFormattedString(this DateTime dateTime) {
+      const int SECOND = 1;
+      const int MINUTE = 60 * SECOND;
+      const int HOUR = 60 * MINUTE;
+      const int DAY = 24 * HOUR;
+      const int MONTH = 30 * DAY;
+
+      TimeSpan ts = new TimeSpan(DateTime.Now.Ticks - dateTime.Ticks);
+      double seconds = ts.TotalSeconds;
+
+      // Less than one minute
+      if (seconds < 1 * MINUTE)
+        return ts.Seconds == 1 ? "A second ago" : ts.Seconds + " seconds ago";
+
+      if (seconds < 60 * MINUTE)
+        return ts.Minutes + " minutes ago";
+
+      if (seconds < 120 * MINUTE)
+        return "An hour ago";
+
+      if (seconds < 24 * HOUR)
+        return ts.Hours + " hours ago";
+
+      if (seconds < 48 * HOUR)
+        return "Yesterday";
+
+      if (seconds < 30 * DAY)
+        return ts.Days + " days ago";
+      var is12Hours = CultureInfo.CurrentUICulture.DateTimeFormat.ShortTimePattern.Contains("tt");
+      //if (seconds < 12 * MONTH) {
+        int months = Convert.ToInt32(Math.Floor((double)ts.Days / 30));
+        //return months <= 1 ? "one month ago" : dateTime.ToString("dddd, dd MMMM yyyy HH:mm:ss", CultureInfo.GetCultureInfo(Kernel32.GetUserDefaultLCID()));
+        return months <= 1 ? "one month ago" : dateTime.ToString("dddd, dd MMMM yyyy   "+ (is12Hours ? "hh:mm tt" : "HH:mm"), CultureInfo.CurrentUICulture);
+      //}
+
+      //int years = Convert.ToInt32(Math.Floor((double)ts.Days / 365));
+      //return years <= 1 ? "one year ago" : years + " years ago";
+    }
+
   }
 }

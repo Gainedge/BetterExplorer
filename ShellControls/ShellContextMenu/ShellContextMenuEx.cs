@@ -116,13 +116,13 @@ namespace ShellControls.ShellContextMenu {
 
       cmControl.OnMenuClosed += (sender, args) => {
         User32.DestroyMenu(hMenu);
+        Marshal.FinalReleaseComObject(this._ContextMenuComInterface);
+        Marshal.FinalReleaseComObject(this._ContextMenuComInterface2);
+        Marshal.FinalReleaseComObject(this._ContextMenuComInterface3);
         this._BitmapHandles.ForEach(e => {
           Gdi32.DeleteObject(e);
         });
         this._BitmapHandles.Clear();
-        Marshal.ReleaseComObject(this._ContextMenuComInterface);
-        Marshal.ReleaseComObject(this._ContextMenuComInterface2);
-        Marshal.ReleaseComObject(this._ContextMenuComInterface3);
         GC.WaitForPendingFinalizers();
         GC.Collect();
       };

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
@@ -19,6 +20,7 @@ namespace ShellControls {
   public class ShellTabItem : TabItem {
     public static readonly DependencyProperty IconProperty = DependencyProperty.Register("Icon", typeof(object), typeof(ShellTabItem), new UIPropertyMetadata(null));
     public static readonly DependencyProperty AllowDeleteProperty = DependencyProperty.Register("AllowDelete", typeof(bool), typeof(ShellTabItem), new UIPropertyMetadata(true));
+    public static readonly DependencyProperty IsBusyProperty = DependencyProperty.Register("IsBusy", typeof(bool), typeof(ShellTabItem), new UIPropertyMetadata(false));
     //public static readonly DependencyProperty IsSelectedTabProperty =
     //  DependencyProperty.Register("IsSelectedTab",
     //    typeof(bool),
@@ -57,6 +59,11 @@ namespace ShellControls {
       set { SetValue(AllowDeleteProperty, value); }
     }
 
+    public bool IsBusy {
+      get { return (bool)GetValue(IsBusyProperty); }
+      set { SetValue(IsBusyProperty, value); }
+    }
+
     public IListItemEx AssociatedItem { get; set; }
     public NavigationLog Log { get; set; }
 
@@ -77,8 +84,11 @@ namespace ShellControls {
       //  (sender as ShellView)?.Navigate_Full(this.Log.NavigateForward(), true);
       //};
       hostedControl.OnUpdateTabInfo += (sender, args) => {
+        //this.Dispatcher.Invoke(DispatcherPriority.ApplicationIdle, (Action)(() => {
+          this.IsBusy = args.IsBusy;
+        //}));
         this.AssociatedItem = args.Folder;
-        this.Icon = args.Folder.ThumbnailSource(24, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+        this.Icon = args.Folder.ThumbnailSource(18, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
         this.Header = args.Folder.DisplayName;
       };
 

@@ -368,8 +368,15 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
       HResult navRes;
       var flags = SHCONTF.FOLDERS | SHCONTF.NONFOLDERS | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.ENABLE_ASYNC;
+      if (this.IsSearchFolder) {
+        flags = SHCONTF.FOLDERS | SHCONTF.NONFOLDERS | SHCONTF.ENABLE_ASYNC;
+      }
+      
       if (isEnumHidden) {
         flags = SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.NONFOLDERS | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.ENABLE_ASYNC;
+        if (this.IsSearchFolder) {
+          flags = SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.NONFOLDERS  | SHCONTF.ENABLE_ASYNC;
+        }
       }
 
       //if (isFlatList) {
@@ -396,11 +403,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         } catch {
           continue;
         }
-        if (fsi.IsFolder && isFlatList) {
-          foreach (var child in fsi.GetContents(true, true)) {
-            yield return child;
-          }
-        }
+        //if (fsi.IsFolder && isFlatList) {
+        //  foreach (var child in fsi.GetContents(true, true)) {
+        //    yield return child;
+        //  }
+        //}
         fsi.IsParentSearchFolder = this.IsSearchFolder;
         fsi.Dispose();
         yield return fsi;
@@ -409,7 +416,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       }
 
       if (folder != null) {
-        Marshal.ReleaseComObject(folder);
+        Marshal.FinalReleaseComObject(folder);
       }
 
       if (result != HResult.S_FALSE) {
@@ -576,7 +583,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     /// <summary>Gets the item's BitmapSource</summary>
     public BitmapSource BitmapSource {
-      get { return this.ThumbnailSource(48, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default); }
+      get { return this.ThumbnailSource(16, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default); }
     }
 
     public HResult ExtractAndDrawThumbnail(IntPtr hdc, UInt32 iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out Boolean retrieved, Boolean isHidden, Boolean isRefresh = false) {

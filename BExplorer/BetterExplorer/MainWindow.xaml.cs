@@ -2170,12 +2170,12 @@ namespace BetterExplorer {
       //this._CMHistory.Placement = PlacementMode.Bottom;
       //this._CMHistory.PlacementTarget = this.navBarGrid;
       //this._CMHistory.IsOpen = true;
-      this._CMHistory = new AcrylicContextMenu();
-      this._CMHistory.WindowStartupLocation = WindowStartupLocation.Manual;
-      var mp = GetMousePosition();
-      this._CMHistory.Top = mp.Y;
-      this._CMHistory.Left = mp.X;
-      this._CMHistory.Show();
+      //this._CMHistory = new AcrylicContextMenu();
+      //this._CMHistory.WindowStartupLocation = WindowStartupLocation.Manual;
+      //var mp = GetMousePosition();
+      //this._CMHistory.Top = mp.Y;
+      //this._CMHistory.Left = mp.X;
+      //this._CMHistory.Show();
     }
 
     void miItems_Click(object sender, RoutedEventArgs e) {
