@@ -668,8 +668,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
-    <PackageReference Include="NLog" Version="4.7.13" />
-    <PackageReference Include="SingleInstanceCore" Version="2.2.1" />
+    <PackageReference Include="NLog" Version="5.0.4" />
+    <PackageReference Include="SingleInstanceCore" Version="2.2.2" />
   </ItemGroup>
   <ItemGroup>
     <XliffResource Include="MultilingualResources\BetterExplorer.bg-BG.xlf" />
