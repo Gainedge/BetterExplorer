@@ -86,6 +86,7 @@
     <Setter Property="Padding" Value="6,4" />
     <Setter Property="FontSize" Value="14" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type controls:SearchBox}">
@@ -110,7 +111,7 @@
                 <ScrollViewer x:Name="PART_ContentHost" Grid.Column="0" Panel.ZIndex="5"
                               Margin="0"
                               Style="{DynamicResource UiScrollViewer}" />
-                <TextBlock x:Name="PART_Watermark" Text="{TemplateBinding WatermarkText}" Grid.Column="0" Panel.ZIndex="1" VerticalAlignment="Center" Margin="5,0,0,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Opacity="0.5" Visibility="Visible"/>
+                <TextBlock x:Name="PART_Watermark" Text="{TemplateBinding WatermarkText}" Grid.Column="0" Panel.ZIndex="1" VerticalAlignment="Center" Margin="7,0,0,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Opacity="0.5" Visibility="Visible" TextTrimming="CharacterEllipsis"/>
                 <Button x:Name="PART_SearchButton" Grid.Column="1" Margin="1,0,1,0">
                   <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -134,7 +135,7 @@
             </Border>
           </Border>
           <ControlTemplate.Triggers>
-            <Trigger Property="IsFocused" Value="True">
+            <Trigger Property="IsSelected" Value="True">
               <Setter TargetName="BottomBorder" Property="BorderBrush">
                 <Setter.Value>
                   <SolidColorBrush Color="{DynamicResource SystemAccentColor}" />
@@ -144,29 +145,18 @@
             </Trigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>
-                <Condition Property="IsFocused" Value="False"/>
-                <Condition Property="IsWatermarkShown" Value="True"/>
-              </MultiTrigger.Conditions>
-              <MultiTrigger.Setters>
-                <Setter TargetName="PART_Watermark" Property="Visibility" Value="Collapsed"/>
-              </MultiTrigger.Setters>
-            </MultiTrigger>
-            <MultiTrigger>
-              <MultiTrigger.Conditions>
-                <Condition Property="IsFocused" Value="True"/>
-                <Condition Property="IsWatermarkShown" Value="True"/>
-              </MultiTrigger.Conditions>
-              <MultiTrigger.Setters>
-                <Setter TargetName="PART_Watermark" Property="Visibility" Value="Collapsed"/>
-              </MultiTrigger.Setters>
-            </MultiTrigger>
-            <MultiTrigger>
-              <MultiTrigger.Conditions>
-                <Condition Property="IsFocused" Value="True"/>
                 <Condition Property="IsWatermarkShown" Value="False"/>
               </MultiTrigger.Conditions>
               <MultiTrigger.Setters>
                 <Setter TargetName="PART_Watermark" Property="Visibility" Value="Collapsed"/>
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsWatermarkShown" Value="True"/>
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="PART_Watermark" Property="Visibility" Value="Visible"/>
               </MultiTrigger.Setters>
             </MultiTrigger>
           </ControlTemplate.Triggers>

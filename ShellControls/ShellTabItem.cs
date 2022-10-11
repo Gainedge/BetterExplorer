@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,8 +7,6 @@ using System.Windows.Threading;
 using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
-using Microsoft.AspNetCore.Server.IIS.Core;
-using ShellControls.ShellListView;
 using TabControl = WPFUI.Controls.TabControl;
 
 namespace ShellControls {
@@ -84,12 +78,13 @@ namespace ShellControls {
       //  (sender as ShellView)?.Navigate_Full(this.Log.NavigateForward(), true);
       //};
       hostedControl.OnUpdateTabInfo += (sender, args) => {
-        //this.Dispatcher.Invoke(DispatcherPriority.ApplicationIdle, (Action)(() => {
+        //this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => {
           this.IsBusy = args.IsBusy;
         //}));
-        this.AssociatedItem = args.Folder;
-        this.Icon = args.Folder.ThumbnailSource(18, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
-        this.Header = args.Folder.DisplayName;
+          this.AssociatedItem = args.Folder;
+          this.Icon = args.Folder.ThumbnailSource(18, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+          this.Header = args.Folder.DisplayName;
+        //}));
       };
 
     }
@@ -101,7 +96,7 @@ namespace ShellControls {
     protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e) {
       base.OnMouseLeftButtonUp(e);
       this.IsSelected = true;
-      (this.Content as ExplorerControl)?.ShellViewEx.Focus();
+      //(this.Content as ExplorerControl)?.ShellViewEx.Focus();
     }
 
     private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {

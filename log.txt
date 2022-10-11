@@ -1060,3 +1060,424 @@ System.Web.Extensions
 2021-07-18 18:54:55.773 +03:00 [INF] Applying upgrade step Finalize upgrade
 2021-07-18 18:54:55.776 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
 2021-07-18 18:54:56.339 +03:00 [INF] Upgrade has completed. Please review any changes.
+2022-05-30 17:40:42.968 +03:00 [INF] Loaded 3 extensions
+2022-05-30 17:40:44.484 +03:00 [INF] MSBuild registered from c:\program files\dotnet\sdk\5.0.404\
+2022-05-30 17:40:47.389 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2022-05-30 17:40:47.392 +03:00 [INF] Setting entrypoint to only project in solution: E:\C#\Better Explorer\IconExtractor\IconExtractor.csproj
+2022-05-30 17:40:47.396 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2022-05-30 17:40:47.411 +03:00 [INF] Initializing upgrade step Back up project
+2022-05-30 17:40:57.310 +03:00 [INF] Applying upgrade step Back up project
+2022-05-30 17:41:03.391 +03:00 [INF] Backing up E:\C#\Better Explorer\IconExtractor to E:\C#\Better Explorer\IconExtractor.backup
+2022-05-30 17:41:03.541 +03:00 [INF] Project backed up to E:\C#\Better Explorer\IconExtractor.backup
+2022-05-30 17:41:03.542 +03:00 [INF] Upgrade step Back up project applied successfully
+2022-05-30 17:41:09.011 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2022-05-30 17:41:13.743 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2022-05-30 17:41:13.746 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2022-05-30 17:41:14.596 +03:00 [INF] [dotnet] Conversion complete!
+2022-05-30 17:41:15.407 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2022-05-30 17:41:16.665 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2022-05-30 17:41:18.101 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2022-05-30 17:41:19.905 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.3.326103) needs added
+2022-05-30 17:41:19.910 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 17:41:21.893 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2022-05-30 17:41:21.898 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 17:41:24.194 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2022-05-30 17:41:25.694 +03:00 [INF] Initializing upgrade step Update TFM
+2022-05-30 17:41:25.699 +03:00 [INF] TFM needs updated to netstandard2.0
+2022-05-30 17:41:26.838 +03:00 [INF] Applying upgrade step Update TFM
+2022-05-30 17:41:29.459 +03:00 [INF] Updated TFM to netstandard2.0
+2022-05-30 17:41:29.460 +03:00 [INF] Upgrade step Update TFM applied successfully
+2022-05-30 17:41:31.186 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2022-05-30 17:41:32.125 +03:00 [INF] No package updates needed
+2022-05-30 17:41:32.127 +03:00 [INF] Initializing upgrade step Add template files
+2022-05-30 17:41:32.132 +03:00 [INF] 0 expected template items needed
+2022-05-30 17:41:32.133 +03:00 [INF] Initializing upgrade step Update source code
+2022-05-30 17:41:33.526 +03:00 [INF] Initializing upgrade step Move to next project
+2022-05-30 17:41:36.516 +03:00 [INF] Applying upgrade step Move to next project
+2022-05-30 17:41:36.518 +03:00 [INF] Upgrade step Move to next project applied successfully
+2022-05-30 17:41:40.649 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2022-05-30 17:41:46.965 +03:00 [INF] Applying upgrade step Finalize upgrade
+2022-05-30 17:41:46.966 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2022-05-30 17:41:50.210 +03:00 [INF] Upgrade has completed. Please review any changes.
+2022-05-30 17:45:03.379 +03:00 [INF] Loaded 3 extensions
+2022-05-30 17:45:04.064 +03:00 [INF] MSBuild registered from c:\program files\dotnet\sdk\5.0.404\
+2022-05-30 17:45:04.946 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2022-05-30 17:45:04.949 +03:00 [INF] Setting entrypoint to only project in solution: E:\C#\Better Explorer\Progress\RateBar.csproj
+2022-05-30 17:45:04.954 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2022-05-30 17:45:04.965 +03:00 [ERR] Project E:\C#\Better Explorer\Progress\RateBar.csproj cannot be loaded: The imported project "E:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  E:\C#\Better Explorer\Progress\RateBar.csproj
+2022-05-30 17:45:04.967 +03:00 [INF] No projects need upgraded for selected entrypoint
+2022-05-30 17:45:04.972 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2022-05-30 17:45:59.194 +03:00 [INF] Applying upgrade step Finalize upgrade
+2022-05-30 17:45:59.195 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2022-05-30 17:46:00.642 +03:00 [INF] Upgrade has completed. Please review any changes.
+2022-05-30 17:46:00.648 +03:00 [INF] No state to save
+2022-05-30 17:46:04.157 +03:00 [INF] Loaded 3 extensions
+2022-05-30 17:46:04.835 +03:00 [INF] MSBuild registered from c:\program files\dotnet\sdk\5.0.404\
+2022-05-30 17:46:05.684 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2022-05-30 17:46:05.686 +03:00 [INF] Setting entrypoint to only project in solution: E:\C#\Better Explorer\Progress\RateBar.csproj
+2022-05-30 17:46:05.691 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2022-05-30 17:46:05.702 +03:00 [ERR] Project E:\C#\Better Explorer\Progress\RateBar.csproj cannot be loaded: The imported project "E:\Microsoft.CSharp.targets" was not found. Confirm that the expression in the Import declaration "\Microsoft.CSharp.targets" is correct, and that the file exists on disk.  E:\C#\Better Explorer\Progress\RateBar.csproj
+2022-05-30 17:46:05.704 +03:00 [INF] No projects need upgraded for selected entrypoint
+2022-05-30 17:46:05.708 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2022-05-30 17:47:51.229 +03:00 [INF] Applying upgrade step Finalize upgrade
+2022-05-30 17:47:51.230 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2022-05-30 17:47:52.078 +03:00 [INF] Upgrade has completed. Please review any changes.
+2022-05-30 17:47:52.084 +03:00 [INF] No state to save
+2022-05-30 17:47:54.870 +03:00 [INF] Loaded 3 extensions
+2022-05-30 17:47:55.546 +03:00 [INF] MSBuild registered from c:\program files\dotnet\sdk\5.0.404\
+2022-05-30 17:47:56.612 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2022-05-30 17:47:56.614 +03:00 [INF] Setting entrypoint to only project in solution: E:\C#\Better Explorer\Progress\RateBar.csproj
+2022-05-30 17:47:56.619 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2022-05-30 17:47:56.634 +03:00 [INF] Initializing upgrade step Back up project
+2022-05-30 17:47:59.373 +03:00 [INF] Applying upgrade step Back up project
+2022-05-30 17:48:02.709 +03:00 [INF] Backing up E:\C#\Better Explorer\Progress to E:\C#\Better Explorer\Progress.backup
+2022-05-30 17:48:03.171 +03:00 [INF] Project backed up to E:\C#\Better Explorer\Progress.backup
+2022-05-30 17:48:03.173 +03:00 [INF] Upgrade step Back up project applied successfully
+2022-05-30 17:48:07.299 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2022-05-30 17:48:08.445 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2022-05-30 17:48:08.447 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2022-05-30 17:48:08.798 +03:00 [INF] [dotnet] No projects converted.
+2022-05-30 17:48:08.821 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2022-05-30 17:48:09.099 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2022-05-30 17:48:11.051 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2022-05-30 17:48:11.513 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.3.326103) needs added
+2022-05-30 17:48:11.519 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 17:48:12.697 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2022-05-30 17:48:12.703 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 17:48:13.596 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2022-05-30 17:48:16.236 +03:00 [INF] Initializing upgrade step Update TFM
+2022-05-30 17:48:16.545 +03:00 [INF] TFM needs updated to net5.0-windows
+2022-05-30 17:48:18.086 +03:00 [INF] Applying upgrade step Update TFM
+2022-05-30 17:48:18.385 +03:00 [ERR] Unexpected error applying step
+System.InvalidOperationException: Project file only supports setting TFM on new style csproj
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.SetTargetFramework(TargetFrameworkMoniker tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 40
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.SetTFM(TargetFrameworkMoniker tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 47
+   at Microsoft.DotNet.UpgradeAssistant.Steps.ProjectFormat.SetTFMStep.ApplyImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.ApplyAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 170
+2022-05-30 17:48:31.156 +03:00 [INF] Applying upgrade step Update TFM
+2022-05-30 17:48:31.456 +03:00 [ERR] Unexpected error applying step
+System.InvalidOperationException: Project file only supports setting TFM on new style csproj
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.SetTargetFramework(TargetFrameworkMoniker tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 40
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.SetTFM(TargetFrameworkMoniker tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 47
+   at Microsoft.DotNet.UpgradeAssistant.Steps.ProjectFormat.SetTFMStep.ApplyImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.ApplyAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 170
+2022-05-30 17:48:32.572 +03:00 [INF] Applying upgrade step Update TFM
+2022-05-30 17:48:32.855 +03:00 [ERR] Unexpected error applying step
+System.InvalidOperationException: Project file only supports setting TFM on new style csproj
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.SetTargetFramework(TargetFrameworkMoniker tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 40
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.SetTFM(TargetFrameworkMoniker tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 47
+   at Microsoft.DotNet.UpgradeAssistant.Steps.ProjectFormat.SetTFMStep.ApplyImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.ApplyAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 170
+2022-05-30 17:48:34.411 +03:00 [INF] Applying upgrade step Update TFM
+2022-05-30 17:48:34.690 +03:00 [ERR] Unexpected error applying step
+System.InvalidOperationException: Project file only supports setting TFM on new style csproj
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.TargetFrameworkMonikerCollection.SetTargetFramework(TargetFrameworkMoniker tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/TargetFrameworkMonikerCollection.cs:line 40
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.MSBuildProject.SetTFM(TargetFrameworkMoniker tfm) in /_/src/components/Microsoft.DotNet.UpgradeAssistant.MSBuild/MSBuildProject.File.cs:line 47
+   at Microsoft.DotNet.UpgradeAssistant.Steps.ProjectFormat.SetTFMStep.ApplyImplAsync(IUpgradeContext context, CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.UpgradeStep.ApplyAsync(IUpgradeContext context, CancellationToken token) in /_/src/common/Microsoft.DotNet.UpgradeAssistant.Abstractions/UpgradeStep.cs:line 170
+2022-05-30 17:48:39.092 +03:00 [INF] Skipping upgrade step Update TFM
+2022-05-30 17:48:39.092 +03:00 [INF] Upgrade step Update TFM skipped
+2022-05-30 17:48:40.609 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2022-05-30 17:48:41.518 +03:00 [INF] No package updates needed
+2022-05-30 17:48:41.519 +03:00 [INF] Initializing upgrade step Add template files
+2022-05-30 17:48:41.524 +03:00 [INF] 0 expected template items needed
+2022-05-30 17:48:41.525 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2022-05-30 17:48:41.834 +03:00 [INF] Found 0 app settings for upgrade: 
+2022-05-30 17:48:41.837 +03:00 [INF] Found 0 connection strings for upgrade: 
+2022-05-30 17:48:41.839 +03:00 [INF] Initializing upgrade step Update source code
+2022-05-30 17:48:42.895 +03:00 [INF] Initializing upgrade step Move to next project
+2022-05-30 17:48:44.283 +03:00 [INF] Applying upgrade step Move to next project
+2022-05-30 17:48:44.284 +03:00 [INF] Upgrade step Move to next project applied successfully
+2022-05-30 17:48:44.932 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2022-05-30 17:48:45.516 +03:00 [INF] Upgrade has completed. Please review any changes.
+2022-05-30 17:48:45.522 +03:00 [INF] Saving upgrade progress file at E:\C#\Better Explorer\Progress\.upgrade-assistant
+2022-05-30 17:51:12.648 +03:00 [INF] Loaded 3 extensions
+2022-05-30 17:51:13.843 +03:00 [INF] MSBuild registered from c:\program files\dotnet\sdk\5.0.404\
+2022-05-30 17:51:15.902 +03:00 [INF] Loading upgrade progress file at E:\C#\Better Explorer\Progress\.upgrade-assistant
+2022-05-30 17:51:16.916 +03:00 [INF] Initializing upgrade step Back up project
+2022-05-30 17:51:16.920 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2022-05-30 17:51:18.302 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2022-05-30 17:51:18.304 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2022-05-30 17:51:19.120 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2022-05-30 17:51:19.121 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2022-05-30 17:51:20.341 +03:00 [INF] [dotnet] Conversion complete!
+2022-05-30 17:51:20.733 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2022-05-30 17:51:22.107 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2022-05-30 17:51:26.818 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2022-05-30 17:51:27.793 +03:00 [INF] No package updates needed
+2022-05-30 17:51:27.795 +03:00 [INF] Initializing upgrade step Update TFM
+2022-05-30 17:51:27.801 +03:00 [INF] TFM needs updated to net5.0-windows
+2022-05-30 17:51:29.811 +03:00 [INF] Applying upgrade step Update TFM
+2022-05-30 17:51:35.584 +03:00 [INF] Updated TFM to net5.0-windows
+2022-05-30 17:51:35.585 +03:00 [INF] Upgrade step Update TFM applied successfully
+2022-05-30 17:51:40.433 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2022-05-30 17:51:41.506 +03:00 [INF] Marking package Microsoft.CSharp for removal because it appears to be a transitive dependency
+2022-05-30 17:51:41.724 +03:00 [INF] Adding Microsoft.Windows.Compatibility 6.0.0
+2022-05-30 17:51:41.726 +03:00 [INF] Packages to be removed: Microsoft.CSharp, Version=4.7.0
+2022-05-30 17:51:41.727 +03:00 [INF] Packages to be added: Microsoft.Windows.Compatibility, Version=6.0.0
+2022-05-30 17:51:42.659 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2022-05-30 17:51:42.662 +03:00 [INF] Removing outdated package reference: Microsoft.CSharp, Version=4.7.0
+2022-05-30 17:51:42.664 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=6.0.0
+2022-05-30 17:51:46.396 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2022-05-30 17:51:46.415 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2022-05-30 17:51:48.171 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2022-05-30 17:51:52.755 +03:00 [INF] Initializing upgrade step Add template files
+2022-05-30 17:51:52.761 +03:00 [INF] 0 expected template items needed
+2022-05-30 17:51:52.762 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2022-05-30 17:51:52.777 +03:00 [INF] Found 0 app settings for upgrade: 
+2022-05-30 17:51:52.780 +03:00 [INF] Found 0 connection strings for upgrade: 
+2022-05-30 17:51:52.784 +03:00 [INF] Initializing upgrade step Update source code
+2022-05-30 17:51:54.127 +03:00 [INF] Initializing upgrade step Move to next project
+2022-05-30 17:51:56.356 +03:00 [INF] Applying upgrade step Move to next project
+2022-05-30 17:51:56.357 +03:00 [INF] Upgrade step Move to next project applied successfully
+2022-05-30 17:51:58.693 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2022-05-30 17:52:00.509 +03:00 [INF] Applying upgrade step Finalize upgrade
+2022-05-30 17:52:00.510 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2022-05-30 17:52:01.147 +03:00 [INF] Upgrade has completed. Please review any changes.
+2022-05-30 17:52:01.153 +03:00 [INF] Deleting upgrade progress file at E:\C#\Better Explorer\Progress\.upgrade-assistant
+2022-05-30 17:53:48.516 +03:00 [INF] Loaded 3 extensions
+2022-05-30 17:53:49.189 +03:00 [INF] MSBuild registered from c:\program files\dotnet\sdk\5.0.404\
+2022-05-30 17:53:50.556 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2022-05-30 17:53:50.558 +03:00 [INF] Setting entrypoint to only project in solution: E:\C#\Better Explorer\Settings\Settings.csproj
+2022-05-30 17:53:50.562 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2022-05-30 17:53:50.577 +03:00 [INF] Initializing upgrade step Back up project
+2022-05-30 17:53:51.572 +03:00 [INF] Applying upgrade step Back up project
+2022-05-30 17:53:52.624 +03:00 [INF] Backing up E:\C#\Better Explorer\Settings to E:\C#\Better Explorer\Settings.backup
+2022-05-30 17:53:52.787 +03:00 [INF] Project backed up to E:\C#\Better Explorer\Settings.backup
+2022-05-30 17:53:52.788 +03:00 [INF] Upgrade step Back up project applied successfully
+2022-05-30 17:53:59.394 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2022-05-30 17:54:04.532 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2022-05-30 17:54:04.534 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2022-05-30 17:54:06.305 +03:00 [INF] [dotnet] Conversion complete!
+2022-05-30 17:54:06.569 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2022-05-30 17:54:07.595 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2022-05-30 17:54:08.825 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2022-05-30 17:54:09.943 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.3.326103) needs added
+2022-05-30 17:54:09.949 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 17:54:11.234 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2022-05-30 17:54:11.239 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 17:54:12.427 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2022-05-30 17:54:14.384 +03:00 [INF] Initializing upgrade step Update TFM
+2022-05-30 17:54:14.392 +03:00 [INF] TFM needs updated to net5.0-windows
+2022-05-30 17:54:15.450 +03:00 [INF] Applying upgrade step Update TFM
+2022-05-30 17:54:16.908 +03:00 [INF] Updated TFM to net5.0-windows
+2022-05-30 17:54:16.908 +03:00 [INF] Upgrade step Update TFM applied successfully
+2022-05-30 17:54:18.385 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2022-05-30 17:54:19.536 +03:00 [INF] Adding Microsoft.Windows.Compatibility 6.0.0
+2022-05-30 17:54:19.538 +03:00 [INF] Packages to be added: Microsoft.Windows.Compatibility, Version=6.0.0
+2022-05-30 17:54:21.483 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2022-05-30 17:54:21.483 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=6.0.0
+2022-05-30 17:54:23.138 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2022-05-30 17:54:23.162 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2022-05-30 17:54:24.810 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2022-05-30 17:54:24.827 +03:00 [INF] Initializing upgrade step Add template files
+2022-05-30 17:54:24.832 +03:00 [INF] 0 expected template items needed
+2022-05-30 17:54:24.833 +03:00 [INF] Initializing upgrade step Update source code
+2022-05-30 17:54:25.991 +03:00 [INF] Initializing upgrade step Move to next project
+2022-05-30 17:54:26.923 +03:00 [INF] Applying upgrade step Move to next project
+2022-05-30 17:54:26.923 +03:00 [INF] Upgrade step Move to next project applied successfully
+2022-05-30 17:54:27.677 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2022-05-30 17:54:29.122 +03:00 [INF] Applying upgrade step Finalize upgrade
+2022-05-30 17:54:29.124 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2022-05-30 17:54:32.416 +03:00 [INF] Upgrade has completed. Please review any changes.
+2022-05-30 17:58:15.632 +03:00 [INF] Loaded 3 extensions
+2022-05-30 17:58:16.312 +03:00 [INF] MSBuild registered from c:\program files\dotnet\sdk\5.0.404\
+2022-05-30 17:58:17.729 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2022-05-30 17:58:17.731 +03:00 [INF] Setting entrypoint to only project in solution: E:\C#\Better Explorer\UnbufferedFO\GS.Common.IO\UnbufferedIO.csproj
+2022-05-30 17:58:17.740 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2022-05-30 17:58:17.755 +03:00 [INF] Initializing upgrade step Back up project
+2022-05-30 17:58:19.670 +03:00 [INF] Applying upgrade step Back up project
+2022-05-30 17:58:20.437 +03:00 [INF] Backing up E:\C#\Better Explorer\UnbufferedFO\GS.Common.IO to E:\C#\Better Explorer\UnbufferedFO\GS.Common.IO.backup
+2022-05-30 17:58:20.513 +03:00 [INF] Project backed up to E:\C#\Better Explorer\UnbufferedFO\GS.Common.IO.backup
+2022-05-30 17:58:20.515 +03:00 [INF] Upgrade step Back up project applied successfully
+2022-05-30 17:58:23.688 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2022-05-30 17:58:26.482 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2022-05-30 17:58:26.485 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2022-05-30 17:58:26.746 +03:00 [INF] [dotnet] E:\C#\Better Explorer\UnbufferedFO\GS.Common.IO\UnbufferedIO.csproj contains an App.config file. App.config is replaced by appsettings.json in .NET Core. You will need to delete App.config and migrate to appsettings.json if it's applicable to your project.
+2022-05-30 17:58:27.229 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2022-05-30 17:58:27.229 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2022-05-30 17:58:28.793 +03:00 [INF] [dotnet] Conversion complete!
+2022-05-30 17:58:29.020 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2022-05-30 17:58:30.072 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2022-05-30 17:58:30.973 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2022-05-30 17:58:32.101 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.3.326103) needs added
+2022-05-30 17:58:32.107 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 17:58:32.802 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2022-05-30 17:58:32.807 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 17:58:33.971 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2022-05-30 17:58:36.816 +03:00 [INF] Initializing upgrade step Update TFM
+2022-05-30 17:58:36.822 +03:00 [INF] TFM needs updated to netstandard2.0
+2022-05-30 17:58:38.210 +03:00 [INF] Applying upgrade step Update TFM
+2022-05-30 17:58:39.387 +03:00 [INF] Updated TFM to netstandard2.0
+2022-05-30 17:58:39.387 +03:00 [INF] Upgrade step Update TFM applied successfully
+2022-05-30 17:58:42.381 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2022-05-30 17:58:43.278 +03:00 [WRN] No version of EntityFramework found that supports ["netstandard2.0"]; leaving unchanged
+2022-05-30 17:58:43.283 +03:00 [INF] No package updates needed
+2022-05-30 17:58:43.284 +03:00 [INF] Initializing upgrade step Add template files
+2022-05-30 17:58:43.297 +03:00 [INF] 0 expected template items needed
+2022-05-30 17:58:43.299 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2022-05-30 17:58:43.347 +03:00 [INF] Found 0 app settings for upgrade: 
+2022-05-30 17:58:43.354 +03:00 [INF] Found 0 connection strings for upgrade: 
+2022-05-30 17:58:43.360 +03:00 [INF] Initializing upgrade step Update source code
+2022-05-30 17:58:44.678 +03:00 [INF] Initializing upgrade step Move to next project
+2022-05-30 17:58:48.373 +03:00 [INF] Applying upgrade step Move to next project
+2022-05-30 17:58:48.374 +03:00 [INF] Upgrade step Move to next project applied successfully
+2022-05-30 17:58:48.842 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2022-05-30 17:58:49.930 +03:00 [INF] Applying upgrade step Finalize upgrade
+2022-05-30 17:58:49.931 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2022-05-30 17:58:50.402 +03:00 [INF] Upgrade has completed. Please review any changes.
+2022-05-30 17:59:35.175 +03:00 [INF] Loaded 3 extensions
+2022-05-30 17:59:35.852 +03:00 [INF] MSBuild registered from c:\program files\dotnet\sdk\5.0.404\
+2022-05-30 17:59:37.188 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2022-05-30 17:59:37.190 +03:00 [INF] Setting entrypoint to only project in solution: E:\C#\Better Explorer\UsbEject\UsbEject.csproj
+2022-05-30 17:59:37.194 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2022-05-30 17:59:37.209 +03:00 [INF] Initializing upgrade step Back up project
+2022-05-30 17:59:38.531 +03:00 [INF] Applying upgrade step Back up project
+2022-05-30 17:59:39.756 +03:00 [INF] Backing up E:\C#\Better Explorer\UsbEject to E:\C#\Better Explorer\UsbEject.backup
+2022-05-30 17:59:40.177 +03:00 [INF] Project backed up to E:\C#\Better Explorer\UsbEject.backup
+2022-05-30 17:59:40.178 +03:00 [INF] Upgrade step Back up project applied successfully
+2022-05-30 17:59:42.673 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2022-05-30 17:59:44.068 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2022-05-30 17:59:44.071 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2022-05-30 17:59:44.348 +03:00 [INF] [dotnet] E:\C#\Better Explorer\UsbEject\UsbEject.csproj contains an App.config file. App.config is replaced by appsettings.json in .NET Core. You will need to delete App.config and migrate to appsettings.json if it's applicable to your project.
+2022-05-30 17:59:45.006 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2022-05-30 17:59:45.007 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2022-05-30 17:59:46.250 +03:00 [INF] [dotnet] Conversion complete!
+2022-05-30 17:59:46.487 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2022-05-30 17:59:47.619 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2022-05-30 17:59:49.067 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2022-05-30 17:59:50.125 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.3.326103) needs added
+2022-05-30 17:59:50.131 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 17:59:51.098 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2022-05-30 17:59:51.105 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 17:59:52.456 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2022-05-30 17:59:53.344 +03:00 [INF] Initializing upgrade step Update TFM
+2022-05-30 17:59:53.353 +03:00 [INF] TFM needs updated to net5.0-windows
+2022-05-30 17:59:54.354 +03:00 [INF] Applying upgrade step Update TFM
+2022-05-30 17:59:55.887 +03:00 [INF] Updated TFM to net5.0-windows
+2022-05-30 17:59:55.888 +03:00 [INF] Upgrade step Update TFM applied successfully
+2022-05-30 17:59:57.223 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2022-05-30 17:59:58.254 +03:00 [INF] Marking package Microsoft.CSharp for removal because it appears to be a transitive dependency
+2022-05-30 17:59:58.356 +03:00 [INF] Adding Microsoft.Windows.Compatibility 6.0.0
+2022-05-30 17:59:58.357 +03:00 [INF] Packages to be removed: Microsoft.CSharp, Version=4.7.0
+2022-05-30 17:59:58.358 +03:00 [INF] Packages to be added: Microsoft.Windows.Compatibility, Version=6.0.0
+2022-05-30 18:00:00.918 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2022-05-30 18:00:00.919 +03:00 [INF] Removing outdated package reference: Microsoft.CSharp, Version=4.7.0
+2022-05-30 18:00:00.920 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=6.0.0
+2022-05-30 18:00:02.614 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2022-05-30 18:00:02.628 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2022-05-30 18:00:04.311 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2022-05-30 18:00:07.728 +03:00 [INF] Initializing upgrade step Add template files
+2022-05-30 18:00:07.733 +03:00 [INF] 0 expected template items needed
+2022-05-30 18:00:07.734 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2022-05-30 18:00:07.749 +03:00 [INF] Found 0 app settings for upgrade: 
+2022-05-30 18:00:07.752 +03:00 [INF] Found 0 connection strings for upgrade: 
+2022-05-30 18:00:07.755 +03:00 [INF] Initializing upgrade step Update source code
+2022-05-30 18:00:08.806 +03:00 [INF] Initializing upgrade step Move to next project
+2022-05-30 18:00:10.603 +03:00 [INF] Applying upgrade step Move to next project
+2022-05-30 18:00:10.603 +03:00 [INF] Upgrade step Move to next project applied successfully
+2022-05-30 18:00:11.142 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2022-05-30 18:00:12.002 +03:00 [INF] Applying upgrade step Finalize upgrade
+2022-05-30 18:00:12.003 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2022-05-30 18:00:12.498 +03:00 [INF] Upgrade has completed. Please review any changes.
+2022-05-30 18:01:34.981 +03:00 [INF] Loaded 3 extensions
+2022-05-30 18:01:35.702 +03:00 [INF] MSBuild registered from c:\program files\dotnet\sdk\5.0.404\
+2022-05-30 18:01:37.177 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2022-05-30 18:01:37.179 +03:00 [INF] Setting entrypoint to only project in solution: E:\C#\Better Explorer\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj
+2022-05-30 18:01:37.183 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2022-05-30 18:01:37.229 +03:00 [INF] Initializing upgrade step Back up project
+2022-05-30 18:01:38.540 +03:00 [INF] Applying upgrade step Back up project
+2022-05-30 18:01:39.684 +03:00 [INF] Backing up E:\C#\Better Explorer\Xceed.Wpf.Toolkit to E:\C#\Better Explorer\Xceed.Wpf.Toolkit.backup
+2022-05-30 18:01:42.390 +03:00 [INF] Project backed up to E:\C#\Better Explorer\Xceed.Wpf.Toolkit.backup
+2022-05-30 18:01:42.390 +03:00 [INF] Upgrade step Back up project applied successfully
+2022-05-30 18:01:44.984 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2022-05-30 18:01:46.322 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2022-05-30 18:01:46.325 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2022-05-30 18:01:50.127 +03:00 [INF] [dotnet] Conversion complete!
+2022-05-30 18:01:50.460 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2022-05-30 18:01:51.615 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2022-05-30 18:01:54.555 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2022-05-30 18:01:55.792 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.3.326103) needs added
+2022-05-30 18:01:55.799 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 18:01:57.068 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2022-05-30 18:01:57.075 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 18:01:58.522 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2022-05-30 18:02:00.376 +03:00 [INF] Initializing upgrade step Update TFM
+2022-05-30 18:02:00.382 +03:00 [INF] TFM needs updated to net5.0-windows
+2022-05-30 18:02:01.378 +03:00 [INF] Applying upgrade step Update TFM
+2022-05-30 18:02:02.925 +03:00 [INF] Updated TFM to net5.0-windows
+2022-05-30 18:02:02.925 +03:00 [INF] Upgrade step Update TFM applied successfully
+2022-05-30 18:02:04.655 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2022-05-30 18:02:05.959 +03:00 [INF] Adding Microsoft.Windows.Compatibility 6.0.0
+2022-05-30 18:02:05.960 +03:00 [INF] Packages to be added: Microsoft.Windows.Compatibility, Version=6.0.0
+2022-05-30 18:02:10.057 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2022-05-30 18:02:10.059 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=6.0.0
+2022-05-30 18:02:11.958 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2022-05-30 18:02:12.012 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2022-05-30 18:02:13.942 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2022-05-30 18:02:16.706 +03:00 [INF] Initializing upgrade step Add template files
+2022-05-30 18:02:16.712 +03:00 [INF] 0 expected template items needed
+2022-05-30 18:02:16.721 +03:00 [INF] Initializing upgrade step Update source code
+2022-05-30 18:02:21.711 +03:00 [INF] Initializing upgrade step Move to next project
+2022-05-30 18:02:23.162 +03:00 [INF] Applying upgrade step Move to next project
+2022-05-30 18:02:23.163 +03:00 [INF] Upgrade step Move to next project applied successfully
+2022-05-30 18:02:23.994 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2022-05-30 18:02:24.682 +03:00 [INF] Applying upgrade step Finalize upgrade
+2022-05-30 18:02:24.683 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2022-05-30 18:02:25.378 +03:00 [INF] Upgrade has completed. Please review any changes.
+2022-05-30 18:13:20.657 +03:00 [INF] Loaded 3 extensions
+2022-05-30 18:13:21.351 +03:00 [INF] MSBuild registered from c:\program files\dotnet\sdk\5.0.404\
+2022-05-30 18:13:22.741 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2022-05-30 18:13:22.744 +03:00 [INF] Setting entrypoint to only project in solution: E:\C#\Better Explorer\ImDiskNet\ImDiskNet.vbproj
+2022-05-30 18:13:22.749 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2022-05-30 18:13:22.764 +03:00 [INF] Initializing upgrade step Back up project
+2022-05-30 18:13:24.586 +03:00 [INF] Applying upgrade step Back up project
+2022-05-30 18:13:27.625 +03:00 [INF] Backing up E:\C#\Better Explorer\ImDiskNet to E:\C#\Better Explorer\ImDiskNet.backup
+2022-05-30 18:13:28.163 +03:00 [INF] Project backed up to E:\C#\Better Explorer\ImDiskNet.backup
+2022-05-30 18:13:28.164 +03:00 [INF] Upgrade step Back up project applied successfully
+2022-05-30 18:13:29.742 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2022-05-30 18:13:31.432 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2022-05-30 18:13:31.434 +03:00 [INF] Converting project file format with try-convert, version 0.7.226301
+2022-05-30 18:13:31.702 +03:00 [INF] [dotnet] E:\C#\Better Explorer\ImDiskNet\ImDiskNet.vbproj contains an App.config file. App.config is replaced by appsettings.json in .NET Core. You will need to delete App.config and migrate to appsettings.json if it's applicable to your project.
+2022-05-30 18:13:32.174 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2022-05-30 18:13:32.174 +03:00 [INF] [dotnet] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2022-05-30 18:13:33.047 +03:00 [INF] [dotnet] Conversion complete!
+2022-05-30 18:13:33.279 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2022-05-30 18:13:34.341 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2022-05-30 18:13:36.245 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2022-05-30 18:13:37.814 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.3.326103) needs added
+2022-05-30 18:13:37.821 +03:00 [INF] Packages to be added: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 18:13:39.136 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2022-05-30 18:13:39.141 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.3.326103
+2022-05-30 18:13:40.389 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2022-05-30 18:13:45.144 +03:00 [INF] Initializing upgrade step Update TFM
+2022-05-30 18:13:45.149 +03:00 [INF] Project ImDiskNet.vbproj contains MyType node that requires at least net5.0-windows.
+2022-05-30 18:13:45.150 +03:00 [INF] TFM needs updated to net5.0-windows
+2022-05-30 18:13:49.232 +03:00 [INF] Applying upgrade step Update TFM
+2022-05-30 18:13:49.235 +03:00 [INF] Project ImDiskNet.vbproj contains MyType node that requires at least net5.0-windows.
+2022-05-30 18:13:50.728 +03:00 [INF] Updated TFM to net5.0-windows
+2022-05-30 18:13:50.729 +03:00 [INF] Upgrade step Update TFM applied successfully
+2022-05-30 18:13:53.309 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2022-05-30 18:13:55.302 +03:00 [INF] Adding Microsoft.Windows.Compatibility 6.0.0
+2022-05-30 18:13:55.307 +03:00 [INF] Packages to be added: Microsoft.Windows.Compatibility, Version=6.0.0
+2022-05-30 18:13:56.779 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2022-05-30 18:13:56.780 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=6.0.0
+2022-05-30 18:13:58.386 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2022-05-30 18:14:01.177 +03:00 [INF] Initializing upgrade step Add template files
+2022-05-30 18:14:01.184 +03:00 [INF] 0 expected template items needed
+2022-05-30 18:14:01.187 +03:00 [INF] Initializing upgrade step Update Visual Basic project
+2022-05-30 18:14:01.190 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2022-05-30 18:14:01.211 +03:00 [INF] Found 0 app settings for upgrade: 
+2022-05-30 18:14:01.215 +03:00 [INF] Found 0 connection strings for upgrade: 
+2022-05-30 18:14:01.220 +03:00 [INF] Initializing upgrade step Update source code
+2022-05-30 18:14:02.647 +03:00 [INF] Initializing upgrade step Move to next project
+2022-05-30 18:14:03.856 +03:00 [INF] Applying upgrade step Move to next project
+2022-05-30 18:14:03.856 +03:00 [INF] Upgrade step Move to next project applied successfully
+2022-05-30 18:14:04.356 +03:00 [INF] Project ImDiskNet.vbproj contains MyType node that requires at least net5.0-windows.
+2022-05-30 18:14:04.359 +03:00 [INF] Project ImDiskNet.vbproj contains MyType node that requires at least net5.0-windows.
+2022-05-30 18:14:04.362 +03:00 [INF] Project ImDiskNet.vbproj contains MyType node that requires at least net5.0-windows.
+2022-05-30 18:14:04.362 +03:00 [INF] Initializing upgrade step Finalize upgrade
+2022-05-30 18:14:04.367 +03:00 [INF] Project ImDiskNet.vbproj contains MyType node that requires at least net5.0-windows.
+2022-05-30 18:14:06.296 +03:00 [INF] Applying upgrade step Finalize upgrade
+2022-05-30 18:14:06.296 +03:00 [INF] Upgrade step Finalize upgrade applied successfully
+2022-05-30 18:14:08.976 +03:00 [INF] Upgrade has completed. Please review any changes.

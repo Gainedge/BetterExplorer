@@ -1,10 +1,8 @@
 ﻿using BExplorer.Shell._Plugin_Interfaces;
-using Fluent;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
 using WPFUI.Controls;

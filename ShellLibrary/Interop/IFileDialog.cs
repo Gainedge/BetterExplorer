@@ -18,6 +18,7 @@
 //
 using System;
 using System.Runtime.InteropServices;
+using ShellLibrary.Interop;
 
 #pragma warning disable 1591
 

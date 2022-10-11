@@ -71,6 +71,7 @@ namespace ShellControls.ShellTreeView {
     private ManualResetEvent _ResetEvent = new ManualResetEvent(true);
     private Timer _ScrollBarTimer = new Timer();
     private Boolean _PreventValueChangeEvent = false;
+    private Boolean _IsKillThreads = false;
     #endregion
 
     #region Initializer
@@ -200,13 +201,13 @@ namespace ShellControls.ShellTreeView {
       this.ChangeTheme(ThemeColors.Dark);
       try {
         this._ScrollThread = new Thread(() => {
-          while (true) {
-            Thread.Sleep(10);
+          while (!this._IsKillThreads) {
+            Thread.Sleep(100);
             this._ResetEvent.WaitOne();
             this.BeginInvoke((Action)(() => { this.UpdateScrollbarInfo(); }));
           }
         });
-        this._ScrollThread.Priority = ThreadPriority.BelowNormal;
+        this._ScrollThread.Priority = ThreadPriority.Lowest;
         this._ScrollThread.IsBackground = true;
         this._ScrollThread.Start();
       } catch (ThreadInterruptedException ex) {
@@ -216,8 +217,8 @@ namespace ShellControls.ShellTreeView {
     }
 
     protected override void OnHandleDestroyed(EventArgs e) {
+      this._IsKillThreads = true;
       base.OnHandleDestroyed(e);
-      this._ScrollThread.Interrupt();
     }
 
     public void ChangeTheme(ThemeColors theme) {

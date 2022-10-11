@@ -1,12 +1,14 @@
 ﻿using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using ShellControls.ShellListView;
+using ShellLibrary.Interop;
 
 namespace BExplorer.Shell {
   /// <summary>
@@ -37,14 +39,14 @@ namespace BExplorer.Shell {
     }
 
     public HResult StartProgressDialog(IntPtr hwndOwner, OPPROGDLGF flags) {
-      this.Dispatcher.BeginInvoke(DispatcherPriority.Render,
-        (Action)(() => {
-          //if (this.Owner.OperationDialog == null) {
-          //  this.Owner.OperationDialog = new FileOperationDialog();
-          //}
-          //this.Owner.OperationDialog.AddFileOperation(this);
+      //this.Dispatcher.BeginInvoke(DispatcherPriority.Render,
+      //  (Action)(() => {
+      //    //if (this.Owner.OperationDialog == null) {
+      //    //  this.Owner.OperationDialog = new FileOperationDialog();
+      //    //}
+      //    //this.Owner.OperationDialog.AddFileOperation(this);
 
-        }));
+      //  }));
       //if (!this._Sw.IsRunning) {
       //  this._Sw.Start();
       //}
@@ -55,7 +57,7 @@ namespace BExplorer.Shell {
     public void StopProgressDialog() {
       this.Owner.LargeImageList.SupressThumbnailGeneration(false);
       this._Sw.Stop();
-      this.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+      this.Dispatcher.BeginInvoke(DispatcherPriority.Render,
         (Action)(() => {
           this.Owner.OperationDialog.RemoveFileOperation(this);
         }));
@@ -128,8 +130,7 @@ namespace BExplorer.Shell {
       }
     }
 
-    public void UpdateProgress(UInt64 ullPointsCurrent, UInt64 ullPointsTotal, UInt64 ullSizeCurrent, UInt64 ullSizeTotal,
-      UInt64 ullItemsCurrent, UInt64 ullItemsTotal) {
+    public void UpdateProgress(UInt64 ullPointsCurrent, UInt64 ullPointsTotal, UInt64 ullSizeCurrent, UInt64 ullSizeTotal, UInt64 ullItemsCurrent, UInt64 ullItemsTotal) {
       this._Reset.WaitOne();
       if (ullSizeCurrent > 0 && !this._Sw.IsRunning) {
         this._Sw.Start();
@@ -218,25 +219,24 @@ namespace BExplorer.Shell {
     }
 
     public void PreMoveItem(UInt32 dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName) {
-
+      this.Owner.LargeImageList.SupressThumbnailGeneration(true);
     }
 
-    public void PostMoveItem(UInt32 dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName, UInt32 hrMove,
-      IShellItem psiNewlyCreated) {
-
+    public void PostMoveItem(UInt32 dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName, UInt32 hrMove, IShellItem psiNewlyCreated) {
+      this.Owner.LargeImageList.SupressThumbnailGeneration(false);
     }
 
-    public HResult PreCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName) {
-      //this.Owner.LargeImageList.SupressThumbnailGeneration(true);
-      //MessageBox.Show("Text");
-      dwFlags &= ~TRANSFER_SOURCE_FLAGS.TSF_OVERWRITE_EXIST;
-      dwFlags |= TRANSFER_SOURCE_FLAGS.TSF_RENAME_EXIST;
+    public HResult PreCopyItem([In] TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName) {
+      this.Owner.LargeImageList.SupressThumbnailGeneration(true);
       return HResult.S_OK;
     }
 
-    public void PostCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName,
-      UInt32 hrCopy, IShellItem psiNewlyCreated) {
-
+    public void PostCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, String pszNewName, UInt32 hrCopy, IShellItem psiNewlyCreated) {
+      this.Owner.LargeImageList.SupressThumbnailGeneration(false);
+      if (hrCopy == 0) {
+        var newItem = FileSystemListItem.InitializeWithIShellItem(this.Owner.LVHandle, psiNewlyCreated);
+        this.Owner.QueueCreateItem(newItem);
+      }
     }
 
     public HResult PreDeleteItem(UInt32 dwFlags, IShellItem psiItem) {
@@ -244,7 +244,10 @@ namespace BExplorer.Shell {
     }
 
     public void PostDeleteItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, UInt32 hrDelete, IShellItem psiNewlyCreated) {
-
+      if (hrDelete == 2555912) {
+        var deletedItem = FileSystemListItem.InitializeWithIShellItem(this.Owner.LVHandle, psiItem);
+        this.Owner.QueueDeleteItem(deletedItem);
+      }
     }
 
     public void PreNewItem(UInt32 dwFlags, IShellItem psiDestinationFolder, String pszNewName) {

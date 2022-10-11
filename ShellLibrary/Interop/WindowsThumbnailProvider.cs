@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using BExplorer.Shell.Interop;
+using ShellLibrary.Interop;
 
 namespace ThumbnailGenerator {
   [Flags]

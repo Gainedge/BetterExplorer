@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.RightsManagement;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -22,6 +15,8 @@ namespace ShellControls.ShellListView {
     private ShellView _ShellViewEx;
 
     public Int32 MinWidth { get; set; }
+
+    public Collumns Columns => this._CollumnHeader.Collumn;
 
     private ShellListViewColumnHeader _CollumnHeader { get; set; }
     private Boolean _SkipChange = false;
@@ -39,8 +34,8 @@ namespace ShellControls.ShellListView {
       this._CollumnHeader.SortDirection = this._ShellViewEx.LastSortOrder;
       this._CollumnHeader.Index = shellViewEx.Collumns.IndexOf(collumn);
       //this._SkipChange = true;
-      if (isAsync) {
-        this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(
+      if (true) {
+        this.Dispatcher.Invoke(DispatcherPriority.Render, (Action)(
           () => {
             this.MinWidth = collumn.MinWidth;
             this.Width = collumn.Width;
@@ -74,8 +69,8 @@ namespace ShellControls.ShellListView {
     }
     public void SetColWidth(Int32 width, Boolean isAsync = true) {
       //this._SkipChange = true;
-      if (isAsync) {
-        this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(
+      if (true) {
+        this.Dispatcher.Invoke(DispatcherPriority.Render, (Action)(
           () => this.Width = width));
       } else {
         this.Width = width;
@@ -104,7 +99,7 @@ namespace ShellControls.ShellListView {
             return;
           }
 
-          this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
+          this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
             try {
               iiListView.SetColumnWidth(this._CollumnHeader.Index, colWidth);
               this._ShellViewEx.Collumns[this._CollumnHeader.Index].Width = colWidth;

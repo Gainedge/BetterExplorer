@@ -29,6 +29,7 @@ using System.Security.Cryptography;
 using System.Text;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
+using ShellLibrary.Interop;
 using WPFUI.Win32;
 
 namespace BExplorer.Shell {

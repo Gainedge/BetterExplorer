@@ -18,7 +18,7 @@
         <TranslateTransform Y="12" X="12"/>
       </Path.RenderTransform>
     </Path>
-    <Path StrokeThickness="3">
+    <Path StrokeThickness="3" x:Name="ptPath">
       <Path.Stroke>
         <SolidColorBrush Color="{DynamicResource SystemAccentColor}" />
       </Path.Stroke>
@@ -33,18 +33,6 @@
           </PathGeometry.Transform>
         </PathGeometry>
       </Path.Data>
-      <Path.Triggers>
-        <EventTrigger RoutedEvent="Loaded">
-          <BeginStoryboard>
-            <Storyboard>
-              <DoubleAnimation
-                Storyboard.TargetName="transform"
-                Storyboard.TargetProperty="Angle"
-                From="0" To="360" Duration="0:0:1" RepeatBehavior="Forever"/>
-            </Storyboard>
-          </BeginStoryboard>
-        </EventTrigger>
-      </Path.Triggers>
       <Path.RenderTransform>
         <TranslateTransform Y="12" X="12"/>
       </Path.RenderTransform>

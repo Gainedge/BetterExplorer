@@ -134,6 +134,7 @@ namespace BetterExplorerControls {
         popup.Placement = PlacementMode.Custom;
         popup.PlacementTarget = this;
         popup.Content = this.Flyout;
+        popup.IsSmallRounding = true;
         popup.IsOpen = true;
       }
     }

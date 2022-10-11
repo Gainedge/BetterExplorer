@@ -22,9 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BEHelper\BEHelper.csproj" />
-    <ProjectReference Include="..\Fluent.Ribbon\Fluent.Ribbon\Fluent.Ribbon.csproj" />
-    <ProjectReference Include="..\Progress\RateBar.csproj" />
-    <ProjectReference Include="..\Rating control\CustomControls\StarRatingControl.csproj" />
     <ProjectReference Include="..\Settings\Settings.csproj" />
     <ProjectReference Include="..\WpfControlLibrary1\BetterExplorerControls.csproj" />
     <ProjectReference Include="..\WPFUI\WPFUI.csproj" />

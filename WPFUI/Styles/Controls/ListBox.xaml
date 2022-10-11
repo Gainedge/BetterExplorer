@@ -210,7 +210,7 @@
               <Setter TargetName="ContentHeader" Property="Margin" Value="20,0,10,0"/>
             </Trigger>
             <Trigger Property="IsSorted" Value="True">
-              <Setter TargetName="PART_Border" Property="Background" Value="#92292929"/>
+              <Setter TargetName="PART_Border" Property="Background" Value="#294C4C4C"/>
               <Setter TargetName="PART_SortDirection" Property="Visibility" Value="Visible"/>
             </Trigger>
             <Trigger Property="SortDirection" Value="Ascending">

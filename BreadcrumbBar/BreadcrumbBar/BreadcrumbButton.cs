@@ -182,9 +182,12 @@ namespace Odyssey.Controls {
       }
 
       base.OnApplyTemplate();
-      contextMenu.Placement = PlacementMode.Bottom;
-      contextMenu.PlacementTarget = dropDownBtn;
-      contextMenu.VerticalOffset = dropDownBtn.ActualHeight + 35;
+      if (contextMenu != null && this.dropDownBtn != null) {
+        contextMenu.Placement = PlacementMode.Bottom;
+        contextMenu.PlacementTarget = dropDownBtn;
+        contextMenu.VerticalOffset = dropDownBtn.ActualHeight + 35;
+      }
+
       Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
         var data = this.DataContext as IListItemEx;
         if (data == null || data.DisplayName == "Search.search-ms")

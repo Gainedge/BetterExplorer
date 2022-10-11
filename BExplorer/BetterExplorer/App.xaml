@@ -6,9 +6,9 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <!--<ResourceDictionary Source="/BetterExplorer;component/Window/MicaWindow.xaml" />-->
-        <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml" />
+        <!--<ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml" />-->
         <!--<ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Colors/BaseDark.xaml" />-->
-        <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Accents/Amber.xaml" />
+        <!--<ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Accents/Amber.xaml" />-->
         <ResourceDictionary Source="pack://application:,,,/WPFUI;component/Styles/Theme/Dark.xaml" />
         <ResourceDictionary Source="pack://application:,,,/WPFUI;component/Styles/WPFUI.xaml" />
         <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.bg-BG.xaml" />

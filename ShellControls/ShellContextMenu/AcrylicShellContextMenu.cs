@@ -24,13 +24,13 @@ namespace ShellControls.ShellContextMenu {
     }
 
     public ObservableCollection<FontIconButton> BaseItems { get; set; }
-    public Win32ContextMenuItem[] MenuItems { get; set; }
+    public ObservableCollection<Win32ContextMenuItem> MenuItems { get; set; }
 
     public AcrylicShellContextMenu Parent { get; set; }
 
     public Double IconSpace {
       get {
-        var isIconExists = this.MenuItems.Count(c => !String.IsNullOrEmpty(c.IconBase64) || c.IsChecked || c.Glyph != Icon.Empty) > 0;
+        var isIconExists = this.MenuItems.Count(c => !String.IsNullOrEmpty(c.IconBase64) || c.IsChecked || c.Glyph != Icon.Empty || c.Icon != null) > 0;
         return isIconExists ? 20D : 0D;
       }
     }
@@ -42,6 +42,7 @@ namespace ShellControls.ShellContextMenu {
       //this.Height = 300;
       //this.MaxHeight = 460;
       this.BaseItems = new ObservableCollection<FontIconButton>();
+      this.MenuItems = new ObservableCollection<Win32ContextMenuItem>();
       this.DataContext = this;
     }
 

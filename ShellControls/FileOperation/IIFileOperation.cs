@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using ShellLibrary.Interop;
 
 namespace BExplorer.Shell {
   /// <summary>Contains file operations that has a callback for UI operations/display</summary>
@@ -136,8 +137,9 @@ namespace BExplorer.Shell {
       foreach (var shellItem in source.ToArray()) {
         var iListItem = FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, shellItem);
         if (iListItem.IsFolder) {
-            flatItemsList.Add(iListItem);
-            flatItemsList.AddRange(iListItem.GetContents(true, true));
+            //flatItemsList.Add(iListItem);
+            //flatItemsList.AddRange(iListItem.GetContents(true, true));
+            flatItemsList.AddRange(this.GetItemsFlatRecursive(iListItem));
         } else {
           flatItemsList.Add(iListItem);
         }
@@ -260,6 +262,20 @@ namespace BExplorer.Shell {
         if (this._CallbackSink != null) this._FileOperation.Unadvise(this._SinkCookie);
         Marshal.FinalReleaseComObject(this._FileOperation);
       }
+    }
+
+    private List<IListItemEx> GetItemsFlatRecursive(IListItemEx source) {
+      var result = new List<IListItemEx>();
+      result.Add(source);
+      foreach (var contentItem in source.GetContents(true)) {
+        if (contentItem.IsFolder) {
+          result.AddRange(this.GetItemsFlatRecursive(contentItem));
+        } else {
+          result.Add(contentItem);
+        }
+      }
+
+      return result;
     }
   }
 }

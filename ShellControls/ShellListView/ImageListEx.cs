@@ -33,6 +33,7 @@ namespace ShellControls.ShellListView {
     #region Private Members
 
     private Boolean _IsSupressedTumbGeneration;
+    private Boolean _IsKIllThreads = false;
     private Int32 _CurrentSize { get; set; }
     private ShellView _ShellViewEx { get; set; }
     private IImageList2 _IImageList { get; set; }
@@ -73,24 +74,19 @@ namespace ShellControls.ShellListView {
       this._IImageList = (IImageList2)Marshal.GetObjectForIUnknown(ptr);
       this.Handle = ptr;
       this._IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
-      this._IconLoadingThread.IsBackground = true;
       this._IconLoadingThread.SetApartmentState(ApartmentState.STA);
       this._IconLoadingThread.Start();
       this._IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
       this._IconCacheLoadingThread.SetApartmentState(ApartmentState.STA);
-      this._IconCacheLoadingThread.IsBackground = true;
       this._IconCacheLoadingThread.Start();
-      this._OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
+      this._OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
       this._OverlaysLoadingThread.SetApartmentState(ApartmentState.STA);
-      this._OverlaysLoadingThread.IsBackground = true;
       this._OverlaysLoadingThread.Start();
-      this._UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
+      this._UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
       this._UpdateSubitemValuesThread.SetApartmentState(ApartmentState.STA);
-      this._UpdateSubitemValuesThread.IsBackground = true;
       this._UpdateSubitemValuesThread.Start();
       this._RedrawingThread = new Thread(_RedrawingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
       this._RedrawingThread.SetApartmentState(ApartmentState.STA);
-      this._RedrawingThread.IsBackground = true;
       this._RedrawingThread.Start();
       var defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (UInt32)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
 
@@ -111,21 +107,8 @@ namespace ShellControls.ShellListView {
     }
 
     public void Dispose() {
-      this.ResetEvent.Set();
-      Thread t = new Thread(() => {
-        if (this._IconLoadingThread.IsAlive)
-          this._IconLoadingThread.Interrupt();
-        if (this._IconCacheLoadingThread.IsAlive)
-          this._IconCacheLoadingThread.Interrupt();
-        if (this._OverlaysLoadingThread.IsAlive)
-          this._OverlaysLoadingThread.Interrupt();
-        if (this._UpdateSubitemValuesThread.IsAlive)
-          this._UpdateSubitemValuesThread.Interrupt();
-        if (this._RedrawingThread.IsAlive)
-          this._RedrawingThread.Interrupt();
-      });
-      t.IsBackground = true;
-      t.Start();
+      this.ResetEvent.Reset();
+      this._IsKIllThreads = true;
     }
 
     public void ReInitQueues() {
@@ -137,12 +120,9 @@ namespace ShellControls.ShellListView {
     }
 
     public void EnqueueSubitemsGet(Tuple<int, int, PROPERTYKEY> item) {
-      //Task.Run(() => {
       if (!this._ItemsForSubitemsUpdate.Contains(item)) {
         this._ItemsForSubitemsUpdate.Enqueue(item);
       }
-
-      //});
     }
 
     public IntPtr GetHIcon(Int32 index) {
@@ -197,6 +177,7 @@ namespace ShellControls.ShellListView {
 
       var isPerInstance = (sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE;
       if (this._CurrentSize != 16) {
+        iconBounds.X = iconBounds.X + 1;
         Int32 width = 0;
         Int32 height = 0;
         var addornerType = this.GetAddornerType(sho);
@@ -312,7 +293,7 @@ namespace ShellControls.ShellListView {
           var lableBounds = new User32.RECT() { Left = 2 };
           User32.SendMessage(this._ShellViewEx.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
           using (var g = Graphics.FromHdc(hdc)) {
-            var lblrectTiles = new RectangleF(lableBounds.Left, iconBounds.Top + 6, lableBounds.Right - lableBounds.Left, 15);
+            var lblrectTiles = new RectangleF(lableBounds.Left, iconBounds.Top + 6, lableBounds.Right - lableBounds.Left, 28);
             if (this._ShellViewEx.RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) && (sho.IsDrive || sho.IsNetworkPath)) {
               var fmt = new StringFormat();
               fmt.Trimming = StringTrimming.EllipsisCharacter;
@@ -398,10 +379,10 @@ namespace ShellControls.ShellListView {
         var hAddorner = addorner.GetHbitmap();
 
         Gdi32.ConvertPixelByPixel(hAddorner, out width2, out height2);
-        Gdi32.NativeDraw(hdc, hAddorner, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width2) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height2 - (height2 <= width2 && height2 < this._CurrentSize ? 4 : height2 == width2 ? 4 : 1)), width2, height2, isGhosted);
+        Gdi32.NativeDraw(hdc, hAddorner, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width2) / 2, iconBounds.Top - 7 + (iconBounds.Bottom - iconBounds.Top - height2 - (height2 <= width2 && height2 < this._CurrentSize ? 4 : height2 == width2 ? 4 : 1)), width2, height2, isGhosted);
         Gdi32.DeleteObject(hAddorner);
         addorner.Dispose();
-        Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width2) / 2 + 3, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height2) - (height2 <= width2 && height2 < this._CurrentSize ? 1 : height2 == width2 ? 1 : (-2)), width, height, isGhosted);
+        Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width2) / 2 + 3, iconBounds.Top - 7 + (iconBounds.Bottom - iconBounds.Top - height2) - (height2 <= width2 && height2 < this._CurrentSize ? 1 : height2 == width2 ? 1 : (-2)), width, height, isGhosted);
       } else if (addornerType == 3) {
         var isWide = (height / (Double)width) < 0.6;
         var addorner = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
@@ -458,7 +439,7 @@ namespace ShellControls.ShellListView {
 
 
     private void _OverlaysLoadingThreadRun() {
-      while (true) {
+      while (!this._IsKIllThreads) {
         try {
           Int32 index = 0;
           if (!ThreadRun_Helper(this._OverlayQueue, false, ref index))
@@ -484,14 +465,17 @@ namespace ShellControls.ShellListView {
     }
 
     private void _IconsLoadingThreadRun() {
-      while (true) {
+      while (!this._IsKIllThreads) {
         if (this._ShellViewEx != null && this._ShellViewEx.IsSearchNavigating) {
           Thread.Sleep(1);
           Application.DoEvents();
         }
         var index = 0;
-        if (!ThreadRun_Helper(this._IconsForRetreval, false, ref index))
+        if (!ThreadRun_Helper(this._IconsForRetreval, false, ref index)) {
+
           continue;
+        }
+
         var sho = this._ShellViewEx.Items[index];
         var clonedSho = sho.Clone();
         if (!sho.IsIconLoaded || !sho.IsRCWSet) {
@@ -526,7 +510,7 @@ namespace ShellControls.ShellListView {
     }
 
     private void _IconCacheLoadingThreadRun() {
-      while (true) {
+      while (!this._IsKIllThreads) {
         //if (resetEvent != null) resetEvent.WaitOne();
         var index = 0;
         if (!ThreadRun_Helper(this._ThumbnailsForCacheLoad, true, ref index))
@@ -565,9 +549,9 @@ namespace ShellControls.ShellListView {
 
     private void _RedrawingThreadRun() {
       try {
-        while (true) {
-          Application.DoEvents();
-          ResetEvent?.WaitOne();
+        while (!this._IsKIllThreads) {
+          ////Application.DoEvents();
+          //ResetEvent?.WaitOne();
           if (this._RedrawQueue.IsEmpty) {
             Thread.Sleep(1);
             Application.DoEvents();
@@ -578,7 +562,7 @@ namespace ShellControls.ShellListView {
           //} else {
           //  Thread.Sleep(5);
           //}
-          Application.DoEvents();
+          //Application.DoEvents();
           var index = -1;
           if (this._RedrawQueue.TryDequeue(out index)) {
             if (User32.SendMessage(this._ShellViewEx.LVHandle, MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero)
@@ -594,17 +578,17 @@ namespace ShellControls.ShellListView {
 
     private void _UpdateSubitemValuesThreadRun() {
       try {
-        while (true) {
+        while (!this._IsKIllThreads) {
           if (this._ItemsForSubitemsUpdate.IsEmpty) {
             Thread.Sleep(1);
-            //Application.DoEvents();
+            Application.DoEvents();
             continue;
           }
           Tuple<int, int, PROPERTYKEY> index;
           if (this._ItemsForSubitemsUpdate.TryDequeue(out index)) {
             //index = this._ItemsForSubitemsUpdate.Dequeue();
-            Thread.Sleep(1);
-            Application.DoEvents();
+            //Thread.Sleep(1);
+            //Application.DoEvents();
             if (User32.SendMessage(this._ShellViewEx.LVHandle, MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero) {
               var currentItem = this._ShellViewEx.Items[index.Item1];
               var temp = currentItem.Clone();
@@ -690,9 +674,9 @@ namespace ShellControls.ShellListView {
     private void DrawComputerTiledModeView(IListItemEx sho, Graphics g, RectangleF lblrectTiles, StringFormat fmt) {
       var driveInfo = new DriveInfo(sho.ParsingName);
       if (driveInfo.IsReady) {
-        ProgressBarRenderer.DrawHorizontalBar(g, new Rectangle((Int32)lblrectTiles.Left, (Int32)lblrectTiles.Bottom + 4, (Int32)lblrectTiles.Width - 10, 10));
+        ProgressBarRenderer.DrawHorizontalBar(g, new Rectangle((Int32)lblrectTiles.Left, (Int32)lblrectTiles.Bottom + 4, (Int32)lblrectTiles.Width - 24, 10));
         var fullProcent = (100 * (driveInfo.TotalSize - driveInfo.AvailableFreeSpace)) / driveInfo.TotalSize;
-        var barWidth = (lblrectTiles.Width - 12) * fullProcent / 100;
+        var barWidth = (lblrectTiles.Width - 26) * fullProcent / 100;
         var rec = new Rectangle((Int32)lblrectTiles.Left + 1, (Int32)lblrectTiles.Bottom + 5, (Int32)barWidth, 8);
         var gradRec = new Rectangle(rec.Left, rec.Top - 1, rec.Width, rec.Height + 2);
         var criticalUsed = fullProcent >= 90;

@@ -880,7 +880,7 @@ namespace BExplorer.Shell.Interop {
     public int iGroup;
   }
 
-  [StructLayout(LayoutKind.Sequential)]
+  [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Auto)]
   public struct LVHITTESTINFO {
     public POINT pt;
     public ListViewHitTestFlag flags;

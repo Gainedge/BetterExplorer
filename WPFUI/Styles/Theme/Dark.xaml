@@ -17,7 +17,7 @@
   <!--
         {DynamicResource {x:Static SystemColors.ControlTextBrushKey}}
     -->
-  <sys:UInt32 x:Key="SystemAcrylicTint">0x00333333</sys:UInt32>
+  <sys:UInt32 x:Key="SystemAcrylicTint">0x02292929</sys:UInt32>
   <Color x:Key="ApplicationBackgroundColor">#202020</Color>
   <Color x:Key="ListViewBackgroundColor">#151515</Color>
 

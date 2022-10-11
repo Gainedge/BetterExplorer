@@ -1,6 +1,5 @@
 using System.Reflection;
 using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -28,7 +27,7 @@ using System.Windows;
 //the NeutralResourceLanguage attribute below.  Update the "en-US" in
 //the line below to match the UICulture setting in the project file.
 
-//[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
+[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
 
 
 [assembly:ThemeInfo(

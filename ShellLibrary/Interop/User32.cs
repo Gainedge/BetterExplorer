@@ -654,6 +654,18 @@ public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
 
     [DllImport("user32", EntryPoint = "SetWindowText", CharSet = CharSet.Auto)]
     public static extern bool SetWindowText(IntPtr hWnd, [MarshalAs(UnmanagedType.LPTStr)] string text);
+    [DllImport("user32", EntryPoint = "GetWindowText", CharSet = CharSet.Auto)]
+    public static extern bool GetWindowText(IntPtr hWnd, StringBuilder text, int nMaxCount);
+    [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    public static extern int GetWindowTextLength(IntPtr hWnd);
+
+    public static string GetText(IntPtr hWnd) {
+      // Allocate correct string length first
+      int length = GetWindowTextLength(hWnd);
+      StringBuilder sb = new StringBuilder(length + 1);
+      GetWindowText(hWnd, sb, sb.Capacity);
+      return sb.ToString();
+    }
 
     [DllImport("User32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -3162,20 +3174,38 @@ public static extern bool UpdateWindow(IntPtr hWnd);
     public static extern bool AnimateWindow(IntPtr hwnd, int time, AnimateWindowFlags flags);
 
     [Flags]
-    public enum AnimateWindowFlags
-    {
+    public enum AnimateWindowFlags {
       AW_HOR_POSITIVE = 0x00000001,
       AW_HOR_NEGATIVE = 0x00000002,
       AW_VER_POSITIVE = 0x00000004,
       AW_VER_NEGATIVE = 0x00000008,
-      AW_CENTER       = 0x00000010,
-      AW_HIDE     = 0x00010000,
-      AW_ACTIVATE     = 0x00020000,
-      AW_SLIDE    = 0x00040000,
-      AW_BLEND    = 0x00080000
+      AW_CENTER = 0x00000010,
+      AW_HIDE = 0x00010000,
+      AW_ACTIVATE = 0x00020000,
+      AW_SLIDE = 0x00040000,
+      AW_BLEND = 0x00080000
     }
 
     [DllImport("user32.dll")]
     public static extern IntPtr GetDC(IntPtr hWnd);
+
+    public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+    [DllImport("user32.dll")]
+    public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
+    public const uint WINEVENT_OUTOFCONTEXT = 0;
+    public const uint EVENT_SYSTEM_FOREGROUND = 3;
+
+    [DllImport("user32.dll")]
+    public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, [Out] StringBuilder lParam);
+    [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+    [DllImport("user32.dll")]
+    public static extern IntPtr GetWindowDC(IntPtr hWnd);
+    [DllImport("user32.dll")]
+    public static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
+    [DllImport("user32.dll")]
+    public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
   }
 }

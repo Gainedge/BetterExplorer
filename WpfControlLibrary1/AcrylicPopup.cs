@@ -1,25 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using BetterExplorerControls.Helpers;
-using ControlzEx.Standard;
-using Fluent;
+using Linearstar.Windows.RawInput;
+using WPFUI.Win32;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using Point = System.Windows.Point;
@@ -112,7 +103,10 @@ namespace BetterExplorerControls {
       get { return (CustomPopupPlacementCallback)GetValue(CustomPopupPlacementCallbackProperty); }
       set { SetValue(CustomPopupPlacementCallbackProperty, value); }
     }
+    public Boolean IsSmallRounding { get; set; }
     #endregion
+
+    private Boolean _PositionSet = false;
 
     static AcrylicPopup() {
       DefaultStyleKeyProperty.OverrideMetadata(typeof(AcrylicPopup), new FrameworkPropertyMetadata(typeof(AcrylicPopup)));
@@ -145,7 +139,7 @@ namespace BetterExplorerControls {
         //ctrl.Height = Double.NaN;
         if (ctrl._parentPopup == null) {
           ctrl.HookupParentPopup();
-         // ctrl.IsPopupDirectionReversed = AcrylicPopup.GetIsPopupDirectionReversed(ctrl);
+          // ctrl.IsPopupDirectionReversed = AcrylicPopup.GetIsPopupDirectionReversed(ctrl);
           //ctrl.BeginAnimation(Control.MaxHeightProperty, anim);
         }
       } else {
@@ -183,10 +177,9 @@ namespace BetterExplorerControls {
     private void HookupParentPopup() {
       this._parentPopup = new Popup();
       this._parentPopup.StaysOpen = false;
+      this._parentPopup.Opened += OnOpened;
       this._parentPopup.Closed += OnClosed;
       this._parentPopup.Placement = this.Placement;
-      //this._parentPopup.AllowsTransparency = true;
-      //this._parentPopup.PopupAnimation = PopupAnimation.Slide;
       Popup.CreateRootPopup(this._parentPopup, this);
 
       var hwnd = (HwndSource)HwndSource.FromVisual(this._parentPopup.Child);
@@ -194,42 +187,47 @@ namespace BetterExplorerControls {
       this.Handle = hwnd.Handle;
       hwnd.CompositionTarget.BackgroundColor = Color.FromArgb(0, 0, 0, 0);
       this.Background = Brushes.Transparent;
-      //SetWindowLong(hwnd.Handle, (int)GetWindowLongFields.GWL_STYLE,  (IntPtr)((long)GetWindowLong(hwnd.Handle, -16) | 0x00800000 | 0x00080000));
-      //var res = AnimateWindow(hwnd.Handle, 400, AnimateWindowFlags.AW_SLIDE | AnimateWindowFlags.AW_VER_POSITIVE);
-      //var lastError = Marshal.GetHRForLastWin32Error();
-      //var exception = Marshal.GetExceptionForHR(lastError).Message;
       AcrylicHelper.SetBlur(hwnd.Handle, AcrylicHelper.AccentFlagsType.Window, AcrylicHelper.AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND, (uint)Application.Current.Resources["SystemAcrylicTint"]);
-      var nonClientArea = new RibbonWindow.MARGINS();
-      nonClientArea.topHeight = -1;
-      nonClientArea.leftWidth = -1;
-      nonClientArea.rightWidth = -1;
-      nonClientArea.bottomHeight = -1;
-      RibbonWindow.DwmExtendFrameIntoClientArea(hwnd.Handle, ref nonClientArea);
-      var preference = RibbonWindow.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
-      DwmSetWindowAttribute(hwnd.Handle, RibbonWindow.DwmWindowAttribute.DWMWA_WINDOW_CORNER_PREFERENCE, ref preference, sizeof(uint));
-      //SetWindowLong(hwnd.Handle, (int)GetWindowLongFields.GWL_STYLE, (IntPtr)(0x04000000 | 0x02000000 | 0x00800000 | 0x00C00000 | 0x10000000));
-      //var flag = 3;
-      //var res1 = RibbonWindow.DwmSetWindowAttribute(hwnd.Handle, RibbonWindow.DwmWindowAttribute.DWMWA_SYSTEMBACKDROP_TYPE, ref flag, Marshal.SizeOf(typeof(int)));
-      //int trueValue = 0x01;
-      //var res = RibbonWindow.DwmSetWindowAttribute(hwnd.Handle, RibbonWindow.DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE, ref trueValue, Marshal.SizeOf(typeof(int)));
-      dele = new WinEventDelegate(WinEventProc);
-      this._winHook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, IntPtr.Zero, dele, 0, 0, WINEVENT_OUTOFCONTEXT);
-      var thread = new Thread(() => {
-        MouseHook.Start();
-        System.Windows.Threading.Dispatcher.Run();
-      });
-      thread.Start();
-      MouseHook.MouseAction += MouseHookOnMouseAction;
+      var nonClientArea = new Dwmapi.MARGINS(new Thickness(-1));
+      Dwmapi.DwmExtendFrameIntoClientArea(hwnd.Handle, ref nonClientArea);
+      //var preference = this.IsSmallRounding ? RibbonWindow.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUNDSMALL : RibbonWindow.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
+      var preference = (Int32)Dwmapi.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
+      Dwmapi.DwmSetWindowAttribute(hwnd.Handle, Dwmapi.DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, ref preference, sizeof(uint));
     }
 
-    [DllImport("dwmapi.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern long DwmSetWindowAttribute(IntPtr hwnd,
-      RibbonWindow.DwmWindowAttribute attribute,
-      ref RibbonWindow.DWM_WINDOW_CORNER_PREFERENCE pvAttribute,
-      uint cbAttribute);
+    private RawInputReceiverWindow _Window;
+    private void OnOpened(Object sender, EventArgs e) {
+      dele = new WinEventDelegate(WinEventProc);
+      this._winHook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, IntPtr.Zero, dele, 0, 0, WINEVENT_OUTOFCONTEXT);
+      //this._Window = new RawInputReceiverWindow();
+      //this._Window.Input += (sender, e) => {
+      //  // Catch your input here!
+      //  this.ProcessMouseHookAction();
+
+      //};
+      //RawInputDevice.RegisterDevice(HidUsageAndPage.Mouse, RawInputDeviceFlags.ExInputSink, this._Window.Handle);
+      //var thread = new Thread(() => {
+      //  MouseHook.Start();
+      //  System.Windows.Threading.Dispatcher.Run();
+      //});
+      //thread.Start();
+      MouseHook.Start();
+      MouseHook.MouseAction += MouseHookOnMouseAction;
+      //System.Windows.Threading.Dispatcher.Run();
+    }
+
+    private void ParentPopupOnOpened(Object sender, EventArgs e) {
+      var mousePos = AcrylicPopup.GetMousePosition();
+      GetWindowRect(this.Handle, out var rect);
+      this.IsPopupDirectionReversed = rect.Bottom < mousePos.Y;
+    }
+
     private void OnClosed(object? sender, EventArgs e) {
-      this.OnMenuClosed?.Invoke(this, EventArgs.Empty);
       MouseHook.stop();
+      MouseHook.MouseAction -= MouseHookOnMouseAction;
+      this.OnMenuClosed?.Invoke(this, EventArgs.Empty);
+      //this._Window.DestroyHandle();
+      //RawInputDevice.UnregisterDevice(HidUsageAndPage.Mouse);
       UnhookWinEvent(this._winHook);
     }
     private CustomPopupPlacement[] CustomPopupPlacementCallbackLocal(Size popupsize, Size targetsize, Point offset) {
@@ -259,9 +257,13 @@ namespace BetterExplorerControls {
       return parent;
     }
     private void MouseHookOnMouseAction(object? sender, LLMouseHookArgs e) {
-      this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(
-        this.ProcessMouseHookAction));
+      var t = new Thread((() => {
+        //Thread.Sleep(1);
+        this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(
+          this.ProcessMouseHookAction));
+      }));
 
+      t.Start();
     }
 
     protected virtual void ProcessMouseHookAction() {
@@ -276,69 +278,25 @@ namespace BetterExplorerControls {
     }
 
     private IntPtr WndProcHooked(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {
-      if (msg == 0x0018) {
-        //handled = true;
-      }
-      if (msg == 0x0083) {
-        handled = true;
-        var rc = (RECT)Marshal.PtrToStructure(lParam, typeof(RECT));
-        // We have to add or remove one pixel on any side of the window to force a flicker free resize.
-        // Removing pixels would result in a smaller client area.
-        // Adding pixels does not seem to really increase the client area.
-        rc.Bottom += 1;
+      if (msg == 0x00FF) {
 
-        Marshal.StructureToPtr(rc, lParam, true);
+      }
+      if (msg == 0xc1b3) {
+        handled = true;
+        if (!this._PositionSet) {
+          var mousePos = AcrylicPopup.GetMousePosition();
+          GetWindowRect(this.Handle, out var rect);
+          this.IsPopupDirectionReversed = rect.Bottom <= (Int32)mousePos.Y;
+          this._PositionSet = true;
+        }
       }
 
       return IntPtr.Zero;
     }
 
-    public enum GetWindowLongFields {
-      // ...
-      GWL_STYLE = (-16),
-      GWL_EXSTYLE = (-20),
-      // ...
-    }
-
     [DllImport("user32.dll")]
-    public static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
-
-    public static IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong) {
-      int error = 0;
-      IntPtr result = IntPtr.Zero;
-      // Win32 SetWindowLong doesn't clear error on success
-      SetLastError(0);
-
-      if (IntPtr.Size == 4) {
-        // use SetWindowLong
-        Int32 tempResult = IntSetWindowLong(hWnd, nIndex, IntPtrToInt32(dwNewLong));
-        error = Marshal.GetLastWin32Error();
-        result = new IntPtr(tempResult);
-      } else {
-        // use SetWindowLongPtr
-        result = IntSetWindowLongPtr(hWnd, nIndex, dwNewLong);
-        error = Marshal.GetLastWin32Error();
-      }
-
-      if ((result == IntPtr.Zero) && (error != 0)) {
-        throw new System.ComponentModel.Win32Exception(error);
-      }
-
-      return result;
-    }
-
-    [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
-    private static extern IntPtr IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-    [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
-    private static extern Int32 IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong);
-
-    private static int IntPtrToInt32(IntPtr intPtr) {
-      return unchecked((int)intPtr.ToInt64());
-    }
-
-    [DllImport("kernel32.dll", EntryPoint = "SetLastError")]
-    public static extern void SetLastError(int dwErrorCode);
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
     delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
     WinEventDelegate dele = null;
     [DllImport("user32.dll")]
@@ -347,25 +305,8 @@ namespace BetterExplorerControls {
     private const uint EVENT_SYSTEM_FOREGROUND = 3;
 
     [DllImport("user32.dll")]
-    static extern IntPtr GetForegroundWindow();
-    [DllImport("user32.dll")]
     static extern bool UnhookWinEvent(IntPtr hWinEventHook);
 
-    [DllImport("user32", SetLastError = true)]
-    public static extern IntPtr AnimateWindow(IntPtr hwnd, int time, AnimateWindowFlags flags);
-
-    [Flags]
-    public enum AnimateWindowFlags : uint {
-      AW_HOR_POSITIVE = 0x00000001,
-      AW_HOR_NEGATIVE = 0x00000002,
-      AW_VER_POSITIVE = 0x00000004,
-      AW_VER_NEGATIVE = 0x00000008,
-      AW_CENTER = 0x00000010,
-      AW_HIDE = 0x00010000,
-      AW_ACTIVATE = 0x00020000,
-      AW_SLIDE = 0x00040000,
-      AW_BLEND = 0x00080000
-    }
 
   }
 }

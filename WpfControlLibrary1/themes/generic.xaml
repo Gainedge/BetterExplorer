@@ -57,6 +57,7 @@
                     Margin="8"
                     VerticalAlignment="Center"
                     FontFamily="{DynamicResource FluentSystemIcons}"
+                    Foreground="#DEDDDB"
                     FontSize="20"
                     Text="{TemplateBinding Glyph, Converter={StaticResource IconToStringConverter}}" />
                   <local:FontIcon x:Name="PART_MultyIcon" Margin="8" BaseIconGlyph="{TemplateBinding BaseIconGlyph}" OverlayIconGlyph="{TemplateBinding OverlayIconGlyph}" Visibility="Collapsed"/>
@@ -147,7 +148,7 @@
     </Style.Triggers>
   </Style>
 
-  <Style BasedOn="{StaticResource {x:Type ribbon:ContextMenu}}" TargetType="{x:Type local:ListviewColumnDropDown}">
+  <!--<Style BasedOn="{StaticResource {x:Type ribbon:ContextMenu}}" TargetType="{x:Type local:ListviewColumnDropDown}">
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="Grid.IsSharedSizeScope" Value="true" />
     <Setter Property="HasDropShadow" Value="False" />
@@ -171,7 +172,7 @@
       </Setter.Value>
     </Setter>
 
-  </Style>
+  </Style>-->
   <!--<Style TargetType="{x:Type local:AcrylicContextMenu}">
     <Setter Property="WindowStyle" Value="None"/>
     <Setter Property="SizeToContent" Value="Height"></Setter>

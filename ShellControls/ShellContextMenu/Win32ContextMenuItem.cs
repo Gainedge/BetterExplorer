@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using BExplorer.Shell.Interop;
 
 namespace ShellControls.ShellContextMenu {
   public enum MenuItemType : uint {
@@ -38,6 +38,7 @@ namespace ShellControls.ShellContextMenu {
   }
 
   public class Win32ContextMenuItem : Button {
+    public IContextMenu3 IContextMenu { get; set; }
     public IntPtr hSubmenu { get; set; }
     public string IconBase64 { get; set; }
     public ImageSource Icon { get; set; }
@@ -45,12 +46,13 @@ namespace ShellControls.ShellContextMenu {
     public string Label { get; set; }
     public string CommandString { get; set; }
     public MenuItemType Type { get; set; }
-    public List<Win32ContextMenuItem> SubItems { get; set; }
+    public Boolean IsNewMenuItem { get; set; }
+    public List<Win32ContextMenuItem>? SubItems { get; set; }
 
     public AcrylicShellContextMenu SubMenuPopup { get; set; }
     public DispatcherTimer IsOpenTimer = new DispatcherTimer(DispatcherPriority.Normal);
 
-    public Boolean IsSubMenu => this.SubItems != null && this.SubItems.Any();
+    public Boolean IsSubMenu => this.hSubmenu != IntPtr.Zero;
 
     public Boolean IsSeparator => this.Type == MenuItemType.MFT_SEPARATOR;
 
@@ -103,6 +105,7 @@ namespace ShellControls.ShellContextMenu {
       this.IsOpenTimer.Interval = TimeSpan.FromMilliseconds(500);
       this.IsOpenTimer.Tick += IsOpenTimerOnTick;
       this._ParentCollection = parentCollection;
+      //this.SubItems = new RangeObservableCollection<Win32ContextMenuItem>();
       this.DataContext = this;
     }
     public Win32ContextMenuItem(ShellContextMenuEx menu, IEnumerable<Win32ContextMenuItem> parentCollection) {
@@ -111,12 +114,14 @@ namespace ShellControls.ShellContextMenu {
       this.IsOpenTimer.Interval = TimeSpan.FromMilliseconds(500);
       this.IsOpenTimer.Tick += IsOpenTimerOnTick;
       this._ParentCollection = parentCollection;
-      if (!this.IsSubMenu) {
-        this.Click += (sender, args) => {
-          this._ShellMenu.InvokeItem(this.ID);
+      //this.SubItems = new RangeObservableCollection<Win32ContextMenuItem>();
+      this.Click += (sender, args) => {
+        if (!this.IsSubMenu) {
           this.CloseMenuRecursive();
-        };
-      }
+          this._ShellMenu.ShellView.IsRenameNeeded = this.IsNewMenuItem;
+          this._ShellMenu.InvokeItem(this.ID);
+        }
+      };
 
       this.DataContext = this;
     }
@@ -126,11 +131,13 @@ namespace ShellControls.ShellContextMenu {
         this.SubMenuPopup = new AcrylicShellContextMenu();
         this.SubMenuPopup.Parent = this.Owner;
       }
-      this.SubItems.ToList().ForEach(e => e.Owner = this.SubMenuPopup);
+      this.SubItems.ToList().ForEach(e => {
+        e.Owner = this.SubMenuPopup;
+        this.SubMenuPopup.MenuItems.Add(e);
+      });
       this.SubMenuPopup.Placement = PlacementMode.Right;
       this.SubMenuPopup.IsSimpleMenu = true;
       this.SubMenuPopup.PlacementTarget = this;
-      this.SubMenuPopup.MenuItems = this.SubItems.ToArray();
       this.SubMenuPopup.IsOpen = true;
       this.IsChildMenuOpened = true;
       this.IsOpenTimer.Stop();

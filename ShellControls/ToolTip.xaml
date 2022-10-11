@@ -4,9 +4,9 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-  xmlns:Stars="clr-namespace:CustomControls;assembly=StarRatingControl"
   xmlns:shell="clr-namespace:BExplorer.Shell;assembly=ShellLibrary"
   xmlns:betterExplorerControls="clr-namespace:BetterExplorerControls;assembly=BetterExplorerControls"
+  xmlns:controls="clr-namespace:WPFUI.Controls;assembly=WPFUI"
   mc:Ignorable="d" 
   Focusable="True" 
   IsHitTestVisible="False" 
@@ -37,22 +37,8 @@
           <RowDefinition Height="25"></RowDefinition>
         </Grid.RowDefinitions>
         <Image Grid.Row="0" Margin="2,2,2,0" Grid.ColumnSpan="2" Stretch="None" x:Name="imgIconImage" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Image}"></Image>
-        <Stars:Rating Grid.Row="1" Grid.Column="0" Height="18" Width="100" RatingItemLimit="5"  HorizontalAlignment="Left" Margin="5,5,0,0"
-                  RatingItemMouseDownColor="Transparent"  
-                  RatingValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Rating}">
-          <Stars:Rating.RatingItemBackground>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-              <GradientStop Color="White" Offset="0.0"/>
-              <GradientStop Color="#E7E4E4" Offset="1"/>
-            </LinearGradientBrush>
-          </Stars:Rating.RatingItemBackground>
-          <Stars:Rating.RatingItemHighlightColor>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-              <GradientStop Color="Yellow" Offset="0.0"/>
-              <GradientStop Color="Orange" Offset="1"/>
-            </LinearGradientBrush>
-          </Stars:Rating.RatingItemHighlightColor>
-        </Stars:Rating>
+        <controls:Rating Grid.Row="1" Grid.Column="0" Height="18" Width="100" HorizontalAlignment="Left" Margin="5,5,0,0" Background="Transparent"
+                  Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Rating}"/>
         <Border Grid.Row="1"  Grid.Column="1" BorderBrush="{x:Null}" Height="16" Margin="5,7,5,2" VerticalAlignment="Center">
           <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Height="16" FontWeight="Bold" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.FileName}" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.FileNameWidth}"></TextBlock>
         </Border>

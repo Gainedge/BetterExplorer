@@ -19,6 +19,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using ShellLibrary.Interop;
 
 namespace BExplorer.Shell.Interop.VistaBridge {
 	internal class ShellItemImpl : IDisposable, IShellItem {

@@ -12,6 +12,7 @@ using Size = System.Drawing.Size;
 using System.Text;
 using System.Linq;
 using System.Windows.Interop;
+using ShellLibrary.Interop;
 using WPFUI.Win32;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
@@ -36,9 +37,22 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     public IntPtr EnumPIDL { get; set; }
 
     /// <summary>The COM interface for this item</summary>
-    public IShellItem ComInterface => this.ParentPIDL == IntPtr.Zero
-      ? Shell32.SHCreateItemFromIDList(this.EnumPIDL, typeof(IShellItem).GUID)
-      : Shell32.SHCreateItemWithParent(this.ParentPIDL, null, this.EnumPIDL, typeof(IShellItem).GUID);
+    public IShellItem ComInterface {
+      get {
+        IShellItem result = null;
+        var gii = typeof(IShellItem).GUID;
+        try {
+          if (this.ParentPIDL == IntPtr.Zero) {
+            Shell32.SHCreateItemFromIDList(this.EnumPIDL, ref gii, out result);
+          } else {
+            Shell32.SHCreateItemWithParent(this.ParentPIDL, null, this.EnumPIDL, gii, out result);
+          }
+          return result;
+        } catch (Exception ex) {
+          return null;
+        }
+      }
+    }
 
     /// <summary>The text that represents the display name</summary>
     public String DisplayName {
@@ -258,6 +272,13 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       this.OverlayIconIndex = -1;
       this.ShieldedIconIndex = -1;
     }
+    private void Initialize_Helper(IntPtr folder, IntPtr lvHandle, Int32 index, IntPtr parentPidl) {
+      this.ParentPIDL = parentPidl;
+      this.EnumPIDL = folder;
+      //this.ParentHandle = lvHandle;
+      this.OverlayIconIndex = -1;
+      this.ShieldedIconIndex = -1;
+    }
 
     private void Initialize_Helper2(IntPtr parent, IntPtr pidl, IntPtr lvHandle, Int32 index) {
       this.ParentPIDL = parent;
@@ -269,6 +290,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public void Initialize(IntPtr lvHandle, IntPtr pidl, Int32 index) {
       this.Initialize_Helper(pidl, lvHandle, index);
+    }
+    public void Initialize(IntPtr lvHandle, IntPtr pidl, Int32 index, IntPtr parentPidl) {
+      this.Initialize_Helper(pidl, lvHandle, index, parentPidl);
     }
 
     public void InitializeWithParent(IntPtr parent, IntPtr lvHandle, IntPtr pidl, Int32 index) {
@@ -379,9 +403,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         }
       }
 
-      //if (isFlatList) {
-      //  flags = SHCONTF.NONFOLDERS | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.ENABLE_ASYNC | SHCONTF.SFLATLIST | SHCONTF.NAVIGATION_ENUM;
-      //}
+      if (isFlatList) {
+        flags = SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.NONFOLDERS | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.ENABLE_ASYNC | SHCONTF.SFLATLIST;
+      }
 
       var enumId = ShellItem.GetIEnumIDList(folder, flags, out navRes);
       this.NavigationStatus = navRes;
@@ -653,6 +677,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       fsItem.Initialize(parentHandle, pidl, 0);
       return fsItem;
     }
+    public static FileSystemListItem ToFileSystemItem(IntPtr parentHandle, IntPtr pidl, IntPtr parentPidl) {
+      var fsItem = new FileSystemListItem();
+      fsItem.Initialize(parentHandle, pidl, 0, parentPidl);
+      return fsItem;
+    }
 
     public static FileSystemListItem ToFileSystemItem(IntPtr parentHandle, ShellSearchFolder folder) {
       var fsItem = new FileSystemListItem();
@@ -739,6 +768,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     public Int32 GetUniqueID() => this.ParsingName.GetHashCode();
 
     public Int32[] cColumns { get; set; }
+    public User32.RECT LabelBounds { get; set; }
 
     public Boolean IsRCWSet { get; set; }
 
@@ -772,8 +802,12 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     #region IDisposable Members
 
     public void Dispose() {
-      this._Item?.Dispose();
-      Marshal.ReleaseComObject(this.ComInterface);
+      try {
+        this._Item?.Dispose();
+        Marshal.ReleaseComObject(this.ComInterface);
+      } catch (Exception ex) {
+        
+      }
     }
 
     #endregion IDisposable Members

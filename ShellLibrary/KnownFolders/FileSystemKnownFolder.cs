@@ -4,6 +4,7 @@ using BExplorer.Shell.Interop;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using ShellLibrary.Interop;
 
 namespace BExplorer.Shell
 {
@@ -60,10 +61,10 @@ namespace BExplorer.Shell
 
                     // Get the PIDL for the ShellItem
                     /*
-					if (nativeShellItem != null && base.Pidl == IntPtr.Zero) {
-						base.ComInterface = nativeShellItem;
-					}
-					*/
+          if (nativeShellItem != null && base.Pidl == IntPtr.Zero) {
+            base.ComInterface = nativeShellItem;
+          }
+          */
 
                     // If we have a valid PIDL, get the native IKnownFolder
                     if (base.Pidl != IntPtr.Zero)

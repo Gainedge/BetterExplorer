@@ -67,6 +67,7 @@ namespace WPFUI.Common {
       User32.WM mouseNotification = (User32.WM)uMsg;
 
       switch (mouseNotification) {
+        case User32.WM.GETTEXT:
         case User32.WM.NCMOUSEMOVE:
 
           //_button.RaiseEvent(new MouseEventArgs(null, (int)DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds));
@@ -76,7 +77,6 @@ namespace WPFUI.Common {
 
           handled = true;
           break;
-
         case User32.WM.NCMOUSELEAVE:
           //_button.RaiseEvent(new RoutedEventArgs(Button.MouseLeaveEvent, _button));
           this._button.IsMouseOver = false;
@@ -100,18 +100,17 @@ namespace WPFUI.Common {
 
         case User32.WM.NCHITTEST:
           if (IsOverButton(wParam, lParam)) {
-            handled = true;
-
             //if (_window.WindowState == WindowState.Maximized) {
             //  return new IntPtr((int)HT.MINBUTTON);
             //}
             this._button.IsMouseOver = true;
-            return new IntPtr((int)HT.MAXBUTTON);
+            lParam = new IntPtr((100 << 16) | (50 & 0xffff));
+            handled = true;
           } else {
             this._button.IsMouseOver = false;
             this._button.IsPressed = false;
           }
-
+          return new IntPtr((int)HT.MAXBUTTON);
           break;
 
         default:

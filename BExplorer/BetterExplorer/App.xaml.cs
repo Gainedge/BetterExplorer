@@ -209,11 +209,11 @@ namespace BetterExplorer {
       try {
         switch (Settings.BESettings.CurrentTheme) {
           case "Dark":
-            ThemeManager.ChangeAppTheme(this, "BaseDark");
+            //ThemeManager.ChangeAppTheme(this, "BaseDark");
             UxTheme.AllowDarkModeForApp(true);
             break;
           default:
-            ThemeManager.ChangeAppTheme(this, "BaseLight");
+            //ThemeManager.ChangeAppTheme(this, "BaseLight");
             UxTheme.AllowDarkModeForApp(false);
             break;
         }
@@ -286,7 +286,6 @@ namespace BetterExplorer {
     /// <param name="win">The main window</param>
     /// <param name="sho">The shell object used for tab creation</param>
     private void CreateInitialTab(MainWindow win, IListItemEx sho) {
-      return;
       var bmpSource = sho.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
       var newt = new Wpf.Controls.TabItem(sho) {
         Header = sho.DisplayName,
@@ -294,7 +293,7 @@ namespace BetterExplorer {
       };
       newt.PreviewMouseMove += this.Newt_PreviewMouseMove;
       newt.ToolTip = sho.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
-      win.tcMain.CloneTabItem(newt);
+      //win.tcMain.CloneTabItem(newt);
     }
 
     /// <summary>

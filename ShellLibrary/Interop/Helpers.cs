@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using ShellLibrary.Interop;
 
 namespace BExplorer.Shell.Interop {
 	public static class Helpers {

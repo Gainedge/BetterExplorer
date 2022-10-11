@@ -131,7 +131,7 @@ namespace BExplorer.Shell.Interop {
 
     HResult GetColumnOrderArray(int a, out IntPtr b);
 
-    HResult SetColumnOrderArray(int a, ref IntPtr b);
+    HResult SetColumnOrderArray(int a, ref int[] b);
 
     HResult GetHeaderControl(out IntPtr header);
 

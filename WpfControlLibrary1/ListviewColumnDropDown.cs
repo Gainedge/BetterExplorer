@@ -1,7 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Fluent;
-using ContextMenu = Fluent.ContextMenu;
 
 namespace BetterExplorerControls {
 
@@ -16,7 +14,7 @@ namespace BetterExplorerControls {
 		/// </summary>
 		/// <param name="Item">The item that will be put into the header</param>
 		public void AddItem(object Item) {
-			this.Items.Add(new Fluent.MenuItem() { IsCheckable = true, Header = Item });
+			this.Items.Add(new MenuItem() { IsCheckable = true, Header = Item });
 		}
 	}
 }

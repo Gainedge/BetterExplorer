@@ -2,10 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using BetterExplorerControls;
@@ -86,7 +83,7 @@ namespace ShellControls {
           try {
             var ratingValue = clonedCurrentItem.GetPropertyValue(MediaProperties.Rating, typeof(Double)).Value;
             var rating = ratingValue == null ? 0 : Convert.ToDouble(ratingValue) / 20D;
-            this.Rating = rating;
+            this.Rating = Math.Ceiling(rating);
             RaisePropertyChanged("Rating");
             var fileSize = clonedCurrentItem.GetPropertyValue(SystemProperties.FileSize, typeof(double)).Value;
             var dimentions = clonedCurrentItem.GetPropertyValue(MediaProperties.Dimensions, typeof(String)).Value;

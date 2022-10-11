@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="18.5" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="19.4" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
     <ROW Name="Application_2_Args" Value="/checknow"/>
     <ROW Name="Application_2_WorkingDir" Value="APPDIR"/>
@@ -8,6 +8,7 @@
     <ROW Name="AssetGenDestFolderPath" Value="Generated Assets" ValueType="1"/>
     <ROW Name="AssetGenScalesWin10" Value="Scale 100, Scale 125, Scale 150, Scale 200, Scale 400"/>
     <ROW Name="AssetGenVisualAssets" Value="Small Tile, Medium Tile, Wide Tile, Large Tile, App Icon, Splash Screen, Badge Logo"/>
+    <ROW Name="HiddenItems" Value="ActSyncAppComponent;AutorunComponent;CPLAppletComponent;GameUxComponent;SilverlightSlnComponent"/>
     <ROW Name="MigrationUninstallCode" Value="{5E93AAAE-AC44-47F5-BFC8-330F951A30F4}"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiValidationComponent">
@@ -18,47 +19,50 @@
     <ROW Property="AI_ARP_SIZE" Value="5000"/>
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_BackgroundColor" Value="lightblue" MultiBuildValue="ExeBuild:lightcoral" MsiKey="AI_BackgroundColor"/>
-    <ROW Property="AI_CURRENT_YEAR" Value="2021" ValueLocId="-"/>
+    <ROW Property="AI_CURRENT_YEAR" Value="2022" ValueLocId="-"/>
     <ROW Property="AI_EXTERNALUIUNINSTALLERNAME" MultiBuildValue="ExeBuild:aiui"/>
     <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
     <ROW Property="AI_FrameBtnsColor" Value="powderblue" MsiKey="AI_FrameBtnsColor"/>
     <ROW Property="AI_FrameColor" Value="powderblue" MsiKey="AI_FrameColor"/>
     <ROW Property="AI_ImagesColor" Value="powderblue" MultiBuildValue="ExeBuild:brown" MsiKey="AI_ImagesColor"/>
+    <ROW Property="AI_PACKAGING_TOOL" Value="Advanced Installer 19.4 build 4648ec91" ValueLocId="-"/>
     <ROW Property="AI_PREDEF_LCONDS_PROPS" Value="AI_DETECTED_COLOR_QUALITY;AI_DETECTED_PHYSICAL_MEMORY;AI_DETECTED_SCREEN_RESOLUTION_X;AI_DETECTED_SCREEN_RESOLUTION_Y"/>
     <ROW Property="AI_PRODUCTNAME_ARP" Value="Better Explorer"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BEUpdater.exe" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BEUpdater.ini" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BetterExplorer.deps.json" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BetterExplorer.dll" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BetterExplorer.dll.config" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BetterExplorer.exe_1" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BetterExplorer.runtimeconfig.dev.json" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BEUpdater.exe" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BEUpdater.ini" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BetterExplorer.deps.json" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BetterExplorer.dll" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BetterExplorer.dll.config" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_BetterExplorer.runtimeconfig.json" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BetterExplorer.runtimeconfig.json_1" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_NLog.config_1" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_SQLite.Interop.dll_2" Value="..\Deploy\net5.0-windows10.0.17763.0\x64"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_SQLite.Interop.dll_3" Value="..\Deploy\net5.0-windows10.0.17763.0\x86"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Data.SQLite.dll.config_1" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_client.wyc" Value="..\Deploy\net5.0-windows10.0.17763.0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico" Value="..\Deploy\net5.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_1" Value="..\Deploy\net5.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_2" Value="..\Deploy\net5.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_3" Value="..\Deploy\net5.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_4" Value="..\Deploy\net5.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_5" Value="..\Deploy\net5.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_6" Value="..\Deploy\net5.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_7" Value="..\Deploy\net5.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_8" Value="..\Deploy\net5.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_9" Value="..\Deploy\net5.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BetterExplorer.runtimeconfig.json_1" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_LicenseFiraCode.txt" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_LicenseFluentSystemIcons.txt" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_LicenseSegoeFluentIcons.txt" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_NLog.config_1" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_SQLite.Interop.dll_2" Value="..\Deploy\net6.0-windows10.0.17763.0\x64"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_SQLite.Interop.dll_3" Value="..\Deploy\net6.0-windows10.0.17763.0\x86"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Data.SQLite.dll.config_1" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_client.wyc" Value="..\Deploy\net6.0-windows10.0.17763.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico" Value="..\Deploy\net6.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_1" Value="..\Deploy\net6.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_2" Value="..\Deploy\net6.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_3" Value="..\Deploy\net6.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_4" Value="..\Deploy\net6.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_5" Value="..\Deploy\net6.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_6" Value="..\Deploy\net6.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_7" Value="..\Deploy\net6.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_8" Value="..\Deploy\net6.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ico_9" Value="..\Deploy\net6.0-windows10.0.17763.0\Badges\Ubuntu Human"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_BEUpdater.exe" Value="BEUpdater.exe"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_BEUpdater.ini" Value="BEUpdater.ini"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.deps.json" Value="BetterExplorer.deps.json"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.dll" Value="BetterExplorer.dll"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.dll.config" Value="BetterExplorer.dll.config"/>
-    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.exe_1" Value="BetterExplorer.exe"/>
-    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.runtimeconfig.dev.json" Value="BetterExplorer.runtimeconfig.dev.json"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.runtimeconfig.json" Value="BetterExplorer.runtimeconfig.json"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.runtimeconfig.json_1" Value="BetterExplorer.runtimeconfig.json"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_LicenseFiraCode.txt" Value="License - Fira Code.txt"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_LicenseFluentSystemIcons.txt" Value="License - Fluent System Icons.txt"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_LicenseSegoeFluentIcons.txt" Value="License - Segoe Fluent Icons.txt"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_NLog.config_1" Value="NLog.config"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_SQLite.Interop.dll_2" Value="SQLite.Interop.dll"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_SQLite.Interop.dll_3" Value="SQLite.Interop.dll"/>
@@ -99,7 +103,7 @@
     <ROW Property="ProductCode" Value="1026:{4F9125FA-A344-4558-9D9A-E57FECE95502} 1031:{EDDB5BC7-8606-4BF8-8579-BC1C85D6BF20} 1033:{3B384425-3607-4A80-BC5E-3E77BDEA38FE} 1041:{9BA2AD70-1A4F-493E-86B7-DEB319032197} 1049:{AF8AE3BC-11FD-4E94-AD86-A18B4BC39318} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Better Explorer"/>
-    <ROW Property="ProductVersion" Value="2020.3.15.1304" Type="32" TargetFile="BetterExplorer.exe"/>
+    <ROW Property="ProductVersion" Value="2020.3.15.1304" Options="16"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{5E93AAAE-AC44-47F5-BFC8-330F951A30F4}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="ExeBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -330,7 +334,6 @@
     <ROW File="BetterExplorer.runtimeconfig.json" Component_="BetterExplorer_PrimaryOutput" FileName="BETTER~2.JSO|[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.runtimeconfig.json]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_BetterExplorer.runtimeconfig.json&gt;" SelfReg="false"/>
     <ROW File="BetterExplorer.deps.json" Component_="BetterExplorer_ContentOutput" FileName="BETTER~3.JSO|[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.deps.json]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_BetterExplorer.deps.json&gt;" SelfReg="false"/>
     <ROW File="BetterExplorer.runtimeconfig.json_1" Component_="BetterExplorer_ContentOutput" FileName="BETTER~1.JSO|BetterExplorer.runtimeconfig.json" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_BetterExplorer.runtimeconfig.json_1&gt;" SelfReg="false"/>
-    <ROW File="BetterExplorer.runtimeconfig.dev.json" Component_="BetterExplorer_ContentOutput" FileName="BETTER~5.JSO|[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.runtimeconfig.dev.json]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_BetterExplorer.runtimeconfig.dev.json&gt;" SelfReg="false"/>
     <ROW File="SQLite.Interop.dll_2" Component_="BetterExplorer_ContentOutput_x64" FileName="SQLITE~2.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_SQLite.Interop.dll_2]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_SQLite.Interop.dll_2&gt;" SelfReg="false"/>
     <ROW File="SQLite.Interop.dll_3" Component_="BetterExplorer_ContentOutput_x86" FileName="SQLITE~2.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_SQLite.Interop.dll_3]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_SQLite.Interop.dll_3&gt;" SelfReg="false"/>
     <ROW File="BEUpdater.exe" Component_="BetterExplorer_ContentOutput" FileName="BEUPDA~2.EXE|[|AI_PROPPATH_FILENAME_PERBUILD_BEUpdater.exe]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_BEUpdater.exe&gt;" SelfReg="false"/>
@@ -348,7 +351,9 @@
     <ROW File="client.wyc" Component_="BetterExplorer_ContentOutput" FileName="[|AI_PROPPATH_FILENAME_PERBUILD_client.wyc]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_client.wyc&gt;" SelfReg="false"/>
     <ROW File="NLog.config_1" Component_="BetterExplorer_ContentOutput" FileName="NLOG~2.CON|[|AI_PROPPATH_FILENAME_PERBUILD_NLog.config_1]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_NLog.config_1&gt;" SelfReg="false"/>
     <ROW File="System.Data.SQLite.dll.config_1" Component_="BetterExplorer_ContentOutput" FileName="SYSTEM~2.CON|[|AI_PROPPATH_FILENAME_PERBUILD_System.Data.SQLite.dll.config_1]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_System.Data.SQLite.dll.config_1&gt;" SelfReg="false"/>
-    <ROW File="BetterExplorer.exe_1" Component_="BetterExplorer_ContentOutput" FileName="BETTER~2.EXE|[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.exe_1]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_BetterExplorer.exe_1&gt;" SelfReg="false" DigSign="true"/>
+    <ROW File="LicenseFiraCode.txt" Component_="BetterExplorer_ContentOutput" FileName="LICENS~2.TXT|[|AI_PROPPATH_FILENAME_PERBUILD_LicenseFiraCode.txt]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_LicenseFiraCode.txt&gt;" SelfReg="false"/>
+    <ROW File="LicenseFluentSystemIcons.txt" Component_="BetterExplorer_ContentOutput" FileName="LICENS~3.TXT|[|AI_PROPPATH_FILENAME_PERBUILD_LicenseFluentSystemIcons.txt]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_LicenseFluentSystemIcons.txt&gt;" SelfReg="false"/>
+    <ROW File="LicenseSegoeFluentIcons.txt" Component_="BetterExplorer_ContentOutput" FileName="LICENS~4.TXT|[|AI_PROPPATH_FILENAME_PERBUILD_LicenseSegoeFluentIcons.txt]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_LicenseSegoeFluentIcons.txt&gt;" SelfReg="false"/>
     <ATTRIBUTE name="IcoToPng" value="CheckforUpdatesSquare44x44Logo.scale100.png:0:44 CheckforUpdatesSquare150x150Logo.scale100.png:0:150"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.custcomp.MsiShortcutPropertyComponent">
@@ -362,10 +367,11 @@
     <ROW Name="AI_APPPATH_PERBUILD_BetterExplorer.deps.json" Path="[|AI_PROPPATH_DIR_PERBUILD_BetterExplorer.deps.json]\[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.deps.json]" Type="2" Content="0"/>
     <ROW Name="AI_APPPATH_PERBUILD_BetterExplorer.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_BetterExplorer.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.dll]" Type="2" Content="0"/>
     <ROW Name="AI_APPPATH_PERBUILD_BetterExplorer.dll.config" Path="[|AI_PROPPATH_DIR_PERBUILD_BetterExplorer.dll.config]\[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.dll.config]" Type="2" Content="0"/>
-    <ROW Name="AI_APPPATH_PERBUILD_BetterExplorer.exe_1" Path="[|AI_PROPPATH_DIR_PERBUILD_BetterExplorer.exe_1]\[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.exe_1]" Type="2" Content="0"/>
-    <ROW Name="AI_APPPATH_PERBUILD_BetterExplorer.runtimeconfig.dev.json" Path="[|AI_PROPPATH_DIR_PERBUILD_BetterExplorer.runtimeconfig.dev.json]\[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.runtimeconfig.dev.json]" Type="2" Content="0"/>
     <ROW Name="AI_APPPATH_PERBUILD_BetterExplorer.runtimeconfig.json" Path="[|AI_PROPPATH_DIR_PERBUILD_BetterExplorer.runtimeconfig.json]\[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.runtimeconfig.json]" Type="2" Content="0"/>
     <ROW Name="AI_APPPATH_PERBUILD_BetterExplorer.runtimeconfig.json_1" Path="[|AI_PROPPATH_DIR_PERBUILD_BetterExplorer.runtimeconfig.json_1]\[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.runtimeconfig.json_1]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_LicenseFiraCode.txt" Path="[|AI_PROPPATH_DIR_PERBUILD_LicenseFiraCode.txt]\[|AI_PROPPATH_FILENAME_PERBUILD_LicenseFiraCode.txt]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_LicenseFluentSystemIcons.txt" Path="[|AI_PROPPATH_DIR_PERBUILD_LicenseFluentSystemIcons.txt]\[|AI_PROPPATH_FILENAME_PERBUILD_LicenseFluentSystemIcons.txt]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_LicenseSegoeFluentIcons.txt" Path="[|AI_PROPPATH_DIR_PERBUILD_LicenseSegoeFluentIcons.txt]\[|AI_PROPPATH_FILENAME_PERBUILD_LicenseSegoeFluentIcons.txt]" Type="2" Content="0"/>
     <ROW Name="AI_APPPATH_PERBUILD_NLog.config_1" Path="[|AI_PROPPATH_DIR_PERBUILD_NLog.config_1]\[|AI_PROPPATH_FILENAME_PERBUILD_NLog.config_1]" Type="2" Content="0"/>
     <ROW Name="AI_APPPATH_PERBUILD_SQLite.Interop.dll_2" Path="[|AI_PROPPATH_DIR_PERBUILD_SQLite.Interop.dll_2]\[|AI_PROPPATH_FILENAME_PERBUILD_SQLite.Interop.dll_2]" Type="2" Content="0"/>
     <ROW Name="AI_APPPATH_PERBUILD_SQLite.Interop.dll_3" Path="[|AI_PROPPATH_DIR_PERBUILD_SQLite.Interop.dll_3]\[|AI_PROPPATH_FILENAME_PERBUILD_SQLite.Interop.dll_3]" Type="2" Content="0"/>
@@ -408,6 +414,9 @@
   <COMPONENT cid="caphyon.advinst.msicomp.DigCertStoreComponent">
     <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="0" SignTool="0" UseSha256="1" Thumbprint="e610e5ca6ef6190778174c0d615ff954c4216194 Subject: Test01D424E0A39C49F0&#10;Issuer: Test01D424E0A39C49F0&#10;Valid from 07/26/2018 to 07/26/2019&#10;User\MY"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DynamicPropertyComponent">
+    <ROW Property="ProductVersion" Type="2" SourcePath="BetterExplorer.exe"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
     <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
     <ROW Fragment="FolderDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\FolderDlg.aip"/>
@@ -421,6 +430,7 @@
     <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
     <ROW Fragment="ShortcutsDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\ShortcutsDlg.aip"/>
     <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="Themes.aip" Path="&lt;AI_FRAGS&gt;Themes.aip"/>
     <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;azure\fragments\UI.aip"/>
     <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
     <ROW Fragment="VerifyRemoveDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\VerifyRemoveDlg.aip"/>
@@ -429,6 +439,8 @@
     <ROW Fragment="WelcomePrereqDlg.aip" Path="&lt;AI_THEMES&gt;azure\fragments\WelcomePrereqDlg.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.GenericXmlAttributeComponent">
+    <ROW XmlAttribute="Alias" XmlElement="ExecutionAlias" Name="Alias" Flags="0" Order="0" Value="BetterExplorer.exe"/>
+    <ROW XmlAttribute="Alias_1" XmlElement="ExecutionAlias_1" Name="Alias" Flags="0" Order="0" Value="BEUpdater.exe"/>
     <ROW XmlAttribute="AppListEntry" XmlElement="VisualElements_1" Name="AppListEntry" Flags="0" Order="0" Value="default"/>
     <ROW XmlAttribute="Arguments" XmlElement="Service" Name="Arguments" Flags="0" Order="0" Value="/runservice"/>
     <ROW XmlAttribute="AssetGenScalesSavedWin10" XmlElement="Package" Name="AssetGenScalesSavedWin10" Flags="0" Order="0" Value="true"/>
@@ -440,6 +452,8 @@
     <ROW XmlAttribute="Category_1" XmlElement="Extension_1" Name="Category" Flags="0" Order="0" Value="windows.ntServices"/>
     <ROW XmlAttribute="Category_2" XmlElement="Extension_2" Name="Category" Flags="0" Order="0" Value="windows.desktopAppMigration"/>
     <ROW XmlAttribute="Category_3" XmlElement="Extension_3" Name="Category" Flags="0" Order="0" Value="windows.service"/>
+    <ROW XmlAttribute="Category_4" XmlElement="Extension_4" Name="Category" Flags="0" Order="0" Value="windows.appExecutionAlias"/>
+    <ROW XmlAttribute="Category_5" XmlElement="Extension_5" Name="Category" Flags="0" Order="0" Value="windows.appExecutionAlias"/>
     <ROW XmlAttribute="Description" XmlElement="VisualElements" Name="Description" Flags="0" Order="0" Value="BetterExplorer"/>
     <ROW XmlAttribute="Description_1" XmlElement="VisualElements_1" Name="Description" Flags="0" Order="0" Value="ServerExtensionsApp"/>
     <ROW XmlAttribute="Description_2" XmlElement="NTService" Name="Description" Flags="0" Order="0" Value="Your Service Description"/>
@@ -504,6 +518,8 @@
     <ROW XmlAttribute="xmlnsuap" XmlElement="Package" Name="xmlns:uap" Flags="0" Order="2" Value="http://schemas.microsoft.com/appx/manifest/uap/windows10"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.GenericXmlElementComponent">
+    <ROW XmlElement="AppExecutionAlias" ParentElement="Extension_4" Name="AppExecutionAlias" Order="0" Flags="0" Type="0"/>
+    <ROW XmlElement="AppExecutionAlias_1" ParentElement="Extension_5" Name="AppExecutionAlias" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="Application" ParentElement="Applications" Name="Application" Order="0" Flags="0" Type="4"/>
     <ROW XmlElement="Application_1" ParentElement="Applications" Name="Application" Order="1" Flags="0" Type="4"/>
     <ROW XmlElement="Application_2" ParentElement="Applications" Name="Application" Order="2" Flags="0" Type="4"/>
@@ -521,10 +537,14 @@
     <ROW XmlElement="DesktopApp_2" ParentElement="DesktopAppMigration_1" Name="DesktopApp" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="DesktopApp_3" ParentElement="DesktopAppMigration_1" Name="DesktopApp" Order="1" Flags="0" Type="0"/>
     <ROW XmlElement="DisplayName" ParentElement="Properties" Name="DisplayName" Order="1" Flags="0" Text="Better Explorer" Type="0"/>
+    <ROW XmlElement="ExecutionAlias" ParentElement="AppExecutionAlias" Name="ExecutionAlias" Order="0" Flags="0" Type="0"/>
+    <ROW XmlElement="ExecutionAlias_1" ParentElement="AppExecutionAlias_1" Name="ExecutionAlias" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="Extension" ParentElement="Extensions" Name="Extension" Order="0" Flags="0" Type="55"/>
     <ROW XmlElement="Extension_1" ParentElement="Extensions_1" Name="Extension" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="Extension_2" ParentElement="Extensions_2" Name="Extension" Order="0" Flags="0" Type="55"/>
     <ROW XmlElement="Extension_3" ParentElement="Extensions_2" Name="Extension" Order="1" Flags="0" Type="110"/>
+    <ROW XmlElement="Extension_4" ParentElement="Extensions" Name="Extension" Order="1" Flags="0" Type="54"/>
+    <ROW XmlElement="Extension_5" ParentElement="Extensions_2" Name="Extension" Order="2" Flags="0" Type="54"/>
     <ROW XmlElement="Extensions" ParentElement="Application" Name="Extensions" Order="1" Flags="0" Type="0"/>
     <ROW XmlElement="Extensions_1" ParentElement="Application_1" Name="Extensions" Order="1" Flags="0" Type="0"/>
     <ROW XmlElement="Extensions_2" ParentElement="Application_2" Name="Extensions" Order="1" Flags="0" Type="0"/>
@@ -941,6 +961,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="AIShRegAnswer" Root="-1" Key="Software\Caphyon\Advanced Installer\Installs\[ProductCode]" Name="AIShRegAnswer" Value="[AI_SHORTCUTSREG]" Component_="AIShRegAnswer"/>
     <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
+    <ROW Registry="AdvancedInstaller" Root="-1" Key="Software\Caphyon\Advanced Installer" Name="\"/>
     <ROW Registry="AutoSwitchApplicationTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchApplicationTools" Value="#0" Component_="AutoSwitchApplicationTools" VirtualValue="#"/>
     <ROW Registry="AutoSwitchArchiveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchArchiveTools" Value="#1" Component_="AutoSwitchArchiveTools" VirtualValue="#"/>
     <ROW Registry="AutoSwitchDriveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchDriveTools" Value="#1" Component_="AutoSwitchDriveTools" VirtualValue="#"/>
@@ -948,19 +969,25 @@
     <ROW Registry="AutoSwitchImageTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchImageTools" Value="#1" Component_="AutoSwitchImageTools" VirtualValue="#"/>
     <ROW Registry="AutoSwitchLibraryTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchLibraryTools" Value="#1" Component_="AutoSwitchLibraryTools" VirtualValue="#"/>
     <ROW Registry="AutoSwitchVirtualDriveTools" Root="1" Key="Software\BExplorer" Name="AutoSwitchVirtualDriveTools" Value="#0" Component_="AutoSwitchVirtualDriveTools" VirtualValue="#"/>
+    <ROW Registry="BExplorer" Root="1" Key="Software\BExplorer" Name="\"/>
+    <ROW Registry="Caphyon" Root="-1" Key="Software\Caphyon" Name="\"/>
     <ROW Registry="Comments" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Comments" Value="[ARPCOMMENTS]" Component_="AI_CustomARPName"/>
     <ROW Registry="Contact" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Contact" Value="[ARPCONTACT]" Component_="AI_CustomARPName"/>
     <ROW Registry="CurrentTheme" Root="1" Key="Software\BExplorer" Name="CurrentTheme" Value="Dark" Component_="CurrentTheme"/>
+    <ROW Registry="CurrentVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion" Name="\"/>
     <ROW Registry="DisplayIcon" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayIcon" Value="[ARP_ICON_PATH]" Component_="AI_CustomARPName"/>
     <ROW Registry="DisplayName" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayName" Value="[AI_PRODUCTNAME_ARP]" Component_="AI_CustomARPName"/>
     <ROW Registry="DisplayVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayVersion" Value="[ProductVersion]" Component_="AI_CustomARPName"/>
     <ROW Registry="EstimatedSize" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="EstimatedSize" Value="##[AI_ARP_SIZE]" Component_="AI_CustomARPName"/>
+    <ROW Registry="Folder" Root="0" Key="Folder" Name="\"/>
     <ROW Registry="HelpLink" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpLink" Value="[ARPHELPLINK]" Component_="AI_CustomARPName"/>
     <ROW Registry="HelpTelephone" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpTelephone" Value="[ARPHELPTELEPHONE]" Component_="AI_CustomARPName"/>
     <ROW Registry="InstallLocation" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="InstallLocation" Value="[APPDIR]" Component_="AI_CustomARPName"/>
+    <ROW Registry="Installs" Root="-1" Key="Software\Caphyon\Advanced Installer\Installs" Name="\"/>
     <ROW Registry="IsConsoleShown" Root="1" Key="Software\BExplorer" Name="IsConsoleShown" Value="#0" Component_="IsConsoleShown" VirtualValue="#"/>
     <ROW Registry="IsRestoreTabs" Root="1" Key="Software\BExplorer" Name="IsRestoreTabs" Value="#1" Component_="IsRestoreTabs" VirtualValue="#"/>
     <ROW Registry="IsRibonMinimized" Root="1" Key="Software\BExplorer" Name="IsRibonMinimized" Value="False" Component_="IsRibonMinimized"/>
+    <ROW Registry="LZMA" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA" Name="\"/>
     <ROW Registry="LastWindowHeight" Root="1" Key="Software\BExplorer" Name="LastWindowHeight" Value="1026" Component_="LastWindowHeight"/>
     <ROW Registry="LastWindowPosLeft" Root="1" Key="Software\BExplorer" Name="LastWindowPosLeft" Value="0" Component_="LastWindowPosLeft"/>
     <ROW Registry="LastWindowPosTop" Root="1" Key="Software\BExplorer" Name="LastWindowPosTop" Value="0" Component_="LastWindowPosTop"/>
@@ -968,24 +995,40 @@
     <ROW Registry="LastWindowWidth" Root="1" Key="Software\BExplorer" Name="LastWindowWidth" Value="1696" Component_="LastWindowWidth"/>
     <ROW Registry="LaunchExplorerFlags" Root="0" Key="Folder\shell\opennewwindow" Name="LaunchExplorerFlags" Value="#1" Component_="LaunchExplorerFlags" VirtualValue="#"/>
     <ROW Registry="MUIVerb" Root="0" Key="Folder\shell\opennewwindow" Name="MUIVerb" Value="@shell32.dll,-8517" Component_="MUIVerb"/>
+    <ROW Registry="Manufacturer" Root="-1" Key="Software\[Manufacturer]" Name="\"/>
+    <ROW Registry="Microsoft" Root="-1" Key="Software\Microsoft" Name="\"/>
     <ROW Registry="MultiSelectModel" Root="0" Key="Folder\shell\opennewwindow" Name="MultiSelectModel" Value="Document" Component_="MultiSelectModel"/>
     <ROW Registry="OpenedTabs" Root="1" Key="Software\BExplorer" Name="OpenedTabs" Component_="OpenedTabs"/>
     <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
+    <ROW Registry="ProductCode" Root="-1" Key="Software\Caphyon\Advanced Installer\Installs\[ProductCode]" Name="\"/>
+    <ROW Registry="ProductCode_1" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]" Name="\"/>
+    <ROW Registry="ProductName" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="\"/>
+    <ROW Registry="ProductNameProductVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="\"/>
+    <ROW Registry="ProductVersion" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="\"/>
     <ROW Registry="Publisher" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Publisher" Value="[Manufacturer]" Component_="AI_CustomARPName"/>
     <ROW Registry="RTLMode" Root="1" Key="Software\BExplorer" Name="RTLMode" Value="false" Component_="RTLMode"/>
     <ROW Registry="ShowCheckboxes" Root="1" Key="Software\BExplorer" Name="ShowCheckboxes" Value="#0" Component_="ShowCheckboxes" VirtualValue="#"/>
+    <ROW Registry="Software" Root="-1" Key="Software" Name="\"/>
+    <ROW Registry="Software_1" Root="1" Key="Software" Name="\"/>
     <ROW Registry="TabBarAlignment" Root="1" Key="Software\BExplorer" Name="TabBarAlignment" Value="top" Component_="TabBarAlignment"/>
     <ROW Registry="URLInfoAbout" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLInfoAbout" Value="[ARPURLINFOABOUT]" Component_="AI_CustomARPName"/>
     <ROW Registry="URLUpdateInfo" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLUpdateInfo" Value="[ARPURLUPDATEINFO]" Component_="AI_CustomARPName"/>
+    <ROW Registry="Uninstall" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall" Name="\"/>
     <ROW Registry="UninstallPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallPath" Value="[AI_UNINSTALLER] /i [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
     <ROW Registry="UninstallString" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallString" Value="[AI_UNINSTALLER] /i [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
     <ROW Registry="VersionMajor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMajor" Value="#2" Component_="AI_CustomARPName" VirtualValue="#"/>
     <ROW Registry="VersionMinor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMinor" Value="#0" Component_="AI_CustomARPName" VirtualValue="#"/>
+    <ROW Registry="Windows" Root="-1" Key="Software\Microsoft\Windows" Name="\"/>
     <ROW Registry="_" Root="0" Key="Folder\shell\openinbetterexplorer" Value="Open In Better Explorer" Component_="_"/>
     <ROW Registry="__1" Root="0" Key="Folder\shell" Value="openinbetterexplorer" Component_="__1"/>
     <ROW Registry="__38" Root="0" Key="Folder\shell\openinbetterexplorer\command" Value="[APPDIR]BetterExplorerShell.exe &quot;%1&quot;" Component_="__38"/>
     <ROW Registry="__39" Root="0" Key="Folder\shell\opennewwindow\command" Value="[APPDIR]BetterExplorerShell.exe &quot;%1&quot;" Component_="__39"/>
+    <ROW Registry="command" Root="0" Key="Folder\shell\openinbetterexplorer\command" Name="\"/>
+    <ROW Registry="command_1" Root="0" Key="Folder\shell\opennewwindow\command" Name="\"/>
+    <ROW Registry="openinbetterexplorer" Root="0" Key="Folder\shell\openinbetterexplorer" Name="\"/>
+    <ROW Registry="opennewwindow" Root="0" Key="Folder\shell\opennewwindow" Name="\"/>
+    <ROW Registry="shell" Root="0" Key="Folder\shell" Name="\"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRemoveRegComponent">
     <ROW RemoveRegistry="DelegateExecute" Root="0" Key="Folder\shell\opennewwindow\command" Name="DelegateExecute" Component_="AIShRegAnswer"/>
@@ -1035,7 +1078,6 @@
     <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="PrimaryOutput" OutputFile="BetterExplorer.runtimeconfig.json"/>
     <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="BetterExplorer.deps.json"/>
     <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="BetterExplorer.runtimeconfig.json_1"/>
-    <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="BetterExplorer.runtimeconfig.dev.json"/>
     <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="SQLite.Interop.dll_2"/>
     <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="SQLite.Interop.dll_3"/>
     <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="BEUpdater.exe"/>
@@ -1053,7 +1095,9 @@
     <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="client.wyc"/>
     <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="NLog.config_1"/>
     <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="System.Data.SQLite.dll.config_1"/>
-    <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="BetterExplorer.exe_1"/>
+    <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="LicenseFiraCode.txt"/>
+    <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="LicenseFluentSystemIcons.txt"/>
+    <ROW ProjectId="{bbd6b64a-5617-4f6c-a5ce-5156365bf33e}" ProjectName="BetterExplorer" OutputGroup="ContentOutput" OutputFile="LicenseSegoeFluentIcons.txt"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.XmlAttributeComponent">
     <ROW XmlAttribute="xmlnsds" XmlElement="swidsoftware_identification_tag" Name="xmlns:ds" Flags="14" Order="0" Value="http://www.w3.org/2000/09/xmldsig#"/>

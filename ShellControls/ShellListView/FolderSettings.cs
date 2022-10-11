@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using BExplorer.Shell;
 
 namespace ShellControls.ShellListView {
 	/// <summary>Container for folder settings stored in the database</summary>

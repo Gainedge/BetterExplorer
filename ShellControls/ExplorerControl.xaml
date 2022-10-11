@@ -18,8 +18,14 @@
       <RowDefinition Height="115"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-    <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource ControlElevationBorderBrush}">
-      <Grid>
+    <Border BorderThickness="0,0,0,1"  CornerRadius="2,2,0,0">
+      <Border.BorderBrush>
+        <SolidColorBrush Opacity="1.0" Color="{DynamicResource ControlFillColorDefault}" />
+      </Border.BorderBrush>
+      <Border.Background>
+        <SolidColorBrush Opacity="0.0" Color="{DynamicResource ControlFillColorDefault}" />
+      </Border.Background>
+      <Grid >
         <Grid.RowDefinitions>
           <RowDefinition Height="*"/>
           <RowDefinition Height="65"/>
@@ -30,15 +36,15 @@
           <ColumnDefinition Width="245"/>
           <ColumnDefinition Width="Auto" MinWidth="55"/>
         </Grid.ColumnDefinitions>
-        <Menu BorderThickness="0" VerticalAlignment="Center" Height="47">
-          <MenuItem x:Name="btnBack" Icon="{x:Static wpfuicommon:Icon.ArrowLeft20}" Click="btnBack_Click"></MenuItem>
-          <MenuItem x:Name="btnForward"  Icon="{x:Static wpfuicommon:Icon.ArrowRight20}" Click="btnForward_Click"></MenuItem>
-          <MenuItem x:Name="btnUp" Icon="{x:Static wpfuicommon:Icon.ArrowUp20}" Click="btnUp_Click"></MenuItem>
-        </Menu>
-        <breadcrumbBar:BreadcrumbBar Grid.Column="1" x:Name="bcMain"  Margin="10,8,5,8" OnNavigate="OnBreadcrumbbarNavigate"/>
-        <controls:SearchBox x:Name="txtSearch" Grid.Column="2" Margin="11,0,1,0" VerticalAlignment="Center" Height="33" SearchExecuted="TxtSearch_OnSearchExecuted"/>
+        <StackPanel Orientation="Horizontal" Height="47" VerticalAlignment="Center" Margin="5,0,0,0">
+          <betterExplorerControls:FontIconButton Glyph="ArrowLeft20" Click="btnBack_Click" Margin="4,6" x:Name="btnBack" />
+          <betterExplorerControls:FontIconButton Glyph="ArrowRight20" Click="btnForward_Click" Margin="4,6" x:Name="btnForward" />
+          <betterExplorerControls:FontIconButton Glyph="ArrowUp20" Click="btnUp_Click" Margin="4,6" x:Name="btnUp" />
+        </StackPanel>
+        <breadcrumbBar:BreadcrumbBar Grid.Column="1" x:Name="bcMain"  Margin="10,8,5,8" OnNavigate="OnBreadcrumbbarNavigate" FocusManager.IsFocusScope="True"/>
+        <controls:SearchBox x:Name="txtSearch" Grid.Column="2" Margin="11,0,1,0" VerticalAlignment="Center" Height="33" SearchExecuted="TxtSearch_OnSearchExecuted" FocusManager.IsFocusScope="True"/>
         <betterExplorerControls:FontIconButton Grid.Column="3" Glyph="Settings20" Margin="9,8,16,7"/>
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Margin="8,5,0,5">
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Margin="8,5,0,5" >
           <StackPanel.Resources>
             <Style TargetType="{x:Type betterExplorerControls:FontIconButton}">
               <Setter Property="Margin" Value="0,9,7,9"/>
@@ -50,7 +56,7 @@
           </StackPanel.Resources>
           <shellControls:ToolbarGroup Margin="6,0,0,0">
             <StackPanel Orientation="Horizontal">
-              <betterExplorerControls:FontIconButton BaseIconGlyph="&#xF037;" OverlayIconGlyph="&#xF038;" Header="New" Margin="-6,7,7,7">
+              <betterExplorerControls:FontIconButton BaseIconGlyph="&#xF037;" OverlayIconGlyph="&#xF038;" Header="New" Margin="-6,7,7,7" >
                 <betterExplorerControls:FontIconButton.Flyout>
                   <Grid Height="200" Width="200">
                     <Button>Test</Button>
@@ -177,7 +183,7 @@
           </shellControls:ToolbarGroup>
         </StackPanel>
 
-        <shellControls:ToolbarGroup Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,8,0">
+        <shellControls:ToolbarGroup Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,8,0" >
           <StackPanel Orientation="Horizontal"  Width="Auto" HorizontalAlignment="Right" Margin="0,4,0,4">
             <StackPanel.Resources>
               <Style TargetType="{x:Type betterExplorerControls:FontIconButton}">
@@ -261,12 +267,12 @@
         </shellControls:ToolbarGroup>
       </Grid>
     </Border>
-    <Grid Grid.Row="1" Grid.Column="0">
+    <Grid Grid.Row="1" Grid.Column="0" >
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
       </Grid.ColumnDefinitions>
-      <Grid x:Name="pnlShellBrowser" Visibility="Hidden" Grid.Column="0">
+      <Grid x:Name="pnlShellBrowser" Visibility="Hidden" Grid.Column="0" >
         <Grid.Resources>
           <Style TargetType="{x:Type GridSplitter}">
             <Setter Property="Background" Value="Transparent"/>
@@ -291,12 +297,12 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
           </Grid.ColumnDefinitions>
-          <beHelper:NoFlickerWindowsFormsHost x:Name="ShellTreeViewHost" Margin="4,0,0,0">
+          <beHelper:NoFlickerWindowsFormsHost x:Name="ShellTreeViewHost" Margin="4,0,0,0" >
             <beHelper:NoFlickerWindowsFormsHost.Background>
               <SolidColorBrush Color="Transparent" />
             </beHelper:NoFlickerWindowsFormsHost.Background>
           </beHelper:NoFlickerWindowsFormsHost>
-          <ScrollBar x:Name="sbVerticalTree" Grid.Column="1" Padding="0" Margin="0"/>
+          <ScrollBar x:Name="sbVerticalTree" Grid.Column="1" Padding="0" Margin="0" Visibility="Hidden"/>
         </Grid>
         <!--<Grid>
           <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -307,8 +313,12 @@
                 x:Name="TreeSplitter"
                 Grid.Column="1"
                 Width="4"
+                
                 HorizontalAlignment="Center"
                 VerticalAlignment="Stretch"/>
+        <!--<Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <shellListView:ShellViewWEx x:Name="ShellViewWEx" />
+        </Grid>-->
         <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -319,23 +329,28 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
           </Grid.RowDefinitions>
-          <ListView Grid.ColumnSpan="2" Background="Transparent" BorderThickness="0" Margin="-4,0,0,0">
+          <ListView Grid.ColumnSpan="2" Background="Transparent" BorderThickness="0" Margin="-4,0,0,0" x:Name="llvHeader" >
             <ListView.View>
               <GridView x:Name="lvHeader">
               </GridView>
             </ListView.View>
           </ListView>
-          <beHelper:NoFlickerWindowsFormsHost x:Name="ShellViewHost" Margin="0,0,0,0" Grid.Row="1">
-          </beHelper:NoFlickerWindowsFormsHost>
-          <ScrollBar x:Name="sbVertical" Grid.Column="1" Grid.Row="1" Visibility="Collapsed" />
-          <StatusBar Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Padding="6" BorderThickness="0,1,0,0">
+          <beHelper:NoFlickerWindowsFormsHost x:Name="ShellViewHost" Margin="0,0,2,0" Grid.Row="1" PreviewGotKeyboardFocus="ShellViewHost_OnPreviewGotKeyboardFocus" KeyDown="ShellViewHost_OnKeyDown" KeyUp="ShellViewHost_OnKeyUp" PreviewMouseDown="ShellViewHost_OnPreviewMouseDown" GotFocus="ShellViewHost_OnGotFocus"/>
+          <ScrollBar x:Name="sbVertical" Grid.Column="1" Grid.Row="1" Visibility="Collapsed" Margin="0,0,-2,0" UseLayoutRounding="True" SmallChange="1" />
+          <StatusBar Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Padding="6" BorderThickness="0,1,0,0" >
             <StatusBarItem>
-              <TextBlock x:Name="txtSelection" Text=""  />
+              <TextBlock x:Name="txtTotalCount" Text=""  />
+            </StatusBarItem>
+            <StatusBarItem x:Name="pnlSelectedCount" BorderThickness="1,0,0,0" BorderBrush="{DynamicResource ControlElevationBorderBrush}" Margin="5,0,0,0" Visibility="Collapsed">
+              <TextBlock x:Name="txtSelection" Text="" Margin="3,0,0,0" />
             </StatusBarItem>
           </StatusBar>
         </Grid>
       </Grid>
 
     </Grid>
+    <shellControls:AutoClosePopup Grid.Row="0" x:Name="pnlRename" AllowsTransparency="True" IsOpen="False" Placement="Custom" CustomPopupPlacementCallback="CustomPopupPlacementCallbackLocal" PlacementTarget ="{Binding ElementName=llvHeader}" Closed="PnlRename_OnClosed">
+      <TextBox x:Name="txtRename" Height="Auto" Width="Auto" AllowDrop="False" TextWrapping="Wrap" FontSize="12" Padding="0" Background="{DynamicResource ApplicationBackgroundBrush}" BorderBrush="{DynamicResource ControlElevationBorderBrush}" TextAlignment="Center" FocusManager.IsFocusScope="False" FocusVisualStyle="{x:Null}" Focusable="True" HorizontalAlignment="Center" KeyUp="TxtRename_OnKeyUp" PreviewMouseMove="TxtRename_OnPreviewMouseMove" LostKeyboardFocus="TxtRename_OnLostKeyboardFocus" LostFocus="TxtRename_OnLostFocus"></TextBox>
+    </shellControls:AutoClosePopup>
   </Grid>
 </UserControl>

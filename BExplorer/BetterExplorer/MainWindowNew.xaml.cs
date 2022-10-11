@@ -43,6 +43,7 @@ namespace BetterExplorer {
       if (initialTabs.Length == 0 || !BESettings.IsRestoreTabs) {
         var tbItemDef = new ShellTabItem(new ExplorerControl(false));
         tbItemDef.IsSelected = true;
+        tbItemDef.BringIntoView();
         this.tcMain.Items.Add(tbItemDef);
       }
       if (!BESettings.IsRestoreTabs) {
@@ -52,8 +53,11 @@ namespace BetterExplorer {
       var i = 0;
       foreach (var initialTab in initialTabs) {
         i++;
-        var tbItem = new ShellTabItem(new ExplorerControl(initialTab, this.WindowState == WindowState.Normal), i == initialTabs.Length);
+        var tbItem = new ShellTabItem(new ExplorerControl(initialTab, this.WindowState != WindowState.Minimized), i == initialTabs.Length);
         tbItem.IsSelected = i == initialTabs.Length;
+        if (tbItem.IsSelected) {
+          tbItem.BringIntoView();
+        }
         this.tcMain.Items.Add(tbItem);
       }
 
@@ -61,7 +65,7 @@ namespace BetterExplorer {
 
     private void OnClosing(object sender, CancelEventArgs e) {
       foreach (var shellTabItem in this.tcMain.Items.OfType<ShellTabItem>()) {
-        (shellTabItem.Content as ExplorerControl)?.ShellViewEx.Dispose();//.KillAllThreads();
+        (shellTabItem.Content as ExplorerControl)?.ShellViewEx?.Dispose();
       }
       if (this.WindowState != WindowState.Minimized) {
         this.SaveSettings(String.Concat(from item in this.tcMain.Items.Cast<ShellTabItem>() select ";" + item.AssociatedItem.ParsingName));
@@ -84,7 +88,6 @@ namespace BetterExplorer {
 
       switch (BESettings.LastWindowState) {
         case 2:
-          this.IsLoadMaximize = true;
           this.WindowState = WindowState.Maximized;
           break;
         case 1:

@@ -22,6 +22,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using ShellLibrary.Interop;
 
 #pragma warning disable 1591
 
@@ -786,12 +787,17 @@ namespace BExplorer.Shell.Interop {
         [In] IntPtr pbc,
         [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
 
-    [DllImport("Shell32.dll")]
+    [DllImport("Shell32.dll", SetLastError = true, PreserveSig = false)]
     [return: MarshalAs(UnmanagedType.Error)]
     public static extern int SHCreateItemFromIDList(
       [In] IntPtr pidl,
       [In, MarshalAs(UnmanagedType.Struct)] ref Guid riid,
-      [Out, MarshalAs(UnmanagedType.Interface)] out object ppv);
+      [Out, MarshalAs(UnmanagedType.Interface, IidParameterIndex = 2)] out IShellItem ppv);
+    //[DllImport("shell32.dll", PreserveSig = false)]
+    //public static extern void SHCreateItemFromIDList(
+    //  [In] IntPtr pidl,
+    //  [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
+    //  [Out, MarshalAs(UnmanagedType.Interface, IidParameterIndex = 2)] out IShellItem ppv);
 
     [DllImport("Shell32.dll")]
     [return: MarshalAs(UnmanagedType.Error)]
@@ -820,6 +826,14 @@ namespace BExplorer.Shell.Interop {
         [In] IShellFolder psfParent,
         [In] IntPtr pidl,
         [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+
+    [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = true)]
+    public static extern HResult SHCreateItemWithParent(
+      [In] IntPtr pidlParent,
+      [In] IShellFolder psfParent,
+      [In] IntPtr pidl,
+      [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
+      [Out, MarshalAs(UnmanagedType.Interface, IidParameterIndex = 3)] out IShellItem ppv);
 
     [DllImport("shell32.dll", PreserveSig = false)]
     public static extern IShellFolder SHGetDesktopFolder();

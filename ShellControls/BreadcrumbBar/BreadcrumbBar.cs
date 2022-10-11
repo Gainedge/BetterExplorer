@@ -141,7 +141,17 @@ namespace ShellControls.BreadcrumbBar {
 
     public static readonly DependencyProperty ProgressMinimumProperty =
         DependencyProperty.Register("ProgressMinimum", typeof(double), typeof(BreadcrumbBar), new UIPropertyMetadata(0.0, null, CoerceProgressMinimum));
-
+    public static readonly DependencyProperty IsEditModeProperty =
+      DependencyProperty.Register(
+        name: "IsEditMode",
+        propertyType: typeof(Boolean),
+        ownerType: typeof(BreadcrumbBar),
+        typeMetadata: new FrameworkPropertyMetadata(defaultValue: false)
+      );
+    public Boolean IsEditMode {
+      get { return (Boolean)GetValue(IsEditModeProperty); }
+      set { SetValue(IsEditModeProperty, value); }
+    }
     public event EventHandler<EditModeToggleEventArgs> OnEditModeToggle;
 
     #endregion Dependency Properties
@@ -871,6 +881,7 @@ namespace ShellControls.BreadcrumbBar {
           this.comboBox.Text = this.SelectedBreadcrumb.Data.ParsingName;//new ShellItem(this.SelectedBreadcrumb.Data.ParsingName.ToShellParsingName()).GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING);
         this.comboBox.Visibility = Visibility.Visible;
         this.comboBox.Focus();
+        this.IsEditMode = true;
       }
     }
 
@@ -904,6 +915,7 @@ namespace ShellControls.BreadcrumbBar {
       if (this.comboBox != null) {
         if (updatePath && this.comboBox.IsVisible) this.Path = this.comboBox.Text;
         this.comboBox.Visibility = Visibility.Hidden;
+        this.IsEditMode = false;
 
         if (this.OnEditModeToggle != null) this.OnEditModeToggle.Invoke(this.comboBox, new EditModeToggleEventArgs(true));
       }

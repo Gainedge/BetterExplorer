@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Windows.Input;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using ShellControls.ShellListView;
@@ -54,6 +57,9 @@ namespace ShellControls {
           hitLocationFound = true;
         }
       } else if (User32.SendMessage(shellView.LVHandle, LVM_FIRST, 0, ref lvHitTestInfo) != 0) {
+        row = 0;
+        hitLocationFound = true;
+      } else {
         row = 0;
         hitLocationFound = true;
       }
@@ -130,7 +136,7 @@ namespace ShellControls {
 
       // Less than one minute
       if (seconds < 1 * MINUTE)
-        return ts.Seconds == 1 ? "A second ago" : ts.Seconds + " seconds ago";
+        return ts.Seconds <= 30 ? "About half minute ago" : "About a minute ago";
 
       if (seconds < 60 * MINUTE)
         return ts.Minutes + " minutes ago";
@@ -155,6 +161,42 @@ namespace ShellControls {
 
       //int years = Convert.ToInt32(Math.Floor((double)ts.Days / 365));
       //return years <= 1 ? "one year ago" : years + " years ago";
+    }
+
+    public static T? GetLParam<T>(this Message m) {
+      var lparam = m.GetLParam(typeof(T));
+      if (lparam == null) {
+        return default(T);
+      }
+
+      return (T)lparam;
+    }
+
+    public static String ToWinFormsKeyString(this Key key) {
+      var isCapsLockOn = System.Windows.Forms.Control.IsKeyLocked(System.Windows.Forms.Keys.CapsLock);
+      var isShiftKeyPressed = (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift;
+
+      if (key == Key.Escape) {
+        return "{ESC}";
+      } 
+
+      if (key == Key.LeftShift || key == Key.RightShift) {
+        return "+";
+      }
+
+      if (key == Key.Capital || key == Key.CapsLock) {
+        return "{CAPSLOCK}";
+      }
+
+      if (key < Key.A || key > Key.Z) {
+        return "{" + key.ToString().ToUpper() + "}";
+      }
+
+      //if (isCapsLockOn || isShiftKeyPressed) {
+      //  return key.ToString().ToUpper();
+      //}
+      Debug.WriteLine(isCapsLockOn || isShiftKeyPressed ? "shift" : "no shift");
+      return (isCapsLockOn || isShiftKeyPressed ? "+" : "") + "(" + key.ToString().ToLower() + ")";
     }
 
   }

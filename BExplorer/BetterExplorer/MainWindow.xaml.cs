@@ -473,8 +473,8 @@ namespace BetterExplorer {
         try {
           if (new FileInfo(selectedItem.ParsingName).Length != 0) {
             using (var cvt = new Bitmap(selectedItem.ParsingName)) {
-              this.imgSizeDisplay.WidthData = cvt.Width.ToString();
-              this.imgSizeDisplay.HeightData = cvt.Height.ToString();
+              //this.imgSizeDisplay.WidthData = cvt.Width.ToString();
+              //this.imgSizeDisplay.HeightData = cvt.Height.ToString();
 
               if (BESettings.AutoSwitchImageTools)
                 this.TheRibbon.SelectedTabItem = this.ctgImage.Items[0];
@@ -945,7 +945,7 @@ namespace BetterExplorer {
               if (veto == Native.PNP_VETO_TYPE.Ok) {
                 this.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                                 (Action)(() => {
-                                  this.beNotifyIcon.ShowBalloonTip("Information", $"It is safe to remove {item.LogicalDrive}", Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
+                                  //this.beNotifyIcon.ShowBalloonTip("Information", $"It is safe to remove {item.LogicalDrive}", Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
                                   var tabsForRemove = this.tcMain.Items.OfType<Wpf.Controls.TabItem>().Where(w => {
                                     var root = String.Empty;
                                     try {
@@ -995,7 +995,7 @@ namespace BetterExplorer {
                     break;
                 }
 
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => this.beNotifyIcon.ShowBalloonTip("Error", message, Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Error)));
+                //this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => this.beNotifyIcon.ShowBalloonTip("Error", message, Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Error)));
               }
             }
             break;
@@ -1457,7 +1457,7 @@ namespace BetterExplorer {
 
       switch (BESettings.CurrentTheme) {
         case "Dark":
-          this.btnTheme.IsChecked = true;
+          //this.btnTheme.IsChecked = true;
           break;
       }
 
@@ -1845,7 +1845,7 @@ namespace BetterExplorer {
       BESettings.LastWindowPosLeft = this.Left;
       BESettings.LastWindowPosTop = this.Top;
 
-      BESettings.CurrentTheme = this.btnTheme.IsChecked == true ? "Dark" : "Light";
+      //BESettings.CurrentTheme = this.btnTheme.IsChecked == true ? "Dark" : "Light";
 
       switch (this.WindowState) {
         case WIN.WindowState.Maximized:
@@ -1910,7 +1910,7 @@ namespace BetterExplorer {
       //SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", this.bcbc.DropDownItems.OfType<String>().Select(s => s).ToList());
       this.AddToLog("Session Ended");
       if (this.IsMultipleWindowsOpened) {
-        this.beNotifyIcon.Visibility = Visibility.Collapsed;
+        //this.beNotifyIcon.Visibility = Visibility.Collapsed;
       }
 
       if (!File.Exists("Settings.xml"))
@@ -2746,37 +2746,37 @@ namespace BetterExplorer {
 
     #region Search
 
-    private void edtSearchBox_BeginSearch(object sender, SearchRoutedEventArgs e) => this.DoSearch();
+    //private void edtSearchBox_BeginSearch(object sender, SearchRoutedEventArgs e) => this.DoSearch();
 
-    public void DoSearch() {
-      try {
-        if (this.edtSearchBox.FullSearchTerms != "")
-          this._ShellListView.Navigate_Full(this.edtSearchBox.FullSearchTerms, true, true);
-      } catch (Exception ex) {
-        MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
-      }
-    }
+    //public void DoSearch() {
+    //  try {
+    //    if (this.edtSearchBox.FullSearchTerms != "")
+    //      this._ShellListView.Navigate_Full(this.edtSearchBox.FullSearchTerms, true, true);
+    //  } catch (Exception ex) {
+    //    MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
+    //  }
+    //}
 
-    private void btnSearch_Click(object sender, RoutedEventArgs e) => this.DoSearch();
+    //private void btnSearch_Click(object sender, RoutedEventArgs e) => this.DoSearch();
 
-    private void edtSearchBox_RequestCriteriaChange(object sender, SearchRoutedEventArgs e) {
-      if (e.SearchTerms.StartsWith("author:"))
-        this.AuthorToggle_Click(sender, new RoutedEventArgs(e.RoutedEvent));
-      else if (e.SearchTerms.StartsWith("ext:"))
-        this.ToggleButton_Click_1(sender, new RoutedEventArgs(e.RoutedEvent));
-      else if (e.SearchTerms.StartsWith("subject:"))
-        this.SubjectToggle_Click(sender, new RoutedEventArgs(e.RoutedEvent));
-      else if (e.SearchTerms.StartsWith("size:"))
-        this.miCustomSize_Click(sender, new RoutedEventArgs(e.RoutedEvent));
-      else if (e.SearchTerms.StartsWith("date:"))
-        this.dcCustomTime_Click(sender, new RoutedEventArgs(e.RoutedEvent));
-      else if (e.SearchTerms.StartsWith("modified:"))
-        this.dmCustomTime_Click(sender, new RoutedEventArgs(e.RoutedEvent));
-      else {
-        var T = "You have discovered an error in this program. Please tell us which filter you were trying to edit and any other details we should know. \r\n\r\nYour filter: ";
-        MessageBox.Show(T + e.SearchTerms, "Oops! Found a Bug!", MessageBoxButton.OK, MessageBoxImage.Error);
-      }
-    }
+    //private void edtSearchBox_RequestCriteriaChange(object sender, SearchRoutedEventArgs e) {
+    //  if (e.SearchTerms.StartsWith("author:"))
+    //    this.AuthorToggle_Click(sender, new RoutedEventArgs(e.RoutedEvent));
+    //  else if (e.SearchTerms.StartsWith("ext:"))
+    //    this.ToggleButton_Click_1(sender, new RoutedEventArgs(e.RoutedEvent));
+    //  else if (e.SearchTerms.StartsWith("subject:"))
+    //    this.SubjectToggle_Click(sender, new RoutedEventArgs(e.RoutedEvent));
+    //  else if (e.SearchTerms.StartsWith("size:"))
+    //    this.miCustomSize_Click(sender, new RoutedEventArgs(e.RoutedEvent));
+    //  else if (e.SearchTerms.StartsWith("date:"))
+    //    this.dcCustomTime_Click(sender, new RoutedEventArgs(e.RoutedEvent));
+    //  else if (e.SearchTerms.StartsWith("modified:"))
+    //    this.dmCustomTime_Click(sender, new RoutedEventArgs(e.RoutedEvent));
+    //  else {
+    //    var T = "You have discovered an error in this program. Please tell us which filter you were trying to edit and any other details we should know. \r\n\r\nYour filter: ";
+    //    MessageBox.Show(T + e.SearchTerms, "Oops! Found a Bug!", MessageBoxButton.OK, MessageBoxImage.Error);
+    //  }
+    //}
 
     private void edtSearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
       this.ctgSearch.Visibility = Visibility.Visible;
@@ -2799,95 +2799,95 @@ namespace BetterExplorer {
     }
 
     private void MenuItem_Click_3(object sender, RoutedEventArgs e) {
-      this.edtSearchBox.ModifiedCondition = (string)((FrameworkElement)sender).Tag;
+      //this.edtSearchBox.ModifiedCondition = (string)((FrameworkElement)sender).Tag;
       this.dmsplit.IsChecked = true;
     }
 
     private void MenuItem_Click_4(object sender, RoutedEventArgs e) {
-      this.edtSearchBox.DateCondition = (string)((FrameworkElement)sender).Tag;
+      //this.edtSearchBox.DateCondition = (string)((FrameworkElement)sender).Tag;
       this.dcsplit.IsChecked = true;
     }
 
     private void ToggleButton_Click(object sender, RoutedEventArgs e) {
       ((Fluent.ToggleButton)sender).IsChecked = true;
-      this.edtSearchBox.KindCondition = (string)((FrameworkElement)sender).Tag;
-      this.edtSearchBox.Focus();
+      //this.edtSearchBox.KindCondition = (string)((FrameworkElement)sender).Tag;
+      //this.edtSearchBox.Focus();
     }
 
     private void MenuItem_Click_5(object sender, RoutedEventArgs e) {
-      this.edtSearchBox.SizeCondition = (string)((FrameworkElement)sender).Tag;
+      //this.edtSearchBox.SizeCondition = (string)((FrameworkElement)sender).Tag;
       this.scSize.IsChecked = true;
     }
 
     private void ToggleButton_Click_1(object sender, RoutedEventArgs e) {
-      var dat = new StringSearchCriteriaDialog("ext", this.edtSearchBox.ExtensionCondition, this.FindResource("btnExtCP") as string);
-      dat.ShowDialog();
-      if (dat.Confirm) {
-        this.edtSearchBox.ExtensionCondition = "ext:" + dat.textBox1.Text;
-        this.ExtToggle.IsChecked = dat.textBox1.Text.Any();
-      } else {
-        this.ExtToggle.IsChecked = Utilities.GetValueOnly("ext", this.edtSearchBox.ExtensionCondition).Any();
-      }
+      //var dat = new StringSearchCriteriaDialog("ext", this.edtSearchBox.ExtensionCondition, this.FindResource("btnExtCP") as string);
+      //dat.ShowDialog();
+      //if (dat.Confirm) {
+      //  this.edtSearchBox.ExtensionCondition = "ext:" + dat.textBox1.Text;
+      //  this.ExtToggle.IsChecked = dat.textBox1.Text.Any();
+      //} else {
+      //  this.ExtToggle.IsChecked = Utilities.GetValueOnly("ext", this.edtSearchBox.ExtensionCondition).Any();
+      //}
     }
 
     private void AuthorToggle_Click(object sender, RoutedEventArgs e) {
-      var dat = new StringSearchCriteriaDialog("author", this.edtSearchBox.AuthorCondition, this.FindResource("btnAuthorCP") as string);
-      dat.ShowDialog();
-      if (dat.Confirm) {
-        this.edtSearchBox.AuthorCondition = "author:" + dat.textBox1.Text;
-        this.AuthorToggle.IsChecked = dat.textBox1.Text.Any();
-      } else {
-        this.AuthorToggle.IsChecked = Utilities.GetValueOnly("author", this.edtSearchBox.AuthorCondition).Any();
-      }
+      //var dat = new StringSearchCriteriaDialog("author", this.edtSearchBox.AuthorCondition, this.FindResource("btnAuthorCP") as string);
+      //dat.ShowDialog();
+      //if (dat.Confirm) {
+      //  this.edtSearchBox.AuthorCondition = "author:" + dat.textBox1.Text;
+      //  this.AuthorToggle.IsChecked = dat.textBox1.Text.Any();
+      //} else {
+      //  this.AuthorToggle.IsChecked = Utilities.GetValueOnly("author", this.edtSearchBox.AuthorCondition).Any();
+      //}
     }
 
     private void SubjectToggle_Click(object sender, RoutedEventArgs e) {
-      var dat = new StringSearchCriteriaDialog("subject", this.edtSearchBox.SubjectCondition, this.FindResource("btnSubjectCP") as string);
-      dat.ShowDialog();
-      if (dat.Confirm) {
-        this.edtSearchBox.SubjectCondition = "subject:" + dat.textBox1.Text;
-        this.SubjectToggle.IsChecked = dat.textBox1.Text.Any();
-      } else {
-        this.SubjectToggle.IsChecked = Utilities.GetValueOnly("subject", this.edtSearchBox.SubjectCondition).Any();
-      }
+      //var dat = new StringSearchCriteriaDialog("subject", this.edtSearchBox.SubjectCondition, this.FindResource("btnSubjectCP") as string);
+      //dat.ShowDialog();
+      //if (dat.Confirm) {
+      //  this.edtSearchBox.SubjectCondition = "subject:" + dat.textBox1.Text;
+      //  this.SubjectToggle.IsChecked = dat.textBox1.Text.Any();
+      //} else {
+      //  this.SubjectToggle.IsChecked = Utilities.GetValueOnly("subject", this.edtSearchBox.SubjectCondition).Any();
+      //}
     }
 
     private void miCustomSize_Click(object sender, RoutedEventArgs e) {
-      var dat = new SizeSearchCriteriaDialog();
-      string sd = Utilities.GetValueOnly("size", this.edtSearchBox.SizeCondition);
-      dat.curval.Text = sd;
-      dat.ShowDialog();
+      //var dat = new SizeSearchCriteriaDialog();
+      //string sd = Utilities.GetValueOnly("size", this.edtSearchBox.SizeCondition);
+      //dat.curval.Text = sd;
+      //dat.ShowDialog();
 
-      if (dat.Confirm) {
-        this.edtSearchBox.SizeCondition = "size:" + dat.GetSizeQuery();
-        this.scSize.IsChecked = dat.GetSizeQuery().Any();
-      } else {
-        this.scSize.IsChecked = dat.GetSizeQuery().Length > 5;
-      }
+      //if (dat.Confirm) {
+      //  this.edtSearchBox.SizeCondition = "size:" + dat.GetSizeQuery();
+      //  this.scSize.IsChecked = dat.GetSizeQuery().Any();
+      //} else {
+      //  this.scSize.IsChecked = dat.GetSizeQuery().Length > 5;
+      //}
     }
 
     private void dcCustomTime_Click(object sender, RoutedEventArgs e) {
-      var star = new SDateSearchCriteriaDialog(this.FindResource("btnODateCCP") as string);
+      //var star = new SDateSearchCriteriaDialog(this.FindResource("btnODateCCP") as string);
 
-      star.DateCriteria = Utilities.GetValueOnly("date", this.edtSearchBox.DateCondition);
-      //star.textBlock1.Text = "Set Date Created Filter";
-      star.ShowDialog();
+      //star.DateCriteria = Utilities.GetValueOnly("date", this.edtSearchBox.DateCondition);
+      ////star.textBlock1.Text = "Set Date Created Filter";
+      //star.ShowDialog();
 
-      if (star.Confirm)
-        this.edtSearchBox.DateCondition = "date:" + star.DateCriteria;
-      this.dcsplit.IsChecked = this.edtSearchBox.UseDateCondition;
+      //if (star.Confirm)
+      //  this.edtSearchBox.DateCondition = "date:" + star.DateCriteria;
+      //this.dcsplit.IsChecked = this.edtSearchBox.UseDateCondition;
     }
 
     private void dmCustomTime_Click(object sender, RoutedEventArgs e) {
-      var star = new SDateSearchCriteriaDialog(this.FindResource("btnODateModCP") as string);
+      //var star = new SDateSearchCriteriaDialog(this.FindResource("btnODateModCP") as string);
 
-      star.DateCriteria = Utilities.GetValueOnly("modified", this.edtSearchBox.ModifiedCondition);
-      //star.textBlock1.Text = "Set Date Modified Filter";
-      star.ShowDialog();
+      //star.DateCriteria = Utilities.GetValueOnly("modified", this.edtSearchBox.ModifiedCondition);
+      ////star.textBlock1.Text = "Set Date Modified Filter";
+      //star.ShowDialog();
 
-      if (star.Confirm)
-        this.edtSearchBox.ModifiedCondition = "modified:" + star.DateCriteria;
-      this.dmsplit.IsChecked = this.edtSearchBox.UseModifiedCondition;
+      //if (star.Confirm)
+      //  this.edtSearchBox.ModifiedCondition = "modified:" + star.DateCriteria;
+      //this.dmsplit.IsChecked = this.edtSearchBox.UseModifiedCondition;
     }
 
     #endregion
@@ -2940,8 +2940,8 @@ namespace BetterExplorer {
     }
 
     private void GoToSearchBox(object sender, ExecutedRoutedEventArgs e) {
-      this.edtSearchBox.Focus();
-      Keyboard.Focus(this.edtSearchBox);
+      //this.edtSearchBox.Focus();
+      //Keyboard.Focus(this.edtSearchBox);
     }
     void newt_PreviewMouseMove(object sender, MouseEventArgs e) {
       var tabItem = e.Source as Wpf.Controls.TabItem;
@@ -3418,7 +3418,7 @@ namespace BetterExplorer {
             }
           }));
         } else {
-          this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => { this.edtSearchBox.ClearSearchText(); }));
+          //this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => { this.edtSearchBox.ClearSearchText(); }));
         }
       } else {
         this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
@@ -3450,15 +3450,15 @@ namespace BetterExplorer {
 
     void _keyjumpTimer_Tick(object sender, EventArgs e) {
       //key jump done
-      this.KeyJumpGrid.IsOpen = false;
+      //this.KeyJumpGrid.IsOpen = false;
       var timer = sender as WIN.Forms.Timer;
       timer?.Stop();
     }
 
     void ShellListView_KeyJumpKeyDown(object sender, WIN.Forms.KeyEventArgs e) {
       //add key for key jump
-      this.KeyJumpGrid.IsOpen = true;
-      this.txtKeyJump.Text = this._ShellListView.KeyJumpString;
+      //this.KeyJumpGrid.IsOpen = true;
+      //this.txtKeyJump.Text = this._ShellListView.KeyJumpString;
     }
 
     void ShellListView_ColumnHeaderRightClick(object sender, WIN.Forms.MouseEventArgs e) {
@@ -4119,7 +4119,7 @@ namespace BetterExplorer {
       this.SaveBadgeForItem(selectedItemPath, badgeIconPath);
       this.Badges = this.LoadBadgesData();
       this._ShellListView.BadgesData = this.Badges;
-      this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex(), true);
+      this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex());
       this.btnBadges.IsDropDownOpen = false;
     }
 
@@ -4153,7 +4153,7 @@ namespace BetterExplorer {
       this.SaveBadgeForItem(this._ShellListView.GetFirstSelectedItem().ParsingName, String.Empty, true);
       this.Badges = this.LoadBadgesData();
       this._ShellListView.BadgesData = this.Badges;
-      this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex(), true);
+      this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex());
     }
 
     private void btnCancel_Click(object sender, RoutedEventArgs e) {

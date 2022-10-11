@@ -13,6 +13,7 @@ using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using Settings;
 using ShellControls.ShellListView;
+using ShellLibrary.Interop;
 using DataObject = BExplorer.Shell.DataObject;
 
 namespace ShellControls.ShellTreeView {

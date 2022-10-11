@@ -1,9 +1,7 @@
 ﻿//using Microsoft.WindowsAPICodePack.Shell;
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -12,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using BExplorer.Shell;
-using Fluent;
 using WPFUI.Controls;
 
 //using WPFPieChart;
@@ -220,7 +217,7 @@ namespace ShellControls {
 
       // please note that the following line won't work if you try this on a network folder, like \\Machine\C$
       // simply remove the \\?\ part in this case or use \\?\UNC\ prefix
-      IntPtr findHandle = FindFirstFile($@"\\?\{directory}\*", out findData);
+      IntPtr findHandle = FindFirstFile($@"{directory}\*", out findData);
       if (findHandle != INVALID_HANDLE_VALUE) {
         do {
           if (bgw.CancellationPending) {

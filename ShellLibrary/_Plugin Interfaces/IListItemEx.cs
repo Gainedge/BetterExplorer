@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
+using ShellLibrary.Interop;
 using WPFUI.Win32;
 using Size = System.Drawing.Size;
 
@@ -172,6 +173,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     int GetUniqueID();
 
     int[] cColumns { get; set; }
+    User32.RECT LabelBounds { get; set; }
 
     void Dispose();
 

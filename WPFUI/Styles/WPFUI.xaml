@@ -56,6 +56,7 @@
         <ResourceDictionary Source="pack://application:,,,/WPFUI;component/Styles/Controls/CheckBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/WPFUI;component/Styles/Controls/Expander.xaml" />
         <ResourceDictionary Source="pack://application:,,,/WPFUI;component/Styles/Controls/ProgressBar.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WPFUI;component/Styles/Controls/UIWindow.xaml" />
 
     </ResourceDictionary.MergedDictionaries>
 

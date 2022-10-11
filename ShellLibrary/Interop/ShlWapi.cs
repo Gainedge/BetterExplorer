@@ -23,31 +23,33 @@ using System.Text;
 #pragma warning disable 1591
 
 namespace BExplorer.Shell.Interop {
-	public class ShlWapi {
-		[DllImport("shlwapi.dll")]
-		public static extern Int32 StrRetToBuf(ref STRRET pstr, IntPtr pidl,
-											   StringBuilder pszBuf,
-											   UInt32 cchBuf);
+  public class ShlWapi {
+    [DllImport("shlwapi.dll")]
+    public static extern Int32 StrRetToBuf(ref STRRET pstr, IntPtr pidl,
+                         StringBuilder pszBuf,
+                         UInt32 cchBuf);
 
-		[DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
-		public static extern long StrFormatByteSize(
-						long fileSize
-						, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder buffer
-						, int bufferSize);
+    [DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
+    public static extern long StrFormatByteSize(
+            long fileSize
+            , [MarshalAs(UnmanagedType.LPTStr)] StringBuilder buffer
+            , int bufferSize);
 
     [DllImport("shlwapi.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
     public static extern int StrCmpLogicalW(string psz1, string psz2);
 
 
-		/// <summary>
-		/// Converts a numeric value into a string that represents the number expressed as a size value in bytes, kilobytes, megabytes, or gigabytes, depending on the size.
-		/// </summary>
-		/// <param name="filesize">The numeric value to be converted.</param>
-		/// <returns>the converted string</returns>
-		public static string StrFormatByteSize(long filesize) {
-			StringBuilder sb = new StringBuilder(11);
-			StrFormatByteSize(filesize, sb, sb.Capacity);
-			return sb.ToString();
-		}
-	}
+    /// <summary>
+    /// Converts a numeric value into a string that represents the number expressed as a size value in bytes, kilobytes, megabytes, or gigabytes, depending on the size.
+    /// </summary>
+    /// <param name="filesize">The numeric value to be converted.</param>
+    /// <returns>the converted string</returns>
+    public static string StrFormatByteSize(long filesize) {
+      StringBuilder sb = new StringBuilder(11);
+      StrFormatByteSize(filesize, sb, sb.Capacity);
+      return sb.ToString();
+    }
+    [DllImport("shlwapi.dll", SetLastError = false, ExactSpelling = true)]
+    public static extern HResult SHSetThreadRef([MarshalAs(UnmanagedType.IUnknown)] object punk);
+  }
 }

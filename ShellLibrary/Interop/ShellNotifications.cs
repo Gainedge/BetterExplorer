@@ -453,26 +453,22 @@ public enum SHCNF
       return this.notifyid;
     }
 
-    /*
-    public ulong RegisterChangeNotify(IntPtr hWnd, IListItemEx item, bool Recursively)
-    {
-        IntPtr handle = IntPtr.Zero;
-        handle = hWnd;
-        if (notifyid != 0) return (0);
-        var changeentry = new SHChangeNotifyEntry() { pIdl = item.PIDL, Recursively = Recursively, };
-        var changenetrys = new SHChangeNotifyEntry[1] { changeentry };
-        //changenetrys[0] = changeentry;
 
-        notifyid = SHChangeNotifyRegister(
-            hWnd,
-    (SHCNRF)0x00FF | (SHCNRF)0x0000 | SHCNRF.NewDelivery,
-            SHCNE.SHCNE_ALLEVENTS | SHCNE.SHCNE_INTERRUPT,
-            WM_SHNOTIFY,
-            1,
-            changenetrys);
-        return (notifyid);
+    public ulong RegisterChangeNotify(IntPtr hWnd, IListItemEx item, bool Recursively) {
+      if (notifyid != 0) return (0);
+      var changeentry = new SHChangeNotifyEntry() { pIdl = item.PIDL, Recursively = Recursively, };
+      var changenetrys = new SHChangeNotifyEntry[1] { changeentry };
+
+      this.notifyid = SHChangeNotifyRegister(
+          hWnd,
+          SHCNRF.ShellLevel | SHCNRF.InterruptLevel | SHCNRF.NewDelivery,
+          SHCNE.SHCNE_ALLEVENTS | SHCNE.SHCNE_INTERRUPT,
+          WM_SHNOTIFY,
+          1,
+          changenetrys);
+      return this.notifyid;
     }
-    */
+
 
     /// <summary>
     /// Unregister the form

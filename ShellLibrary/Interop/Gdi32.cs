@@ -278,6 +278,8 @@ namespace BExplorer.Shell.Interop {
 
     [DllImport("gdi32.dll")]
     public static extern int SetBkMode(IntPtr hdc, int iBkMode);
+    [DllImport("gdi32.dll")]
+    public static extern IntPtr CreateSolidBrush(uint crColor);
 
     public static Bitmap GetBitmapFromHBitmap(IntPtr hBitmap) {
       try {

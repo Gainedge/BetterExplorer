@@ -6,7 +6,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
-using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using Size = System.Windows.Size;

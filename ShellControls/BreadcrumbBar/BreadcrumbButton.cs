@@ -10,7 +10,6 @@ using System.Windows.Threading;
 using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
-using ShellControls.ShellContextMenu;
 
 //###################################################################################
 // Odyssey.Controls

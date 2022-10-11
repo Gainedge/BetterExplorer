@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using ShellLibrary.Interop;
 
 namespace BExplorer.Shell.Interop {
 

@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
+using ShellLibrary.Interop;
 using WPFUI.Win32;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
@@ -74,10 +75,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public IShellItem ComInterface {
       get {
-        object item = null;
+        IShellItem item = null;
         Guid iid = typeof(IShellItem).GUID;
         Shell32.SHCreateItemFromIDList(this.EnumPIDL, ref iid, out item);
-        return (IShellItem)item;
+        return item;
       }
     }
 
@@ -219,6 +220,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     }
 
     public Int32[] cColumns { get; set; }
+    public User32.RECT LabelBounds { get; set; }
 
     public void Dispose() {
       if (!_disposed) {

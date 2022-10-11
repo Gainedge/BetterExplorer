@@ -6,8 +6,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace ShellControls {
   public class RangeObservableCollection<T> : ObservableCollection<T> {
@@ -22,7 +21,15 @@ namespace ShellControls {
     private DeferredEventsCollection? _deferredEvents;
     #endregion Private Fields
 
+    protected readonly SynchronizationContext _synchronizationContext = SynchronizationContext.Current;
 
+    protected void ExecuteOnSyncContext(Action action) {
+      if (SynchronizationContext.Current == _synchronizationContext) {
+        action();
+      } else {
+        _synchronizationContext.Send(_ => action(), null);
+      }
+    }
     //------------------------------------------------------
     //
     //  Constructors

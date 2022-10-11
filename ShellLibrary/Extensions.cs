@@ -12,6 +12,7 @@ using System.Security;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
+using ShellLibrary.Interop;
 using WPFUI.Win32;
 using Brush = System.Drawing.Brush;
 using Pen = System.Drawing.Pen;

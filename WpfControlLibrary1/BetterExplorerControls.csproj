@@ -24,7 +24,7 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
@@ -92,8 +92,9 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="RawInput.Sharp" Version="0.0.4" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.261602">
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
@@ -106,7 +107,6 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fluent.Ribbon\Fluent.Ribbon\Fluent.Ribbon.csproj" />
     <ProjectReference Include="..\WPFUI\WPFUI.csproj" />
   </ItemGroup>
 </Project>

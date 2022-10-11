@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using ShellLibrary.Interop;
 
 namespace BExplorer.Shell.Interop {
   [ComImport]
@@ -23,7 +24,7 @@ namespace BExplorer.Shell.Interop {
     void PostMoveItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder,
         [MarshalAs(UnmanagedType.LPWStr)] string pszNewName, uint hrMove, IShellItem psiNewlyCreated);
     [PreserveSig]
-    HResult PreCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, [MarshalAs(UnmanagedType.LPWStr)] string pszNewName);
+    HResult PreCopyItem([In] TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, [MarshalAs(UnmanagedType.LPWStr)] string pszNewName);
     void PostCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, [MarshalAs(UnmanagedType.LPWStr)] string pszNewName,
         uint hrCopy, IShellItem psiNewlyCreated);
     [PreserveSig]

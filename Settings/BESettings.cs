@@ -79,7 +79,7 @@ namespace Settings {
 
         StartupLocation = rksRoot?.GetValue("StartUpLoc", "shell:::{031E4825-7B94-4DC3-B131-E946B44C8DD5}").ToString();
         UpdateCheckType = (int)rksRoot.GetValue("UpdateCheckType", 0);
-        CurrentTheme = (string)rksRoot.GetValue("CurrentTheme", "Light");
+        CurrentTheme = (string)rksRoot.GetValue("CurrentTheme", "Dark");
         IsUpdateCheck = rksRoot.GetValue("CheckForUpdates", "False").ToBoolean();
         IsUpdateCheckStartup = rksRoot.GetValue("CheckForUpdatesStartup", "False").ToBoolean();
         UpdateCheckInterval = (int)rksRoot.GetValue("CheckInterval", 7);

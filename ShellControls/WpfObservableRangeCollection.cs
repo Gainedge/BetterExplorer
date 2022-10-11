@@ -5,9 +5,9 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace ShellControls {
   public class WpfObservableRangeCollection<T> : RangeObservableCollection<T> {
@@ -39,11 +39,14 @@ namespace ShellControls {
         return;
       }
 
-      foreach (var handler in GetHandlers())
-        if (IsRange(e) && handler.Target is CollectionView cv)
-          cv.Refresh();
-        else
-          handler(this, e);
+      Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, (Action)(() => {
+        foreach (var handler in GetHandlers())
+          if (IsRange(e) && handler.Target is CollectionView cv)
+            //this.ExecuteOnSyncContext(() => cv.Refresh());
+            cv.Refresh();
+          else
+            handler(this, e);
+      }));
     }
 
     protected override IDisposable DeferEvents() => new DeferredEventsCollection(this);

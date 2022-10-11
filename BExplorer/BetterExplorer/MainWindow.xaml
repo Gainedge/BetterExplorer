@@ -3,23 +3,16 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:Helper="clr-namespace:BEHelper;assembly=BEHelper"
-  xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
   xmlns:Previewer="clr-namespace:WpfDocumentPreviewer;assembly=WpfDocumentPreviewer"
   xmlns:Ribbon="clr-namespace:Fluent;assembly=Fluent"
-  xmlns:borders="clr-namespace:ToggleSwitch.Borders;assembly=ToggleSwitch"
   xmlns:console="clr-namespace:ConsoleControl;assembly=ConsoleControl"
   xmlns:controls="clr-namespace:BetterExplorerControls;assembly=BetterExplorerControls"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:BetterExplorer"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:my2="http://schemas.microsoft.com/winfx/2006/xaml/presentation/ribbon"
-  xmlns:ni="http://www.hardcodet.net/taskbar"
   xmlns:odc="clr-namespace:Odyssey.Controls;assembly=Odyssey"
   xmlns:tabcontrol="clr-namespace:Wpf.Controls;assembly=Wpf.TabControl"
-  xmlns:toggleswitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch"
   xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
-  xmlns:utils="clr-namespace:ToggleSwitch.Utils;assembly=ToggleSwitch"
-  xmlns:shell="clr-namespace:BExplorer.Shell;assembly=ShellLibrary"
   Title="Better Explorer"
   MinWidth="640"
   MinHeight="480"
@@ -43,379 +36,6 @@
     <ResourceDictionary>
       <Geometry x:Key="arrow">F1 M 724.371,610.402C 724.402,610.356 724.431,610.312 724.459,610.263C 724.488,610.211 724.511,610.159 724.595,609.975C 724.619,609.919 724.634,609.862 724.652,609.803C 724.666,609.756 724.68,609.71 724.691,609.662C 724.704,609.606 724.712,609.548 724.72,609.492C 724.728,609.443 724.732,609.395 724.738,609.347C 724.743,609.288 724.743,609.23 724.74,609.171C 724.74,609.124 724.743,609.078 724.738,609.031C 724.735,608.97 724.726,608.91 724.718,608.85C 724.71,608.804 724.704,608.76 724.694,608.714C 724.68,608.655 724.663,608.596 724.644,608.539C 724.631,608.492 724.619,608.448 724.53,608.24C 724.507,608.196 724.486,608.152 724.462,608.108C 724.434,608.056 724.399,608.006 724.286,607.842C 724.246,607.792 724.204,607.746 724.103,607.632L 713.832,597.36C 712.972,596.502 711.584,596.502 710.728,597.36C 709.871,598.215 709.871,599.606 710.728,600.462L 717.256,606.988L 696.934,606.988C 696.176,606.988 695.507,607.372 695.114,607.956C 694.876,608.307 694.738,608.728 694.738,609.184C 694.738,609.79 694.983,610.338 695.382,610.735C 695.778,611.134 696.327,611.378 696.934,611.378L 717.256,611.378L 710.728,617.904C 709.871,618.762 709.871,620.151 710.728,621.007C 711.158,621.436 711.718,621.652 712.28,621.652C 712.843,621.652 713.402,621.438 713.832,621.01L 724.166,610.666C 724.204,610.622 724.246,610.576 724.283,610.528C 724.314,610.487 724.343,610.444 724.371,610.402 Z</Geometry>
       <Geometry x:Key="arrowCircle">F1 M 711.074,631.265C 698.899,631.265 688.993,621.358 688.993,609.185C 688.993,597.012 698.899,587.106 711.074,587.106C 723.246,587.106 733.153,597.012 733.153,609.185C 733.153,621.358 723.246,631.265 711.074,631.265 Z M 711.072,583.325C 696.79,583.325 685.213,594.901 685.213,609.184C 685.213,623.465 696.79,635.044 711.072,635.044C 725.353,635.044 736.932,623.465 736.932,609.184C 736.932,594.901 725.353,583.325 711.072,583.325 Z</Geometry>
-      <ControlTemplate x:Key="SafariThumbControlTemplate" TargetType="Thumb">
-        <Grid Background="Transparent">
-          <borders:OuterGlowBorder
-            Background="Transparent"
-            BorderThickness="0"
-            CornerRadius="2"
-            IsTabStop="False"
-            OuterGlowColor="Black"
-            OuterGlowOpacity="0.15"
-            OuterGlowSize="4"
-            ShadowCornerRadius="4">
-            <Grid>
-              <borders:ClippingBorder
-                x:Name="Background"
-                Background="{TemplateBinding Background}"
-                BorderBrush="#FF656565"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                CornerRadius="2"
-                IsTabStop="False" />
-              <borders:ClippingBorder
-                x:Name="BackgroundAnimation"
-                Background="Black"
-                BorderBrush="Black"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                CornerRadius="2"
-                IsTabStop="False"
-                Opacity="0" />
-              <Rectangle
-                x:Name="DisabledVisualElement"
-                Fill="White"
-                IsHitTestVisible="false"
-                Opacity="0"
-                RadiusX="2"
-                RadiusY="2" />
-              <Rectangle
-                x:Name="FocusVisualElement"
-                Margin="1"
-                IsHitTestVisible="false"
-                Opacity="0"
-                RadiusX="2"
-                RadiusY="2"
-                StrokeThickness="1" />
-            </Grid>
-          </borders:OuterGlowBorder>
-          <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="CommonStates">
-              <VisualState x:Name="Normal" />
-              <VisualState x:Name="MouseOver">
-                <Storyboard>
-                  <DoubleAnimation
-                    Storyboard.TargetName="BackgroundAnimation"
-                    Storyboard.TargetProperty="Opacity"
-                    To="0.05"
-                    Duration="0" />
-                </Storyboard>
-              </VisualState>
-              <VisualState x:Name="Pressed">
-                <Storyboard>
-                  <DoubleAnimation
-                    Storyboard.TargetName="BackgroundAnimation"
-                    Storyboard.TargetProperty="Opacity"
-                    To="0.25"
-                    Duration="0" />
-                </Storyboard>
-              </VisualState>
-              <VisualState x:Name="Disabled">
-                <Storyboard>
-                  <DoubleAnimation
-                    Storyboard.TargetName="DisabledVisualElement"
-                    Storyboard.TargetProperty="Opacity"
-                    To=".55"
-                    Duration="0" />
-                </Storyboard>
-              </VisualState>
-            </VisualStateGroup>
-            <VisualStateGroup x:Name="FocusStates">
-              <VisualState x:Name="Focused">
-                <Storyboard>
-                  <DoubleAnimation
-                    Storyboard.TargetName="FocusVisualElement"
-                    Storyboard.TargetProperty="Opacity"
-                    To="0.05"
-                    Duration="0" />
-                </Storyboard>
-              </VisualState>
-              <VisualState x:Name="Unfocused" />
-            </VisualStateGroup>
-            <VisualStateGroup x:Name="CheckStates">
-              <VisualState x:Name="Unchecked" />
-              <VisualState x:Name="Checked" />
-            </VisualStateGroup>
-          </VisualStateManager.VisualStateGroups>
-        </Grid>
-      </ControlTemplate>
-      <ControlTemplate x:Key="EngravedContentTemplate" TargetType="ContentControl">
-        <toggleswitch:DropShadowTextBlock
-          Margin="{TemplateBinding Padding}"
-          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-          Cursor="{TemplateBinding Cursor}"
-          DropShadowAngle="90"
-          DropShadowColor="#FFF7F7F7"
-          DropShadowDistance="1"
-          DropShadowOpacity="0.3"
-          Focusable="False"
-          FontFamily="{TemplateBinding FontFamily}"
-          FontSize="{TemplateBinding FontSize}"
-          FontStyle="{TemplateBinding FontStyle}"
-          FontWeight="{TemplateBinding FontWeight}"
-          Foreground="{TemplateBinding Foreground}"
-          IsTabStop="False"
-          Text="{TemplateBinding Content}" />
-      </ControlTemplate>
-      <ControlTemplate x:Key="HorizontalThumbTemplate" TargetType="Thumb">
-        <Grid Background="Transparent">
-          <borders:OuterGlowBorder
-            Background="Transparent"
-            BorderThickness="0"
-            CornerRadius="4"
-            OuterGlowColor="Black"
-            OuterGlowOpacity="0.15"
-            OuterGlowSize="4"
-            ShadowCornerRadius="8">
-            <Grid>
-              <borders:ClippingBorder
-                x:Name="Background"
-                Background="White"
-                BorderBrush="{TemplateBinding BorderBrush}"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                CornerRadius="4">
-                <Border
-                  Background="{TemplateBinding Background}"
-                  BorderBrush="#FFEBEBEB"
-                  BorderThickness="1"
-                  CornerRadius="3">
-                  <Path
-                    x:Name="path"
-                    Margin="7,5"
-                    Data="M3.6,2.6 L10,2.6 L10,6.6 L3.6,6.6 z M10,0 L15.5,4.6 L10,9.4 z"
-                    Fill="#AA767676"
-                    RenderTransformOrigin="0.5,0.5"
-                    Stretch="Fill"
-                    StrokeThickness="0">
-                    <Path.RenderTransform>
-                      <ScaleTransform />
-                    </Path.RenderTransform>
-                  </Path>
-                </Border>
-              </borders:ClippingBorder>
-              <borders:ClippingBorder
-                x:Name="BackgroundAnimation"
-                Background="Black"
-                BorderBrush="Black"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                CornerRadius="4"
-                Opacity="0" />
-              <Rectangle
-                x:Name="FocusVisualElement"
-                Margin="1"
-                IsHitTestVisible="True"
-                Opacity="0"
-                RadiusX="4"
-                RadiusY="4"
-                StrokeThickness="1" />
-              <Rectangle
-                x:Name="DisabledVisualElement"
-                Fill="#FFFFFFFF"
-                IsHitTestVisible="False"
-                Opacity="0"
-                RadiusX="4"
-                RadiusY="4" />
-            </Grid>
-          </borders:OuterGlowBorder>
-          <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="CommonStates">
-              <VisualState x:Name="Normal" />
-              <VisualState x:Name="MouseOver">
-                <Storyboard>
-                  <DoubleAnimation
-                    Storyboard.TargetName="BackgroundAnimation"
-                    Storyboard.TargetProperty="Opacity"
-                    To="0.05"
-                    Duration="0" />
-                </Storyboard>
-              </VisualState>
-              <VisualState x:Name="Pressed">
-                <Storyboard>
-                  <DoubleAnimation
-                    Storyboard.TargetName="BackgroundAnimation"
-                    Storyboard.TargetProperty="Opacity"
-                    To="0.25"
-                    Duration="0" />
-                </Storyboard>
-              </VisualState>
-              <VisualState x:Name="Disabled">
-                <Storyboard>
-                  <DoubleAnimation
-                    Storyboard.TargetName="DisabledVisualElement"
-                    Storyboard.TargetProperty="Opacity"
-                    To=".55"
-                    Duration="0" />
-                </Storyboard>
-              </VisualState>
-            </VisualStateGroup>
-            <VisualStateGroup x:Name="FocusStates">
-              <VisualState x:Name="Focused">
-                <Storyboard>
-                  <DoubleAnimation
-                    Storyboard.TargetName="FocusVisualElement"
-                    Storyboard.TargetProperty="Opacity"
-                    To="0.05"
-                    Duration="0" />
-                </Storyboard>
-              </VisualState>
-              <VisualState x:Name="Unfocused" />
-            </VisualStateGroup>
-            <VisualStateGroup x:Name="CheckStates">
-              <VisualState x:Name="Unchecked" />
-              <VisualState x:Name="Checked">
-                <Storyboard>
-                  <DoubleAnimation
-                    Storyboard.TargetName="path"
-                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-                    To="-1"
-                    Duration="0" />
-                </Storyboard>
-              </VisualState>
-            </VisualStateGroup>
-          </VisualStateManager.VisualStateGroups>
-        </Grid>
-      </ControlTemplate>
-      <Style x:Key="SafariSwitchStyle" TargetType="toggleswitch:HorizontalToggleSwitch">
-        <Setter Property="Width" Value="130" />
-        <Setter Property="Height" Value="20" />
-        <Setter Property="BorderBrush" Value="#FF6C6C6C" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="0,4" />
-        <Setter Property="UncheckedForeground" Value="#FF3C3C3C" />
-        <Setter Property="CheckedForeground" Value="#FF3C3C3C" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="ThumbSize" Value="30" />
-        <Setter Property="ContentTemplate" Value="{StaticResource EngravedContentTemplate}" />
-        <Setter Property="ThumbTemplate" Value="{StaticResource HorizontalThumbTemplate}" />
-        <Setter Property="Background">
-          <Setter.Value>
-            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-              <GradientStop Offset="0" Color="#FF656565" />
-              <GradientStop Offset="1" Color="#FFA5A5A5" />
-              <GradientStop Offset="0.095" Color="#FF797979" />
-            </LinearGradientBrush>
-          </Setter.Value>
-        </Setter>
-        <Setter Property="ThumbBrush">
-          <Setter.Value>
-            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-              <GradientStop Offset="1" Color="#FFE1E1E1" />
-              <GradientStop Color="#FFFBFBFB" />
-            </LinearGradientBrush>
-          </Setter.Value>
-        </Setter>
-        <Setter Property="Template">
-          <Setter.Value>
-            <ControlTemplate TargetType="toggleswitch:HorizontalToggleSwitch">
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <utils:ActualSizePropertyProxy
-                  x:Name="ActualSizeProxy"
-                  Element="{Binding Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
-                  IsHitTestVisible="False"
-                  Visibility="Collapsed" />
-                <ContentControl
-                  x:Name="OffLabel"
-                  Grid.Column="0"
-                  Margin="0,0,6,0"
-                  VerticalAlignment="Center"
-                  HorizontalContentAlignment="Center"
-                  VerticalContentAlignment="Center"
-                  Content="{TemplateBinding UncheckedContent}"
-                  Cursor="Hand"
-                  Focusable="False"
-                  FontFamily="{TemplateBinding FontFamily}"
-                  FontSize="{TemplateBinding FontSize}"
-                  FontStyle="{TemplateBinding FontStyle}"
-                  FontWeight="{TemplateBinding FontWeight}"
-                  Foreground="{TemplateBinding UncheckedForeground}"
-                  IsTabStop="False" />
-                <borders:ClippingBorder
-                  x:Name="SwitchRoot"
-                  Grid.Column="1"
-                  Background="{TemplateBinding Background}"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}"
-                  CornerRadius="2"
-                  Cursor="Hand"
-                  IsTabStop="False">
-                  <Canvas
-                    x:Name="SwitchTrack"
-                    Height="{TemplateBinding Height}"
-                    Margin="0,-1,0,0"
-                    Cursor="Hand">
-                    <Thumb
-                      x:Name="SwitchThumb"
-                      Width="{TemplateBinding ThumbSize}"
-                      Height="{Binding ActualHeightValue, ElementName=ActualSizeProxy}"
-                      HorizontalAlignment="Left"
-                      Background="{TemplateBinding ThumbBrush}"
-                      Cursor="Hand"
-                      IsTabStop="False"
-                      Template="{StaticResource SafariThumbControlTemplate}" />
-                  </Canvas>
-                </borders:ClippingBorder>
-                <ContentControl
-                  x:Name="OnLabel"
-                  Grid.Column="2"
-                  Margin="6,0,0,0"
-                  VerticalAlignment="Center"
-                  HorizontalContentAlignment="Center"
-                  VerticalContentAlignment="Center"
-                  Content="{TemplateBinding CheckedContent}"
-                  Cursor="Hand"
-                  Focusable="False"
-                  FontFamily="{TemplateBinding FontFamily}"
-                  FontSize="{TemplateBinding FontSize}"
-                  FontStyle="{TemplateBinding FontStyle}"
-                  FontWeight="{TemplateBinding FontWeight}"
-                  Foreground="{TemplateBinding CheckedForeground}"
-                  IsTabStop="False" />
-                <Border
-                  x:Name="DisabledOverlay"
-                  Grid.Column="1"
-                  Height="27"
-                  Background="#AAEEEEEE"
-                  CornerRadius="4"
-                  Visibility="Collapsed" />
-                <VisualStateManager.VisualStateGroups>
-                  <VisualStateGroup x:Name="CommonStates">
-                    <VisualState x:Name="Normal" />
-                    <VisualState x:Name="Disabled">
-                      <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DisabledOverlay" Storyboard.TargetProperty="(UIElement.Visibility)">
-                          <DiscreteObjectKeyFrame KeyTime="0">
-                            <DiscreteObjectKeyFrame.Value>
-                              <Visibility>Visible</Visibility>
-                            </DiscreteObjectKeyFrame.Value>
-                          </DiscreteObjectKeyFrame>
-                        </ObjectAnimationUsingKeyFrames>
-                      </Storyboard>
-                    </VisualState>
-                    <VisualState x:Name="MouseOver" />
-                    <VisualState x:Name="Pressed" />
-                  </VisualStateGroup>
-                  <VisualStateGroup x:Name="CheckStates">
-                    <VisualStateGroup.Transitions>
-                      <VisualTransition GeneratedDuration="0:0:0.10" To="Unchecked" />
-                      <VisualTransition GeneratedDuration="0:0:0.10" To="Checked" />
-                    </VisualStateGroup.Transitions>
-                    <VisualState x:Name="Checked" />
-                    <VisualState x:Name="Unchecked" />
-                    <VisualState x:Name="DraggingChecked" />
-                    <VisualState x:Name="DraggingUnchecked" />
-                  </VisualStateGroup>
-                </VisualStateManager.VisualStateGroups>
-              </Grid>
-            </ControlTemplate>
-          </Setter.Value>
-        </Setter>
-      </Style>
       <Style
         x:Key="TextBoxStyle1"
         BasedOn="{x:Null}"
@@ -477,23 +97,6 @@
       <RowDefinition x:Name="rTabbarBot" Height="0" />
       <RowDefinition x:Name="rStatusbar" Height="25" />
     </Grid.RowDefinitions>
-
-    <ni:TaskbarIcon
-      x:Name="beNotifyIcon"
-      Grid.ColumnSpan="2"
-      IconSource="BENewIcon.ico"
-      MenuActivation="RightClick"
-      PopupActivation="DoubleClick"
-      ToolTipText="{DynamicResource beNotifyIcon_ToolTipText}"
-      TrayMouseDoubleClick="beNotifyIcon_TrayMouseDoubleClick"
-      Visibility="Visible">
-      <ni:TaskbarIcon.ContextMenu>
-        <ContextMenu>
-          <MenuItem Click="beNotifyIcon_TrayMouseDoubleClick" Header="Show Window" />
-          <MenuItem Click="btnBackstageExit_Click" Header="Exit" />
-        </ContextMenu>
-      </ni:TaskbarIcon.ContextMenu>
-    </ni:TaskbarIcon>
     <Ribbon:Ribbon
       x:Name="TheRibbon"
       Grid.ColumnSpan="2"
@@ -1436,7 +1039,7 @@
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
                       Orientation="Horizontal">
-                      <toggleswitch:HorizontalToggleSwitch
+                      <!--<toggleswitch:HorizontalToggleSwitch
                         x:Name="btnTheme"
                         Grid.Row="1"
                         Margin="0,20,0,0"
@@ -1448,7 +1051,7 @@
                         Style="{StaticResource SafariSwitchStyle}"
                         Unchecked="BtnTheme_OnUnchecked"
                         UncheckedContent="Light"
-                        UncheckedForeground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+                        UncheckedForeground="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />-->
                     </StackPanel>
                     <Ribbon:SeparatorTabItem
                       Margin="0,100,0,0"
@@ -3288,11 +2891,11 @@
               </Ribbon:RibbonToolBarLayoutDefinition>
             </Ribbon:RibbonToolBar.LayoutDefinitions>
             <!--  ToolBar Controls  -->
-            <controls:ImageSizeDisplay
+            <!--<controls:ImageSizeDisplay
               x:Name="imgSizeDisplay"
               Margin="4,0,0,0"
               HeightName="{StaticResource lblHeightCP}"
-              WidthName="{StaticResource lblWidthCP}" />
+              WidthName="{StaticResource lblWidthCP}" />-->
             <TextBlock
               x:Name="imgWidth"
               Margin="4,0,0,0"
@@ -3784,7 +3387,6 @@
         <Ribbon:RibbonGroupBox>
           <Ribbon:Button
             x:Name="btnSearch"
-            Click="btnSearch_Click"
             Header="{DynamicResource btnSearchCP}"
             Icon="Images\jssearch16.png"
             LargeIcon="Images\jssearch32.png"
@@ -4042,14 +3644,14 @@
       </odc:BreadcrumbBar>
 
       <!--  my:SearchTextBox Margin="8,0,0,0" Name="searchTextBox1" HorizontalAlignment="Stretch" BorderBrush="Black" MinHeight="23" Search="searchTextBox1_Search" VerticalAlignment="Stretch" Grid.Column="1" PreviewMouseUp="searchTextBox1_PreviewMouseUp" MouseDown="searchTextBox1_MouseDown" GotFocus="searchTextBox1_GotFocus" IsKeyboardFocusedChanged="searchTextBox1_IsKeyboardFocusedChanged" LostFocus="searchTextBox1_LostFocus" LostKeyboardFocus="searchTextBox1_LostKeyboardFocus" GotKeyboardFocus="searchTextBox1_GotKeyboardFocus" MouseMove="searchTextBox1_MouseMove" MouseUp="searchTextBox1_MouseUp" /  -->
-      <controls:SearchBox
+      <!--<controls:SearchBox
         x:Name="edtSearchBox"
         Grid.Column="1"
         Margin="8,0,0,0"
         BeginSearch="edtSearchBox_BeginSearch"
         FiltersCleared="edtSearchBox_FiltersCleared"
         GotKeyboardFocus="edtSearchBox_GotKeyboardFocus"
-        RequestCriteriaChange="edtSearchBox_RequestCriteriaChange" />
+        RequestCriteriaChange="edtSearchBox_RequestCriteriaChange" />-->
       <GridSplitter
         x:Name="gridSplitter1"
         Grid.Column="1"
@@ -4068,7 +3670,7 @@
         </GridSplitter.ContextMenu>
       </GridSplitter>
     </Grid>
-    <controls:AirspacePopup
+    <!--<controls:AirspacePopup
       x:Name="KeyJumpGrid"
       Width="{Binding ElementName=ShellViewHost, Path=ActualWidth}"
       Height="{Binding ElementName=ShellViewHost, Path=ActualHeight}"
@@ -4130,7 +3732,7 @@
           TextAlignment="Center"
           TextWrapping="Wrap" />
       </Grid>
-    </controls:AirspacePopup>
+    </controls:AirspacePopup>-->
     <Rectangle
       x:Name="divNav"
       Grid.Row="2"

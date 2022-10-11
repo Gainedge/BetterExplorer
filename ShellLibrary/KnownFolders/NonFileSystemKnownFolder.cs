@@ -4,6 +4,7 @@ using BExplorer.Shell.Interop;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using ShellLibrary.Interop;
 
 namespace BExplorer.Shell
 {

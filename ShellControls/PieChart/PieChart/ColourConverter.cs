@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using BaseWPFHelpers;
-using BetterExplorer.PieChart;
 
 namespace ShellControls.PieChart.PieChart {
 	/// <summary>

@@ -53,14 +53,14 @@ namespace Settings {
           this.HeaderSelectionColor = Color.FromArgb(255, 6, 6, 6);
           this.TextColor = Color.FromRgb(204, 204, 204);
           this.HeaderBackgroundColor = Color.FromRgb(0, 0, 0);
-          this.SortColumnColor = Color.FromArgb(255, 6, 6, 6);
+          this.SortColumnColor = Color.FromArgb(255, 9, 9, 9);
           this.HeaderDividerColor = Color.FromRgb(79, 79, 79);
           this.HeaderArrowColor = Color.FromArgb(75, 220, 220, 220);
           this.BackgroundColorTree = Color.FromArgb(255, 0, 0, 0);
           this.AdornerBorderColor = Color.FromArgb(255, 168, 168, 168);
           this.AdornerBackgroundColor = Color.FromArgb(255, 37, 37, 37);
           this.AdornerHoleColor = Color.FromArgb(255, 168, 168, 168);
-          this.BackgroundColor = Color.FromRgb(0, 0, 0);
+          this.BackgroundColor = Color.FromArgb(255, 0, 0, 0);
           break;
       }
 

@@ -1,5 +1,4 @@
-﻿using Fluent;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Windows;

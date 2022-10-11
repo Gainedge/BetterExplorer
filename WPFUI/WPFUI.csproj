@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WPFUI</RootNamespace>
@@ -35,6 +35,9 @@
     <None Remove="Fonts\FluentSystemIcons-Filled.ttf" />
     <None Remove="Fonts\FluentSystemIcons-Regular.ttf" />
     <None Remove="Fonts\SegoeFluentIcons.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Settings\Settings.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Fonts\FiraCode-Regular.ttf" />
@@ -76,5 +79,10 @@
     <PackageReference Include="System.Drawing.Common">
       <Version>6.0.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Styles\Controls\UIWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
   </ItemGroup>
 </Project>

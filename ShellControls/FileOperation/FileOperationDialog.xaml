@@ -3,12 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:Ribbon="clr-namespace:Fluent;assembly=Fluent"
              xmlns:controls="clr-namespace:WPFUI.Controls;assembly=WPFUI"
              mc:Ignorable="d" Height="0" Width="421" Closed="Window_Closed" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
   <Grid Background="Transparent">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="26"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
     <controls:TitleBar Grid.Row="0" ApplicationNavigation="True" UseSnapLayout="True"/>
-    <StackPanel Orientation="Vertical" CanVerticallyScroll="False" Width="Auto" Height="Auto" Background="Transparent">
+    <StackPanel Grid.Row="1" Orientation="Vertical" CanVerticallyScroll="False" Width="Auto" Height="Auto" Background="Transparent">
       <ScrollViewer HorizontalScrollBarVisibility="Disabled" Height="Auto" MaxHeight="530" VerticalScrollBarVisibility="Auto">
         <ItemsControl ItemsSource="{Binding Path=Contents}"/>
       </ScrollViewer>

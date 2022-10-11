@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using WPFUI.Win32;
@@ -177,7 +174,8 @@ public class RenameEventArgs : EventArgs {
     Deleted,
     Updated,
     DriveRemoved,
-    RecycleBin
+    RecycleBin,
+    IconUpdated
   }
 
   public class ItemUpdatedEventArgs : EventArgs {

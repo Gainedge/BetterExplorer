@@ -88,7 +88,7 @@ namespace WPFUI.Controls {
     private const int c_SPLIT = 100;
     private const int c_SPLITOPEN = 101;
     public ShellListViewColumnHeader() {
-
+      
     }
     static ShellListViewColumnHeader() {
       DefaultStyleKeyProperty.OverrideMetadata(typeof(ShellListViewColumnHeader), new FrameworkPropertyMetadata(typeof(ShellListViewColumnHeader)));

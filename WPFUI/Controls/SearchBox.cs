@@ -45,6 +45,13 @@ public class SearchBox : TextBox {
       ownerType: typeof(SearchBox),
       typeMetadata: new FrameworkPropertyMetadata(defaultValue: false)
     );
+  public static readonly DependencyProperty IsSelectedProperty =
+    DependencyProperty.Register(
+      name: "IsSelected",
+      propertyType: typeof(Boolean),
+      ownerType: typeof(SearchBox),
+      typeMetadata: new FrameworkPropertyMetadata(defaultValue: false)
+    );
   public String WatermarkText {
     get { return (String)GetValue(WatermarkTextProperty); }
     set { SetValue(WatermarkTextProperty, value); }
@@ -53,12 +60,25 @@ public class SearchBox : TextBox {
     get { return (Boolean)GetValue(IsWatermarkShownProperty); }
     set { SetValue(IsWatermarkShownProperty, value); }
   }
+  public Boolean IsSelected {
+    get { return (Boolean)GetValue(IsSelectedProperty); }
+    set { SetValue(IsSelectedProperty, value); }
+  }
   static SearchBox() {
     DefaultStyleKeyProperty.OverrideMetadata(typeof(SearchBox), new FrameworkPropertyMetadata(typeof(SearchBox)));
   }
 
   public SearchBox() {
-    this.TextChanged += (sender, args) => { this.IsWatermarkShown = !String.IsNullOrEmpty(this.Text); };
+    this.IsWatermarkShown = true;
+    this.TextChanged += (sender, args) => { this.IsWatermarkShown = String.IsNullOrEmpty(this.Text);
+      this.IsSelected = true;
+    };
+    this.LostKeyboardFocus += (sender, args) => { this.IsWatermarkShown = String.IsNullOrEmpty(this.Text);
+      this.IsSelected = false;
+    };
+    this.GotKeyboardFocus += (sender, args) => { this.IsWatermarkShown = String.IsNullOrEmpty(this.Text);
+      this.IsSelected = true;
+    };
   }
 
   private void RaiseSearchExecutedEvent() {

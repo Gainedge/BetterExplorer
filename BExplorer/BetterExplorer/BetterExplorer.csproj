@@ -7,7 +7,7 @@
     <SuppressPseudoWarning Condition="'$(Configuration)' == 'Debug'">true</SuppressPseudoWarning>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>WinExe</OutputType>
     <SccProjectName></SccProjectName>
@@ -131,6 +131,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Update="Settings.sqlite">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="System.Data.SQLite.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -141,15 +144,12 @@
     <ProjectReference Include="..\..\Fluent.Ribbon\Fluent.Ribbon\Fluent.Ribbon.csproj" />
     <ProjectReference Include="..\..\IconExtractor\IconExtractor.csproj" />
     <ProjectReference Include="..\..\ImDiskNet\ImDiskNet.vbproj" />
-    <ProjectReference Include="..\..\NotifyIcon\NotifyIconWpf\NotifyIconWpf.csproj" />
-    <ProjectReference Include="..\..\Rating control\CustomControls\StarRatingControl.csproj" />
     <ProjectReference Include="..\..\Settings\Settings.csproj" />
     <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj" />
     <ProjectReference Include="..\..\ShellControls\ShellControls.csproj" />
     <ProjectReference Include="..\..\ShellLibrary\ShellLibrary.csproj" />
     <ProjectReference Include="..\..\TabControl\Wpf.TabControl.csproj" />
     <ProjectReference Include="..\..\TaskDialog\TaskDialog.csproj" />
-    <ProjectReference Include="..\..\toggle-switch-control\WPF\ToggleSwitch\ToggleSwitch.csproj" />
     <ProjectReference Include="..\..\UsbEject\UsbEject.csproj" />
     <ProjectReference Include="..\..\WpfControlLibrary1\BetterExplorerControls.csproj" />
     <ProjectReference Include="..\..\WpfDocumentPreviewer\WpfDocumentPreviewer.csproj" />

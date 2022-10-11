@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <PropertyGroup>
-    <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
     <OutputType>Library</OutputType>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -59,7 +59,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.261602">
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>

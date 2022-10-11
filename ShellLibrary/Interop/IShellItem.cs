@@ -16,31 +16,29 @@
 // Software Foundation, Inc., 51 Franklin Street, Fifth Floor,  
 // Boston, MA 2110-1301, USA.
 //
+
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
+using BExplorer.Shell.Interop;
 
 #pragma warning disable 1591
 
-namespace BExplorer.Shell.Interop
-{
-    [ComImport]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")]
-    public interface IShellItem
-    {
-        HResult BindToHandler(IntPtr pbc,
-            [MarshalAs(UnmanagedType.LPStruct)]Guid bhid,
-            [MarshalAs(UnmanagedType.LPStruct)]Guid riid, out IntPtr obj);
+namespace ShellLibrary.Interop {
+  [ComImport]
+  [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+  [Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")]
+  public interface IShellItem {
+    HResult BindToHandler(IntPtr pbc,
+        [MarshalAs(UnmanagedType.LPStruct)] Guid bhid,
+        [MarshalAs(UnmanagedType.LPStruct)] Guid riid, out IntPtr obj);
 
-        [PreserveSig]
-        HResult GetParent(out IShellItem ppsi);
+    [PreserveSig]
+    HResult GetParent(out IShellItem ppsi);
+    IntPtr GetDisplayName(SIGDN sigdnName);
 
-        IntPtr GetDisplayName(SIGDN sigdnName);
+    [PreserveSig]
+    HResult GetAttributes(SFGAO sfgaoMask, out SFGAO psfgaoAttribs);
 
-      [PreserveSig]
-        HResult GetAttributes(SFGAO sfgaoMask, out SFGAO psfgaoAttribs);
-
-        int Compare(IShellItem psi, SICHINT hint);
-    };
+    int Compare(IShellItem psi, SICHINT hint);
+  };
 }
