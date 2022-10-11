@@ -205,7 +205,6 @@
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
-    <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="sfx\7zS.sfx" />
     <None Include="sfx\7zxSD_All.sfx" />
