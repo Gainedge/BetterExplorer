@@ -145,7 +145,6 @@
     <ProjectReference Include="..\..\IconExtractor\IconExtractor.csproj" />
     <ProjectReference Include="..\..\ImDiskNet\ImDiskNet.vbproj" />
     <ProjectReference Include="..\..\Settings\Settings.csproj" />
-    <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj" />
     <ProjectReference Include="..\..\ShellControls\ShellControls.csproj" />
     <ProjectReference Include="..\..\ShellLibrary\ShellLibrary.csproj" />
     <ProjectReference Include="..\..\TabControl\Wpf.TabControl.csproj" />

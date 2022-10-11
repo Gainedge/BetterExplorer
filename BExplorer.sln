@@ -5,21 +5,19 @@ VisualStudioVersion = 17.0.31606.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterExplorer", "BExplorer\BetterExplorer\BetterExplorer.csproj", "{BBD6B64A-5617-4F6C-A5CE-5156365BF33E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZip2010", "SevenZip\SevenZip2010.csproj", "{4960DD14-3431-47EC-B9D9-9D2730A98DC3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterExplorerControls", "WpfControlLibrary1\BetterExplorerControls.csproj", "{04270710-E358-46D4-83E5-EB7A9323CCE7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleControl", "ConsoleControl\ConsoleControl.csproj", "{737CC7F2-EC7C-4800-B7EB-72637E892C42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateBar", "Progress\RateBar.csproj", "{BFBD2F46-ED5F-49A3-ABAD-9BA571EF073E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RateBar", "Progress\RateBar.csproj", "{BFBD2F46-ED5F-49A3-ABAD-9BA571EF073E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsbEject", "UsbEject\UsbEject.csproj", "{AE269158-DFA5-4DD7-8AFC-F45FAF2B958C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsbEject", "UsbEject\UsbEject.csproj", "{AE269158-DFA5-4DD7-8AFC-F45FAF2B958C}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ImDiskNet", "ImDiskNet\ImDiskNet.vbproj", "{3EFCB6F8-EF7E-4F60-A0DE-BB197240FCC9}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "ImDiskNet", "ImDiskNet\ImDiskNet.vbproj", "{3EFCB6F8-EF7E-4F60-A0DE-BB197240FCC9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfDocumentPreviewer", "WpfDocumentPreviewer\WpfDocumentPreviewer.csproj", "{6A63405A-B6BB-4095-B48C-E720DE021482}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnbufferedIO", "UnbufferedFO\GS.Common.IO\UnbufferedIO.csproj", "{EC0D64F9-9F48-4C35-A3B6-E1D8256B76D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnbufferedIO", "UnbufferedFO\GS.Common.IO\UnbufferedIO.csproj", "{EC0D64F9-9F48-4C35-A3B6-E1D8256B76D9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wpf.TabControl", "TabControl\Wpf.TabControl.csproj", "{509D06BD-AEB6-4E92-8E5B-21188EBDBD9C}"
 EndProject
@@ -32,13 +30,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Odyssey.Controls", "BreadcrumbBar\Odyssey.Controls.csproj", "{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.Toolkit", "Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj", "{72E591D6-8F83-4D8C-8F67-9C325E623234}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xceed.Wpf.Toolkit", "Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj", "{72E591D6-8F83-4D8C-8F67-9C325E623234}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskDialog", "TaskDialog\TaskDialog.csproj", "{37FD53F7-8A8F-4427-8FF4-6299E2933A7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IconExtractor", "IconExtractor\IconExtractor.csproj", "{FDFD4EEB-C202-4D93-A6E9-D8984A12D014}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IconExtractor", "IconExtractor\IconExtractor.csproj", "{FDFD4EEB-C202-4D93-A6E9-D8984A12D014}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settings", "Settings\Settings.csproj", "{B40D0F31-9D30-4292-9717-BB21FC94C49C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Settings", "Settings\Settings.csproj", "{B40D0F31-9D30-4292-9717-BB21FC94C49C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShellLibrary", "ShellLibrary\ShellLibrary.csproj", "{65E04A30-F058-4F58-B387-745D3A1424F7}"
 EndProject
@@ -172,76 +170,6 @@ Global
 		{BBD6B64A-5617-4F6C-A5CE-5156365BF33E}.Release|x64.ActiveCfg = Release|x86
 		{BBD6B64A-5617-4F6C-A5CE-5156365BF33E}.Release|x86.ActiveCfg = Release|x86
 		{BBD6B64A-5617-4F6C-A5CE-5156365BF33E}.Release|x86.Build.0 = Release|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.All|Any CPU.ActiveCfg = Release|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.All|Any CPU.Build.0 = Release|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.All|Mixed Platforms.ActiveCfg = Release|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.All|Mixed Platforms.Build.0 = Release|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.All|Win32.ActiveCfg = Release|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.All|Win32.Build.0 = Release|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.All|x64.ActiveCfg = Release|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.All|x64.Build.0 = Release|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.All|x86.ActiveCfg = Release|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.All|x86.Build.0 = Release|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.BuildUwpAppX|Any CPU.ActiveCfg = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.BuildUwpAppX|Any CPU.Build.0 = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.BuildUwpAppX|Mixed Platforms.ActiveCfg = Deploy|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.BuildUwpAppX|Mixed Platforms.Build.0 = Deploy|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.BuildUwpAppX|Win32.ActiveCfg = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.BuildUwpAppX|Win32.Build.0 = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.BuildUwpAppX|x64.ActiveCfg = Deploy|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.BuildUwpAppX|x64.Build.0 = Deploy|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.BuildUwpAppX|x86.ActiveCfg = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.BuildUwpAppX|x86.Build.0 = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.CodeAnalysisDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.CodeAnalysisDebug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.CodeAnalysisDebug|Win32.ActiveCfg = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.CodeAnalysisDebug|x64.ActiveCfg = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.CodeAnalysisDebug|x86.ActiveCfg = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|x64.ActiveCfg = Debug|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|x64.Build.0 = Debug|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|x86.ActiveCfg = Debug|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|x86.Build.0 = Debug|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.DefaultBuild|Any CPU.ActiveCfg = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.DefaultBuild|Any CPU.Build.0 = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.DefaultBuild|Mixed Platforms.ActiveCfg = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.DefaultBuild|Mixed Platforms.Build.0 = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.DefaultBuild|Win32.ActiveCfg = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.DefaultBuild|Win32.Build.0 = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.DefaultBuild|x64.ActiveCfg = Deploy|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.DefaultBuild|x64.Build.0 = Deploy|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.DefaultBuild|x86.ActiveCfg = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.DefaultBuild|x86.Build.0 = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Deploy|Any CPU.ActiveCfg = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Deploy|Any CPU.Build.0 = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Deploy|Mixed Platforms.ActiveCfg = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Deploy|Mixed Platforms.Build.0 = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Deploy|Win32.ActiveCfg = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Deploy|x64.ActiveCfg = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Deploy|x86.ActiveCfg = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.ExeBuild|Any CPU.ActiveCfg = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.ExeBuild|Any CPU.Build.0 = Deploy|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.ExeBuild|Mixed Platforms.ActiveCfg = Deploy|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.ExeBuild|Mixed Platforms.Build.0 = Deploy|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.ExeBuild|Win32.ActiveCfg = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.ExeBuild|Win32.Build.0 = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.ExeBuild|x64.ActiveCfg = Deploy|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.ExeBuild|x64.Build.0 = Deploy|x64
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.ExeBuild|x86.ActiveCfg = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.ExeBuild|x86.Build.0 = Deploy|x86
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|Win32.ActiveCfg = Release|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|x64.ActiveCfg = Release|Any CPU
-		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|x86.ActiveCfg = Release|Any CPU
 		{04270710-E358-46D4-83E5-EB7A9323CCE7}.All|Any CPU.ActiveCfg = Release|Any CPU
 		{04270710-E358-46D4-83E5-EB7A9323CCE7}.All|Any CPU.Build.0 = Release|Any CPU
 		{04270710-E358-46D4-83E5-EB7A9323CCE7}.All|Mixed Platforms.ActiveCfg = Debug|x64
@@ -1664,8 +1592,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4801FBB8-3BD6-441D-B354-3299AD2610E5}
 		VisualSVNWorkingCopyRoot = .
+		SolutionGuid = {4801FBB8-3BD6-441D-B354-3299AD2610E5}
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\BFExplorer.ndproj"

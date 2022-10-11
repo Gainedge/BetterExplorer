@@ -25,7 +25,6 @@ namespace BetterExplorer {
   using LTR.IO.ImDisk;
   using Microsoft.Win32;
   using Settings;
-  using SevenZip;
   using Shell32;
   using System;
   using System.Collections.Generic;
@@ -1986,83 +1985,83 @@ namespace BetterExplorer {
     }
 
     private void ExtractToLocation(string archive, string output) {
-      var selectedItems = new List<string>() { archive };
-      var archiveProcressScreen = new ArchiveProcressScreen(selectedItems, output, ArchiveAction.Extract, "");
-      archiveProcressScreen.ExtractionCompleted += new ArchiveProcressScreen.ExtractionCompleteEventHandler(this.ExtractionHasCompleted);
-      this.AddToLog($"Archive Extracted to {output} from source {archive}");
-      archiveProcressScreen.Show();
+      //var selectedItems = new List<string>() { archive };
+      //var archiveProcressScreen = new ArchiveProcressScreen(selectedItems, output, ArchiveAction.Extract, "");
+      //archiveProcressScreen.ExtractionCompleted += new ArchiveProcressScreen.ExtractionCompleteEventHandler(this.ExtractionHasCompleted);
+      //this.AddToLog($"Archive Extracted to {output} from source {archive}");
+      //archiveProcressScreen.Show();
     }
 
-    private void ExtractionHasCompleted(object sender, ArchiveEventArgs e) {
-      if (this.chkOpenResults.IsChecked == true)
-        this.tcMain.NewTab(e.OutputLocation);
-    }
+    //private void ExtractionHasCompleted(object sender, ArchiveEventArgs e) {
+    //  if (this.chkOpenResults.IsChecked == true)
+    //    this.tcMain.NewTab(e.OutputLocation);
+    //}
 
     private void miExtractToLocation_Click(object sender, RoutedEventArgs e) {
-      var selectedItems = this._ShellListView.SelectedItems.Select(item => item.ParsingName).ToList();
+      //var selectedItems = this._ShellListView.SelectedItems.Select(item => item.ParsingName).ToList();
 
-      try {
-        var CAI = new CreateArchive(selectedItems, false, this._ShellListView.GetFirstSelectedItem().ParsingName);
-        CAI.Show(this.GetWin32Window());
-      } catch {
+      //try {
+      //  var CAI = new CreateArchive(selectedItems, false, this._ShellListView.GetFirstSelectedItem().ParsingName);
+      //  CAI.Show(this.GetWin32Window());
+      //} catch {
 
-      }
+      //}
     }
 
     private void miExtractHere_Click(object sender, RoutedEventArgs e) {
-      string FileName = this._ShellListView.GetFirstSelectedItem().ParsingName;
-      var extractor = new SevenZipExtractor(FileName);
-      string DirectoryName = Path.GetDirectoryName(FileName);
-      string ArchName = Path.GetFileNameWithoutExtension(FileName);
-      extractor.Extracting += new EventHandler<ProgressEventArgs>(this.extractor_Extracting);
-      extractor.ExtractionFinished += new EventHandler<EventArgs>(this.extractor_ExtractionFinished);
-      extractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(this.extractor_FileExtractionStarted);
-      extractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(this.extractor_FileExtractionFinished);
-      extractor.PreserveDirectoryStructure = true;
-      string Separator = "";
-      if (DirectoryName[DirectoryName.Length - 1] != Char.Parse(@"\"))
-        Separator = @"\";
-      this.AddToLog($"Extracted Archive to {DirectoryName}{Separator}{ArchName} from source {FileName}");
-      extractor.BeginExtractArchive(DirectoryName + Separator + ArchName, DispatcherPriority.Normal);
+      //string FileName = this._ShellListView.GetFirstSelectedItem().ParsingName;
+      //var extractor = new SevenZipExtractor(FileName);
+      //string DirectoryName = Path.GetDirectoryName(FileName);
+      //string ArchName = Path.GetFileNameWithoutExtension(FileName);
+      //extractor.Extracting += new EventHandler<ProgressEventArgs>(this.extractor_Extracting);
+      //extractor.ExtractionFinished += new EventHandler<EventArgs>(this.extractor_ExtractionFinished);
+      //extractor.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(this.extractor_FileExtractionStarted);
+      //extractor.FileExtractionFinished += new EventHandler<FileInfoEventArgs>(this.extractor_FileExtractionFinished);
+      //extractor.PreserveDirectoryStructure = true;
+      //string Separator = "";
+      //if (DirectoryName[DirectoryName.Length - 1] != Char.Parse(@"\"))
+      //  Separator = @"\";
+      //this.AddToLog($"Extracted Archive to {DirectoryName}{Separator}{ArchName} from source {FileName}");
+      //extractor.BeginExtractArchive(DirectoryName + Separator + ArchName, DispatcherPriority.Normal);
     }
 
-    void extractor_FileExtractionFinished(object sender, FileInfoEventArgs e) {
-      //throw new NotImplementedException();
-    }
+    //void extractor_FileExtractionFinished(object sender, FileInfoEventArgs e) {
+    //  //throw new NotImplementedException();
+    //}
 
-    void extractor_FileExtractionStarted(object sender, FileInfoEventArgs e) {
-      //throw new NotImplementedException();
-    }
+    //void extractor_FileExtractionStarted(object sender, FileInfoEventArgs e) {
+    //  //throw new NotImplementedException();
+    //}
 
-    void extractor_ExtractionFinished(object sender, EventArgs e) {
-      //throw new NotImplementedException();
-      (sender as SevenZipExtractor)?.Dispose();
-    }
+    //void extractor_ExtractionFinished(object sender, EventArgs e) {
+    //  //throw new NotImplementedException();
+    //  (sender as SevenZipExtractor)?.Dispose();
+    //}
 
-    void extractor_Extracting(object sender, ProgressEventArgs e) {
-      //throw new NotImplementedException();
-    }
+    //void extractor_Extracting(object sender, ProgressEventArgs e) {
+    //  //throw new NotImplementedException();
+    //}
 
     private void btnExtract_Click(object sender, RoutedEventArgs e) => this.miExtractHere_Click(sender, e);
 
     private void btnCheckArchive_Click(object sender, RoutedEventArgs e) => new Thread(new ThreadStart(this.DoCheck)).Start();
 
     private void DoCheck() {
-      string FileName = this._ShellListView.GetFirstSelectedItem().ParsingName;
-      var extractor = new SevenZipExtractor(FileName);
-      if (!extractor.Check())
-        MessageBox.Show("Not Pass");
-      else
-        MessageBox.Show("Pass");
+      //string FileName = this._ShellListView.GetFirstSelectedItem().ParsingName;
+      //var extractor = new SevenZipExtractor(FileName);
+      //if (!extractor.Check())
+      //  MessageBox.Show("Not Pass");
+      //else
+      //  MessageBox.Show("Pass");
 
-      extractor.Dispose();
+      //extractor.Dispose();
     }
 
     private void btnViewArchive_Click(object sender, RoutedEventArgs e) {
-      var name = this._ShellListView.SelectedItems.First().ParsingName;
-      string ICON_DLLPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
-      var archiveDetailView = new ArchiveDetailView(ICON_DLLPATH, name);
-      archiveDetailView.Show(this.GetWin32Window());
+      //var name = this._ShellListView.SelectedItems.First().ParsingName;
+      //string ICON_DLLPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
+      //var archiveDetailView = new ArchiveDetailView(ICON_DLLPATH, name);
+      //archiveDetailView.Show(this.GetWin32Window());
 
       //ArchiveViewWindow g = new ArchiveViewWindow( ShellListView.GetFirstSelectedItem(), IsPreviewPaneEnabled, IsInfoPaneEnabled);
       //g.Show();
