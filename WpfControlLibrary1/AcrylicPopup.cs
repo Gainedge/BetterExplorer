@@ -199,21 +199,13 @@ namespace BetterExplorerControls {
     private void OnOpened(Object sender, EventArgs e) {
       dele = new WinEventDelegate(WinEventProc);
       this._winHook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, IntPtr.Zero, dele, 0, 0, WINEVENT_OUTOFCONTEXT);
-      //this._Window = new RawInputReceiverWindow();
-      //this._Window.Input += (sender, e) => {
-      //  // Catch your input here!
-      //  this.ProcessMouseHookAction();
 
-      //};
-      //RawInputDevice.RegisterDevice(HidUsageAndPage.Mouse, RawInputDeviceFlags.ExInputSink, this._Window.Handle);
-      //var thread = new Thread(() => {
-      //  MouseHook.Start();
-      //  System.Windows.Threading.Dispatcher.Run();
-      //});
-      //thread.Start();
-      MouseHook.Start();
+      var thread = new Thread(() => {
+        MouseHook.Start();
+        System.Windows.Threading.Dispatcher.Run();
+      });
+      thread.Start();
       MouseHook.MouseAction += MouseHookOnMouseAction;
-      //System.Windows.Threading.Dispatcher.Run();
     }
 
     private void ParentPopupOnOpened(Object sender, EventArgs e) {
@@ -226,8 +218,6 @@ namespace BetterExplorerControls {
       MouseHook.stop();
       MouseHook.MouseAction -= MouseHookOnMouseAction;
       this.OnMenuClosed?.Invoke(this, EventArgs.Empty);
-      //this._Window.DestroyHandle();
-      //RawInputDevice.UnregisterDevice(HidUsageAndPage.Mouse);
       UnhookWinEvent(this._winHook);
     }
     private CustomPopupPlacement[] CustomPopupPlacementCallbackLocal(Size popupsize, Size targetsize, Point offset) {

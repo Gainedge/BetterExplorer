@@ -95,13 +95,13 @@
               <Setter TargetName="PART_Checked" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter TargetName="PART_Border" Property="Background" Value="#695D5B5B" />
+              <Setter TargetName="PART_Border" Property="Background" Value="#66434242" />
             </Trigger>
             <Trigger Property="IsChildMenuOpened" Value="True">
-              <Setter TargetName="PART_Border" Property="Background" Value="#695D5B5B" />
+              <Setter TargetName="PART_Border" Property="Background" Value="#66434242" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-              <Setter TargetName="PART_Border" Property="Background" Value="#694E4C4C" />
+              <Setter TargetName="PART_Border" Property="Background" Value="#66434242" />
             </Trigger>
             <DataTrigger Binding="{Binding IsSubMenu}" Value="True">
               <Setter TargetName="PART_SubmenuArrow" Property="Visibility" Value="Visible" />
