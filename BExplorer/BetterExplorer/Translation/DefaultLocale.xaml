@@ -16,7 +16,7 @@
   <system:String x:Key="btnOpenWebsiteICP">Visit this website to try the latest test builds, ask for help, report an issue, and more.</system:String>
   <system:String x:Key="btnReportBugCP">Report a problem</system:String>
   <system:String x:Key="btnReportBugHCP">Report a problem, bug, or feature request</system:String>
-  <system:String x:Key="lblBetterExText">Better Explorer - The better explorer replacment</system:String>
+  <system:String x:Key="lblBetterExText">Better Explorer - The better explorer replacement</system:String>
   <system:String x:Key="lblBetterExInfo">This is a Windows Explorer replacement that adds several handy features, such as the Ribbon, tabs, and other things.</system:String>
   <system:String x:Key="lblAboutBEHeader">About Better Explorer</system:String>
   <system:String x:Key="lblDevelopersHeader">Main Developers:</system:String>
@@ -66,7 +66,7 @@
   <system:String x:Key="txtReadyToInstall">Ready to Install</system:String>
   <system:String x:Key="sepAppearanceCP">Appearance</system:String>
   <system:String x:Key="tabRibbonCP">Ribbon</system:String>
-  <system:String x:Key="sepRibbonColorCP">Ribbon Color</system:String>
+  <system:String x:Key="sepRibbonColorCP">Ribbon Colour</system:String>
   <system:String x:Key="btnSilverCP">Silver</system:String>
   <system:String x:Key="btnBlueCP">Blue</system:String>
   <system:String x:Key="btnBlackCP">Black</system:String>
@@ -121,7 +121,7 @@
   <system:String x:Key="btnOpenCP">Open</system:String>
   <system:String x:Key="btnEditCP">Edit</system:String>
   <system:String x:Key="btnHistoryCP">History</system:String>
-  <system:String x:Key="btnFavoritesCP">Favorites</system:String>
+  <system:String x:Key="btnFavoritesCP">Favourites</system:String>
   <system:String x:Key="tgSelectCP">Select</system:String>
   <system:String x:Key="btnSelectAllCP">Select All</system:String>
   <system:String x:Key="btnSelectNoneCP">Select None</system:String>
@@ -141,7 +141,7 @@
   <system:String x:Key="btnUndoCloseHCP">Re-opens the most recently closed tab.</system:String>
   <system:String x:Key="miClearList">Clear List</system:String>
   <system:String x:Key="btnSavedTabsCP">Saved Tabs</system:String>
-  <system:String x:Key="btnSavedTabsHCP">Store a collection of your favorite tabs or open a previously-stored collection.</system:String>
+  <system:String x:Key="btnSavedTabsHCP">Store a collection of your favourite tabs or open a previously-stored collection.</system:String>
   <system:String x:Key="miSaveTabs">Save Current Tabs</system:String>
   <system:String x:Key="tbShareCP">Share</system:String>
   <system:String x:Key="tgCompressCP">Compress</system:String>
@@ -150,7 +150,7 @@
   <system:String x:Key="btnShareCP">Share</system:String>
   <system:String x:Key="tgNetworkCP">Network</system:String>
   <system:String x:Key="btnMapDriveCP">Map Network Drive</system:String>
-  <system:String x:Key="btnDiscDriveCP">Disconect Network Drive</system:String>
+  <system:String x:Key="btnDiscDriveCP">Disconnect Network Drive</system:String>
   <system:String x:Key="btnAdvSecurityCP">Advanced Security</system:String>
   <system:String x:Key="btnAdvSecurityTTX">Opens the Security settings, allowing you to select who can access or edit this folder.</system:String>
   <system:String x:Key="tbViewCP">View</system:String>
@@ -398,7 +398,7 @@
   <system:String x:Key="txtDeleteSeveralItems">Delete items</system:String>
   <system:String x:Key="txtExperimental">Experimental feature</system:String>
   <system:String x:Key="txtIsVistaStyleListView">Use Vista style list view</system:String>
-  <system:String x:Key="txtIsVistaStyleListViewTTX">If disable, some features like text coloring and folder watermark background will be disabled. When change this setting, application will be restarted automatically.</system:String>
+  <system:String x:Key="txtIsVistaStyleListViewTTX">If disable, some features like text colouring and folder watermark background will be disabled. When change this setting, application will be restarted automatically.</system:String>
 
   <!--
     From: Aaron Campf
