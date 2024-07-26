@@ -43,8 +43,15 @@ namespace ShellControls.ShellContextMenu {
       //this.MaxHeight = 460;
       this.BaseItems = new ObservableCollection<FontIconButton>();
       this.MenuItems = new ObservableCollection<Win32ContextMenuItem>();
+      //this.MenuItems.CollectionChanged += this.MenuItems_CollectionChanged;
       this.DataContext = this;
     }
+
+    //private void MenuItems_CollectionChanged(Object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+    //  var mousePos = AcrylicPopup.GetMousePosition();
+    //  GetWindowRect(this.Handle, out var rect);
+    //  this.IsPopupDirectionReversed = rect.Bottom <= (Int32)mousePos.Y;
+    //}
 
     private Boolean CheckForChildren(AcrylicShellContextMenu source, AcrylicShellContextMenu menu) {
       if (menu == null) return false;

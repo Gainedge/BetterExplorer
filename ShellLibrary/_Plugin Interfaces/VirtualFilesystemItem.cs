@@ -8,6 +8,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
 using ShellLibrary.Interop;
+using Windows.Storage;
 using WPFUI.Win32;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
@@ -195,7 +196,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     }
 
     public HResult NavigationStatus { get; set; }
-    public IntPtr GetHBitmap(Int32 iconSize, Boolean isThumbnail, Boolean isForce = false, Boolean isBoth = false) {
+    public IntPtr GetHBitmap(Int32 iconSize, Boolean isThumbnail, Boolean isForce = false, Boolean isBoth = false, Boolean isForThumbnailSource = false) {
       throw new NotImplementedException();
     }
 
@@ -221,6 +222,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public Int32[] cColumns { get; set; }
     public User32.RECT LabelBounds { get; set; }
+
+    IStorageItemProperties IListItemEx.StorageItem => throw new NotImplementedException();
 
     public void Dispose() {
       if (!_disposed) {

@@ -265,14 +265,22 @@ namespace ShellControls.ShellContextMenu {
             }
 
             if (mii.hbmpItem != IntPtr.Zero && !Enum.IsDefined(typeof(HBITMAP_HMENU), ((IntPtr)mii.hbmpItem).ToInt64())) {
-              Gdi32.ConvertPixelByPixel(mii.hbmpItem, out var width, out var height);
+              //Gdi32.ConvertPixelByPixel(mii.hbmpItem, out var width, out var height);
+
+              mii.hbmpItem = Gdi32.RenderHBitmap(mii.hbmpItem);
+
               Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, (Action)(async () => {
-                var icon = Imaging.CreateBitmapSourceFromHBitmap(mii.hbmpItem, IntPtr.Zero, Int32Rect.Empty,
-                  BitmapSizeOptions.FromEmptyOptions());
-                icon.Freeze();
-                menuItem.Icon = icon;
+                if (mii.hbmpItem != IntPtr.Zero) {
+                  var icon = Imaging.CreateBitmapSourceFromHBitmap(mii.hbmpItem, IntPtr.Zero, Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+                  icon.Freeze();
+                  menuItem.Icon = icon;
+                  Gdi32.DeleteObject(mii.hbmpItem);
+                }
               }));
-              Gdi32.DeleteObject(mii.hbmpItem);
+              if (mii.hbmpItem != IntPtr.Zero) {
+                Gdi32.DeleteObject(mii.hbmpItem);
+              }
               //using (var bitmap = Gdi32.GetBitmapFromHBitmap(mii.hbmpItem)) {
               //  if (bitmap != null) {
               //    byte[] bitmapData = (byte[])new ImageConverter().ConvertTo(bitmap, typeof(byte[]));

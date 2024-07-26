@@ -74,19 +74,32 @@ namespace ShellControls {
             350,
             ShellThumbnailFormatOption.Default,
             ShellThumbnailRetrievalOption.Default);
-          image.Freeze();
+
+          image?.Freeze();
           this.Image = image;
           RaisePropertyChanged("Image");
-          this.FileNameWidth = this.Image.Width - 110;
-          RaisePropertyChanged("FileNameWidth");
+          if (this.Image != null) {
+            this.FileNameWidth = this.Image.Width - 110;
+            RaisePropertyChanged("FileNameWidth");
+          }
 
           try {
             var ratingValue = clonedCurrentItem.GetPropertyValue(MediaProperties.Rating, typeof(Double)).Value;
+            var dimentions = clonedCurrentItem.GetPropertyValue(MediaProperties.Dimensions, typeof(String)).Value;
+            var fileSize = clonedCurrentItem.GetPropertyValue(SystemProperties.FileSize, typeof(double)).Value;
+            if (dimentions == null || ratingValue == null) {
+              var imageProps = clonedCurrentItem.StorageItem?.Properties.GetImagePropertiesAsync().GetAwaiter().GetResult();
+              if (imageProps != null) {
+                dimentions = $"{imageProps.Width} x {imageProps.Height}";
+              }
+
+              ratingValue = imageProps.Rating;
+            }
+
             var rating = ratingValue == null ? 0 : Convert.ToDouble(ratingValue) / 20D;
             this.Rating = Math.Ceiling(rating);
             RaisePropertyChanged("Rating");
-            var fileSize = clonedCurrentItem.GetPropertyValue(SystemProperties.FileSize, typeof(double)).Value;
-            var dimentions = clonedCurrentItem.GetPropertyValue(MediaProperties.Dimensions, typeof(String)).Value;
+
             if (fileSize != null && Convert.ToDouble(fileSize) > 0d) {
               this.Dimentions =
                 ((Math.Ceiling(

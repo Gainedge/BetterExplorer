@@ -8,7 +8,7 @@
           xmlns:wpfuicommon="clr-namespace:WPFUI.Common;assembly=WPFUI"
           xmlns:beHelper="clr-namespace:BEHelper;assembly=BEHelper"
           mc:Ignorable="d"
-          Title="MainWindow2" Height="450" Width="800" Loaded="MainWindowNew_OnLoaded" CaptionHeight="60" UseLayoutRounding="True" SnapsToDevicePixels="True">
+          Title="MainWindow2" Height="450" Width="800" Loaded="MainWindowNew_OnLoaded" CaptionHeight="60" UseLayoutRounding="True" SnapsToDevicePixels="True" ThemeBackgroundType="Mica">
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>

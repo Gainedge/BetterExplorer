@@ -1481,15 +1481,18 @@ namespace ShellControls.ShellListView {
           this.VScroll.InvalidateVisual();
           this._PreventScrollEvent = true;
           if (!this._PreventScrollValueEvent) {
-            //var dy1 = args.NewValue - this._OldValue;
-            //if (dy1 > 120) {
-            this._OldValue = args.OldValue;
-            //} else {
-            //  return;
-            //}
-
-            var dy = (Int32)Math.Round((args.NewValue - this._OldValue), 0);
-            var shouldChange = Math.Abs(dy) >= 3;
+            var dy = (Int32)Math.Round((args.NewValue - args.OldValue), 0);
+            var shouldChange = Math.Abs(dy) >= Math.Round(this.VScroll.SmallChange, 0);
+            if (!shouldChange) {
+              this._PreventScrollEvent = true;
+              this._PreventScrollValueEvent = true;
+              this.VScroll.Value = args.OldValue;
+              this._PreventScrollValueEvent = false;
+              this._PreventScrollEvent = false;
+              return;
+            } else {
+              this._OldValue = args.OldValue;
+            }
             var curScroll = this.GetScrollPosition();
             if (args.NewValue == 0D) {
               dy = -curScroll.nPos;
@@ -1508,22 +1511,9 @@ namespace ShellControls.ShellListView {
               this._IIListView.GetItemPosition(lviFrom, out var ptFrom);
               dy = ptTo.y - ptFrom.y;
             }
-
-            if (this.View == ShellViewStyle.Details && !this.IsGroupsEnabled) {
-              if (true) {
-                var t = new Thread((() => {
-                  this.BeginInvoke((Action)(() => { User32.SendMessage(this.LVHandle, MSG.LVM_SCROLL, 0, dy); }));
-                }));
-                t.Priority = ThreadPriority.Lowest;
-                t.Start();
-              }
-            } else {
-              //var t = new Thread((() => { User32.SendMessage(this.LVHandle, MSG.LVM_SCROLL, 0, dy); }));
-              //t.Start();
-              User32.SendMessage(this.LVHandle, MSG.LVM_SCROLL, 0, dy);
-            }
-
-
+            var t = new Thread((() => { User32.SendMessage(this.LVHandle, MSG.LVM_SCROLL, 0, dy); }));
+            t.Priority = ThreadPriority.Lowest;
+            t.Start();
           } else {
             this._PreventScrollValueEvent = false;
           }
@@ -3170,7 +3160,7 @@ namespace ShellControls.ShellListView {
         this.LargeImageList.ResizeImages(value);
         this.LargeImageList.AttachToListView(this, 0);
         this.SmallImageList.AttachToListView(this, 1);
-        User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, new IntPtr(((value + 16 + 42) << 16) | ((value + 10 + 30) & 0xFFFF)));
+        User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, new IntPtr(((value + 16 + 42) << 16) | ((value + 0 + 30) & 0xFFFF)));
       } catch (Exception) { }
     }
 

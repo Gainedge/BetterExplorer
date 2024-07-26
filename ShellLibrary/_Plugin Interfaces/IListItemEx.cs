@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
 using ShellLibrary.Interop;
+using Windows.Storage;
 using WPFUI.Win32;
 using Size = System.Drawing.Size;
 
@@ -23,6 +24,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     /// <summary>The logical parent for this item</summary>
     IListItemEx Parent { get; }
+
+    public IStorageItemProperties StorageItem { get; }
 
     /// <summary>The text that represents the display name</summary>
     String DisplayName { get; }
@@ -160,7 +163,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     HResult NavigationStatus { get; set; }
 
-    IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false, bool isBoth = false);
+    IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false, bool isBoth = false, Boolean isForThumbnailSource = false);
 
     Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags);
 

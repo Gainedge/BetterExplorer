@@ -90,7 +90,7 @@ namespace ShellControls.ShellTreeView {
       this.childsQueue.Clear();
       this.UpdatedImages.Clear();
       this.CheckedFroChilds.Clear();
-      var favoritesItem = Utilities.WindowsVersion == WindowsVersions.Windows10
+      var favoritesItem = Utilities.WindowsVersion == WindowsVersions.Windows10 || Utilities.WindowsVersion == WindowsVersions.Windows11
         ? FileSystemListItem.ToFileSystemItem(IntPtr.Zero, "shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}")
         : FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Links).Pidl);
       var favoritesRoot = new TreeNode(favoritesItem.DisplayName);
@@ -100,6 +100,18 @@ namespace ShellControls.ShellTreeView {
 
       if (favoritesItem.Count() > 0) {
         favoritesRoot.Nodes.Add(this._EmptyItemString);
+      }
+
+      TreeNode oneDriveRoot = null;
+      if (Utilities.WindowsVersion == WindowsVersions.Windows11) {
+        var oneDriveItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.OneDrive).Pidl);
+        oneDriveRoot = new TreeNode(oneDriveItem.DisplayName);
+        oneDriveRoot.Tag = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.OneDrive).Pidl);
+        oneDriveRoot.ImageIndex = oneDriveItem.GetSystemImageListIndex(oneDriveItem.PIDL, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
+        oneDriveRoot.SelectedImageIndex = oneDriveRoot.ImageIndex;
+        if (oneDriveItem.HasSubFolders) {
+          oneDriveRoot.Nodes.Add(this._EmptyItemString);
+        }
       }
 
       var librariesItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ((ShellItem)KnownFolders.Libraries).Pidl);
@@ -129,6 +141,10 @@ namespace ShellControls.ShellTreeView {
 
       this.ShellTreeView.Nodes.Add(favoritesRoot);
       favoritesRoot.Expand();
+
+      if (oneDriveRoot != null) {
+        this.ShellTreeView.Nodes.AddRange(new[] { new TreeNode(), oneDriveRoot });
+      }
 
       this.ShellTreeView.Nodes.AddRange(new[] { new TreeNode(), librariesRoot, new TreeNode(), computerRoot, new TreeNode(), networkRoot });
 

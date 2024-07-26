@@ -47,12 +47,12 @@ namespace ShellControls.ShellContextMenu {
     public string CommandString { get; set; }
     public MenuItemType Type { get; set; }
     public Boolean IsNewMenuItem { get; set; }
-    public List<Win32ContextMenuItem>? SubItems { get; set; }
+    public List<Win32ContextMenuItem> SubItems { get; set; } = new();
 
     public AcrylicShellContextMenu SubMenuPopup { get; set; }
     public DispatcherTimer IsOpenTimer = new DispatcherTimer(DispatcherPriority.Normal);
 
-    public Boolean IsSubMenu => this.hSubmenu != IntPtr.Zero;
+    public Boolean IsSubMenu => this.hSubmenu != IntPtr.Zero || this.SubItems.Any();
 
     public Boolean IsSeparator => this.Type == MenuItemType.MFT_SEPARATOR;
 

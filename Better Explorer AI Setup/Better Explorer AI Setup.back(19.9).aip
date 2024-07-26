@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="21.2.2" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="9.6" version="19.9" Modules="enterprise" RootPath="." Language="en" Id="{A4FA32E1-5619-489A-BFEE-0F3897033FD7}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
     <ROW Name="Application_2_Args" Value="/checknow"/>
     <ROW Name="Application_2_WorkingDir" Value="APPDIR"/>
@@ -16,15 +16,16 @@
     <ROW Table="Media" Column="LastSequence" MinValue="0" MaxValue="2147483647" Description="File sequence number for the last file for this media." Options="0" ColumnType="3" ColumnIndex="1" ColumnSize="4" MsiKey="Media#LastSequence"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
-    <ROW Property="AI_APP_FILE" Value="[APPDIR]BetterExplorer.exe"/>
     <ROW Property="AI_ARP_SIZE" Value="5000"/>
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_BackgroundColor" Value="lightblue" MultiBuildValue="ExeBuild:lightcoral" MsiKey="AI_BackgroundColor"/>
+    <ROW Property="AI_CURRENT_YEAR" Value="2022" ValueLocId="-"/>
     <ROW Property="AI_EXTERNALUIUNINSTALLERNAME" MultiBuildValue="ExeBuild:aiui"/>
     <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
     <ROW Property="AI_FrameBtnsColor" Value="powderblue" MsiKey="AI_FrameBtnsColor"/>
     <ROW Property="AI_FrameColor" Value="powderblue" MsiKey="AI_FrameColor"/>
     <ROW Property="AI_ImagesColor" Value="powderblue" MultiBuildValue="ExeBuild:brown" MsiKey="AI_ImagesColor"/>
+    <ROW Property="AI_PACKAGING_TOOL" Value="Advanced Installer 19.9 build de6d6401" ValueLocId="-"/>
     <ROW Property="AI_PREDEF_LCONDS_PROPS" Value="AI_DETECTED_COLOR_QUALITY;AI_DETECTED_PHYSICAL_MEMORY;AI_DETECTED_SCREEN_RESOLUTION_X;AI_DETECTED_SCREEN_RESOLUTION_Y"/>
     <ROW Property="AI_PRODUCTNAME_ARP" Value="Better Explorer"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_BEUpdater.exe" Value="..\Deploy\net6.0-windows10.0.22000.0"/>
@@ -104,7 +105,7 @@
     <ROW Property="ProductCode" Value="1026:{4F9125FA-A344-4558-9D9A-E57FECE95502} 1031:{EDDB5BC7-8606-4BF8-8579-BC1C85D6BF20} 1033:{3B384425-3607-4A80-BC5E-3E77BDEA38FE} 1041:{9BA2AD70-1A4F-493E-86B7-DEB319032197} 1049:{AF8AE3BC-11FD-4E94-AD86-A18B4BC39318} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Better Explorer"/>
-    <ROW Property="ProductVersion" Value="2020.3.15.1304" Options="20"/>
+    <ROW Property="ProductVersion" Value="2020.3.15.1304" Options="16"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{5E93AAAE-AC44-47F5-BFC8-330F951A30F4}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="ExeBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -356,7 +357,7 @@
     <ROW File="LicenseSegoeFluentIcons.txt" Component_="BetterExplorer_ContentOutput" FileName="LICENS~4.TXT|[|AI_PROPPATH_FILENAME_PERBUILD_LicenseSegoeFluentIcons.txt]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_LicenseSegoeFluentIcons.txt&gt;" SelfReg="false"/>
     <ROW File="Settings.sqlite_2" Component_="BetterExplorer_ContentOutput" FileName="SETTIN~2.SQL|[|AI_PROPPATH_FILENAME_PERBUILD_Settings.sqlite_2]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Settings.sqlite_2&gt;" SelfReg="false"/>
     <ROW File="BetterExplorer.exe_1" Component_="BetterExplorer_ContentOutput" FileName="BETTER~2.EXE|[|AI_PROPPATH_FILENAME_PERBUILD_BetterExplorer.exe_1]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_BetterExplorer.exe_1&gt;" SelfReg="false" DigSign="true"/>
-    <ATTRIBUTE name="IcoToPng" value="CheckforUpdatesSquare44x44Logo.scale100.png:0:44 CheckforUpdatesSquare150x150Logo.scale100.png:0:150"/>
+    <ATTRIBUTE name="IcoToPng" value="CheckforUpdatesSquare150x150Logo.scale100.png:0:150 CheckforUpdatesSquare44x44Logo.scale100.png:0:44"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.custcomp.MsiShortcutPropertyComponent">
     <ROW MsiShortcutProperty="BetterExplorer2" Shortcut_="BetterExplorer" PropertyKey="System.AppUserModel.ID" PropVariantValue="Gainedge.ORG.BetterExplorer"/>
@@ -399,7 +400,6 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrapperUISequenceComponent">
     <ROW Action="AI_DetectSoftware" Sequence="101"/>
-    <ROW Action="AI_AppSearchEx" Condition="AI_BOOTSTRAPPER" Sequence="251"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="BuildUwpAppX" BuildName="BuildUwpAppX" BuildOrder="2" BuildType="7" PackageFolder="..\Installer" PackageFileName="BetterExplorer" Languages="en" UwpTargetDesktop="TargetDeviceFamily" UwpAppInstallerManifestFile="MsixAppInstallerData.xml"/>
@@ -416,7 +416,7 @@
     <ATTRIBUTE name="TranslateSegments" value="0b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111100011110000000110000000000000"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DigCertStoreComponent">
-    <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="0" SignTool="0" UseSha256="1" Thumbprint="e610e5ca6ef6190778174c0d615ff954c4216194 Subject: Test01D424E0A39C49F0&#10;Issuer: Test01D424E0A39C49F0&#10;Valid from 07/26/2018 to 07/26/2019" Store="User\MY"/>
+    <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="0" SignTool="0" UseSha256="1" Thumbprint="e610e5ca6ef6190778174c0d615ff954c4216194 Subject: Test01D424E0A39C49F0&#10;Issuer: Test01D424E0A39C49F0&#10;Valid from 07/26/2018 to 07/26/2019&#10;User\MY"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DynamicPropertyComponent">
     <ROW Property="ProductVersion" Type="2" SourcePath="BetterExplorer.exe"/>
@@ -750,9 +750,8 @@
     <ROW Action="AI_FindExeLzma" Type="1" Source="lzmaextractor.dll" Target="FindEXE"/>
     <ROW Action="AI_GetArpIconPath" Type="1" Source="aicustact.dll" Target="GetArpIconPath"/>
     <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
-    <ROW Action="AI_LaunchApp" Type="1" Source="aicustact.dll" Target="LaunchApp"/>
+    <ROW Action="AI_LaunchApp" Type="1" Source="aicustact.dll" Target="[APPDIR]BetterExplorer.exe"/>
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
-    <ROW Action="AI_PRESERVE_INSTALL_TYPE" Type="65" Source="aicustact.dll" Target="PreserveInstallType"/>
     <ROW Action="AI_PinShortcuts" Type="1" Source="ShortcutFlags.dll" Target="PinShortcuts"/>
     <ROW Action="AI_PinToStartScreen" Type="1025" Source="ShortcutFlags.dll" Target="PinToStartScreen" WithoutSeq="true"/>
     <ROW Action="AI_PinToTaskbar" Type="1025" Source="ShortcutFlags.dll" Target="PinToTaskbar" WithoutSeq="true"/>
@@ -951,7 +950,6 @@
     <ROW Action="AI_DpiContentScale" Sequence="52"/>
     <ROW Action="AI_EnableDebugLog" Sequence="51"/>
     <ROW Action="AI_DetectSoftware" Sequence="101"/>
-    <ROW Action="AI_PRESERVE_INSTALL_TYPE" Sequence="199"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
     <ROW Condition="( Version9X OR ( NOT VersionNT64 ) OR ( VersionNT64 AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 602) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 603) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 1000) OR (MsiNTProductType = 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT64Display]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT64" IsPredefined="true" Builds="ExeBuild"/>
@@ -1068,9 +1066,9 @@
     <ATTRIBUTE name="DynamicInstances" value="ExeBuild:"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqComponent">
-    <ROW PrereqKey="BB9062A4604BB61146D7C9AA49D" DisplayName=".NET Framework 4.6.1 (web installer)" SetupFileUrl="http://download.microsoft.com/download/3/5/9/35980F81-60F4-4DE3-88FC-8F962B97253B/NDP461-KB3102438-Web.exe" Location="1" ExactSize="1424328" WinNTVersions="Windows Vista RTM x86, Windows Server 2008 x86, Windows 7 RTM x86" WinNT64Versions="Windows Vista RTM x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64" Operator="1" NoUiComLine="/q /norestart" Options="xkmqQ" MD5="4d1bb86d0eee168e1da91a36350c1c21" TargetName=".NET Framework 4.6.1"/>
-    <ROW PrereqKey="C676C2BD547E7A6181C255B343B7A" DisplayName=".NET Framework 4.7.2 (web installer)" SetupFileUrl="https://download.microsoft.com/download/0/5/C/05C1EC0E-D5EE-463B-BFE3-9311376A6809/NDP472-KB4054531-Web.exe" Location="1" ExactSize="1432848" WinNTVersions="Windows Vista RTM x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86, Windows 10 version 1803 x86, Windows 10 version 1809 x86" WinNT64Versions="Windows Vista RTM x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64, Windows 10 version 1803 x64, Windows 10 version 1809 x64, Windows Server 2019 x64" Operator="1" NoUiComLine="/q /norestart" Options="xkmqQ" MD5="c84209349f18afe5a41ce04e9ae8f487" TargetName=".NET Framework 4.7.2"/>
-    <ROW PrereqKey="EEDF697C58FF44AEA12537BBFB266D19" DisplayName=".NET Framework 4.6 (web installer)" SetupFileUrl="http://download.microsoft.com/download/1/4/A/14A6C422-0D3C-4811-A31F-5EF91A83C368/NDP46-KB3045560-Web.exe" Location="1" ExactSize="1497400" WinNTVersions="Windows Vista RTM x86, Windows Vista SP1 x86, Windows 7 RTM x86, Windows 10 x86" WinNT64Versions="Windows Vista RTM x64, Windows Vista SP1 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64, Windows 10 x64" Operator="1" NoUiComLine="/q /norestart" Options="xkmqQ" MD5="58d88886a42aeb5d17e8b232c2697899" TargetName=".NET Framework 4.6"/>
+    <ROW PrereqKey="BB9062A4604BB61146D7C9AA49D" DisplayName=".NET Framework 4.6.1 (web installer)" SetupFileUrl="http://download.microsoft.com/download/3/5/9/35980F81-60F4-4DE3-88FC-8F962B97253B/NDP461-KB3102438-Web.exe" Location="1" ExactSize="1424328" WinNTVersions="Windows Vista RTM x86, Windows Server 2008 x86, Windows 7 RTM x86" WinNT64Versions="Windows Vista RTM x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64" Operator="1" NoUiComLine="/q /norestart" Options="xym" MD5="4d1bb86d0eee168e1da91a36350c1c21" TargetName=".NET Framework 4.6.1"/>
+    <ROW PrereqKey="C676C2BD547E7A6181C255B343B7A" DisplayName=".NET Framework 4.7.2 (web installer)" SetupFileUrl="https://download.microsoft.com/download/0/5/C/05C1EC0E-D5EE-463B-BFE3-9311376A6809/NDP472-KB4054531-Web.exe" Location="1" ExactSize="1432848" WinNTVersions="Windows Vista RTM x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86, Windows 10 version 1803 x86, Windows 10 version 1809 x86" WinNT64Versions="Windows Vista RTM x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64, Windows 10 version 1803 x64, Windows 10 version 1809 x64, Windows Server 2019 x64" Operator="1" NoUiComLine="/q /norestart" Options="xym" MD5="c84209349f18afe5a41ce04e9ae8f487" TargetName=".NET Framework 4.7.2"/>
+    <ROW PrereqKey="EEDF697C58FF44AEA12537BBFB266D19" DisplayName=".NET Framework 4.6 (web installer)" SetupFileUrl="http://download.microsoft.com/download/1/4/A/14A6C422-0D3C-4811-A31F-5EF91A83C368/NDP46-KB3045560-Web.exe" Location="1" ExactSize="1497400" WinNTVersions="Windows Vista RTM x86, Windows Vista SP1 x86, Windows 7 RTM x86, Windows 10 x86" WinNT64Versions="Windows Vista RTM x64, Windows Vista SP1 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64, Windows 10 x64" Operator="1" NoUiComLine="/q /norestart" Options="xym" MD5="58d88886a42aeb5d17e8b232c2697899" TargetName=".NET Framework 4.6"/>
     <ATTRIBUTE name="PrereqsOrder" value="EEDF697C58FF44AEA12537BBFB266D19 BB9062A4604BB61146D7C9AA49D C676C2BD547E7A6181C255B343B7A"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">

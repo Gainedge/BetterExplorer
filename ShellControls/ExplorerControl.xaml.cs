@@ -514,7 +514,7 @@ namespace ShellControls {
       //var menuItems = new List<Win32ContextMenuItem>();
       var sortbyItem = new Win32ContextMenuItem(contextMenu.MenuItems);
       sortbyItem.Label = "Sort By";
-
+      //sortbyItem.SubItems = new List<Win32ContextMenuItem>();
       foreach (var column in this.lvHeader.Columns.OfType<ListViewColumnHeader>()) {
         var header = (column.Header as ShellListViewColumnHeader);
         var sortcolItem = new Win32ContextMenuItem(sortbyItem.SubItems);
@@ -532,6 +532,7 @@ namespace ShellControls {
       contextMenu.MenuItems.Add(sortbyItem);
       var groupbyItem = new Win32ContextMenuItem(contextMenu.MenuItems);
       groupbyItem.Label = "Group By";
+      //groupbyItem.SubItems = new List<Win32ContextMenuItem>();
       //var groupSubItems = new List<Win32ContextMenuItem>();
       foreach (var column in this.lvHeader.Columns.OfType<ListViewColumnHeader>()) {
         var header = (column.Header as ShellListViewColumnHeader);

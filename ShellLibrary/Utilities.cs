@@ -20,6 +20,10 @@
         } else if (environmentInfo.Major == 6 && environmentInfo.Minor == 3) {
           return WindowsVersions.Windows81;
         } else {
+          if (environmentInfo.Build >= 22000) {
+            return WindowsVersions.Windows11;
+          }
+
           return WindowsVersions.Windows10;
         }
       }

@@ -28,19 +28,24 @@
     <DataTemplate x:Key="FSImageTooltip" x:Name="FSImageTooltip">
       <Grid>
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="100"></ColumnDefinition>
+          <ColumnDefinition Width="Auto"></ColumnDefinition>
           <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition MinHeight="4" Height="Auto"></RowDefinition>
           <RowDefinition Height="25"></RowDefinition>
           <RowDefinition Height="25"></RowDefinition>
         </Grid.RowDefinitions>
-        <Image Grid.Row="0" Margin="2,2,2,0" Grid.ColumnSpan="2" Stretch="None" x:Name="imgIconImage" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Image}"></Image>
+        <Border CornerRadius="4" x:Name="imgIconImage" Grid.Row="0" Margin="2,6,2,4" Grid.ColumnSpan="2" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Image.Width}" Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Image.Height}">
+          <Border.Background>
+            <ImageBrush Stretch="None" ImageSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Image}"/>
+          </Border.Background>
+        </Border>
+        <!--<Image Grid.Row="0" Margin="2,2,2,0" Grid.ColumnSpan="2" Stretch="None" x:Name="imgIconImage" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Image}"></Image>-->
         <controls:Rating Grid.Row="1" Grid.Column="0" Height="18" Width="100" HorizontalAlignment="Left" Margin="5,5,0,0" Background="Transparent"
                   Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Rating}"/>
-        <Border Grid.Row="1"  Grid.Column="1" BorderBrush="{x:Null}" Height="16" Margin="5,7,5,2" VerticalAlignment="Center">
-          <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Height="16" FontWeight="Bold" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.FileName}" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.FileNameWidth}"></TextBlock>
+        <Border Grid.Row="1"  Grid.Column="1" BorderBrush="{x:Null}" Height="16" Margin="10,7,5,2" VerticalAlignment="Center">
+          <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Height="16" FontWeight="Bold" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.FileName}" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.FileNameWidth}"></TextBlock>
         </Border>
         <Border Grid.Row="2"  Grid.Column="0" Grid.ColumnSpan="2" Margin="5,2,0,5" BorderBrush="{x:Null}" Height="23" VerticalAlignment="Center">
           <TextBlock VerticalAlignment="Center"  Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type betterExplorerControls:AcrylicTooltip}}, Path=DataContext.Dimentions}"></TextBlock>

@@ -303,6 +303,55 @@ namespace BExplorer.Shell.Interop {
         return null;
       }
     }
+    public static IntPtr RenderHBitmap(IntPtr hBitmap) {
+      try {
+        Bitmap bmp = Image.FromHbitmap(hBitmap);
+        if (Image.GetPixelFormatSize(bmp.PixelFormat) < 32) {
+          bmp.Dispose();
+          return hBitmap;
+        }
+        var res = IntPtr.Zero;
+        Rectangle bmBounds = new Rectangle(0, 0, bmp.Width, bmp.Height);
+        var bmpData = bmp.LockBits(bmBounds, ImageLockMode.ReadOnly, bmp.PixelFormat);
+        if (IsAlphaBitmap(bmpData)) {
+          var alpha = GetAlphaBitmapFromBitmapData(bmpData);
+          bmp.UnlockBits(bmpData);
+          bmp.Dispose();
+          res = alpha.GetHbitmap(Color.Transparent);
+          alpha.Dispose();
+          DeleteObject(hBitmap);
+          return res;
+        }
+
+        bmp.UnlockBits(bmpData);
+        bmp.Dispose();
+        return hBitmap;
+      } catch {
+        return IntPtr.Zero;
+      }
+    }
+    public static Bitmap GetBitmapFromHBitmapWithoutAlpha(IntPtr hBitmap) {
+      try {
+        Bitmap bmp = Image.FromHbitmap(hBitmap);
+        if (Image.GetPixelFormatSize(bmp.PixelFormat) < 32) {
+          return bmp;
+        }
+
+        Rectangle bmBounds = new Rectangle(0, 0, bmp.Width, bmp.Height);
+        var bmpData = bmp.LockBits(bmBounds, ImageLockMode.ReadOnly, bmp.PixelFormat);
+        //if (IsAlphaBitmap(bmpData)) {
+        //  var alpha = GetAlphaBitmapFromBitmapData(bmpData);
+        //  bmp.UnlockBits(bmpData);
+        //  bmp.Dispose();
+        //  return alpha;
+        //}
+
+        bmp.UnlockBits(bmpData);
+        return bmp;
+      } catch {
+        return null;
+      }
+    }
     private static bool IsAlphaBitmap(BitmapData bmpData) {
       for (int y = 0; y <= bmpData.Height - 1; y++) {
         for (int x = 0; x <= bmpData.Width - 1; x++) {

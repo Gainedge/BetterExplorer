@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shell;
+using WPFUI.Background;
 using WPFUI.Common;
 
 // ReSharper disable once IdentifierTypo
@@ -19,12 +20,19 @@ namespace WPFUI.Controls {
     /// </summary>
     public IntPtr Handle { get; set; }
     private WindowChrome _chrome { get; set; }
+    public static readonly DependencyProperty ThemeBackgroundTypeProperty =
+      DependencyProperty.Register(
+        name: nameof(ThemeBackgroundType),
+        propertyType: typeof(BackgroundType),
+        ownerType: typeof(UIWindow),
+        typeMetadata: new FrameworkPropertyMetadata(defaultValue: BackgroundType.Default)
+      );
     /// <summary>
     /// 
     /// </summary>
     public static readonly DependencyProperty GlassMarginProperty =
       DependencyProperty.Register(
-        name: "GlassMargin",
+        name: nameof(GlassMargin),
         propertyType: typeof(Thickness),
         ownerType: typeof(UIWindow),
         typeMetadata: new FrameworkPropertyMetadata(defaultValue: new Thickness(-1))
@@ -34,11 +42,18 @@ namespace WPFUI.Controls {
     /// </summary>
     public static readonly DependencyProperty CaptionHeightProperty =
       DependencyProperty.Register(
-        name: "CaptionHeight",
+        name: nameof(CaptionHeight),
         propertyType: typeof(Double),
         ownerType: typeof(UIWindow),
         typeMetadata: new FrameworkPropertyMetadata(defaultValue: SystemParameters.CaptionHeight)
       );
+    /// <summary>
+    /// 
+    /// </summary>
+    public BackgroundType ThemeBackgroundType {
+      get => (BackgroundType)GetValue(ThemeBackgroundTypeProperty);
+      set => SetValue(ThemeBackgroundTypeProperty, value);
+    }
     /// <summary>
     /// 
     /// </summary>
@@ -106,7 +121,7 @@ namespace WPFUI.Controls {
         }
 
         this.Background = Brushes.Transparent;
-        Theme.Manager.Switch(this, Settings.BESettings.CurrentTheme == "Dark" ? Theme.Style.Dark : Theme.Style.Light, true);
+        Theme.Manager.Switch(this, Settings.BESettings.CurrentTheme == "Dark" ? Theme.Style.Dark : Theme.Style.Light, this.ThemeBackgroundType);
       }
       hwnd?.AddHook(WndProcHooked);
     }

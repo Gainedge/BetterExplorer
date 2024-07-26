@@ -206,6 +206,12 @@ namespace BetterExplorerControls {
       });
       thread.Start();
       MouseHook.MouseAction += MouseHookOnMouseAction;
+      //if (!this._PositionSet) {
+      //  var mousePos = AcrylicPopup.GetMousePosition();
+      //  GetWindowRect(this.Handle, out var rect);
+      //  this.IsPopupDirectionReversed = rect.Bottom <= (Int32)mousePos.Y;
+      //  this._PositionSet = true;
+      //}
     }
 
     private void ParentPopupOnOpened(Object sender, EventArgs e) {
@@ -231,6 +237,13 @@ namespace BetterExplorerControls {
     public void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime) {
       if (hwnd != this.Handle) {
         this.IsOpen = false;
+      } else {
+        if (!this._PositionSet) {
+          var mousePos = AcrylicPopup.GetMousePosition();
+          GetWindowRect(this.Handle, out var rect);
+          this.IsPopupDirectionReversed = rect.Bottom <= (Int32)mousePos.Y;
+          this._PositionSet = true;
+        }
       }
     }
 
@@ -266,19 +279,22 @@ namespace BetterExplorerControls {
         this.IsOpen = false;
       }
     }
-
+    Point mousePos = new Point();
     private IntPtr WndProcHooked(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {
+      
       if (msg == 0x00FF) {
 
       }
-      if (msg == 0xc1b3) {
-        handled = true;
+      if (msg == 71) {
+        //handled = true;
         if (!this._PositionSet) {
-          var mousePos = AcrylicPopup.GetMousePosition();
-          GetWindowRect(this.Handle, out var rect);
-          this.IsPopupDirectionReversed = rect.Bottom <= (Int32)mousePos.Y;
+          mousePos = AcrylicPopup.GetMousePosition();
           this._PositionSet = true;
         }
+
+        GetWindowRect(this.Handle, out var rect);
+        this.IsPopupDirectionReversed = rect.Bottom <= (Int32)mousePos.Y;
+          
       }
 
       return IntPtr.Zero;
@@ -286,7 +302,7 @@ namespace BetterExplorerControls {
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+    public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
     delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
     WinEventDelegate dele = null;
     [DllImport("user32.dll")]

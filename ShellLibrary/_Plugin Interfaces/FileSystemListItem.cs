@@ -117,7 +117,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         var value = this.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType))?.Value;
         if (value != null) {
           var perceivedType = (PerceivedType)value;
-          if (perceivedType == PerceivedType.Application) {
+          if (perceivedType == PerceivedType.Application ) {
             return IExtractIconPWFlags.GIL_PERINSTANCE;
           } else {
             return IExtractIconPWFlags.GIL_PERCLASS;
@@ -395,11 +395,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       if (this.IsSearchFolder) {
         flags = SHCONTF.FOLDERS | SHCONTF.NONFOLDERS | SHCONTF.ENABLE_ASYNC;
       }
-      
+
       if (isEnumHidden) {
         flags = SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.NONFOLDERS | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.ENABLE_ASYNC;
         if (this.IsSearchFolder) {
-          flags = SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.NONFOLDERS  | SHCONTF.ENABLE_ASYNC;
+          flags = SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.NONFOLDERS | SHCONTF.ENABLE_ASYNC;
         }
       }
 
@@ -515,13 +515,17 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     public BitmapSource ThumbnailBitmapSource => this.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 
     public BitmapSource ThumbnailSource(Int32 size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) {
-      var hBitmap = this.GetHBitmap(size, format == ShellThumbnailFormatOption.ThumbnailOnly, source == ShellThumbnailRetrievalOption.Default, format == ShellThumbnailFormatOption.Default);
+      var hBitmap = this.GetHBitmap(size, format == ShellThumbnailFormatOption.ThumbnailOnly, source == ShellThumbnailRetrievalOption.Default, format == ShellThumbnailFormatOption.Default, isForThumbnailSource: true);
 
       // return a System.Media.Imaging.BitmapSource
       // Use interop to create a BitmapSource from hBitmap.
       if (hBitmap == IntPtr.Zero) {
         return null;
       }
+
+      //var width = 0;
+      //var height = 0;
+      //Gdi32.ConvertPixelByPixel(hBitmap, out width, out height);
 
       var returnValue = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, System.Windows.Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()).Clone();
       //returnValue.Freeze();
@@ -651,7 +655,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       return res;
     }
 
-    public IntPtr GetHBitmap(Int32 iconSize, Boolean isThumbnail, Boolean isForce = false, Boolean isBoth = false) {
+    public IntPtr GetHBitmap(Int32 iconSize, Boolean isThumbnail, Boolean isForce = false, Boolean isBoth = false, Boolean isForThumbnailSource = false) {
       var options = ThumbnailOptions.None;
       if (isThumbnail) {
         options = ThumbnailOptions.ThumbnailOnly;
@@ -663,7 +667,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
           options |= ThumbnailOptions.IconOnly;
         }
       }
-      return WindowsThumbnailProvider.GetThumbnail(this.PIDL, iconSize, iconSize, options);
+      return WindowsThumbnailProvider.GetThumbnail(this, iconSize, iconSize, options, isForThumbnailSource);
     }
 
     public static FileSystemListItem ToFileSystemItem(IntPtr parentHandle, String path) {
@@ -771,6 +775,22 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     public User32.RECT LabelBounds { get; set; }
 
     public Boolean IsRCWSet { get; set; }
+    private Windows.Storage.IStorageItemProperties _StorageItem { get; set; }
+    public Windows.Storage.IStorageItemProperties StorageItem {
+      get {
+        try {
+          if (!this.IsFileSystem) {
+            return null;
+          }
+
+          this._StorageItem = this.IsFolder ? Windows.Storage.StorageFolder.GetFolderFromPathAsync(this.ParsingName).GetAwaiter().GetResult() : Windows.Storage.StorageFile.GetFileFromPathAsync(this.ParsingName).GetAwaiter().GetResult();
+
+          return this._StorageItem;
+        } catch {
+          return null;
+        }
+      }
+    }
 
     public IListItemEx Clone(Boolean isHardCloning = false) {
       if (isHardCloning) {
@@ -806,7 +826,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         this._Item?.Dispose();
         Marshal.ReleaseComObject(this.ComInterface);
       } catch (Exception ex) {
-        
+
       }
     }
 

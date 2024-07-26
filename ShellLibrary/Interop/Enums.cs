@@ -966,6 +966,7 @@ namespace BExplorer.Shell.Interop {
   }
 
   public enum WindowsVersions {
+    Windows11,
     Windows10,
     Windows81,
     Windows8,

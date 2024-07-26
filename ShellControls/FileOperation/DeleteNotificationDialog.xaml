@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BExplorer.Shell"
              xmlns:controls="clr-namespace:WPFUI.Controls;assembly=WPFUI"
-             mc:Ignorable="d"  Height="Auto" Width="500" Title="Delete multiple items" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="Transparent" SizeToContent="Height" Loaded="DeleteNotificationDialog_OnLoaded">
+             mc:Ignorable="d"  Height="Auto" Width="500" Title="Delete multiple items" ThemeBackgroundType="Mica" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="Transparent" SizeToContent="Height" Loaded="DeleteNotificationDialog_OnLoaded">
   <Grid Margin="0" Height="Auto">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto"/>
