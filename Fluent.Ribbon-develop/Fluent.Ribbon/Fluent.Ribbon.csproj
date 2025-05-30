@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
@@ -60,7 +60,7 @@
   <ItemGroup>
     <PackageReference Include="ControlzEx" Version="5.0.1" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
   </ItemGroup>
   <Target Name="GenerateXamlFiles" BeforeTargets="DispatchToInnerBuilds;PrepareForBuild">
     <PropertyGroup>
